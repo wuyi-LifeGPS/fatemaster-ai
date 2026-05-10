@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 28, 25, 23;
+  --background-rgb: 253, 248, 240;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+.font-serif {
+  font-family: Georgia, Cambria, 'Times New Roman', serif;
+}

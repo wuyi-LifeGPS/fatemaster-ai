@@ -22,6 +22,7 @@ export default function BaziPage() {
     birthDate: '',
     birthTime: '12:00',
     birthPlace: '',
+    note: '',
   })
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -4,7 +4,7 @@ import { calculateBazi } from '@/lib/bazi'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, gender, birthDate, birthTime, analysisType } = body
+    const { name, gender, birthDate, birthTime, analysisType, note } = body
 
     if (!birthDate || !birthTime) {
       return NextResponse.json(
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const bazi = calculateBazi(birthDate, birthTime)
 
     // 构建 prompt 用于 AI 分析
-    const prompt = buildPrompt(bazi, name, gender, analysisType)
+    const prompt = buildPrompt(bazi, name, gender, analysisType, note)
 
     // 调用 Kimi API 进行分析
     let aiAnalysis = ''
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function buildPrompt(bazi: any, name: string, gender: string, type: string): string {
+function buildPrompt(bazi: any, name: string, gender: string, type: string, note?: string): string {
   const { pillars, dayMaster, wuXingCount, yinYang, wuXing } = bazi
   
   const pillarsText = pillars.map((p: any) => `${p.name}: ${p.gan}${p.zhi}`).join('\n')
@@ -82,6 +82,7 @@ function buildPrompt(bazi: any, name: string, gender: string, type: string): str
 - 姓名：${name || '未提供'}
 - 性别：${gender === 'male' ? '男' : '女'}
 - 日主：${dayMaster}（${yinYang}${wuXing}）
+${note ? `- 备注：${note}` : ''}
 
 八字排盘：
 ${pillarsText}

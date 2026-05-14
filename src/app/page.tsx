@@ -50,6 +50,14 @@ export default function Home() {
           >
             开始八字分析
           </Link>
+          <div className="mt-4">
+            <Link
+              href="/settings"
+              className="text-fate-300 hover:text-fate-100 text-sm underline underline-offset-4"
+            >
+              ⚙ 设置
+            </Link>
+          </div>
         </div>
       </section>
 

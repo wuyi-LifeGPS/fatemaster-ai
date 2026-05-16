@@ -141,6 +141,17 @@ export default function BaziPage() {
                 />
               </div>
 
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">备注（可选）</label>
+                <textarea
+                  value={formData.note}
+                  onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                  className="w-full px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400"
+                  placeholder="如有特殊需求或想了解的具体问题，可在此填写"
+                  rows={3}
+                />
+              </div>
+
               <button
                 type="submit"
                 disabled={loading}

@@ -136,7 +136,7 @@ function calculateCombinedGod(bazi: any) {
     '庚': '金', '辛': '金', '壬': '水', '癸': '水'
   };
 
-  const tiaoHouGan = tiaoHou?.tiaoHouGod || [];
+  const tiaoHouGan = tiaoHou?.tiaoHou || [];
   const tiaoHouWuXing = tiaoHouGan.map((g: string) => wxNameMap[g] || g);
   const tiaoHouStatus = tiaoHou?.tiaoHouStatus || 'lacking';
 

@@ -293,6 +293,9 @@ export function getCangGan(zhi: string): string[] {
   return DI_ZHI_CANG_GAN[zhi] || [];
 }
 
+// 导出常量供外部使用
+export { TIAN_GAN, DI_ZHI, WU_XING, SHI_SHEN_MAP };
+
 // 获取地支藏干对应的十神
 export function getZhiShiShen(dayMaster: string, zhi: string): string[] {
   const cangGan = getCangGan(zhi);
@@ -449,7 +452,7 @@ function getHourZhiIndex(hour: number): number {
 
 // 根据日干和时辰索引计算时干
 // 口诀：甲己还加甲，乙庚丙作初，丙辛从戊起，丁壬庚子居，戊癸何方发，壬子是真途
-function calculateHourGan(dayGan: string, hourZhiIdx: number): string {
+export function calculateHourGan(dayGan: string, hourZhiIdx: number): string {
   const ziShiGanMap: Record<string, number> = {
     '甲': 0, '己': 0,  // 甲己日子时=甲子(甲=0)
     '乙': 2, '庚': 2,  // 乙庚日子时=丙子(丙=2)
@@ -676,6 +679,26 @@ function determinePattern(
 }
 
 // 兼容旧接口的辅助函数
+// 获取今天的干支信息（年柱、月柱、日柱）
+export function getTodayGanZhi() {
+  const { Solar } = require('lunar-javascript');
+  const today = new Date();
+  const solar = Solar.fromDate(today);
+  const lunar = solar.getLunar();
+
+  const yearGZ = lunar.getYearInGanZhi();
+  const monthGZ = lunar.getMonthInGanZhi();
+  const dayGZ = lunar.getDayInGanZhi();
+
+  return {
+    year: { gan: yearGZ[0], zhi: yearGZ[1] },
+    month: { gan: monthGZ[0], zhi: monthGZ[1] },
+    day: { gan: dayGZ[0], zhi: dayGZ[1] },
+    dateStr: `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`,
+    weekday: ['日','一','二','三','四','五','六'][today.getDay()],
+  };
+}
+
 export function calculateYearPillar(year: number): [string, string] {
   const ganIdx = (year - 4) % 10;
   const zhiIdx = (year - 4) % 12;

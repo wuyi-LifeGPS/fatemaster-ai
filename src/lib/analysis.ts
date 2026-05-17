@@ -1,4 +1,4 @@
-import { calculateBazi } from '@/lib/bazi'
+import { calculateBazi, getShiShen, getCangGan, DI_ZHI, calculateHourGan } from '@/lib/bazi'
 
 // ===== buildPrompt =====
 export function buildPrompt(bazi: any, name: string, gender: string, type: string, note?: string): string {
@@ -551,4 +551,188 @@ export function analyzeBazi(birthDate: string, birthTime: string, name: string, 
     _pendingAi: !!apiKey,
     _prompt: apiKey ? buildPrompt(bazi, name, gender, 'bazi', note) : undefined,
   }
+}
+
+// ===== analyzeDailyFortune =====
+export function analyzeDailyFortune(
+  todayGanZhi: any,
+  baziResult: any,
+) {
+  const { dayMaster, tenGods, combinedGod } = baziResult;
+  const today = todayGanZhi;
+
+  // 今天各柱天干对命主的十神
+  const dayGanSS = getShiShen(dayMaster, today.day.gan);
+  const monthGanSS = getShiShen(dayMaster, today.month.gan);
+  const yearGanSS = getShiShen(dayMaster, today.year.gan);
+
+  // 日支本气十神
+  const dayZhiCangGan = getCangGan(today.day.zhi);
+  const dayZhiBenQiSS = dayZhiCangGan.length > 0
+    ? getShiShen(dayMaster, dayZhiCangGan[0])
+    : '未知';
+
+  // 评分基础模板
+  const scoreMap: Record<string, { career: number; wealth: number; love: number; health: number; summary: string; desc: string }> = {
+    '正官': {
+      career: 85, wealth: 70, love: 80, health: 85,
+      summary: '正官临日，自律守规，贵人暗助',
+      desc: '今日正官当值，做事有条理，适合处理正式事务、汇报工作、推进项目。人际关系中易得长辈或上级支持，但需注意不要过于拘谨。',
+    },
+    '正印': {
+      career: 80, wealth: 65, love: 85, health: 90,
+      summary: '印星护体，贵人扶持，学业精进',
+      desc: '今日正印当值，思维清晰，适合学习、考试、写作、策划。易得贵人相助，精神层面充实。注意不要太依赖他人。',
+    },
+    '正财': {
+      career: 75, wealth: 95, love: 75, health: 70,
+      summary: '财星高照，进账有望，务实稳健',
+      desc: '今日正财当值，财运突出，适合处理财务、签约、投资。做事踏实靠谱，是推进商业合作的好时机。注意不要因为利益忽视人情。',
+    },
+    '偏财': {
+      career: 70, wealth: 90, love: 70, health: 65,
+      summary: '偏财临门，意外之喜，灵活应变',
+      desc: '今日偏财当值，有意外收获的可能，适合社交应酬、尝试新机会。偏财运佳但不稳定，不宜大额投机。',
+    },
+    '食神': {
+      career: 80, wealth: 65, love: 65, health: 75,
+      summary: '食神当值，才华横溢，享受生活',
+      desc: '今日食神当值，表达能力强，适合演讲、创作、社交。心情愉悦，适合享受美食、艺术。注意言行不要过于随性。',
+    },
+    '伤官': {
+      career: 75, wealth: 60, love: 55, health: 70,
+      summary: '伤官见日，才思敏捷，注意言辞',
+      desc: '今日伤官当值，创意爆发，思维活跃，适合创新、突破。但容易言辞尖锐，得罪他人。注意控制情绪，避免与人争执。',
+    },
+    '比肩': {
+      career: 60, wealth: 55, love: 60, health: 80,
+      summary: '比肩同气，竞争加剧，自力更生',
+      desc: '今日比肩当值，容易遇到同类竞争者，适合独立作业而非团队合作。有自助能力，但合作中易产生分歧。',
+    },
+    '劫财': {
+      career: 55, wealth: 45, love: 55, health: 75,
+      summary: '劫财临日，破耗难免，谨慎理财',
+      desc: '今日劫财当值，容易有意外支出或被人争夺资源。注意保管财物，避免借贷。合作中警惕利益分配不均。',
+    },
+    '七杀': {
+      career: 70, wealth: 55, love: 45, health: 60,
+      summary: '七杀当值，压力增大，谨慎行事',
+      desc: '今日七杀当值，压力与挑战并存。适合攻坚克难，但要注意身体健康和情绪管理。感情中易有摩擦，不宜做重大决定。',
+    },
+  };
+
+  const base = scoreMap[dayGanSS] || {
+    career: 65, wealth: 65, love: 65, health: 65,
+    summary: '运势平稳，按部就班',
+    desc: '今日运势中性，没有特别突出的吉凶。适合按部就班处理日常事务，不宜做重大变动。',
+  };
+
+  // 根据日支本气微调
+  const zhiAdjust: Record<string, Partial<typeof base>> = {
+    '正官': { career: +5, love: +5 },
+    '正印': { health: +5, career: +3 },
+    '正财': { wealth: +5, love: +3 },
+    '偏财': { wealth: +3, career: +2 },
+    '食神': { career: +3, health: +3 },
+    '伤官': { career: +3, love: -5 },
+    '比肩': { career: -3, health: +3 },
+    '劫财': { wealth: -5, health: +3 },
+    '七杀': { career: -3, love: -5 },
+  };
+
+  const adjust = zhiAdjust[dayZhiBenQiSS] || {};
+  const scores = {
+    career: Math.min(100, Math.max(30, base.career + (adjust.career || 0))),
+    wealth: Math.min(100, Math.max(30, base.wealth + (adjust.wealth || 0))),
+    love: Math.min(100, Math.max(30, base.love + (adjust.love || 0))),
+    health: Math.min(100, Math.max(30, base.health + (adjust.health || 0))),
+  };
+
+  const overall = Math.round((scores.career + scores.wealth + scores.love + scores.health) / 4);
+
+  // 宜忌
+  const suitableMap: Record<string, string[]> = {
+    '正官': ['签约','面试','汇报','请教长辈','整理规划'],
+    '正印': ['学习','考试','写作','冥想','拜访贵人'],
+    '正财': ['理财','收款','商务洽谈','储蓄','务实决策'],
+    '偏财': ['社交','尝试新机会','小投资','请客','拓展人脉'],
+    '食神': ['演讲','创作','约会','美食','享受生活'],
+    '伤官': ['创新','突破','艺术创作','表达观点','独立作业'],
+    '比肩': ['健身','独立工作','自我提升','处理个人事务'],
+    '劫财': ['休息','保守','避免借贷','独处','整理'],
+    '七杀': ['攻坚克难','运动','解决问题','体检','独处思考'],
+  };
+
+  const unsuitableMap: Record<string, string[]> = {
+    '正官': ['冒险投机','顶撞上级','懒散懈怠','冲动消费'],
+    '正印': ['投机冒险','过度依赖','空想不行动','大额支出'],
+    '正财': ['赌博投机','铺张浪费','冲动签约','替人担保'],
+    '偏财': ['大额投资','孤立行动','闭门造车','过度承诺'],
+    '食神': ['过度承诺','言语不慎','暴饮暴食','冒险决策'],
+    '伤官': ['团队合作','言辞尖锐','顶撞权威','大额决策'],
+    '比肩': ['合作签约','大额借贷','竞争项目','过度社交'],
+    '劫财': ['借贷担保','合作投资','大额消费','冲动决策'],
+    '七杀': ['冒险决策','感情争执','过度劳累','重大变动'],
+  };
+
+  // 吉时/凶时计算
+  const hourShiShen = (shiShen: string) => {
+    const good = ['正官','正印','正财','食神'];
+    const bad = ['七杀','伤官','劫财'];
+    if (good.includes(shiShen)) return '吉';
+    if (bad.includes(shiShen)) return '凶';
+    return '平';
+  };
+
+  const hourFortune = DI_ZHI.map((zhi, idx) => {
+    const hourGan = calculateHourGan(dayMaster, idx);
+    const ss = getShiShen(dayMaster, hourGan);
+    return { zhi, hourGan, status: hourShiShen(ss) };
+  });
+
+  const luckyHours = hourFortune.filter(h => h.status === '吉').map(h => `${h.zhi}时(${h.hourGan}${h.zhi})`);
+  const unluckyHours = hourFortune.filter(h => h.status === '凶').map(h => `${h.zhi}时(${h.hourGan}${h.zhi})`);
+
+  // 开运色和方位（基于喜用神）
+  const colorMap: Record<string, string> = {
+    '金': '白色、金色、银色',
+    '木': '绿色、青色、翠色',
+    '水': '黑色、深蓝、灰色',
+    '火': '红色、橙色、紫色',
+    '土': '黄色、棕色、米色',
+  };
+
+  const directionMap: Record<string, string> = {
+    '金': '西方',
+    '木': '东方',
+    '水': '北方',
+    '火': '南方',
+    '土': '中央/本地',
+  };
+
+  const xi = combinedGod?.xi || [];
+  const luckyColor = colorMap[xi[0]] || '根据命局喜用选择';
+  const luckyDirection = directionMap[xi[0]] || '根据命局喜用选择';
+
+  return {
+    today,
+    dayShiShen: {
+      gan: dayGanSS,
+      zhiBenQi: dayZhiBenQiSS,
+      monthGan: monthGanSS,
+      yearGan: yearGanSS,
+    },
+    scores: {
+      overall,
+      ...scores,
+    },
+    summary: base.summary,
+    description: base.desc,
+    suitable: suitableMap[dayGanSS] || ['日常事务'],
+    unsuitable: unsuitableMap[dayGanSS] || ['重大决策'],
+    luckyHours,
+    unluckyHours,
+    luckyColor,
+    luckyDirection,
+  };
 }

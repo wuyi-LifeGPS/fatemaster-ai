@@ -26,11 +26,23 @@ export default function BaziPage() {
   const [formData, setFormData] = useState({
     name: '',
     gender: 'male' as 'male' | 'female',
-    birthDate: '',
-    birthTime: '12:00',
+    birthYear: 1990,
+    birthMonth: 1,
+    birthDay: 1,
+    birthHour: 12,
+    birthMinute: 0,
     birthPlace: '',
     note: '',
   })
+
+  // 生成日期/时间选项
+  const yearOptions = Array.from({length: 131}, (_, i) => 1900 + i)
+  const monthOptions = Array.from({length: 12}, (_, i) => i + 1)
+  const dayOptions = Array.from({length: 31}, (_, i) => i + 1)
+  const hourOptions = Array.from({length: 24}, (_, i) => i)
+  const minuteOptions = Array.from({length: 12}, (_, i) => i * 5)
+
+  const pad = (n: number) => String(n).padStart(2, '0')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,10 +53,13 @@ export default function BaziPage() {
       const settings = localStorage.getItem('lifegps_settings')
       const apiKey = settings ? JSON.parse(settings).kimiApiKey : undefined
 
+      const birthDate = `${formData.birthYear}-${pad(formData.birthMonth)}-${pad(formData.birthDay)}`
+      const birthTime = `${pad(formData.birthHour)}:${pad(formData.birthMinute)}`
+
       // 前端直接计算八字 + 生成基础分析
       const result = analyzeBazi(
-        formData.birthDate,
-        formData.birthTime,
+        birthDate,
+        birthTime,
         formData.name,
         formData.gender,
         formData.note,
@@ -142,25 +157,51 @@ export default function BaziPage() {
 
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">出生日期 *</label>
-                <input
-                  type="date"
-                  value={formData.birthDate}
-                  onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                  className="w-full px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400"
-                  required
-                />
+                <div className="flex gap-2">
+                  <select
+                    value={formData.birthYear}
+                    onChange={(e) => setFormData({ ...formData, birthYear: Number(e.target.value) })}
+                    className="flex-1 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white"
+                  >
+                    {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
+                  </select>
+                  <select
+                    value={formData.birthMonth}
+                    onChange={(e) => setFormData({ ...formData, birthMonth: Number(e.target.value) })}
+                    className="w-20 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white"
+                  >
+                    {monthOptions.map(m => <option key={m} value={m}>{m}月</option>)}
+                  </select>
+                  <select
+                    value={formData.birthDay}
+                    onChange={(e) => setFormData({ ...formData, birthDay: Number(e.target.value) })}
+                    className="w-20 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white"
+                  >
+                    {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
+                  </select>
+                </div>
               </div>
 
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">出生时间 *</label>
-                <input
-                  type="time"
-                  value={formData.birthTime}
-                  onChange={(e) => setFormData({ ...formData, birthTime: e.target.value })}
-                  className="w-full px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400"
-                  required
-                />
-                <p className="text-xs text-ink-400 mt-1">如果不确定，默认使用中午 12:00</p>
+                <div className="flex gap-2 items-center">
+                  <select
+                    value={formData.birthHour}
+                    onChange={(e) => setFormData({ ...formData, birthHour: Number(e.target.value) })}
+                    className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white"
+                  >
+                    {hourOptions.map(h => <option key={h} value={h}>{pad(h)}</option>)}
+                  </select>
+                  <span className="text-ink-400">:</span>
+                  <select
+                    value={formData.birthMinute}
+                    onChange={(e) => setFormData({ ...formData, birthMinute: Number(e.target.value) })}
+                    className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white"
+                  >
+                    {minuteOptions.map(m => <option key={m} value={m}>{pad(m)}</option>)}
+                  </select>
+                </div>
+                <p className="text-xs text-ink-400 mt-1">24小时制，不确定可默认 12:00</p>
               </div>
 
               <div className="mb-6">

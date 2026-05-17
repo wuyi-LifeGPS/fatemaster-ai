@@ -941,3 +941,171 @@ export function analyzeMarriage(maleBazi: any, femaleBazi: any, maleName: string
     suggestions,
   };
 }
+
+// ===== analyzeCareer =====
+export function analyzeCareer(maleBazi: any, femaleBazi: any, maleName: string, femaleName: string) {
+  const m = maleBazi;
+  const f = femaleBazi;
+
+  const mDayMaster = m.dayMaster;
+  const fDayMaster = f.dayMaster;
+  const mDayZhi = m.pillars[2].zhi;
+  const fDayZhi = f.pillars[2].zhi;
+
+  // 天干五合
+  const TIAN_GAN_WU_HE: Record<string, string> = {
+    "甲": "己", "己": "甲",
+    "乙": "庚", "庚": "乙",
+    "丙": "辛", "辛": "丙",
+    "丁": "壬", "壬": "丁",
+    "戊": "癸", "癸": "戊",
+  };
+
+  // 地支六合
+  const DI_ZHI_LIU_HE: Record<string, string> = {
+    "子": "丑", "丑": "子",
+    "寅": "亥", "亥": "寅",
+    "卯": "戌", "戌": "卯",
+    "辰": "酉", "酉": "辰",
+    "巳": "申", "申": "巳",
+    "午": "未", "未": "午",
+  };
+
+  const ganHeMatch = TIAN_GAN_WU_HE[mDayMaster] === fDayMaster;
+  const zhiHeMatch = DI_ZHI_LIU_HE[mDayZhi] === fDayZhi;
+
+  // 五行互补（侧重资源互补）
+  const mWx = m.wuXingFullCount;
+  const fWx = f.wuXingFullCount;
+  const mTotal = Object.values(mWx).reduce((a: any, b: any) => a + b, 0) as number;
+  const fTotal = Object.values(fWx).reduce((a: any, b: any) => a + b, 0) as number;
+
+  let complementScore = 0;
+  const complementDetails: string[] = [];
+
+  ["金", "木", "水", "火", "土"].forEach((wx) => {
+    const mRatio = (mWx[wx] || 0) / mTotal;
+    const fRatio = (fWx[wx] || 0) / fTotal;
+    if (mRatio > 0.25 && fRatio < 0.15) {
+      complementScore += 12;
+      complementDetails.push(`甲方${wx}旺，乙方${wx}弱，甲方在${wx}相关领域有资源优势`);
+    } else if (fRatio > 0.25 && mRatio < 0.15) {
+      complementScore += 12;
+      complementDetails.push(`乙方${wx}旺，甲方${wx}弱，乙方在${wx}相关领域有资源优势`);
+    }
+  });
+
+  // 喜用神互济
+  const mXi = m.combinedGod?.xi || [];
+  const fXi = f.combinedGod?.xi || [];
+  const wxMap: Record<string, string> = {
+    "甲": "木", "乙": "木", "丙": "火", "丁": "火", "戊": "土", "己": "土",
+    "庚": "金", "辛": "金", "壬": "水", "癸": "水",
+  };
+
+  const xiJiScore = (xi1: string[], targetDayMaster: string) => {
+    let score = 0;
+    const targetWx = wxMap[targetDayMaster] || "";
+    xi1.forEach((wx) => {
+      if (wx === targetWx) score += 18;
+    });
+    return score;
+  };
+
+  const mHelpF = xiJiScore(mXi, fDayMaster);
+  const fHelpM = xiJiScore(fXi, mDayMaster);
+
+  // 十神互动（事业视角）
+  const mToF_SS = getShiShen(fDayMaster, mDayMaster);
+  const fToM_SS = getShiShen(mDayMaster, fDayMaster);
+
+  // 理想事业合作组合
+  const idealPairs = [
+    { m: "正财", f: "正官", desc: "财官相生，甲方擅长开拓，乙方擅长管理，互补型黄金搭档" },
+    { m: "食神", f: "正印", desc: "食印相生，甲方创意输出，乙方资源整合，创新驱动型组合" },
+    { m: "偏财", f: "正官", desc: "财官双美，甲方善于把握机会，乙方稳健执行，扩张型组合" },
+    { m: "正官", f: "正财", desc: "官财相生，甲方管理能力+乙方资源整合，稳健经营型组合" },
+  ];
+
+  const pairMatch = idealPairs.find((p) => p.m === mToF_SS && p.f === fToM_SS);
+
+  // 角色分析（事业视角）
+  const roleAnalysis = () => {
+    let mRole = "";
+    let fRole = "";
+
+    if (["正财", "偏财"].includes(mToF_SS)) {
+      mRole = "甲方是乙方的财星——能为乙方带来资源、客户、收益。适合作为业务负责人或市场拓展角色。";
+    } else if (["正官", "七杀"].includes(mToF_SS)) {
+      mRole = "甲方是乙方的官杀——能约束、规范乙方，适合作为管理者或风控负责人。";
+    } else if (["食神", "伤官"].includes(mToF_SS)) {
+      mRole = "甲方是乙方的食伤——能为乙方提供创意、技术、内容输出。适合作为产品、研发或创意负责人。";
+    } else if (["正印", "偏印"].includes(mToF_SS)) {
+      mRole = "甲方是乙方的印星——能为乙方提供智慧、战略、资源支持。适合作为顾问、战略规划者。";
+    } else {
+      mRole = "甲方与乙方是同类——既是战友也是竞争者。适合各自负责独立板块，避免直接竞争同一资源。";
+    }
+
+    if (["正财", "偏财"].includes(fToM_SS)) {
+      fRole = "乙方是甲方的财星——能为甲方带来资源转化和收益。适合作为运营、销售或财务负责人。";
+    } else if (["正官", "七杀"].includes(fToM_SS)) {
+      fRole = "乙方是甲方的官杀——能规范、约束甲方，适合作为管理者或流程把控者。";
+    } else if (["食神", "伤官"].includes(fToM_SS)) {
+      fRole = "乙方是甲方的食伤——能为甲方提供创意和技术支持。适合作为技术、产品或内容负责人。";
+    } else if (["正印", "偏印"].includes(fToM_SS)) {
+      fRole = "乙方是甲方的印星——能为甲方提供战略智慧和资源整合。适合作为战略规划者或投资人。";
+    } else {
+      fRole = "乙方与甲方是同类——既是战友也是竞争者。适合各自负责独立板块，避免资源重叠。";
+    }
+
+    return { mRole, fRole };
+  };
+
+  const roles = roleAnalysis();
+
+  // 综合评分
+  let totalScore = 60;
+  if (ganHeMatch) totalScore += 12;
+  if (zhiHeMatch) totalScore += 8;
+  if (pairMatch) totalScore += 15;
+  totalScore += complementScore;
+  totalScore += mHelpF;
+  totalScore += fHelpM;
+  totalScore = Math.min(100, Math.max(20, totalScore));
+
+  const getLevel = () => {
+    if (totalScore >= 85) return { level: "黄金搭档", color: "text-amber-600", desc: "五行互补、十神协同、喜用神互济，是非常理想的商业合作伙伴。" };
+    if (totalScore >= 70) return { level: "优质伙伴", color: "text-blue-600", desc: "有较好的互补性，合作中能互相成就，适合长期深度合作。" };
+    if (totalScore >= 55) return { level: "普通合作", color: "text-ink-600", desc: "合作可行，但需要明确分工和边界，避免资源冲突。" };
+    return { level: "谨慎合作", color: "text-ink-500", desc: "五行冲突较多，合作中易产生分歧。若必须合作，建议短期项目制，明确权责。" };
+  };
+
+  const level = getLevel();
+
+  const suggestions: string[] = [];
+  if (complementScore >= 24) suggestions.push("五行互补度高，双方在资源、能力上形成天然互补，这是合作的最大优势。");
+  if (mHelpF > 0 || fHelpM > 0) suggestions.push("喜用神互济，合作能互相提升运势，属于「旺对方」的组合，合作对双方都有利。");
+  if (pairMatch) suggestions.push(`十神组合理想（${pairMatch.desc}），双方在角色定位上天然契合。`);
+  if (!ganHeMatch && !zhiHeMatch) suggestions.push("日主无明显合象，合作需要后天磨合，建议先从小项目试水。");
+  if (mToF_SS === "比肩" || mToF_SS === "劫财") suggestions.push("甲方是乙方的比劫——存在竞争关系，合作中需明确利益分配，避免资源争夺。");
+  if (fToM_SS === "比肩" || fToM_SS === "劫财") suggestions.push("乙方是甲方的比劫——存在竞争关系，建议各自负责不同板块，避免直接竞争。");
+  if (suggestions.length === 0) suggestions.push("合作组合相对平衡，保持清晰的分工和沟通机制即可。");
+
+  return {
+    score: totalScore,
+    level: level.level,
+    levelColor: level.color,
+    levelDesc: level.desc,
+    ganHeMatch,
+    zhiHeMatch,
+    mToF_SS,
+    fToM_SS,
+    pairMatch,
+    complementScore,
+    complementDetails,
+    mHelpF,
+    fHelpM,
+    roles,
+    suggestions,
+  };
+}

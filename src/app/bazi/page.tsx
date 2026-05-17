@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { analyzeBazi, getAiAnalysis } from '@/lib/analysis'
 
 interface BaziResult {
   pillars: { name: string; gan: string; zhi: string }[]
@@ -11,6 +12,7 @@ interface BaziResult {
   yinYang: string
   wuXing: string
   aiAnalysis: string
+  _pendingAi?: boolean
 }
 
 export default function BaziPage() {
@@ -30,17 +32,43 @@ export default function BaziPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          analysisType: 'bazi',
-        }),
-      })
+      // 从设置中读取 API Key（如果有）
+      const settings = localStorage.getItem('lifegps_settings')
+      const apiKey = settings ? JSON.parse(settings).kimiApiKey : undefined
 
-      const data = await response.json()
-      setResult(data)
+      // 前端直接计算八字 + 生成基础分析
+      const result = analyzeBazi(
+        formData.birthDate,
+        formData.birthTime,
+        formData.name,
+        formData.gender,
+        formData.note,
+        apiKey
+      )
+
+      setResult(result)
+
+      // 如果有 API Key，异步获取 AI 深度分析
+      if (result._pendingAi && apiKey) {
+        const aiAnalysis = await getAiAnalysis(
+          {
+            pillars: result.pillars,
+            dayMaster: result.dayMaster,
+            wuXingCount: result.wuXingCount,
+            yinYang: result.yinYang,
+            wuXing: result.wuXing,
+          },
+          formData.name,
+          formData.gender,
+          'bazi',
+          formData.note,
+          apiKey
+        )
+
+        if (aiAnalysis) {
+          setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
+        }
+      }
     } catch (error) {
       console.error('Error:', error)
       alert('分析出错，请重试')

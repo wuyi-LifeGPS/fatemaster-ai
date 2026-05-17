@@ -9,6 +9,7 @@ interface Settings {
   showTenGods: boolean
   showNaYin: boolean
   language: 'zh' | 'zh-TW'
+  kimiApiKey: string
 }
 
 const defaultSettings: Settings = {
@@ -17,6 +18,7 @@ const defaultSettings: Settings = {
   showTenGods: true,
   showNaYin: false,
   language: 'zh',
+  kimiApiKey: '',
 }
 
 export default function SettingsPage() {
@@ -25,7 +27,7 @@ export default function SettingsPage() {
   const [clearHistory, setClearHistory] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem('lifegps-settings')
+    const stored = localStorage.getItem('lifegps_settings')
     if (stored) {
       try {
         setSettings({ ...defaultSettings, ...JSON.parse(stored) })
@@ -38,7 +40,7 @@ export default function SettingsPage() {
   const update = (key: keyof Settings, value: any) => {
     const next = { ...settings, [key]: value }
     setSettings(next)
-    localStorage.setItem('lifegps-settings', JSON.stringify(next))
+    localStorage.setItem('lifegps_settings', JSON.stringify(next))
     setSaved(true)
     setTimeout(() => setSaved(false), 1500)
   }
@@ -62,6 +64,30 @@ export default function SettingsPage() {
       </header>
 
       <div className="max-w-2xl mx-auto py-8 px-4 space-y-6">
+        {/* AI 设置 */}
+        <section className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-bold mb-6 font-serif">AI 分析设置</h2>
+
+          <div className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium mb-2">Kimi API Key（可选）</label>
+              <input
+                type="password"
+                value={settings.kimiApiKey}
+                onChange={(e) => update('kimiApiKey', e.target.value)}
+                placeholder="sk-..."
+                className="w-full px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 text-sm"
+              />
+              <p className="text-xs text-ink-400 mt-2">
+                填写后可获得 AI 深度分析。Key 仅保存在本地浏览器，不会上传到服务器。
+                <a href="https://platform.moonshot.cn/" target="_blank" rel="noopener noreferrer" className="text-fate-600 underline">
+                  获取 API Key →
+                </a>
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* 分析偏好 */}
         <section className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-bold mb-6 font-serif">分析偏好</h2>

@@ -8,10 +8,14 @@ interface BaziResult {
   pillars: { name: string; gan: string; zhi: string }[]
   dayMaster: string
   wuXingCount: Record<string, number>
+  wuXingFullCount: Record<string, number>
   tenGods: Record<string, string>
   yinYang: string
   wuXing: string
   aiAnalysis: string
+  cangGanDetail?: { name: string; zhi: string; cangGan: { gan: string; qi: string; wuXing: string; shiShen: string }[] }[]
+  bodyStrength?: any
+  pattern?: any
   _pendingAi?: boolean
 }
 
@@ -218,23 +222,59 @@ export default function BaziPage() {
               </div>
             </div>
 
-            {/* 日主信息 */}
+            {/* 地支藏干明细 */}
+            {result.cangGanDetail && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="text-xl font-bold mb-4 font-serif">地支藏干</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {result.cangGanDetail.map((cg) => (
+                    <div key={cg.name} className="border border-fate-100 rounded-lg p-4">
+                      <div className="text-sm text-ink-500 mb-2 text-center">{cg.name} {cg.zhi}</div>
+                      <div className="space-y-1">
+                        {cg.cangGan.map((item, idx) => (
+                          <div key={idx} className={`text-sm px-2 py-1 rounded ${
+                            idx === 0 ? 'bg-fate-100 text-fate-800' : 'text-ink-500'
+                          }`}>
+                            {item.gan} <span className="text-xs">{item.qi}·{item.shiShen}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-ink-400 mt-3">本气（主气）为地支最主要能量，中气、余气为辅助能量</p>
+              </div>
+            )}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-xl font-bold mb-4 font-serif">日主特质</h3>
-              <div className="grid md:grid-cols-3 gap-4">
+              <h3 className="text-xl font-bold mb-4 font-serif">日主与格局</h3>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div className="bg-fate-50 p-4 rounded-lg text-center">
                   <div className="text-sm text-ink-500">日主天干</div>
                   <div className="text-2xl font-bold text-fate-700">{result.dayMaster}</div>
+                  <div className="text-xs text-ink-400">{result.yinYang}·{result.wuXing}</div>
                 </div>
                 <div className="bg-fate-50 p-4 rounded-lg text-center">
-                  <div className="text-sm text-ink-500">阴阳属性</div>
-                  <div className="text-2xl font-bold text-fate-700">{result.yinYang}</div>
+                  <div className="text-sm text-ink-500">日主强弱</div>
+                  <div className="text-2xl font-bold text-fate-700">{result.bodyStrength?.strength || '-'}</div>
+                  <div className="text-xs text-ink-400">评分 {result.bodyStrength?.score || '-'}/10</div>
                 </div>
                 <div className="bg-fate-50 p-4 rounded-lg text-center">
-                  <div className="text-sm text-ink-500">五行属性</div>
-                  <div className="text-2xl font-bold text-fate-700">{result.wuXing}</div>
+                  <div className="text-sm text-ink-500">格局</div>
+                  <div className="text-lg font-bold text-fate-700 leading-tight">{result.pattern?.patternName || '-'}</div>
+                  <div className="text-xs text-ink-400">{result.pattern?.patternType || ''}</div>
+                </div>
+                <div className="bg-fate-50 p-4 rounded-lg text-center">
+                  <div className="text-sm text-ink-500">喜用神</div>
+                  <div className="text-sm font-bold text-fate-700 leading-tight mt-1">{result.pattern?.usefulGod?.slice(0, 2).join('、') || '-'}</div>
+                </div>
+                <div className="bg-fate-50 p-4 rounded-lg text-center">
+                  <div className="text-sm text-ink-500">忌神</div>
+                  <div className="text-sm font-bold text-fate-700 leading-tight mt-1">{result.pattern?.avoidGod?.slice(0, 2).join('、') || '-'}</div>
                 </div>
               </div>
+              {result.bodyStrength?.description && (
+                <p className="mt-4 text-sm text-ink-600 bg-fate-50/50 p-3 rounded-lg">{result.bodyStrength.description}</p>
+              )}
             </div>
 
             {/* 五行分布 */}

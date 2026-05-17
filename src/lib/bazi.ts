@@ -109,16 +109,27 @@ export function calculateBazi(birthDate: string, birthTime: string) {
 
   const dayMaster = dayGZ[0];
 
-  // 五行统计（天干+地支藏干本气）
+  // 完整藏干信息（本气·中气·余气及对应十神）
+  const cangGanDetail = pillars.map(p => {
+    const cangGan = getCangGan(p.zhi);
+    return {
+      name: p.name,
+      zhi: p.zhi,
+      cangGan: cangGan.map((gan, idx) => ({
+        gan,
+        qi: idx === 0 ? '本气' : idx === 1 ? '中气' : '余气',
+        wuXing: getWuXing(gan),
+        shiShen: SHI_SHEN_MAP[dayMaster]?.[gan] || '未知',
+      })),
+    };
+  });
+
+  // 五行统计（天干 + 藏干本气）——UI展示用
   const wuXingCount: Record<string, number> = { '金': 0, '木': 0, '水': 0, '火': 0, '土': 0 };
-  
-  // 统计天干五行
   pillars.forEach(p => {
     const wx = WU_XING[p.gan];
     if (wx) wuXingCount[wx]++;
   });
-  
-  // 统计地支藏干本气五行（只算本气，避免重复过多）
   pillars.forEach(p => {
     const cangGan = getCangGan(p.zhi);
     if (cangGan.length > 0) {
@@ -127,34 +138,61 @@ export function calculateBazi(birthDate: string, birthTime: string) {
     }
   });
 
-  // 十神映射（天干直接查，地支查本气藏干）
+  // 五行统计（天干 + 所有藏干）——分析用
+  const wuXingFullCount: Record<string, number> = { '金': 0, '木': 0, '水': 0, '火': 0, '土': 0 };
+  // 天干
+  pillars.forEach(p => {
+    const wx = WU_XING[p.gan];
+    if (wx) wuXingFullCount[wx]++;
+  });
+  // 所有藏干
+  pillars.forEach(p => {
+    const cangGan = getCangGan(p.zhi);
+    cangGan.forEach(gan => {
+      const wx = WU_XING[gan];
+      if (wx) wuXingFullCount[wx]++;
+    });
+  });
+
+  // 十神映射
   const tenGods: Record<string, string> = {};
   pillars.forEach(p => {
-    // 天干十神
     if (p.gan !== dayMaster) {
       tenGods[p.gan] = getShiShen(dayMaster, p.gan);
     }
-    // 地支十神（取本气藏干）
     const cangGan = getCangGan(p.zhi);
     if (cangGan.length > 0) {
       tenGods[p.zhi] = getShiShen(dayMaster, cangGan[0]);
     }
   });
 
+  // 身强身弱判断
+  const bodyStrength = calculateBodyStrength(
+    dayMaster,
+    pillars,
+    wuXingFullCount,
+    cangGanDetail
+  );
+
+  // 格局判断
+  const pattern = determinePattern(
+    dayMaster,
+    pillars,
+    cangGanDetail,
+    bodyStrength
+  );
+
   return {
     pillars,
     dayMaster,
     wuXingCount,
+    wuXingFullCount,
     tenGods,
     yinYang: getYinYang(dayMaster),
     wuXing: getWuXing(dayMaster),
-    // 额外信息供分析使用
-    cangGanInfo: pillars.map(p => ({
-      name: p.name,
-      zhi: p.zhi,
-      cangGan: getCangGan(p.zhi),
-      cangGanShiShen: getZhiShiShen(dayMaster, p.zhi),
-    })),
+    cangGanDetail,
+    bodyStrength,
+    pattern,
   };
 }
 
@@ -191,6 +229,216 @@ function calculateHourGan(dayGan: string, hourZhiIdx: number): string {
   
   const ganIdx = (baseGanIdx + hourZhiIdx) % 10;
   return TIAN_GAN[ganIdx];
+}
+
+// 计算日主强弱
+// 基础规则：
+// 1. 月令得气（日主五行与月支藏干本气同，或月支五行生日主）+2分
+// 2. 其他地支有日主同五行（根）+1分/个
+// 3. 天干有比劫（同类）+1分/个
+// 4. 天干有印星（生我者）+1分/个
+// 5. 地支有印星藏干 +0.5分/个
+// 6. 被克（官杀）、被泄（食伤）、被耗（财）-1分/个（天干透出明显时）
+function calculateBodyStrength(
+  dayMaster: string,
+  pillars: { name: string; gan: string; zhi: string }[],
+  wuXingFullCount: Record<string, number>,
+  cangGanDetail: { name: string; zhi: string; cangGan: { gan: string; qi: string; wuXing: string; shiShen: string }[] }[]
+) {
+  const dayMasterWuXing = WU_XING[dayMaster]; // 日主五行
+  const dayMasterIdx = TIAN_GAN.indexOf(dayMaster);
+  
+  let score = 0;
+  let helperGan: string[] = []; // 帮身的十神（比肩、劫财、正印、偏印）
+  let restrictGan: string[] = []; // 克泄耗的十神
+  
+  // 判断月令（月支）
+  const monthZhi = pillars[1].zhi;
+  const monthCangGan = cangGanDetail[1].cangGan;
+  
+  // 月令得分
+  let monthScore = 0;
+  monthCangGan.forEach((cg, idx) => {
+    if (cg.wuXing === dayMasterWuXing) {
+      // 月令藏干有日主同五行（根）
+      monthScore += idx === 0 ? 2 : 0.5;
+    }
+    if (['正印', '偏印'].includes(cg.shiShen)) {
+      // 月令藏干有印星
+      monthScore += idx === 0 ? 1.5 : 0.3;
+    }
+  });
+  
+  // 年支、日支、时支藏干得分
+  let rootScore = 0;
+  [0, 2, 3].forEach(idx => {
+    const zhi = pillars[idx].zhi;
+    if (zhi === monthZhi) return; // 月令已算
+    cangGanDetail[idx].cangGan.forEach((cg, cIdx) => {
+      if (cg.wuXing === dayMasterWuXing) {
+        rootScore += cIdx === 0 ? 1 : 0.3;
+      }
+      if (['正印', '偏印'].includes(cg.shiShen)) {
+        rootScore += cIdx === 0 ? 0.8 : 0.2;
+      }
+    });
+  });
+  
+  // 天干得分（年月时干，日干不算）
+  let ganScore = 0;
+  [0, 1, 3].forEach(idx => {
+    const gan = pillars[idx].gan;
+    const shishen = SHI_SHEN_MAP[dayMaster]?.[gan];
+    if (shishen === '比肩' || shishen === '劫财') {
+      ganScore += 1;
+      helperGan.push(`${gan}（${shishen}）`);
+    }
+    if (shishen === '正印' || shishen === '偏印') {
+      ganScore += 1;
+      helperGan.push(`${gan}（${shishen}）`);
+    }
+    if (['正官', '七杀', '食神', '伤官', '正财', '偏财'].includes(shishen || '')) {
+      restrictGan.push(`${gan}（${shishen}）`);
+    }
+  });
+  
+  score = monthScore + rootScore + ganScore;
+  
+  // 总分判断
+  let strength: '强' | '偏弱' | '中和';
+  let description: string;
+  
+  if (score >= 4.5) {
+    strength = '强';
+    description = '日主得月令生扶，地支有强根，天干有比劫印星帮身，整体能量充沛。';
+  } else if (score <= 1.5) {
+    strength = '偏弱';
+    description = '日主失令，地支根弱或无根，天干缺乏比劫印星支持，能量不足。';
+  } else {
+    strength = '中和';
+    description = '日主强弱适中，既有生扶之力，也有克泄之气，整体趋于平衡。';
+  }
+  
+  return {
+    strength,
+    score: Math.round(score * 10) / 10,
+    description,
+    monthScore: Math.round(monthScore * 10) / 10,
+    rootScore: Math.round(rootScore * 10) / 10,
+    ganScore: Math.round(ganScore * 10) / 10,
+    helperGan,
+    restrictGan,
+  };
+}
+
+// 格局判断
+function determinePattern(
+  dayMaster: string,
+  pillars: { name: string; gan: string; zhi: string }[],
+  cangGanDetail: { name: string; zhi: string; cangGan: { gan: string; qi: string; wuXing: string; shiShen: string }[] }[],
+  bodyStrength: any
+) {
+  const monthGan = pillars[1].gan;
+  const monthZhi = pillars[1].zhi;
+  const monthCangGan = cangGanDetail[1].cangGan;
+  const monthBenQi = monthCangGan[0]; // 月令本气
+  
+  // 以月令本气藏干对应的十神定格局
+  let patternName = '';
+  let patternDesc = '';
+  let usefulGod: string[] = []; // 喜用神
+  let avoidGod: string[] = []; // 忌神
+  
+  const patternType = monthBenQi.shiShen;
+  
+  switch (patternType) {
+    case '比肩':
+    case '劫财':
+      patternName = '建禄格 / 月刃格';
+      patternDesc = '月令比肩或劫财，日主得月令强根，个性独立、自尊心强，有竞争意识。';
+      if (bodyStrength.strength === '强') {
+        usefulGod = ['官杀（克制比劫）', '食伤（泄秀生财）'];
+        avoidGod = ['印星（生身太过）', '比劫（竞争加剧）'];
+      } else {
+        usefulGod = ['印星（生扶日主）', '比劫（助身抗官杀）'];
+        avoidGod = ['官杀（克身太过）', '财星（耗身）'];
+      }
+      break;
+    case '食神':
+    case '伤官':
+      patternName = '食伤格';
+      patternDesc = '月令食伤透出，才华横溢、思维活跃，表达能力强，适合创意、技术、艺术领域。';
+      if (bodyStrength.strength === '强') {
+        usefulGod = ['财星（食伤生财）', '官杀（适度克制）'];
+        avoidGod = ['印星（克制食伤）', '比劫（争夺资源）'];
+      } else {
+        usefulGod = ['印星（生身+制食伤）', '比劫（助身）'];
+        avoidGod = ['食伤（泄身太过）', '财星（耗身）'];
+      }
+      break;
+    case '正财':
+    case '偏财':
+      patternName = '财格';
+      patternDesc = '月令财星当令，重视物质、善于理财，对金钱敏感，适合经商、金融、管理。';
+      if (bodyStrength.strength === '强') {
+        usefulGod = ['官杀（护财）', '食伤（生财之源）'];
+        avoidGod = ['比劫（争夺财星）', '印星（分散精力）'];
+      } else {
+        usefulGod = ['印星（生身担财）', '比劫（助身求财）'];
+        avoidGod = ['财星（耗身太过）', '官杀（克身）'];
+      }
+      break;
+    case '正官':
+    case '七杀':
+      patternName = bodyStrength.strength === '强' ? '官杀格' : '杀重身弱格';
+      patternDesc = '月令官杀当令，责任心强、自律、有管理才能，但压力较大。';
+      if (bodyStrength.strength === '强') {
+        usefulGod = ['财星（生官杀）', '食伤（制官杀）'];
+        avoidGod = ['印星（化官杀生身，太过则官杀无力）'];
+      } else {
+        usefulGod = ['印星（化杀生身）', '比劫（助身抗杀）'];
+        avoidGod = ['官杀（克身太过）', '财星（生官杀）'];
+      }
+      break;
+    case '正印':
+    case '偏印':
+      patternName = '印格';
+      patternDesc = '月令印星当令，学识丰富、思维深沉，有贵人相助，适合学术、研究、顾问。';
+      if (bodyStrength.strength === '强') {
+        usefulGod = ['财星（破印得财）', '食伤（泄秀生财）', '官杀（适度克制）'];
+        avoidGod = ['印星（生身太过）', '比劫（争夺）'];
+      } else {
+        usefulGod = ['印星（继续生身）', '比劫（助身）'];
+        avoidGod = ['财星（破印）', '食伤（泄身）'];
+      }
+      break;
+    default:
+      patternName = '特殊格局';
+      patternDesc = '格局特殊，需结合全局综合判断。';
+      usefulGod = ['根据具体组合分析'];
+      avoidGod = ['根据具体组合分析'];
+  }
+  
+  // 从格判断（极端情况）
+  const wxCount = bodyStrength.score;
+  const dayMasterWX = WU_XING[dayMaster];
+  const sameWXCount = (wuXingFullCount: Record<string, number>) => {
+    const c = wuXingFullCount[dayMasterWX] || 0;
+    return c;
+  };
+  
+  // 如果一方五行独大，另一方极弱，考虑从格
+  const maxWX = Math.max(...Object.values({金:0,木:0,水:0,火:0,土:0})); // 占位
+  
+  return {
+    patternName,
+    patternDesc,
+    patternType,
+    usefulGod,
+    avoidGod,
+    monthBenQi: monthBenQi.gan,
+    monthBenQiShiShen: monthBenQi.shiShen,
+  };
 }
 
 // 兼容旧接口的辅助函数

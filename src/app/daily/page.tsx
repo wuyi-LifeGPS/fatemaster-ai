@@ -95,7 +95,7 @@ export default function DailyPage() {
   const renderStars = (score: number) => {
     const count = getStarCount(score)
     return (
-      <div className="flex gap-0.5">
+      <div className="flex gap-0.5 justify-center">
         {Array.from({ length: 5 }).map((_, i) => (
           <span key={i} className={`text-lg ${i < count ? 'text-amber-400' : 'text-ink-200'}`}>
             ★

@@ -710,9 +710,15 @@ export function analyzeDailyFortune(
     '土': '中央/本地',
   };
 
+  const wxMap: Record<string, string> = {
+    '甲': '木', '乙': '木', '丙': '火', '丁': '火', '戊': '土', '己': '土',
+    '庚': '金', '辛': '金', '壬': '水', '癸': '水',
+  };
+
   const xi = combinedGod?.xi || [];
-  const luckyColor = colorMap[xi[0]] || '根据命局喜用选择';
-  const luckyDirection = directionMap[xi[0]] || '根据命局喜用选择';
+  const xiWuXing = xi.map((g: string) => wxMap[g] || g);
+  const luckyColor = colorMap[xiWuXing[0]] || colorMap[xi[0]] || '根据命局喜用选择';
+  const luckyDirection = directionMap[xiWuXing[0]] || directionMap[xi[0]] || '根据命局喜用选择';
 
   return {
     today,

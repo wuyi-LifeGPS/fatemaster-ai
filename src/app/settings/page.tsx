@@ -65,135 +65,176 @@ export default function SettingsPage() {
 
       <div className="max-w-2xl mx-auto py-8 px-4 space-y-6">
         {/* AI 设置 */}
-        <section className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold mb-6 font-serif">AI 分析设置</h2>
+        <section className="bg-white rounded-xl shadow-sm p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center text-white text-lg">
+              🤖
+            </div>
+            <div>
+              <h2 className="text-xl font-bold font-serif">AI 深度分析</h2>
+              <p className="text-xs text-ink-400">接入 Kimi 大模型，获得个性化命理解读</p>
+            </div>
+          </div>
 
           <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium mb-2">Kimi API Key（可选）</label>
+              <label className="block text-sm font-medium mb-2">Kimi API Key</label>
               <input
                 type="password"
                 value={settings.kimiApiKey}
                 onChange={(e) => update('kimiApiKey', e.target.value)}
-                placeholder="sk-..."
-                className="w-full px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 text-sm"
+                placeholder="sk-xxxxxxxxxxxxxxxx"
+                className="w-full px-3 py-2.5 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-400 text-sm bg-fate-50/50"
               />
-              <p className="text-xs text-ink-400 mt-2">
-                填写后可获得 AI 深度分析。Key 仅保存在本地浏览器，不会上传到服务器。
-                <a href="https://platform.moonshot.cn/" target="_blank" rel="noopener noreferrer" className="text-fate-600 underline">
-                  获取 API Key →
-                </a>
-              </p>
+              <div className="mt-3 bg-fate-50 rounded-lg p-3 text-xs text-ink-500 space-y-1.5">
+                <p className="flex items-start gap-1.5">
+                  <span className="text-fate-600 font-bold">🔒</span>
+                  <span>Key 仅保存在本地浏览器，不会上传到任何服务器</span>
+                </p>
+                <p className="flex items-start gap-1.5">
+                  <span className="text-fate-600 font-bold">💡</span>
+                  <span>添加后，八字分析会自动触发 AI 深度解读（约 3-5 秒）</span>
+                </p>
+                <p>
+                  <a href="https://platform.moonshot.cn/" target="_blank" rel="noopener noreferrer" className="text-fate-600 hover:text-fate-700 underline font-medium">
+                    → 前往 Kimi 开放平台获取 API Key
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         {/* 分析偏好 */}
-        <section className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold mb-6 font-serif">分析偏好</h2>
-
-          <div className="space-y-5">
+        <section className="bg-white rounded-xl shadow-sm p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-lg">
+              ⚙️
+            </div>
             <div>
-              <label className="block text-sm font-medium mb-2">分析风格</label>
+              <h2 className="text-xl font-bold font-serif">分析偏好</h2>
+              <p className="text-xs text-ink-400">自定义命盘展示内容和分析风格</p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium mb-3">分析风格</label>
               <div className="grid grid-cols-3 gap-3">
                 {([
-                  { key: 'detailed', label: '详细版', desc: '全面解读，适合深入了解' },
-                  { key: 'concise', label: '简洁版', desc: '重点突出，快速获取核心' },
-                  { key: 'professional', label: '专业版', desc: '术语完整，适合进阶用户' },
+                  { key: 'detailed', label: '详细版', desc: '全面解读' },
+                  { key: 'concise', label: '简洁版', desc: '快速核心' },
+                  { key: 'professional', label: '专业版', desc: '术语完整' },
                 ] as const).map((opt) => (
                   <button
                     key={opt.key}
                     onClick={() => update('analysisStyle', opt.key)}
-                    className={`p-3 rounded-lg border text-left transition-colors ${
+                    className={`p-3 rounded-lg border text-left transition-all ${
                       settings.analysisStyle === opt.key
-                        ? 'border-fate-600 bg-fate-50 text-fate-800'
-                        : 'border-fate-200 hover:border-fate-400'
+                        ? 'border-fate-600 bg-fate-50 text-fate-800 ring-1 ring-fate-600'
+                        : 'border-fate-200 hover:border-fate-400 hover:bg-fate-50/50'
                     }`}
                   >
-                    <div className="font-medium">{opt.label}</div>
+                    <div className="font-medium text-sm">{opt.label}</div>
                     <div className="text-xs text-ink-400 mt-1">{opt.desc}</div>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="flex items-center justify-between py-2">
-              <div>
-                <div className="font-medium">显示十神信息</div>
-                <div className="text-sm text-ink-400">在命盘中标注每个干支的十神关系</div>
-              </div>
-              <button
-                onClick={() => update('showTenGods', !settings.showTenGods)}
-                className={`w-12 h-6 rounded-full transition-colors relative ${
-                  settings.showTenGods ? 'bg-fate-600' : 'bg-ink-200'
-                }`}
-              >
-                <span
-                  className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                    settings.showTenGods ? 'left-7' : 'left-1'
-                  }`}
-                />
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between py-2">
-              <div>
-                <div className="font-medium">显示纳音五行</div>
-                <div className="text-sm text-ink-400">在四柱下方显示纳音属性（如「海中金」）</div>
-              </div>
-              <button
-                onClick={() => update('showNaYin', !settings.showNaYin)}
-                className={`w-12 h-6 rounded-full transition-colors relative ${
-                  settings.showNaYin ? 'bg-fate-600' : 'bg-ink-200'
-                }`}
-              >
-                <span
-                  className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                    settings.showNaYin ? 'left-7' : 'left-1'
-                  }`}
-                />
-              </button>
+            <div className="border-t border-fate-100 pt-5 space-y-4">
+              {[
+                { key: 'showTenGods' as const, title: '显示十神信息', desc: '在命盘中标注每个干支的十神关系', icon: '🏷️' },
+                { key: 'showNaYin' as const, title: '显示纳音五行', desc: '在四柱下方显示纳音属性（如「海中金」）', icon: '🔔' },
+              ].map((item) => (
+                <div key={item.key} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">{item.icon}</span>
+                    <div>
+                      <div className="font-medium text-sm">{item.title}</div>
+                      <div className="text-xs text-ink-400">{item.desc}</div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => update(item.key, !settings[item.key])}
+                    className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
+                      settings[item.key] ? 'bg-fate-600' : 'bg-ink-200'
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform shadow-sm ${
+                        settings[item.key] ? 'left-7' : 'left-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* 数据管理 */}
-        <section className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold mb-6 font-serif">数据管理</h2>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-medium">清除分析历史</div>
-                <div className="text-sm text-ink-400">删除保存在本地的所有命盘记录</div>
-              </div>
-              <button
-                onClick={handleClearHistory}
-                className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors text-sm"
-              >
-                {clearHistory ? '已清除 ✓' : '清除'}
-              </button>
+        <section className="bg-white rounded-xl shadow-sm p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg flex items-center justify-center text-white text-lg">
+              🗑️
             </div>
+            <div>
+              <h2 className="text-xl font-bold font-serif">数据管理</h2>
+              <p className="text-xs text-ink-400">管理本地存储的数据</p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium text-sm">清除分析历史</div>
+              <div className="text-xs text-ink-400">删除保存在本地的所有命盘记录，不可恢复</div>
+            </div>
+            <button
+              onClick={handleClearHistory}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                clearHistory
+                  ? 'bg-green-50 text-green-600 border border-green-200'
+                  : 'border border-red-300 text-red-600 hover:bg-red-50'
+              }`}
+            >
+              {clearHistory ? '✓ 已清除' : '清除'}
+            </button>
           </div>
         </section>
 
         {/* 关于 */}
-        <section className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold mb-4 font-serif">关于</h2>
+        <section className="bg-white rounded-xl shadow-sm p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center text-white text-lg">
+              ℹ️
+            </div>
+            <div>
+              <h2 className="text-xl font-bold font-serif">关于</h2>
+            </div>
+          </div>
           <div className="text-sm text-ink-500 space-y-2">
-            <p><span className="font-medium text-ink-700">LifeGPS</span> · AI 命理分析系统</p>
-            <p>版本 v0.1.0</p>
-            <p className="text-xs text-ink-400 mt-4">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-ink-700">LifeGPS</span>
+              <span className="text-ink-400">·</span>
+              <span>AI 命理分析系统 v0.2.0</span>
+            </div>
+            <p className="text-xs text-ink-400 leading-relaxed">
               融合现代 AI 技术与传统命理智慧，以理性态度传承东方文化。
               八字分析仅供参考，人生方向由自己掌握。
             </p>
+            <div className="flex gap-4 text-xs text-fate-600 pt-2">
+              <span>调候用神 · 扶抑辅助</span>
+              <span>·</span>
+              <span>专业排盘 · AI 解读</span>
+            </div>
           </div>
         </section>
 
         {/* 保存提示 */}
         {saved && (
-          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-ink-800 text-white px-6 py-3 rounded-lg shadow-lg text-sm">
-            设置已保存
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-ink-800 text-white px-6 py-3 rounded-lg shadow-lg text-sm animate-in slide-in-from-bottom-2">
+            ✅ 设置已保存
           </div>
         )}
       </div>

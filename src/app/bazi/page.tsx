@@ -72,11 +72,11 @@ export default function BaziPage() {
       if (result._pendingAi && apiKey) {
         const aiAnalysis = await getAiAnalysis(
           {
-            pillars: result.pillars,
-            dayMaster: result.dayMaster,
-            wuXingCount: result.wuXingCount,
-            yinYang: result.yinYang,
-            wuXing: result.wuXing,
+            ...result,
+            combinedGod: (result as any).combinedGod,
+            bodyStrength: result.bodyStrength,
+            pattern: result.pattern,
+            cangGanDetail: result.cangGanDetail,
           },
           formData.name,
           formData.gender,

@@ -266,11 +266,28 @@ export default function BaziPage() {
                 </div>
                 <div className="bg-fate-50 p-4 rounded-lg text-center">
                   <div className="text-sm text-ink-500">喜用神</div>
-                  <div className="text-sm font-bold text-fate-700 leading-tight mt-1">{result.pattern?.usefulGod?.slice(0, 2).join('、') || '-'}</div>
+                  <div className="text-sm font-bold text-fate-700 leading-tight mt-1">
+                    {result.tiaoHou?.tiaoHouGod?.slice(0,2).map((g:string) => {
+                      const wxMap:Record<string,string> = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
+                      const ssMap:Record<string,string> = result.tenGods || {};
+                      return <div key={g} className="text-xs">{g}（{wxMap[g]}·{ssMap[g] || '调候'}）</div>;
+                    })}
+                    {result.bodyStrength?.strength === '偏弱' && (
+                      <div className="text-xs text-ink-400 mt-1">辅：金（比劫助身）</div>
+                    )}
+                  </div>
                 </div>
                 <div className="bg-fate-50 p-4 rounded-lg text-center">
                   <div className="text-sm text-ink-500">忌神</div>
-                  <div className="text-sm font-bold text-fate-700 leading-tight mt-1">{result.pattern?.avoidGod?.slice(0, 2).join('、') || '-'}</div>
+                  <div className="text-sm font-bold text-fate-700 leading-tight mt-1">
+                    {result.tiaoHou?.tiaoHouStatus !== 'adequate' && (
+                      <div className="text-xs">
+                        {result.tiaoHou?.tiaoHouGod?.some((g:string) => ['丙','丁'].includes(g)) ? '水（克火泄金）' : ''}
+                        {result.tiaoHou?.tiaoHouGod?.some((g:string) => ['甲','乙'].includes(g)) ? '金过旺（克木）' : ''}
+                      </div>
+                    )}
+                    <div className="text-xs text-ink-400 mt-1">土过旺（埋金）</div>
+                  </div>
                 </div>
               </div>
               {result.bodyStrength?.description && (

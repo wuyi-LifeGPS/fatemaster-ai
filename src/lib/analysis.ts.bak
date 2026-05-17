@@ -1,6 +1,5 @@
 import { calculateBazi } from '@/lib/bazi'
 
-// ===== buildPrompt =====
 export function buildPrompt(bazi: any, name: string, gender: string, type: string, note?: string): string {
   const { pillars, dayMaster, wuXingCount, yinYang, wuXing } = bazi
 
@@ -37,7 +36,6 @@ export function buildPrompt(bazi: any, name: string, gender: string, type: strin
   ].filter(Boolean).join('\n')
 }
 
-// ===== buildPromptPro =====
 export function buildPromptPro(bazi: any, name: string, gender: string, type: string, note?: string): string {
   const { pillars, dayMaster, wuXingCount, yinYang, wuXing, combinedGod, bodyStrength, pattern, cangGanDetail } = bazi
 
@@ -88,7 +86,6 @@ export function buildPromptPro(bazi: any, name: string, gender: string, type: st
   ].filter(Boolean).join('\n')
 }
 
-// ===== getAiAnalysis =====
 export async function getAiAnalysis(bazi: any, name: string, gender: string, type: string, note?: string, apiKey?: string): Promise<string> {
   if (!apiKey) return ''
 
@@ -127,19 +124,72 @@ export async function getAiAnalysis(bazi: any, name: string, gender: string, typ
   return ''
 }
 
-// ===== calculateCombinedGod =====
+export function generateBackupAnalysis(bazi: any, name: string, gender: string, combinedGod: any): string {
+  const { 
+    dayMaster, 
+    yinYang, 
+    wuXing, 
+    wuXingCount,
+    wuXingFullCount,
+    pillars,
+    tenGods,
+    bodyStrength,
+    pattern,
+    cangGanDetail,
+    tiaoHou,
+  } = bazi
+  
+  // 日主性格描述
+  const dayMasterTraits: Record<string, string> = {
+    '甲': '如参天大树，志向高远，有领袖气质，正直坚韧。做事有始有终，但有时过于固执，不善于妥协。',
+    '乙': '如花草藤蔓，柔韧灵活，善于适应环境，心思细腻。外表温和，内心有主见，擅长以柔克刚。',
+    '丙': '如太阳之火，热情开朗，光芒万丈，感染力强。为人慷慨大方，喜欢表达，但有时过于急躁。',
+    '丁': '如灯烛之火，温暖内敛，专注执着，精益求精。心思缜密，有艺术天赋，容易陷入完美主义。',
+    '戊': '如城墙之土，稳重踏实，包容力强，值得信赖。做事一步一个脚印，但有时过于保守，缺乏变通。',
+    '己': '如田园之土，温和滋养，善于培育，细致入微。适应力强，善于协调，但容易过于迁就他人。',
+    '庚': '如刀剑之金，刚毅果断，有魄力，执行力强。追求公平正义，有改革精神，但有时锋芒太露。',
+    '辛': '如珠玉之金，精致细腻，审美出众，追求完美。心思灵巧，重情重义，但容易敏感多虑。',
+    '壬': '如江河之水，智慧流动，思维活跃，善于变通。胸怀开阔，有冒险精神，但容易缺乏定力。',
+    '癸': '如雨露之水，温柔内敛，直觉敏锐，富有灵性。心思深沉，善于倾听，但容易情绪化。',
+  }
+  
+  const trait = dayMasterTraits[dayMaster] || '具有独特的个人气质，刚柔并济，潜力巨大。'
+  
+  // 藏干明细展示
+  const cangGanText = cangGanDetail.map((cg: any) => {
+    const ganTexts = cg.cangGan.map((item: any) => 
+      `${item.gan}（${item.qi}·${item.shiShen}）`
+    ).join('，');
+    return `· ${cg.name} ${cg.zhi}：${ganTexts}`;
+  }).join('\n');
+
+  // 五行旺衰排序
+  const sortedWX = Object.entries(wuXingCount).sort((a: any, b: any) => b[1] - a[1]);
+  const strongest = sortedWX[0][0];
+  const weakest = sortedWX[sortedWX.length - 1][0];
+  
+  // 天干透出十神分析
+  const ganShiShen = pillars
+    .filter((p: any) => p.name !== '日柱')
+    .map((p: any) => {
+      const ss = tenGods[p.gan];
+      return ss ? `${p.gan}（${ss}）` : '';
+    })
+    .filter(Boolean);
+
+// 计算综合喜用神（调候优先 + 扶抑辅助）
 function calculateCombinedGod(bazi: any) {
   const { dayMaster, tenGods, bodyStrength, tiaoHou, wuXingFullCount } = bazi;
-
+  
   const wxNameMap: Record<string, string> = {
     '甲': '木', '乙': '木', '丙': '火', '丁': '火', '戊': '土', '己': '土',
     '庚': '金', '辛': '金', '壬': '水', '癸': '水'
   };
-
+  
   const tiaoHouGan = tiaoHou?.tiaoHouGod || [];
   const tiaoHouWuXing = tiaoHouGan.map((g: string) => wxNameMap[g] || g);
   const tiaoHouStatus = tiaoHou?.tiaoHouStatus || 'lacking';
-
+  
   // ===== 调候优先 =====
   const tiaoHouXiDetail = tiaoHouGan.map((g: string) => {
     const wx = wxNameMap[g];
@@ -147,7 +197,7 @@ function calculateCombinedGod(bazi: any) {
     const reason = tiaoHou?.tiaoHouReason || '';
     return { gan: g, wuXing: wx, shiShen: ss, reason, type: '调候' as const };
   });
-
+  
   // ===== 扶抑辅助 =====
   const fuyiXiDetail: any[] = [];
   if (bodyStrength.strength === '偏弱') {
@@ -164,20 +214,20 @@ function calculateCombinedGod(bazi: any) {
     if (!tiaoHouWXSet.has('水')) fuyiXiDetail.push({ wuXing: '水', reason: '身强喜食伤泄秀', type: '扶抑' as const });
     if (!tiaoHouWXSet.has('木')) fuyiXiDetail.push({ wuXing: '木', reason: '身强喜财星耗身', type: '扶抑' as const });
   }
-
+  
   // ===== 综合喜用（去重） =====
   const allXi = [...tiaoHouWuXing];
   fuyiXiDetail.forEach((item: any) => {
     if (!allXi.includes(item.wuXing)) allXi.push(item.wuXing);
   });
-
+  
   // ===== 忌神推导 =====
   const finalJi: string[] = [];
   const finalXian: string[] = [];
-
+  
   ['金', '木', '水', '火', '土'].forEach(wx => {
     if (allXi.includes(wx)) return;
-
+    
     const harmsTiaoHou = tiaoHouWuXing.some((thWX: string) => {
       if (thWX === '火' && wx === '水') return true;
       if (thWX === '木' && wx === '金') return true;
@@ -186,7 +236,7 @@ function calculateCombinedGod(bazi: any) {
       if (thWX === '水' && wx === '土') return true;
       return false;
     });
-
+    
     const helpsTiaoHou = tiaoHouWuXing.some((thWX: string) => {
       if (thWX === '火' && wx === '木') return true;
       if (thWX === '土' && wx === '火') return true;
@@ -195,7 +245,7 @@ function calculateCombinedGod(bazi: any) {
       if (thWX === '木' && wx === '水') return true;
       return false;
     });
-
+    
     if (harmsTiaoHou) {
       finalJi.push(wx);
     } else if (helpsTiaoHou) {
@@ -204,7 +254,7 @@ function calculateCombinedGod(bazi: any) {
       finalXian.push(wx);
     }
   });
-
+  
   // 身弱且土过旺，土埋金也属忌
   if (bodyStrength.strength === '偏弱') {
     const tuCount = wuXingFullCount?.['土'] || 0;
@@ -212,7 +262,7 @@ function calculateCombinedGod(bazi: any) {
       finalJi.push('土');
     }
   }
-
+  
   return {
     xi: allXi,
     ji: finalJi,
@@ -225,78 +275,209 @@ function calculateCombinedGod(bazi: any) {
     climate: tiaoHou?.climate || '',
   };
 }
-
-// ===== generateBackupAnalysis =====
-export function generateBackupAnalysis(bazi: any, name: string, gender: string, combinedGod: any): string {
-  const {
-    dayMaster,
-    yinYang,
-    wuXing,
-    wuXingCount,
-    wuXingFullCount,
-    pillars,
-    tenGods,
-    bodyStrength,
-    pattern,
-    cangGanDetail,
-  } = bazi
-
-  // 日主特质
-  const dayMasterTraits: Record<string, string> = {
-    '甲': '如参天大树，正直、有担当、有领导力。喜欢向上生长，有理想主义倾向，但有时会过于刚强、不够灵活。',
-    '乙': '如花草藤蔓，柔韧、细腻、善于变通。有艺术气质，适应力强，但容易优柔寡断、缺乏主见。',
-    '丙': '如太阳之火，热情、开朗、有感染力。乐观积极，喜欢成为焦点，但有时会过于张扬、急躁冲动。',
-    '丁': '如烛光之火，温暖、细腻、有智慧。内心敏感，洞察力强，善于关怀他人，但容易多虑、情绪起伏。',
-    '戊': '如大地之土，稳重、踏实、有包容力。值得信赖，做事有始有终，但有时会过于保守、缺乏变通。',
-    '己': '如田园之土，温和、细腻、善于协调。有服务精神，善于照顾他人，但容易委屈求全、缺乏主见。',
-    '庚': '如刀剑之金，刚毅果断，有魄力，执行力强。追求公平正义，有改革精神，但有时锋芒太露。',
-    '辛': '如珠玉之金，精致细腻，审美出众，追求完美。心思灵巧，重情重义，但容易敏感多虑。',
-    '壬': '如江河之水，智慧流动，思维活跃，善于变通。胸怀开阔，有冒险精神，但容易缺乏定力。',
-    '癸': '如雨露之水，温柔内敛，直觉敏锐，富有灵性。心思深沉，善于倾听，但容易情绪化。',
+    if (!tiaoHouWXSet.has('木')) fuyiXiDetail.push({ wuXing: '木', reason: '身强喜财星耗身', type: '扶抑' as const });
   }
+  
+  // ===== 综合喜用（去重） =====
+  const allXi = [...tiaoHouWuXing];
+  fuyiXiDetail.forEach((item: any) => {
+    if (!allXi.includes(item.wuXing)) allXi.push(item.wuXing);
+  });
+  
+  // ===== 忌神推导 =====
+  // 忌神 = 克/泄/耗调候用神的五行 + 加剧日主失衡的五行
+  const finalJi: string[] = [];
+  const finalXian: string[] = [];
+  
+  ['金', '木', '水', '火', '土'].forEach(wx => {
+    if (allXi.includes(wx)) return; // 喜用已包含
+    
+    // 检查是否克调候用神
+    const harmsTiaoHou = tiaoHouWuXing.some((thWX: string) => {
+      if (thWX === '火' && wx === '水') return true;  // 水克火
+      if (thWX === '木' && wx === '金') return true;  // 金克木
+      if (thWX === '土' && wx === '木') return true;  // 木克土
+      if (thWX === '金' && wx === '火') return true;  // 火克金
+      if (thWX === '水' && wx === '土') return true;  // 土克水
+      return false;
+    });
+    
+    // 检查是否生助调候用神
+    const helpsTiaoHou = tiaoHouWuXing.some((thWX: string) => {
+      if (thWX === '火' && wx === '木') return true;
+      if (thWX === '土' && wx === '火') return true;
+      if (thWX === '金' && wx === '土') return true;
+      if (thWX === '水' && wx === '金') return true;
+      if (thWX === '木' && wx === '水') return true;
+      return false;
+    });
+    
+    if (harmsTiaoHou) {
+      finalJi.push(wx);
+    } else if (helpsTiaoHou) {
+      if (!allXi.includes(wx)) allXi.push(wx);
+    } else {
+      finalXian.push(wx);
+    }
+  });
+  
+  // 身强身弱的特殊忌神补充
+  if (bodyStrength.strength === '偏弱') {
+    // 身弱忌克泄耗太过
+    ['官杀', '食伤', '财星'].forEach(ss => {
+      // 这里简化处理，已在上面推导
+    });
+    // 如果土不是调候用神且土很旺，土埋金也是忌
+    const tuCount = wuXingFullCount?.['土'] || 0;
+    if (tuCount >= 4 && !allXi.includes('土') && !finalJi.includes('土')) {
+      finalJi.push('土');
+    }
+  }
+  
+  return {
+    xi: allXi,
+    ji: finalJi,
+    xian: finalXian,
+    tiaoHouXi: tiaoHouXiDetail,
+    fuyiXi: fuyiXiDetail,
+    tiaoHouStatus,
+    tiaoHouDesc: tiaoHou?.tiaoHouDesc || '',
+    tiaoHouReason: tiaoHou?.tiaoHouReason || '',
+    climate: tiaoHou?.climate || '',
+  };
+}
+  // 调候用神 > 扶抑用神，这是专业命理的核心原则
+  // 调候：解决"气候偏枯"问题（寒暖燥湿）
+  // 扶抑：解决"五行强弱"问题
+  
+  const wxNameMap: Record<string, string> = {
+    '甲': '木', '乙': '木', '丙': '火', '丁': '火', '戊': '土', '己': '土',
+    '庚': '金', '辛': '金', '壬': '水', '癸': '水'
+  };
+  
+  // 调候用神的天干列表
+  const tiaoHouGan = tiaoHou?.tiaoHouGod || [];
+  const tiaoHouWuXing = tiaoHouGan.map((g: string) => wxNameMap[g] || g);
+  
+  // 判断调候用神在局中的状态
+  const hasTiaoHouTianGan = tiaoHou?.presentTiaoHou?.length > 0;
+  const hasTiaoHouDiZhi = tiaoHou?.buriedTiaoHou?.length > 0;
+  const tiaoHouStatus = tiaoHou?.tiaoHouStatus || 'lacking';
+  
+  // 综合喜用神 = 调候用神优先 + 扶抑辅助
+  // 调候用神就是天干五行的优先补充方向
+  let usefulGodFinal: string[] = [];
+  let avoidGodFinal: string[] = [];
+  let neutralGodFinal: string[] = [];
+  
+  if (tiaoHouGan.length > 0) {
+    // 调候用神为第一优先
+    tiaoHouGan.forEach((g: string) => {
+      const wx = wxNameMap[g];
+      const shishen = tenGods[g] || '未知';
+      usefulGodFinal.push(`${g}（${wx}·${shishen}·调候）`);
+    });
+  }
+  
+  // 扶抑角度辅助判断
+  // 如果身强，喜克泄耗（官杀、食伤、财星）
+  // 如果身弱，喜生扶（印星、比劫）
+  // 但调候用神可以"破格"——即使身弱，如果调候说需要火，火仍可为喜用
+  if (bodyStrength.strength === '强') {
+    // 身强：官杀、食伤、财星有利
+    // 但如果调候需要印星/比劫，则这些也需纳入
+    const bodyFuyi = ['官杀（适度克制）', '食伤（泄秀生财）', '财星（耗身平衡）'];
+    bodyFuyi.forEach(item => {
+      if (!usefulGodFinal.some(u => u.includes(item.split('（')[0]))) {
+        usefulGodFinal.push(item + '·扶抑');
+      }
+    });
+    avoidGodFinal.push('印星（生身太过）', '比劫（争夺资源）');
+  } else if (bodyStrength.strength === '偏弱') {
+    // 身弱：印星、比劫有利
+    // 但如果调候不需要这些，则降为闲神或忌神
+    const bodyFuyi = ['印星（生扶日主）', '比劫（助身抗官杀）'];
+    bodyFuyi.forEach(item => {
+      const ganName = item.split('（')[0];
+      // 检查这个十神对应的五行是否是调候所需
+      const isTiaoHouRelated = tiaoHouGan.some((g: string) => {
+        const ganShiShen = tenGods[g];
+        return ganShiShen?.includes(ganName) || ganName.includes(ganShiShen || '');
+      });
+      if (isTiaoHouRelated || !usefulGodFinal.some(u => u.includes(ganName))) {
+        usefulGodFinal.push(item + '·扶抑');
+      }
+    });
+    avoidGodFinal.push('官杀（克身太过）', '食伤（泄身太过）', '财星（耗身太过）');
+  } else {
+    // 中和：看调候
+    usefulGodFinal.push('根据大运流年动态调整');
+    avoidGodFinal.push('偏枯某一行');
+  }
+  
+  // 忌神修正：如果某五行是调候用神，即使扶抑说是忌神也要调整
+  // 例：庚金戌月，身弱按理喜印星（土）生身，但土已埋金，土实为闲/忌
+  // 所以调候用神（甲木疏土、丁火炼金）优先于扶抑逻辑
+  
+  // 简化版：以调候五行为喜用核心，其余按全局平衡
+  const tiaoHouWXSet = new Set(tiaoHouWuXing);
+  
+  // 重新整理喜忌
+  const finalXi = Array.from(new Set(tiaoHouWuXing as string[]));
+  const finalJi: string[] = [];
+  const finalXian: string[] = [];
+  
+  // 判断各五行状态
+  ['金','木','水','火','土'].forEach(wx => {
+    if (finalXi.includes(wx)) return; // 喜用已包含
+    
+    // 检查是否克/泄/耗调候用神
+    const harmsTiaoHou = tiaoHouWuXing.some((thWX: string) => {
+      if (thWX === '火' && (wx === '水')) return true; // 水克火
+      if (thWX === '木' && (wx === '金')) return true; // 金克木
+      if (thWX === '土' && (wx === '木')) return true; // 木克土
+      if (thWX === '金' && (wx === '火')) return true; // 火克金
+      if (thWX === '水' && (wx === '土')) return true; // 土克水
+      return false;
+    });
+    
+    // 检查是否生助调候用神
+    const helpsTiaoHou = tiaoHouWuXing.some((thWX: string) => {
+      if (thWX === '火' && wx === '木') return true; // 木生火
+      if (thWX === '土' && wx === '火') return true; // 火生土
+      if (thWX === '金' && wx === '土') return true; // 土生金
+      if (thWX === '水' && wx === '金') return true; // 金生水
+      if (thWX === '木' && wx === '水') return true; // 水生木
+      return false;
+    });
+    
+    if (harmsTiaoHou) {
+      finalJi.push(wx);
+    } else if (helpsTiaoHou) {
+      // 生助调候的五行也是有益的
+      if (!finalXi.includes(wx)) finalXi.push(wx);
+    } else {
+      finalXian.push(wx);
+    }
+  });
+  
+  // 喜用神与忌神文案
+  const usefulGodText = finalXi.join('、') || '需结合大运流年判断';
+  const avoidGodText = finalJi.join('、') || '需结合大运流年判断';
+  const neutralGodText = finalXian.join('、') || '无';
 
-  const trait = dayMasterTraits[dayMaster] || '具有独特的个人气质，刚柔并济，潜力巨大。'
-
-  // 藏干明细
-  const cangGanText = cangGanDetail.map((cg: any) => {
-    const ganTexts = cg.cangGan.map((item: any) =>
-      `${item.gan}（${item.qi}·${item.shiShen}）`
-    ).join('，');
-    return `· ${cg.name} ${cg.zhi}：${ganTexts}`;
-  }).join('\n');
-
-  // 五行旺衰排序
-  const sortedWX = Object.entries(wuXingCount).sort((a: any, b: any) => b[1] - a[1]);
-  const strongest = sortedWX[0][0];
-  const weakest = sortedWX[sortedWX.length - 1][0];
-
-  // 天干透出十神
-  const ganShiShen = pillars
-    .filter((p: any) => p.name !== '日柱')
-    .map((p: any) => {
-      const ss = tenGods[p.gan];
-      return ss ? `${p.gan}（${ss}）` : '';
-    })
-    .filter(Boolean);
-
-  // === 使用 combinedGod 数据 ===
-  const { xi, ji, xian, tiaoHouXi, tiaoHouStatus, tiaoHouDesc, tiaoHouReason, climate } = combinedGod;
-
-  const usefulGodText = xi.join('、') || '需结合大运流年判断';
-  const avoidGodText = ji.join('、') || '需结合大运流年判断';
-  const neutralGodText = xian.join('、') || '无';
-
+  // 调候状态文案
   const tiaoHouStatusText = () => {
     if (tiaoHouStatus === 'adequate') {
-      return `调候用神${tiaoHouXi.map((x: any) => x.gan).join('、')}透干，全局气候调和，格局层次较高。`;
+      return `调候用神${tiaoHou?.presentTiaoHou?.join('、')}透干，全局气候调和，格局层次较高。`;
     }
     if (tiaoHouStatus === 'buried') {
-      return `调候用神${tiaoHouXi.map((x: any) => x.gan).join('、')}不透天干，仅藏于地支。火藏不透，贵气稍欠，行运透出则发。`;
+      return `调候用神${tiaoHou?.missingTiaoHou?.join('、')}不透天干，仅藏于地支（${tiaoHou?.buriedTiaoHou?.join('，')}）。火藏不透，贵气稍欠，行运透出则发。`;
     }
-    return `调候用神${tiaoHouXi.map((x: any) => x.gan).join('、')}完全缺失。命局气候偏枯，需大运流年补足调候之神方能有成。`;
+    return `调候用神${tiaoHou?.missingTiaoHou?.join('、')}完全缺失。命局气候偏枯，需大运流年补足调候之神方能有成。`;
   };
 
-  // 事业建议
+  // 根据格局和强弱给出事业建议
   const careerAdvice: Record<string, Record<string, string>> = {
     '食伤格': {
       '强': '食伤泄秀，才华横溢。适合创意、设计、教育、传媒、技术研发等需要表达和创新的领域。食伤生财，也可尝试自媒体、知识付费等轻资产创业。',
@@ -329,9 +510,9 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string, 
       '中和': '灵活多变，适合多元发展的职业路径。',
     },
   };
-
+  
   const careerKey = pattern.patternName?.split('/')[0]?.trim() || '特殊格局';
-  const career = careerAdvice[careerKey]?.[bodyStrength.strength] ||
+  const career = careerAdvice[careerKey]?.[bodyStrength.strength] || 
     careerAdvice['特殊格局'][bodyStrength.strength] || '根据命局特点，选择能发挥个人优势的领域发展。';
 
   // 感情建议
@@ -387,17 +568,17 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string, 
     return '灵活多变，能屈能伸，这是最好的状态，保持即可。';
   };
 
-  // 外显特质
-  const externalTrait = ganShiShen.some((s: string) => s.includes('食伤'))
-    ? '偏向才华、表达和创意'
-    : ganShiShen.some((s: string) => s.includes('财'))
-    ? '偏向务实、物质和执行力'
-    : ganShiShen.some((s: string) => s.includes('官杀'))
-    ? '偏向责任、自律和管理'
+  // 外显特质判断
+  const externalTrait = ganShiShen.some((s: string) => s.includes('食伤')) 
+    ? '偏向才华、表达和创意' 
+    : ganShiShen.some((s: string) => s.includes('财')) 
+    ? '偏向务实、物质和执行力' 
+    : ganShiShen.some((s: string) => s.includes('官杀')) 
+    ? '偏向责任、自律和管理' 
     : '偏向学识、思考和内省';
 
   // 感情补充
-  const emotionExtra = bodyStrength.strength === '偏弱'
+  const emotionExtra = bodyStrength.strength === '偏弱' 
     ? '身弱之人，感情中容易处于被动位置，建议找性格温和、能包容你的伴侣，对方的印星或比劫可以补足你的能量。'
     : bodyStrength.strength === '强'
     ? '身强之人，感情中容易主导局面，需注意尊重伴侣意见，避免过于强势。适合的伴侣是能柔化你锋芒的人。'
@@ -451,7 +632,7 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string, 
     `| 土 | ${wuXingCount['土']} | ${wuXingFullCount['土']} | ${wuXingCount['土'] >= 2 ? '旺' : wuXingCount['土'] >= 1 ? '平' : '弱'} |`,
     '',
     `命盘中 **${strongest}** 能量最为突出，**${weakest}** 相对薄弱。`,
-    weakest === '火' ? '火弱则阳气不足，注意心脏、眼睛保养，性格上可能缺乏热情和冲劲。' :
+    weakest === '火' ? '火弱则阳气不足，注意心脏、眼睛保养，性格上可能缺乏热情和冲劲。' : 
     weakest === '水' ? '水弱则智慧流通不畅，注意肾脏、泌尿系统，思维上可能偏于固执。' :
     weakest === '木' ? '木弱则生发之气不足，注意肝胆、筋骨，性格上可能缺乏主见和决断力。' :
     weakest === '金' ? '金弱则收敛之力不足，注意肺部、呼吸系统，性格上可能过于随和缺乏原则。' :
@@ -461,9 +642,9 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string, 
     '',
     '### 五、调候用神（核心）',
     '',
-    `**月令气候**：${climate || '未知'}`,
+    `**月令气候**：${tiaoHou?.climate || '未知'}`,
     '',
-    `**调候原理**：${tiaoHouReason || ''}`,
+    `**调候原理**：${tiaoHou?.tiaoHouReason || ''}`,
     '',
     tiaoHouStatusText(),
     '',
@@ -521,9 +702,9 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string, 
     '',
     `1. **认识自己的能量模式**：你是${bodyType}之人，${careerGuide()}`,
     '',
-    `2. **善用喜用神**：${xi[0] || '根据调候与格局特点'} 对你有利，在生活中可以多亲近此类五行对应的色彩、方位、行业和人。`,
+    `2. **善用喜用神**：${finalXi[0] || '根据调候与格局特点'} 对你有利，在生活中可以多亲近此类五行对应的色彩、方位、行业和人。`,
     '',
-    `3. **避开忌神陷阱**：${ji[0] || '避免极端选择'} 对你不利，做重大决策时，可以反向思考——如果感觉某件事"特别顺手但不踏实"，可能正是忌神在诱你入局。`,
+    `3. **避开忌神陷阱**：${finalJi[0] || '避免极端选择'} 对你不利，做重大决策时，可以反向思考——如果感觉某件事"特别顺手但不踏实"，可能正是忌神在诱你入局。`,
     '',
     '4. **核心真理**：八字是**能量地图**，不是**命运判决书**。调候用神告诉你"需要什么样的气候"，扶抑用神告诉你"需要补多少营养"。两者结合，才能真正读懂自己的命局。',
     '',
@@ -536,14 +717,13 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string, 
   ].join('\n');
 }
 
-// ===== analyzeBazi =====
 export function analyzeBazi(birthDate: string, birthTime: string, name: string, gender: string, note?: string, apiKey?: string) {
   const bazi = calculateBazi(birthDate, birthTime)
   const combinedGod = calculateCombinedGod(bazi)
-
+  
   // 先返回基础分析（同步）
   const backupAnalysis = generateBackupAnalysis(bazi, name, gender, combinedGod)
-
+  
   return {
     ...bazi,
     combinedGod,

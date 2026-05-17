@@ -86,6 +86,7 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string):
     bodyStrength,
     pattern,
     cangGanDetail,
+    tiaoHou,
   } = bazi
   
   // 日主性格描述
@@ -126,9 +127,137 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string):
     })
     .filter(Boolean);
 
-  // 喜用神与忌神
-  const usefulGod = pattern.usefulGod?.join('、') || '需结合大运流年判断';
-  const avoidGod = pattern.avoidGod?.join('、') || '需结合大运流年判断';
+  // ====== 调候用神核心逻辑 ======
+  // 调候用神 > 扶抑用神，这是专业命理的核心原则
+  // 调候：解决"气候偏枯"问题（寒暖燥湿）
+  // 扶抑：解决"五行强弱"问题
+  
+  const wxNameMap: Record<string, string> = {
+    '甲': '木', '乙': '木', '丙': '火', '丁': '火', '戊': '土', '己': '土',
+    '庚': '金', '辛': '金', '壬': '水', '癸': '水'
+  };
+  
+  // 调候用神的天干列表
+  const tiaoHouGan = tiaoHou?.tiaoHouGod || [];
+  const tiaoHouWuXing = tiaoHouGan.map((g: string) => wxNameMap[g] || g);
+  
+  // 判断调候用神在局中的状态
+  const hasTiaoHouTianGan = tiaoHou?.presentTiaoHou?.length > 0;
+  const hasTiaoHouDiZhi = tiaoHou?.buriedTiaoHou?.length > 0;
+  const tiaoHouStatus = tiaoHou?.tiaoHouStatus || 'lacking';
+  
+  // 综合喜用神 = 调候用神优先 + 扶抑辅助
+  // 调候用神就是天干五行的优先补充方向
+  let usefulGodFinal: string[] = [];
+  let avoidGodFinal: string[] = [];
+  let neutralGodFinal: string[] = [];
+  
+  if (tiaoHouGan.length > 0) {
+    // 调候用神为第一优先
+    tiaoHouGan.forEach((g: string) => {
+      const wx = wxNameMap[g];
+      const shishen = tenGods[g] || '未知';
+      usefulGodFinal.push(`${g}（${wx}·${shishen}·调候）`);
+    });
+  }
+  
+  // 扶抑角度辅助判断
+  // 如果身强，喜克泄耗（官杀、食伤、财星）
+  // 如果身弱，喜生扶（印星、比劫）
+  // 但调候用神可以"破格"——即使身弱，如果调候说需要火，火仍可为喜用
+  if (bodyStrength.strength === '强') {
+    // 身强：官杀、食伤、财星有利
+    // 但如果调候需要印星/比劫，则这些也需纳入
+    const bodyFuyi = ['官杀（适度克制）', '食伤（泄秀生财）', '财星（耗身平衡）'];
+    bodyFuyi.forEach(item => {
+      if (!usefulGodFinal.some(u => u.includes(item.split('（')[0]))) {
+        usefulGodFinal.push(item + '·扶抑');
+      }
+    });
+    avoidGodFinal.push('印星（生身太过）', '比劫（争夺资源）');
+  } else if (bodyStrength.strength === '偏弱') {
+    // 身弱：印星、比劫有利
+    // 但如果调候不需要这些，则降为闲神或忌神
+    const bodyFuyi = ['印星（生扶日主）', '比劫（助身抗官杀）'];
+    bodyFuyi.forEach(item => {
+      const ganName = item.split('（')[0];
+      // 检查这个十神对应的五行是否是调候所需
+      const isTiaoHouRelated = tiaoHouGan.some((g: string) => {
+        const ganShiShen = tenGods[g];
+        return ganShiShen?.includes(ganName) || ganName.includes(ganShiShen || '');
+      });
+      if (isTiaoHouRelated || !usefulGodFinal.some(u => u.includes(ganName))) {
+        usefulGodFinal.push(item + '·扶抑');
+      }
+    });
+    avoidGodFinal.push('官杀（克身太过）', '食伤（泄身太过）', '财星（耗身太过）');
+  } else {
+    // 中和：看调候
+    usefulGodFinal.push('根据大运流年动态调整');
+    avoidGodFinal.push('偏枯某一行');
+  }
+  
+  // 忌神修正：如果某五行是调候用神，即使扶抑说是忌神也要调整
+  // 例：庚金戌月，身弱按理喜印星（土）生身，但土已埋金，土实为闲/忌
+  // 所以调候用神（甲木疏土、丁火炼金）优先于扶抑逻辑
+  
+  // 简化版：以调候五行为喜用核心，其余按全局平衡
+  const tiaoHouWXSet = new Set(tiaoHouWuXing);
+  
+  // 重新整理喜忌
+  const finalXi = Array.from(new Set(tiaoHouWuXing as string[]));
+  const finalJi: string[] = [];
+  const finalXian: string[] = [];
+  
+  // 判断各五行状态
+  ['金','木','水','火','土'].forEach(wx => {
+    if (finalXi.includes(wx)) return; // 喜用已包含
+    
+    // 检查是否克/泄/耗调候用神
+    const harmsTiaoHou = tiaoHouWuXing.some((thWX: string) => {
+      if (thWX === '火' && (wx === '水')) return true; // 水克火
+      if (thWX === '木' && (wx === '金')) return true; // 金克木
+      if (thWX === '土' && (wx === '木')) return true; // 木克土
+      if (thWX === '金' && (wx === '火')) return true; // 火克金
+      if (thWX === '水' && (wx === '土')) return true; // 土克水
+      return false;
+    });
+    
+    // 检查是否生助调候用神
+    const helpsTiaoHou = tiaoHouWuXing.some((thWX: string) => {
+      if (thWX === '火' && wx === '木') return true; // 木生火
+      if (thWX === '土' && wx === '火') return true; // 火生土
+      if (thWX === '金' && wx === '土') return true; // 土生金
+      if (thWX === '水' && wx === '金') return true; // 金生水
+      if (thWX === '木' && wx === '水') return true; // 水生木
+      return false;
+    });
+    
+    if (harmsTiaoHou) {
+      finalJi.push(wx);
+    } else if (helpsTiaoHou) {
+      // 生助调候的五行也是有益的
+      if (!finalXi.includes(wx)) finalXi.push(wx);
+    } else {
+      finalXian.push(wx);
+    }
+  });
+  
+  // 喜用神与忌神文案
+  const usefulGodText = finalXi.join('、') || '需结合大运流年判断';
+  const avoidGodText = finalJi.join('、') || '需结合大运流年判断';
+  const neutralGodText = finalXian.join('、') || '无';
+
+  // 调候状态文案
+  const tiaoHouStatusText = () => {
+    if (tiaoHouStatus === 'adequate') {
+      return `调候用神${tiaoHou?.presentTiaoHou?.join('、')}透干，全局气候调和，格局层次较高。`;
+    }
+    if (tiaoHouStatus === 'buried') {
+      return `调候用神${tiaoHou?.missingTiaoHou?.join('、')}不透天干，仅藏于地支（${tiaoHou?.buriedTiaoHou?.join('，')}）。火藏不透，贵气稍欠，行运透出则发。`;
+    }
+    return `调候用神${tiaoHou?.missingTiaoHou?.join('、')}完全缺失。命局气候偏枯，需大运流年补足调候之神方能有成。`;
+  };
 
   // 根据格局和强弱给出事业建议
   const careerAdvice: Record<string, Record<string, string>> = {
@@ -293,19 +422,35 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string):
     '',
     '---',
     '',
-    '### 五、喜用神与忌神',
+    '### 五、调候用神（核心）',
     '',
-    `**喜用神**：${usefulGod}`,
+    `**月令气候**：${tiaoHou?.climate || '未知'}`,
     '',
-    '喜用神是命局中最需要补充的能量，代表对你最有利的人和事物方向。',
+    `**调候原理**：${tiaoHou?.tiaoHouReason || ''}`,
     '',
-    `**忌神**：${avoidGod}`,
+    tiaoHouStatusText(),
     '',
-    '忌神是命局中过剩或对你不利的能量，知道忌神可以帮助你避开不适合的选择。',
+    '调候用神是八字分析中最优先的考量。它解决的不是"五行够不够"，而是"气候对不对"。就像种花，不是只看出土多少，还要看温度湿度是否适合生长。',
     '',
     '---',
     '',
-    '### 六、性格特质',
+    '### 六、喜用神与忌神（综合调候+扶抑）',
+    '',
+    `**喜用神（优先补此五行）**：${usefulGodText}`,
+    '',
+    '喜用神 = 调候用神优先 + 扶抑辅助。调候用神解决"气候偏枯"，扶抑用神解决"五行强弱"。当两者冲突时，**调候优先**。',
+    '',
+    `**忌神（需避开的五行）**：${avoidGodText}`,
+    '',
+    '忌神是破坏调候、加剧五行失衡的能量。',
+    '',
+    `**闲神（作用不大）**：${neutralGodText}`,
+    '',
+    '闲神对命局无明显助益也无明显损害，大运流年中可能转化为喜或忌。',
+    '',
+    '---',
+    '',
+    '### 七、性格特质',
     '',
     `日主${dayMaster} (${bodyStrength.strength}) 的人，天生具有${trait.split('，')[0]}的底色。`,
     '',
@@ -315,13 +460,13 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string):
     '',
     '---',
     '',
-    '### 七、事业方向',
+    '### 八、事业方向',
     '',
     career,
     '',
     '---',
     '',
-    '### 八、感情婚姻',
+    '### 九、感情婚姻',
     '',
     emotionAdvice(),
     '',
@@ -329,25 +474,25 @@ export function generateBackupAnalysis(bazi: any, name: string, gender: string):
     '',
     '---',
     '',
-    '### 九、健康提示',
+    '### 十、健康提示',
     '',
     healthAdvice(),
     '',
     '---',
     '',
-    '### 十、人生建议',
+    '### 十一、人生建议',
     '',
     `1. **认识自己的能量模式**：你是${bodyType}之人，${careerGuide()}`,
     '',
-    `2. **善用喜用神**：${pattern.usefulGod?.[0] || '根据格局特点'} 对你有利，在生活中可以多亲近此类五行对应的色彩、方位、行业和人。`,
+    `2. **善用喜用神**：${finalXi[0] || '根据调候与格局特点'} 对你有利，在生活中可以多亲近此类五行对应的色彩、方位、行业和人。`,
     '',
-    `3. **避开忌神陷阱**：${pattern.avoidGod?.[0] || '避免极端选择'} 对你不利，做重大决策时，可以反向思考——如果感觉某件事"特别顺手但不踏实"，可能正是忌神在诱你入局。`,
+    `3. **避开忌神陷阱**：${finalJi[0] || '避免极端选择'} 对你不利，做重大决策时，可以反向思考——如果感觉某件事"特别顺手但不踏实"，可能正是忌神在诱你入局。`,
     '',
-    '4. **记住核心真理**：八字是**能量地图**，不是**命运判决书**。知道自己是身强还是身弱，就像知道自己是跑车还是SUV——各有各的路，没有好坏之分。关键在于：**走对路，用对油**。',
+    '4. **核心真理**：八字是**能量地图**，不是**命运判决书**。调候用神告诉你"需要什么样的气候"，扶抑用神告诉你"需要补多少营养"。两者结合，才能真正读懂自己的命局。',
     '',
     '---',
     '',
-    `${name ? name + '，' : ''}你的八字排盘准确无误，以上分析基于传统命理逻辑推演，旨在帮助你更好地认识自己。**命由天定，运由己造**。愿你在这条认识自我的路上，越走越好。`,
+    `${name ? name + '，' : ''}你的八字排盘准确无误，以上分析基于传统命理学「调候优先、扶抑辅助」的原则推演，旨在帮助你更好地认识自己。**命由天定，运由己造**。愿你在这条认识自我的路上，越走越好。`,
     '',
     '---',
     '*以上为系统深度解析。如需AI个性化深度分析，可在「设置」页面添加 Kimi API Key，获得更贴合个人情况的解读。*',

@@ -25,6 +25,231 @@ const SHI_SHEN_MAP: Record<string, Record<string, string>> = {
   '癸': {'甲': '伤官', '乙': '食神', '丙': '正财', '丁': '偏财', '戊': '正官', '己': '七杀', '庚': '正印', '辛': '偏印', '壬': '劫财', '癸': '比肩'}
 };
 
+// 调候用神表（基于日主天干+月令地支判断气候所需）
+// 调候用神的核心逻辑：
+// - 寒月（子丑亥寅）：需火调候（暖局）
+// - 热月（巳午未申）：需水调候（降温）
+// - 燥月（戌未）：需水润燥 + 火炼金（庚金戌月典型）
+// - 湿月（辰丑）：需火暖局 + 木疏土
+// 不同日主在不同月份有不同需求，此处为简化版核心规则
+
+const TIAO_HOU_TABLE: Record<string, Record<string, { tiaoHou: string[]; reason: string; climate: string }>> = {
+  '甲': {
+    '寅': { tiaoHou: ['丙'], reason: '春木初萌，需丙火暖局生发', climate: '初春微寒' },
+    '卯': { tiaoHou: ['丙','癸'], reason: '仲春木旺，丙火泄秀、癸水滋根', climate: '仲春温和' },
+    '辰': { tiaoHou: ['丙','庚'], reason: '辰月湿土，需丙火暖局+庚金劈甲引火', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['癸'], reason: '夏初木燥，需癸水降温滋木', climate: '初夏渐热' },
+    '午': { tiaoHou: ['癸'], reason: '仲夏火炎，木易焚毁，急需癸水', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['癸','丙'], reason: '夏末土燥，癸水润土+丙火暖木', climate: '夏末燥热' },
+    '申': { tiaoHou: ['丁','丙'], reason: '秋金当令，木被砍伐，需火制金护木', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['丁','庚'], reason: '仲秋金旺，丁火制金，庚金劈甲', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['丁','甲'], reason: '深秋燥土，丁火泄秀，甲木助身', climate: '深秋干燥' },
+    '亥': { tiaoHou: ['丁','戊'], reason: '冬水寒冷，丁火暖局+戊土止水', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['丁','丙'], reason: '仲冬严寒，需丁火/丙火暖局', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['丙','丁'], reason: '腊月湿寒，丙火暖局，丁火辅助', climate: '腊月严寒' },
+  },
+  '乙': {
+    '寅': { tiaoHou: ['丙'], reason: '春木柔嫩，丙火泄秀生发', climate: '初春微寒' },
+    '卯': { tiaoHou: ['丙','癸'], reason: '木旺需火泄秀+水滋根', climate: '仲春温和' },
+    '辰': { tiaoHou: ['丙','癸'], reason: '湿土月，丙火暖局癸水滋根', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['癸'], reason: '夏初火旺，乙木易枯，癸水救急', climate: '初夏渐热' },
+    '午': { tiaoHou: ['癸'], reason: '仲夏火炎，乙木最需癸水', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['癸','丙'], reason: '燥土月，癸水润燥+丙火泄秀', climate: '夏末燥热' },
+    '申': { tiaoHou: ['丙','癸'], reason: '秋金克木，丙火制金+癸水滋木', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['丙','丁'], reason: '金旺木绝，急需火来制金', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['丁','甲'], reason: '深秋燥土，丁火泄秀+甲木帮身', climate: '深秋干燥' },
+    '亥': { tiaoHou: ['丙','戊'], reason: '冬寒水旺，丙火暖局+戊土止水', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['丙'], reason: '仲冬极寒，丙火暖局第一优先', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['丙'], reason: '腊月湿寒，丙火暖局', climate: '腊月严寒' },
+  },
+  '丙': {
+    '寅': { tiaoHou: ['壬','庚'], reason: '春木生火，需壬水调候+庚金生水', climate: '初春微寒' },
+    '卯': { tiaoHou: ['壬','庚'], reason: '木旺火相，壬水泄火+庚金助水', climate: '仲春温和' },
+    '辰': { tiaoHou: ['壬','甲'], reason: '湿土晦火，壬水调候+甲木疏土', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['壬','庚'], reason: '夏初火旺，壬水降温+庚金生水', climate: '初夏渐热' },
+    '午': { tiaoHou: ['壬','庚'], reason: '仲夏火炎至极，壬庚并用救急', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['壬','庚'], reason: '燥土助火，壬水降温+庚金生水', climate: '夏末燥热' },
+    '申': { tiaoHou: ['壬','戊'], reason: '秋金生水，壬水太旺，需戊土止水', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['壬','丁'], reason: '仲秋金旺水相，壬水可用，丁火助暖', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['甲','壬'], reason: '深秋燥土，甲木疏土+壬水降温', climate: '深秋干燥' },
+    '亥': { tiaoHou: ['甲','戊'], reason: '冬水克火，甲木生火+戊土止水', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['甲','丙'], reason: '仲冬火绝，甲木引火+丙火帮身', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['甲','壬'], reason: '腊月湿寒，甲木引火+壬水调候', climate: '腊月严寒' },
+  },
+  '丁': {
+    '寅': { tiaoHou: ['甲','庚'], reason: '春木生火，甲木引丁+庚金劈甲', climate: '初春微寒' },
+    '卯': { tiaoHou: ['庚','甲'], reason: '木旺火塞，庚金劈甲引火', climate: '仲春温和' },
+    '辰': { tiaoHou: ['甲','庚'], reason: '湿土晦火，甲木疏土+庚金劈甲', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['庚','壬'], reason: '夏初火旺，庚金劈甲+壬水降温', climate: '初夏渐热' },
+    '午': { tiaoHou: ['壬','庚'], reason: '仲夏火炎，壬水救急+庚金生水', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['壬','甲'], reason: '燥土助火，壬水降温+甲木疏土', climate: '夏末燥热' },
+    '申': { tiaoHou: ['甲','庚','丙'], reason: '秋金旺水相，甲木引火+庚金生水+丙火暖局', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['甲','庚'], reason: '金旺火衰，甲木引火+庚金生水', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['甲','庚'], reason: '深秋燥土，甲木疏土引火+庚金生水', climate: '深秋干燥' },
+    '亥': { tiaoHou: ['甲','丙'], reason: '冬水克火，甲木引火+丙火帮身', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['甲','丙'], reason: '仲冬火绝，甲木引火+丙火暖局', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['甲','丙'], reason: '腊月湿寒，甲木引火+丙火暖局', climate: '腊月严寒' },
+  },
+  '戊': {
+    '寅': { tiaoHou: ['丙','甲'], reason: '春木克土，丙火暖局+甲木疏土', climate: '初春微寒' },
+    '卯': { tiaoHou: ['丙','甲'], reason: '木旺土虚，丙火暖局+甲木疏土', climate: '仲春温和' },
+    '辰': { tiaoHou: ['丙','甲'], reason: '湿土月，丙火暖局+甲木疏土', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['癸','甲'], reason: '夏初火旺，癸水润燥+甲木疏土', climate: '初夏渐热' },
+    '午': { tiaoHou: ['壬','庚'], reason: '仲夏火炎，壬水降温+庚金生水', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['壬','庚'], reason: '燥土月，壬水降温+庚金生水', climate: '夏末燥热' },
+    '申': { tiaoHou: ['丙','癸'], reason: '秋金泄土，丙火暖局+癸水滋金', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['丙','癸'], reason: '金旺土泄，丙火暖局+癸水滋金', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['甲','癸'], reason: '深秋燥土，甲木疏土+癸水润燥', climate: '深秋干燥' },
+    '亥': { tiaoHou: ['丙','甲'], reason: '冬水耗土，丙火暖局+甲木疏土', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['丙'], reason: '仲冬水旺土冻，丙火暖局第一优先', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['丙','甲'], reason: '腊月湿寒，丙火暖局+甲木疏土', climate: '腊月严寒' },
+  },
+  '己': {
+    '寅': { tiaoHou: ['丙','甲'], reason: '春木克土，丙火暖局+甲木疏土', climate: '初春微寒' },
+    '卯': { tiaoHou: ['丙','甲'], reason: '木旺土虚，丙火暖局+甲木疏土', climate: '仲春温和' },
+    '辰': { tiaoHou: ['丙','甲'], reason: '湿土月，丙火暖局+甲木疏土', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['癸','丙'], reason: '夏初火旺，癸水润燥+丙火暖局', climate: '初夏渐热' },
+    '午': { tiaoHou: ['癸','丙'], reason: '仲夏火炎，癸水救急+丙火辅助', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['癸','丙'], reason: '燥土月，癸水降温+丙火暖局', climate: '夏末燥热' },
+    '申': { tiaoHou: ['丙','癸'], reason: '秋金泄土，丙火暖局+癸水滋金', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['丙','癸'], reason: '金旺土泄，丙火暖局+癸水滋金', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['甲','癸'], reason: '深秋燥土，甲木疏土+癸水润燥', climate: '深秋干燥' },
+    '亥': { tiaoHou: ['丙','甲'], reason: '冬水耗土，丙火暖局+甲木疏土', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['丙','甲'], reason: '仲冬水旺土冻，丙火暖局+甲木疏土', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['丙','甲'], reason: '腊月湿寒，丙火暖局+甲木疏土', climate: '腊月严寒' },
+  },
+  '庚': {
+    '寅': { tiaoHou: ['丁','甲'], reason: '春木旺火相，庚金需丁火炼+甲木引火', climate: '初春微寒' },
+    '卯': { tiaoHou: ['丁','甲'], reason: '木旺金缺，丁火炼金+甲木生火', climate: '仲春温和' },
+    '辰': { tiaoHou: ['丁','甲'], reason: '湿土生金，丁火炼金+甲木疏土', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['壬','癸'], reason: '夏初火旺金熔，壬水降温+癸水滋金', climate: '初夏渐热' },
+    '午': { tiaoHou: ['壬','癸'], reason: '仲夏火炎金熔，壬癸并用救急', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['壬','癸'], reason: '燥土助火，壬水降温+癸水滋金', climate: '夏末燥热' },
+    '申': { tiaoHou: ['丁','甲'], reason: '秋金当令，丁火炼金成器+甲木生火', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['丁','甲'], reason: '金旺需火炼，丁火炼金+甲木引火', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['甲','丁'], reason: '深秋燥土埋金，甲木疏土+丁火炼金方能成器。火藏不透（戌中丁火、寅中丙火），贵气稍欠，行火运则发。', climate: '深秋燥土' },
+    '亥': { tiaoHou: ['丁','丙'], reason: '冬水泄金，丁火暖局+丙火帮身', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['丁','丙'], reason: '仲冬水旺金沉，丁火暖局+丙火帮身', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['丙','丁'], reason: '腊月湿寒金冻，丙丁并用暖局炼金', climate: '腊月严寒' },
+  },
+  '辛': {
+    '寅': { tiaoHou: ['壬','丙'], reason: '春木旺火相，辛金需壬水淘洗+丙火暖局', climate: '初春微寒' },
+    '卯': { tiaoHou: ['壬','甲'], reason: '木旺金缺，壬水淘洗+甲木疏土', climate: '仲春温和' },
+    '辰': { tiaoHou: ['壬','甲'], reason: '湿土月，壬水淘洗+甲木疏土', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['壬','癸'], reason: '夏初火旺金熔，壬水降温+癸水滋金', climate: '初夏渐热' },
+    '午': { tiaoHou: ['己','壬'], reason: '仲夏火炎，己土晦火+壬水降温', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['壬','庚'], reason: '燥土助火，壬水降温+庚金助身', climate: '夏末燥热' },
+    '申': { tiaoHou: ['壬','丁'], reason: '秋金当令，壬水淘洗+丁火暖局', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['壬','丙'], reason: '金旺水相，壬水淘洗+丙火暖局', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['壬','甲'], reason: '深秋燥土，壬水淘洗+甲木疏土', climate: '深秋干燥' },
+    '亥': { tiaoHou: ['丙'], reason: '冬水泄金，丙火暖局', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['丙'], reason: '仲冬水旺金沉，丙火暖局', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['丙','壬'], reason: '腊月湿寒金冻，丙火暖局+壬水淘洗', climate: '腊月严寒' },
+  },
+  '壬': {
+    '寅': { tiaoHou: ['丙','庚'], reason: '春木泄水，丙火暖局+庚金生水', climate: '初春微寒' },
+    '卯': { tiaoHou: ['丙','庚'], reason: '木旺水缩，丙火泄木+庚金生水', climate: '仲春温和' },
+    '辰': { tiaoHou: ['丙','甲'], reason: '湿土月，丙火暖局+甲木疏土', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['壬','庚'], reason: '夏初火旺水蒸，壬水帮身+庚金生水', climate: '初夏渐热' },
+    '午': { tiaoHou: ['壬','庚'], reason: '仲夏火炎水干，壬庚并用救急', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['壬','庚'], reason: '燥土克水，壬水帮身+庚金生水', climate: '夏末燥热' },
+    '申': { tiaoHou: ['丁','戊'], reason: '秋金生水旺，丁火泄秀+戊土止水', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['丁','甲'], reason: '金旺水相，丁火泄秀+甲木生火', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['甲','丙'], reason: '深秋燥土，甲木疏土+丙火暖局', climate: '深秋干燥' },
+    '亥': { tiaoHou: ['丙','戊'], reason: '冬水极旺，丙火暖局+戊土止水', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['丙','戊'], reason: '仲冬水旺，丙火暖局+戊土止水', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['丙','甲'], reason: '腊月湿寒，丙火暖局+甲木疏土', climate: '腊月严寒' },
+  },
+  '癸': {
+    '寅': { tiaoHou: ['丙','辛'], reason: '春木泄水，丙火暖局+辛金生水', climate: '初春微寒' },
+    '卯': { tiaoHou: ['庚','辛'], reason: '木旺水缩，庚辛金生水', climate: '仲春温和' },
+    '辰': { tiaoHou: ['丙','辛'], reason: '湿土月，丙火暖局+辛金生水', climate: '暮春渐暖' },
+    '巳': { tiaoHou: ['辛','庚'], reason: '夏初火旺水蒸，辛庚生水', climate: '初夏渐热' },
+    '午': { tiaoHou: ['壬','庚'], reason: '仲夏火炎水干，壬水帮身+庚金生水', climate: '盛夏炎热' },
+    '未': { tiaoHou: ['壬','庚'], reason: '燥土克水，壬水帮身+庚金生水', climate: '夏末燥热' },
+    '申': { tiaoHou: ['丁','丙'], reason: '秋金生水旺，丁火泄秀+丙火暖局', climate: '初秋渐凉' },
+    '酉': { tiaoHou: ['丁','丙'], reason: '金旺水相，丁火泄秀+丙火暖局', climate: '仲秋清凉' },
+    '戌': { tiaoHou: ['辛','丙'], reason: '深秋燥土，辛金生水+丙火暖局', climate: '深秋干燥' },
+    '亥': { tiaoHou: ['丙','戊'], reason: '冬水极旺，丙火暖局+戊土止水', climate: '初冬寒冷' },
+    '子': { tiaoHou: ['丙','戊'], reason: '仲冬水旺，丙火暖局+戊土止水', climate: '仲冬严寒' },
+    '丑': { tiaoHou: ['丙','甲'], reason: '腊月湿寒，丙火暖局+甲木疏土', climate: '腊月严寒' },
+  },
+};
+
+// 计算调候用神
+function calculateTiaoHou(
+  dayMaster: string,
+  monthZhi: string,
+  pillars: { name: string; gan: string; zhi: string }[],
+  wuXingFullCount: Record<string, number>,
+) {
+  const tiaoHouData = TIAO_HOU_TABLE[dayMaster]?.[monthZhi];
+  
+  if (!tiaoHouData) {
+    return {
+      tiaoHouGod: ['无法判断'],
+      tiaoHouReason: '调候数据缺失',
+      climate: '未知',
+      presentTiaoHou: [],
+      missingTiaoHou: [],
+      isBuried: false,
+    };
+  }
+
+  const tiaoHouGanSet = new Set(tiaoHouData.tiaoHou);
+  
+  // 检查调候用神是否透出于天干
+  const presentTiaoHou: string[] = [];
+  const missingTiaoHou: string[] = [];
+  
+  tiaoHouData.tiaoHou.forEach(gan => {
+    const isPresent = pillars.some(p => p.gan === gan);
+    if (isPresent) {
+      presentTiaoHou.push(gan);
+    } else {
+      missingTiaoHou.push(gan);
+    }
+  });
+
+  // 检查调候用神是否藏在地支中（不透）
+  const buriedTiaoHou: string[] = [];
+  pillars.forEach(p => {
+    const cangGan = getCangGan(p.zhi);
+    cangGan.forEach(gan => {
+      if (tiaoHouGanSet.has(gan) && !presentTiaoHou.includes(gan)) {
+        buriedTiaoHou.push(`${gan}（藏${p.zhi}中）`);
+      }
+    });
+  });
+
+  // 调候状态判断
+  let tiaoHouStatus: 'adequate' | 'lacking' | 'buried';
+  let tiaoHouDesc: string;
+  
+  if (presentTiaoHou.length > 0) {
+    tiaoHouStatus = 'adequate';
+    tiaoHouDesc = `调候用神${presentTiaoHou.join('、')}透出于天干，全局气候调和，格局层次较高。`;
+  } else if (buriedTiaoHou.length > 0) {
+    tiaoHouStatus = 'buried';
+    tiaoHouDesc = `调候用神${missingTiaoHou.join('、')}不透天干，仅藏于地支（${buriedTiaoHou.join('，')}）。"火藏不透，贵气稍欠"，行运透出则发。`;
+  } else {
+    tiaoHouStatus = 'lacking';
+    tiaoHouDesc = `调候用神${missingTiaoHou.join('、')}完全缺失。命局气候偏枯，需大运流年补足调候之神方能有成。`;
+  }
+
+  return {
+    tiaoHouGod: tiaoHouData.tiaoHou,
+    tiaoHouReason: tiaoHouData.reason,
+    climate: tiaoHouData.climate,
+    presentTiaoHou,
+    missingTiaoHou,
+    buriedTiaoHou,
+    tiaoHouStatus,
+    tiaoHouDesc,
+    isBuried: tiaoHouStatus === 'buried',
+  };
+}
+
 // 地支藏干（本气、中气、余气）
 const DI_ZHI_CANG_GAN: Record<string, string[]> = {
   '子': ['癸'],
@@ -182,6 +407,14 @@ export function calculateBazi(birthDate: string, birthTime: string) {
     bodyStrength
   );
 
+  // 调候用神判断
+  const tiaoHou = calculateTiaoHou(
+    dayMaster,
+    monthGZ[1],
+    pillars,
+    wuXingFullCount,
+  );
+
   return {
     pillars,
     dayMaster,
@@ -193,6 +426,7 @@ export function calculateBazi(birthDate: string, birthTime: string) {
     cangGanDetail,
     bodyStrength,
     pattern,
+    tiaoHou,
   };
 }
 

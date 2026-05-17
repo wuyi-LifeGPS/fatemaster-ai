@@ -16,6 +16,7 @@ interface BaziResult {
   cangGanDetail?: { name: string; zhi: string; cangGan: { gan: string; qi: string; wuXing: string; shiShen: string }[] }[]
   bodyStrength?: any
   pattern?: any
+  tiaoHou?: any
   _pendingAi?: boolean
 }
 
@@ -277,7 +278,43 @@ export default function BaziPage() {
               )}
             </div>
 
-            {/* 五行分布 */}
+            {/* 调候用神 */}
+            {result.tiaoHou && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="text-xl font-bold mb-4 font-serif">调候用神</h3>
+                <div className="bg-fate-50 rounded-lg p-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                    <div className="text-center">
+                      <div className="text-xs text-ink-500">月令气候</div>
+                      <div className="text-lg font-bold text-fate-700">{result.tiaoHou.climate}</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs text-ink-500">所需调候</div>
+                      <div className="text-lg font-bold text-fate-700">
+                        {result.tiaoHou.tiaoHouGod?.map((g: string) => {
+                          const wxMap: Record<string, string> = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
+                          return <span key={g} className="mx-1">{g}({wxMap[g]})</span>;
+                        })}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs text-ink-500">透出情况</div>
+                      <div className="text-lg font-bold text-fate-700">
+                        {result.tiaoHou.presentTiaoHou.length > 0 ? result.tiaoHou.presentTiaoHou.join('、') : '无'}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs text-ink-500">调候状态</div>
+                      <div className={`text-lg font-bold ${result.tiaoHou.tiaoHouStatus === 'adequate' ? 'text-green-600' : result.tiaoHou.tiaoHouStatus === 'buried' ? 'text-amber-600' : 'text-red-600'}`}>
+                        {result.tiaoHou.tiaoHouStatus === 'adequate' ? '调和' : result.tiaoHou.tiaoHouStatus === 'buried' ? '暗藏' : '缺失'}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-ink-600">{result.tiaoHou.tiaoHouReason}</p>
+                  <p className="text-sm text-ink-500 mt-2">{result.tiaoHou.tiaoHouDesc}</p>
+                </div>
+              </div>
+            )}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-xl font-bold mb-4 font-serif">五行分布</h3>
               <div className="grid grid-cols-5 gap-4">

@@ -25,54 +25,21 @@ const SHI_SHEN_MAP: Record<string, Record<string, string>> = {
   '癸': {'甲': '伤官', '乙': '食神', '丙': '正财', '丁': '偏财', '戊': '正官', '己': '七杀', '庚': '正印', '辛': '偏印', '壬': '劫财', '癸': '比肩'}
 };
 
-// 已知日柱表（1900-2100简化版，实际用算法更精确）
-const BASE_DATE = new Date(1900, 0, 31); // 1900年1月31日 = 甲辰日
-
-function getDaysDiff(date: Date): number {
-  const msPerDay = 24 * 60 * 60 * 1000;
-  return Math.floor((date.getTime() - BASE_DATE.getTime()) / msPerDay);
-}
-
-function getGanZhi(offset: number): [string, string] {
-  const gan = TIAN_GAN[offset % 10];
-  const zhi = DI_ZHI[offset % 12];
-  return [gan, zhi];
-}
-
-export function calculateYearPillar(year: number): [string, string] {
-  // 立春前算上一年，简化处理：直接按年份
-  const ganIdx = (year - 4) % 10;
-  const zhiIdx = (year - 4) % 12;
-  return [TIAN_GAN[ganIdx], DI_ZHI[zhiIdx]];
-}
-
-export function calculateMonthPillar(yearGan: string, month: number): [string, string] {
-  // 年干定月干起点
-  const yearGanIdx = TIAN_GAN.indexOf(yearGan);
-  const monthGanBase = [2, 14, 26, 38, 50, 62, 74, 86, 98, 110][yearGanIdx]; // 寅月天干起点
-  const monthGanIdx = (monthGanBase + month - 1) % 10;
-  const zhiIdx = (month + 1) % 12; // 正月=寅
-  return [TIAN_GAN[monthGanIdx], DI_ZHI[zhiIdx]];
-}
-
-export function calculateDayPillar(date: Date): [string, string] {
-  const daysDiff = getDaysDiff(date);
-  return getGanZhi(daysDiff);
-}
-
-export function calculateHourPillar(dayGan: string, hour: number): [string, string] {
-  const hourZhiMap: Record<number, string> = {
-    0: '子', 1: '丑', 2: '丑', 3: '寅', 4: '寅', 5: '卯', 6: '卯', 7: '辰', 8: '辰', 9: '巳', 10: '巳',
-    11: '午', 12: '午', 13: '未', 14: '未', 15: '申', 16: '申', 17: '酉', 18: '酉', 19: '戌', 20: '戌', 21: '亥', 22: '亥', 23: '子'
-  };
-  const dayGanIdx = TIAN_GAN.indexOf(dayGan);
-  const zhi = hourZhiMap[hour] || '子';
-  const zhiIdx = DI_ZHI.indexOf(zhi);
-  // 日干定子时天干
-  const shiGanBase = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][dayGanIdx]; // 简化
-  const ganIdx = (shiGanBase + zhiIdx) % 10;
-  return [TIAN_GAN[ganIdx], zhi];
-}
+// 地支藏干（本气、中气、余气）
+const DI_ZHI_CANG_GAN: Record<string, string[]> = {
+  '子': ['癸'],
+  '丑': ['己', '癸', '辛'],
+  '寅': ['甲', '丙', '戊'],
+  '卯': ['乙'],
+  '辰': ['戊', '乙', '癸'],
+  '巳': ['丙', '庚', '戊'],
+  '午': ['丁', '己'],
+  '未': ['己', '丁', '乙'],
+  '申': ['庚', '壬', '戊'],
+  '酉': ['辛'],
+  '戌': ['戊', '辛', '丁'],
+  '亥': ['壬', '甲'],
+};
 
 export function getWuXing(ganZhi: string): string {
   return WU_XING[ganZhi] || '未知';
@@ -83,46 +50,159 @@ export function getYinYang(ganZhi: string): string {
 }
 
 export function getShiShen(dayMaster: string, target: string): string {
-  return SHI_SHEN_MAP[dayMaster]?.[target] || '未知';
+  // 对天干直接查表
+  const ganResult = SHI_SHEN_MAP[dayMaster]?.[target];
+  if (ganResult) return ganResult;
+  
+  // 对地支，先查藏干，取本气
+  const cangGan = DI_ZHI_CANG_GAN[target];
+  if (cangGan && cangGan.length > 0) {
+    return SHI_SHEN_MAP[dayMaster]?.[cangGan[0]] || '未知';
+  }
+  
+  return '未知';
+}
+
+// 获取地支藏干列表
+export function getCangGan(zhi: string): string[] {
+  return DI_ZHI_CANG_GAN[zhi] || [];
+}
+
+// 获取地支藏干对应的十神
+export function getZhiShiShen(dayMaster: string, zhi: string): string[] {
+  const cangGan = getCangGan(zhi);
+  return cangGan.map(gan => SHI_SHEN_MAP[dayMaster]?.[gan] || '未知');
 }
 
 export function calculateBazi(birthDate: string, birthTime: string) {
+  // 使用 lunar-javascript 进行精确排盘
+  const { Solar, Lunar } = require('lunar-javascript');
+  
   const [year, month, day] = birthDate.split('-').map(Number);
   const [hour] = birthTime.split(':').map(Number);
-  const date = new Date(year, month - 1, day);
-
-  const [yearGan, yearZhi] = calculateYearPillar(year);
-  const [monthGan, monthZhi] = calculateMonthPillar(yearGan, month);
-  const [dayGan, dayZhi] = calculateDayPillar(date);
-  const [hourGan, hourZhi] = calculateHourPillar(dayGan, hour);
-
+  
+  const solar = Solar.fromYmd(year, month, day);
+  const lunar = solar.getLunar();
+  
+  // 获取八字四柱（年柱、月柱、日柱、时柱）
+  // lunar-javascript 时柱需要传入时辰索引（0=子, 1=丑...11=亥）
+  const hourZhiIdx = getHourZhiIndex(hour);
+  const bazi = lunar.getBaZi();
+  
+  // lunar-javascript getBaZi() 返回 [年柱, 月柱, 日柱, 时柱]
+  // 但时柱可能按默认子时计算，需要手动替换
+  const yearGZ = bazi[0];  // 如 "癸亥"
+  const monthGZ = bazi[1]; // 如 "壬戌"
+  const dayGZ = bazi[2];   // 如 "庚辰"
+  
+  // 计算正确的时柱
+  const dayGan = dayGZ[0];
+  const hourGan = calculateHourGan(dayGan, hourZhiIdx);
+  const hourZhi = DI_ZHI[hourZhiIdx];
+  
   const pillars = [
-    { name: '年柱', gan: yearGan, zhi: yearZhi },
-    { name: '月柱', gan: monthGan, zhi: monthZhi },
-    { name: '日柱', gan: dayGan, zhi: dayZhi },
+    { name: '年柱', gan: yearGZ[0], zhi: yearGZ[1] },
+    { name: '月柱', gan: monthGZ[0], zhi: monthGZ[1] },
+    { name: '日柱', gan: dayGZ[0], zhi: dayGZ[1] },
     { name: '时柱', gan: hourGan, zhi: hourZhi },
   ];
 
+  const dayMaster = dayGZ[0];
+
+  // 五行统计（天干+地支藏干本气）
   const wuXingCount: Record<string, number> = { '金': 0, '木': 0, '水': 0, '火': 0, '土': 0 };
-  const allGanZhi = [yearGan, yearZhi, monthGan, monthZhi, dayGan, dayZhi, hourGan, hourZhi];
-  allGanZhi.forEach(gz => {
-    const wx = WU_XING[gz];
+  
+  // 统计天干五行
+  pillars.forEach(p => {
+    const wx = WU_XING[p.gan];
     if (wx) wuXingCount[wx]++;
   });
+  
+  // 统计地支藏干本气五行（只算本气，避免重复过多）
+  pillars.forEach(p => {
+    const cangGan = getCangGan(p.zhi);
+    if (cangGan.length > 0) {
+      const wx = WU_XING[cangGan[0]];
+      if (wx) wuXingCount[wx]++;
+    }
+  });
 
+  // 十神映射（天干直接查，地支查本气藏干）
   const tenGods: Record<string, string> = {};
-  allGanZhi.forEach(gz => {
-    if (gz !== dayGan) {
-      tenGods[gz] = getShiShen(dayGan, gz);
+  pillars.forEach(p => {
+    // 天干十神
+    if (p.gan !== dayMaster) {
+      tenGods[p.gan] = getShiShen(dayMaster, p.gan);
+    }
+    // 地支十神（取本气藏干）
+    const cangGan = getCangGan(p.zhi);
+    if (cangGan.length > 0) {
+      tenGods[p.zhi] = getShiShen(dayMaster, cangGan[0]);
     }
   });
 
   return {
     pillars,
-    dayMaster: dayGan,
+    dayMaster,
     wuXingCount,
     tenGods,
-    yinYang: getYinYang(dayGan),
-    wuXing: getWuXing(dayGan),
+    yinYang: getYinYang(dayMaster),
+    wuXing: getWuXing(dayMaster),
+    // 额外信息供分析使用
+    cangGanInfo: pillars.map(p => ({
+      name: p.name,
+      zhi: p.zhi,
+      cangGan: getCangGan(p.zhi),
+      cangGanShiShen: getZhiShiShen(dayMaster, p.zhi),
+    })),
   };
+}
+
+// 根据小时获取地支时辰索引（0=子，1=丑...11=亥）
+function getHourZhiIndex(hour: number): number {
+  // 中国传统时辰划分
+  if (hour >= 23 || hour < 1) return 0;  // 子 23:00-01:00
+  if (hour >= 1 && hour < 3) return 1;    // 丑 01:00-03:00
+  if (hour >= 3 && hour < 5) return 2;    // 寅 03:00-05:00
+  if (hour >= 5 && hour < 7) return 3;    // 卯 05:00-07:00
+  if (hour >= 7 && hour < 9) return 4;    // 辰 07:00-09:00
+  if (hour >= 9 && hour < 11) return 5;   // 巳 09:00-11:00
+  if (hour >= 11 && hour < 13) return 6;  // 午 11:00-13:00
+  if (hour >= 13 && hour < 15) return 7; // 未 13:00-15:00
+  if (hour >= 15 && hour < 17) return 8; // 申 15:00-17:00
+  if (hour >= 17 && hour < 19) return 9; // 酉 17:00-19:00
+  if (hour >= 19 && hour < 21) return 10; // 戌 19:00-21:00
+  return 11; // 亥 21:00-23:00
+}
+
+// 根据日干和时辰索引计算时干
+// 口诀：甲己还加甲，乙庚丙作初，丙辛从戊起，丁壬庚子居，戊癸何方发，壬子是真途
+function calculateHourGan(dayGan: string, hourZhiIdx: number): string {
+  const ziShiGanMap: Record<string, number> = {
+    '甲': 0, '己': 0,  // 甲己日子时=甲子(甲=0)
+    '乙': 2, '庚': 2,  // 乙庚日子时=丙子(丙=2)
+    '丙': 4, '辛': 4,  // 丙辛日子时=戊子(戊=4)
+    '丁': 6, '壬': 6,  // 丁壬日子时=庚子(庚=6)
+    '戊': 8, '癸': 8,  // 戊癸日子时=壬子(壬=8)
+  };
+  
+  const baseGanIdx = ziShiGanMap[dayGan];
+  if (baseGanIdx === undefined) return '?';
+  
+  const ganIdx = (baseGanIdx + hourZhiIdx) % 10;
+  return TIAN_GAN[ganIdx];
+}
+
+// 兼容旧接口的辅助函数
+export function calculateYearPillar(year: number): [string, string] {
+  const ganIdx = (year - 4) % 10;
+  const zhiIdx = (year - 4) % 12;
+  return [TIAN_GAN[ganIdx], DI_ZHI[zhiIdx]];
+}
+
+export function calculateDayPillar(date: Date): [string, string] {
+  const { Solar } = require('lunar-javascript');
+  const solar = Solar.fromDate(date);
+  const gz = solar.getLunar().getDayInGanZhi();
+  return [gz[0], gz[1]];
 }

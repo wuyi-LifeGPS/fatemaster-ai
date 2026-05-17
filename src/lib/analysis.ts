@@ -736,3 +736,208 @@ export function analyzeDailyFortune(
     luckyDirection,
   };
 }
+
+// ===== analyzeMarriage =====
+export function analyzeMarriage(maleBazi: any, femaleBazi: any, maleName: string, femaleName: string) {
+  const m = maleBazi;
+  const f = femaleBazi;
+
+  // 天干五合
+  const TIAN_GAN_WU_HE: Record<string, string> = {
+    "甲": "己", "己": "甲",
+    "乙": "庚", "庚": "乙",
+    "丙": "辛", "辛": "丙",
+    "丁": "壬", "壬": "丁",
+    "戊": "癸", "癸": "戊",
+  };
+
+  // 地支六合
+  const DI_ZHI_LIU_HE: Record<string, string> = {
+    "子": "丑", "丑": "子",
+    "寅": "亥", "亥": "寅",
+    "卯": "戌", "戌": "卯",
+    "辰": "酉", "酉": "辰",
+    "巳": "申", "申": "巳",
+    "午": "未", "未": "午",
+  };
+
+  // 地支三合
+  const DI_ZHI_SAN_HE: Record<string, string[]> = {
+    "申": ["子", "辰"], "子": ["申", "辰"], "辰": ["申", "子"],
+    "寅": ["午", "戌"], "午": ["寅", "戌"], "戌": ["寅", "午"],
+    "巳": ["酉", "丑"], "酉": ["巳", "丑"], "丑": ["巳", "酉"],
+    "亥": ["卯", "未"], "卯": ["亥", "未"], "未": ["亥", "卯"],
+  };
+
+  // 地支六冲
+  const DI_ZHI_CHONG: Record<string, string> = {
+    "子": "午", "午": "子",
+    "丑": "未", "未": "丑",
+    "寅": "申", "申": "寅",
+    "卯": "酉", "酉": "卯",
+    "辰": "戌", "戌": "辰",
+    "巳": "亥", "亥": "巳",
+  };
+
+  // 地支六害
+  const DI_ZHI_HAI: Record<string, string> = {
+    "子": "未", "未": "子",
+    "丑": "午", "午": "丑",
+    "寅": "巳", "巳": "寅",
+    "卯": "辰", "辰": "卯",
+    "申": "亥", "亥": "申",
+    "酉": "戌", "戌": "酉",
+  };
+
+  const mDayMaster = m.dayMaster;
+  const fDayMaster = f.dayMaster;
+  const mDayZhi = m.pillars[2].zhi;
+  const fDayZhi = f.pillars[2].zhi;
+
+  const ganHeMatch = TIAN_GAN_WU_HE[mDayMaster] === fDayMaster;
+  const zhiHeMatch = DI_ZHI_LIU_HE[mDayZhi] === fDayZhi;
+  let sanHeMatch = false;
+  const mSanHe = DI_ZHI_SAN_HE[mDayZhi];
+  if (mSanHe && mSanHe.includes(fDayZhi)) sanHeMatch = true;
+  const fSanHe = DI_ZHI_SAN_HE[fDayZhi];
+  if (fSanHe && fSanHe.includes(mDayZhi)) sanHeMatch = true;
+  const chongMatch = DI_ZHI_CHONG[mDayZhi] === fDayZhi;
+  const haiMatch = DI_ZHI_HAI[mDayZhi] === fDayZhi;
+
+  // 五行互补
+  const mWx = m.wuXingFullCount;
+  const fWx = f.wuXingFullCount;
+  const mTotal = Object.values(mWx).reduce((a: any, b: any) => a + b, 0) as number;
+  const fTotal = Object.values(fWx).reduce((a: any, b: any) => a + b, 0) as number;
+
+  let complementScore = 0;
+  const complementDetails: string[] = [];
+
+  ["金", "木", "水", "火", "土"].forEach((wx) => {
+    const mRatio = (mWx[wx] || 0) / mTotal;
+    const fRatio = (fWx[wx] || 0) / fTotal;
+    if (mRatio > 0.25 && fRatio < 0.15) {
+      complementScore += 15;
+      complementDetails.push(`男方${wx}旺，女方${wx}弱，男方补足女方`);
+    } else if (fRatio > 0.25 && mRatio < 0.15) {
+      complementScore += 15;
+      complementDetails.push(`女方${wx}旺，男方${wx}弱，女方补足男方`);
+    }
+  });
+
+  // 喜用神互济
+  const mXi = m.combinedGod?.xi || [];
+  const fXi = f.combinedGod?.xi || [];
+  const wxMap: Record<string, string> = {
+    "甲": "木", "乙": "木", "丙": "火", "丁": "火", "戊": "土", "己": "土",
+    "庚": "金", "辛": "金", "壬": "水", "癸": "水",
+  };
+
+  const xiJiScore = (xi1: string[], targetDayMaster: string) => {
+    let score = 0;
+    const targetWx = wxMap[targetDayMaster] || "";
+    xi1.forEach((wx) => {
+      if (wx === targetWx) score += 20;
+    });
+    return score;
+  };
+
+  const mHelpF = xiJiScore(mXi, fDayMaster);
+  const fHelpM = xiJiScore(fXi, mDayMaster);
+
+  // 十神互动
+  const mToF_SS = getShiShen(fDayMaster, mDayMaster);
+  const fToM_SS = getShiShen(mDayMaster, fDayMaster);
+
+  const idealPairs = [
+    { m: "正财", f: "正官", desc: "财官相生，传统美满婚姻" },
+    { m: "正官", f: "正印", desc: "官印相生，夫贵妻贤" },
+    { m: "食神", f: "正印", desc: "食印相生，互相滋养" },
+    { m: "偏财", f: "正官", desc: "财官双美，富贵双全" },
+  ];
+
+  const pairMatch = idealPairs.find((p) => p.m === mToF_SS && p.f === fToM_SS);
+
+  // 综合评分
+  let totalScore = 60;
+  if (ganHeMatch) totalScore += 15;
+  if (zhiHeMatch) totalScore += 10;
+  if (sanHeMatch) totalScore += 8;
+  if (pairMatch) totalScore += 12;
+  totalScore += complementScore;
+  totalScore += mHelpF;
+  totalScore += fHelpM;
+  if (chongMatch) totalScore -= 20;
+  if (haiMatch) totalScore -= 12;
+  totalScore = Math.min(100, Math.max(20, totalScore));
+
+  // 角色分析
+  const roleAnalysis = () => {
+    let mRole = "";
+    let fRole = "";
+    if (["正财", "偏财"].includes(mToF_SS)) {
+      mRole = "男方视女方为财星，重视家庭，愿意为家庭付出物质支持。";
+    } else if (["正官", "七杀"].includes(mToF_SS)) {
+      mRole = "男方视女方为官杀，有敬畏之心，愿意承担责任。";
+    } else if (["食神", "伤官"].includes(mToF_SS)) {
+      mRole = "男方视女方为食伤，欣赏女方的才华和表达，关系轻松有趣。";
+    } else if (["正印", "偏印"].includes(mToF_SS)) {
+      mRole = "男方视女方为印星，依赖女方的智慧和支持，女方像精神导师。";
+    } else {
+      mRole = "男方视女方为同类，平等相待，既有竞争也有默契。";
+    }
+
+    if (["正官", "七杀"].includes(fToM_SS)) {
+      fRole = "女方视男方为官杀，希望男方有担当、有能力，对男方有要求。";
+    } else if (["正财", "偏财"].includes(fToM_SS)) {
+      fRole = "女方视男方为财星，重视物质安全，希望男方提供稳定生活。";
+    } else if (["正印", "偏印"].includes(fToM_SS)) {
+      fRole = "女方视男方为印星，依赖男方的智慧和包容，男方像避风港。";
+    } else if (["食神", "伤官"].includes(fToM_SS)) {
+      fRole = "女方视男方为食伤，欣赏男方的才华，关系轻松自在。";
+    } else {
+      fRole = "女方视男方为同类，平等相待，既是伴侣也是战友。";
+    }
+    return { mRole, fRole };
+  };
+
+  const roles = roleAnalysis();
+
+  const getLevel = () => {
+    if (totalScore >= 85) return { level: "天作之合", color: "text-red-600", desc: "缘分深厚，五行互补，十神和谐，是非常理想的婚配组合。" };
+    if (totalScore >= 70) return { level: "良缘佳配", color: "text-amber-600", desc: "有较好的互补性，虽有差异但可互相成就，用心经营可得美满婚姻。" };
+    if (totalScore >= 55) return { level: "中等缘分", color: "text-blue-600", desc: "缘分中等，需要双方更多包容和理解。差异是挑战也是成长机会。" };
+    return { level: "缘分较浅", color: "text-ink-500", desc: "五行冲突较多，相处中易有摩擦。若选择在一起，需要极大的耐心和智慧来磨合。" };
+  };
+
+  const level = getLevel();
+
+  const suggestions: string[] = [];
+  if (chongMatch) suggestions.push("日支相冲，日常生活中容易意见不合，建议遇到分歧时先冷静，避免正面冲突。");
+  if (haiMatch) suggestions.push("日支相害，关系中暗藏隐患，需要多沟通，不要让小问题积累。");
+  if (!ganHeMatch && !zhiHeMatch) suggestions.push("日主无明显合象，缘分需后天培养，多创造共同经历和回忆。");
+  if (complementScore >= 30) suggestions.push("五行互补度高，你们在能量层面有很好的互相滋养，这是很大的优势。");
+  if (mHelpF > 0 || fHelpM > 0) suggestions.push("喜用神互济，你们的结合能互相提升运势，是\"旺对方\"的组合。");
+  if (suggestions.length === 0) suggestions.push("你们的八字组合相对平衡，保持现状、用心经营即可。");
+
+  return {
+    score: totalScore,
+    level: level.level,
+    levelColor: level.color,
+    levelDesc: level.desc,
+    ganHeMatch,
+    zhiHeMatch,
+    sanHeMatch,
+    chongMatch,
+    haiMatch,
+    mToF_SS,
+    fToM_SS,
+    pairMatch,
+    complementScore,
+    complementDetails,
+    mHelpF,
+    fHelpM,
+    roles,
+    suggestions,
+  };
+}

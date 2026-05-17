@@ -375,84 +375,67 @@ export default function BaziPage() {
             )}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-xl font-bold mb-4 font-serif">五行分布</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-fate-200">
-                      <th className="py-2 px-3 text-left text-ink-500 font-medium">五行</th>
-                      <th className="py-2 px-3 text-left text-ink-500 font-medium">天干透出</th>
-                      <th className="py-2 px-3 text-left text-ink-500 font-medium">地支本气</th>
-                      <th className="py-2 px-3 text-left text-ink-500 font-medium">地支中气</th>
-                      <th className="py-2 px-3 text-left text-ink-500 font-medium">地支余气</th>
-                      <th className="py-2 px-3 text-center text-ink-500 font-medium">总计</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(() => {
-                      const ganToWx: Record<string, string> = {
-                        '甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土',
-                        '庚':'金','辛':'金','壬':'水','癸':'水'
-                      };
-                      const tianGan: Record<string, string[]> = {金:[],木:[],水:[],火:[],土:[]};
-                      const benQi: Record<string, {gan:string,zhi:string,ss:string}[]> = {金:[],木:[],水:[],火:[],土:[]};
-                      const zhongQi: Record<string, {gan:string,zhi:string,ss:string}[]> = {金:[],木:[],水:[],火:[],土:[]};
-                      const yuQi: Record<string, {gan:string,zhi:string,ss:string}[]> = {金:[],木:[],水:[],火:[],土:[]};
-                      
-                      result.pillars.forEach((p: any) => {
-                        const wx = ganToWx[p.gan];
-                        if (wx) tianGan[wx].push(p.gan);
+              <div className="space-y-3">
+                {(() => {
+                  const ganToWx: Record<string, string> = {
+                    '甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土',
+                    '庚':'金','辛':'金','壬':'水','癸':'水'
+                  };
+                  const wxColors: Record<string, string> = {
+                    '金': '#B8860B', '木': '#228B22', '水': '#1E90FF',
+                    '火': '#DC143C', '土': '#DAA520'
+                  };
+
+                  return ['金','木','水','火','土'].map(wx => {
+                    const total = result.wuXingFullCount?.[wx] || 0;
+                    const barWidth = Math.min((total / 10) * 100, 100);
+
+                    // 收集该五行的所有来源
+                    const sources: {type:string, text:string}[] = [];
+
+                    // 天干透出
+                    result.pillars.forEach((p: any) => {
+                      if (ganToWx[p.gan] === wx) {
+                        const ss = result.tenGods?.[p.gan] || '';
+                        sources.push({type:'天干', text:`${p.gan}(${p.name}·${ss})`});
+                      }
+                    });
+
+                    // 地支藏干
+                    result.cangGanDetail?.forEach((cg: any) => {
+                      cg.cangGan.forEach((item: any) => {
+                        if (ganToWx[item.gan] === wx) {
+                          sources.push({type:item.qi, text:`${item.gan}(${cg.zhi}·${item.shiShen})`});
+                        }
                       });
-                      result.cangGanDetail?.forEach((cg: any) => {
-                        cg.cangGan.forEach((item: any) => {
-                          const wx = ganToWx[item.gan];
-                          if (!wx) return;
-                          const data = {gan: item.gan, zhi: cg.zhi, ss: item.shiShen};
-                          if (item.qi === '本气') benQi[wx].push(data);
-                          else if (item.qi === '中气') zhongQi[wx].push(data);
-                          else yuQi[wx].push(data);
-                        });
-                      });
-                      
-                      const wxColors: Record<string, string> = {
-                        '金': 'text-amber-700',
-                        '木': 'text-green-700',
-                        '水': 'text-blue-700',
-                        '火': 'text-red-700',
-                        '土': 'text-yellow-700'
-                      };
-                      
-                      return ['金','木','水','火','土'].map(wx => {
-                        const total = (result.wuXingFullCount?.[wx] || 0);
-                        const barWidth = Math.min((total / 10) * 100, 100);
-                        return (
-                          <tr key={wx} className="border-b border-fate-100 last:border-0">
-                            <td className={`py-2 px-3 font-bold ${wxColors[wx]}`}>{wx}</td>
-                            <td className="py-2 px-3 text-ink-600">
-                              {tianGan[wx].length > 0 ? tianGan[wx].join('、') : '-'}
-                            </td>
-                            <td className="py-2 px-3 text-ink-600">
-                              {benQi[wx].length > 0 ? benQi[wx].map(x => `${x.gan}(${x.zhi}·${x.ss})`).join('、') : '-'}
-                            </td>
-                            <td className="py-2 px-3 text-ink-600">
-                              {zhongQi[wx].length > 0 ? zhongQi[wx].map(x => `${x.gan}(${x.zhi}·${x.ss})`).join('、') : '-'}
-                            </td>
-                            <td className="py-2 px-3 text-ink-600">
-                              {yuQi[wx].length > 0 ? yuQi[wx].map(x => `${x.gan}(${x.zhi}·${x.ss})`).join('、') : '-'}
-                            </td>
-                            <td className="py-2 px-3 text-center">
-                              <div className="font-bold text-fate-700">{total}</div>
-                              <div className="w-16 bg-fate-100 rounded-full h-1.5 mx-auto mt-1">
-                                <div className="bg-fate-500 h-1.5 rounded-full" style={{width: `${barWidth}%`}} />
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      });
-                    })()}
-                  </tbody>
-                </table>
+                    });
+
+                    return (
+                      <div key={wx} className="border-b border-fate-100 last:border-0 pb-3 last:pb-0">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-bold text-lg" style={{color: wxColors[wx]}}>{wx}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold text-fate-700">{total}</span>
+                            <div className="w-16 bg-fate-100 rounded-full h-1.5">
+                              <div className="h-1.5 rounded-full" style={{width: `${barWidth}%`, backgroundColor: wxColors[wx]}} />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {sources.length === 0 ? (
+                            <span className="text-xs text-ink-400">无</span>
+                          ) : sources.map((s, i) => (
+                            <span key={i} className="text-xs bg-fate-50 px-2 py-1 rounded text-ink-600">
+                              <span className="text-ink-400 mr-1">{s.type}:</span>{s.text}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
               </div>
-              <p className="text-xs text-ink-400 mt-3">总计含天干 + 地支全部藏干（本气·中气·余气）。天干直接透出能量最强，藏干为潜在能量，需大运流年引动方显。</p>
+              <p className="text-xs text-ink-400 mt-4">总计含天干 + 地支全部藏干（本气·中气·余气）。天干透出能量最强，藏干为潜在能量。</p>
             </div>
 
             {/* AI 分析 */}

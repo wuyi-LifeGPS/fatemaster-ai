@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { analyzeBazi, getAiAnalysis } from '@/lib/analysis'
+import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 
 interface BaziResult {
   pillars: { name: string; gan: string; zhi: string }[]
@@ -23,6 +24,8 @@ interface BaziResult {
 export default function BaziPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<BaziResult | null>(null)
+  const [history, setHistory] = useState<HistoryRecord[]>([])
+  const [showHistory, setShowHistory] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     gender: 'male' as 'male' | 'female',
@@ -43,6 +46,11 @@ export default function BaziPage() {
   const minuteOptions = Array.from({length: 12}, (_, i) => i * 5)
 
   const pad = (n: number) => String(n).padStart(2, '0')
+
+  // 加载历史记录
+  useEffect(() => {
+    setHistory(getHistoryByType('bazi'))
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,6 +75,11 @@ export default function BaziPage() {
       )
 
       setResult(result)
+
+      // 保存查询记录
+      const summary = `${result.dayMaster}日主 · ${result.yinYang}性${result.wuXing}命 · ${result.bodyStrength?.strength || '未知'}`
+      addHistory('bazi', formData.name || `八字分析 ${birthDate}`, formData, summary)
+      setHistory(getHistoryByType('bazi'))
 
       // 如果有 API Key，异步获取 AI 深度分析
       if (result._pendingAi && apiKey) {
@@ -95,6 +108,11 @@ export default function BaziPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const loadHistory = (record: HistoryRecord) => {
+    setFormData(record.formData)
+    setShowHistory(false)
   }
 
   return (
@@ -234,6 +252,39 @@ export default function BaziPage() {
                 {loading ? '正在分析...' : '开始八字分析'}
               </button>
             </form>
+
+            {/* 历史记录 */}
+            {history.length > 0 && (
+              <div className="mt-6 max-w-lg mx-auto">
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3"
+                >
+                  <span>📜</span>
+                  <span>查询历史（{history.length} 条）</span>
+                  <span>{showHistory ? '▲' : '▼'}</span>
+                </button>
+                {showHistory && (
+                  <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
+                    {history.map((record) => (
+                      <div
+                        key={record.id}
+                        onClick={() => loadHistory(record)}
+                        className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                            <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+                          </div>
+                          <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </>
         ) : (
           <div className="space-y-8">

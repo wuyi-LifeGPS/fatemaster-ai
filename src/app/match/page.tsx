@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { analyzeMarriage, analyzeBazi, getMatchAiAnalysis } from '@/lib/analysis'
+import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 
 interface MatchResult {
   score: number
@@ -33,6 +34,8 @@ export default function MatchPage() {
   const [result, setResult] = useState<MatchResult | null>(null)
   const [maleBazi, setMaleBazi] = useState<any>(null)
   const [femaleBazi, setFemaleBazi] = useState<any>(null)
+  const [history, setHistory] = useState<HistoryRecord[]>([])
+  const [showHistory, setShowHistory] = useState(false)
 
   const [maleForm, setMaleForm] = useState({
     name: '',
@@ -56,6 +59,10 @@ export default function MatchPage() {
   const hourOptions = Array.from({ length: 24 }, (_, i) => i)
   const pad = (n: number) => String(n).padStart(2, '0')
 
+  useEffect(() => {
+    setHistory(getHistoryByType('match'))
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -75,6 +82,11 @@ export default function MatchPage() {
       setMaleBazi(mBazi)
       setFemaleBazi(fBazi)
       setResult(combinedM)
+
+      // 保存记录
+      const title = `${maleForm.name || '男方'} & ${femaleForm.name || '女方'} · 合婚`
+      addHistory('match', title, { maleForm, femaleForm }, `${combinedM.score}分 · ${combinedM.level}`)
+      setHistory(getHistoryByType('match'))
 
       // 如果有 API Key，异步获取 AI 深度分析
       const settings = localStorage.getItem('lifegps_settings')
@@ -101,6 +113,12 @@ export default function MatchPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const loadHistory = (record: HistoryRecord) => {
+    setMaleForm(record.formData.maleForm)
+    setFemaleForm(record.formData.femaleForm)
+    setShowHistory(false)
   }
 
   const renderHeChong = (label: string, match: boolean, type: 'he' | 'chong' | 'hai') => {
@@ -148,7 +166,8 @@ export default function MatchPage() {
 
         {/* 输入表单 */}
         {!result && (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <>
+            <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               {/* 男方 */}
               <div className="bg-white rounded-xl shadow-sm p-6">
@@ -239,6 +258,40 @@ export default function MatchPage() {
               {loading ? '分析中...' : '💑 开始合婚分析'}
             </button>
           </form>
+
+          {/* 历史记录 */}
+          {history.length > 0 && (
+            <div className="mt-6">
+              <button
+                onClick={() => setShowHistory(!showHistory)}
+                className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3"
+              >
+                <span>📜</span>
+                <span>查询历史（{history.length} 条）</span>
+                <span>{showHistory ? '▲' : '▼'}</span>
+              </button>
+              {showHistory && (
+                <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
+                  {history.map((record) => (
+                    <div
+                      key={record.id}
+                      onClick={() => loadHistory(record)}
+                      className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                          <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+                        </div>
+                        <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          </>
         )}
 
         {/* 结果展示 */}

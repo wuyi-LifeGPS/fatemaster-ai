@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { analyzeCareer, analyzeBazi } from '@/lib/analysis'
+import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 
 interface CareerResult {
   score: number
@@ -27,6 +28,8 @@ export default function CareerPage() {
   const [result, setResult] = useState<CareerResult | null>(null)
   const [mBazi, setMBazi] = useState<any>(null)
   const [fBazi, setFBazi] = useState<any>(null)
+  const [history, setHistory] = useState<HistoryRecord[]>([])
+  const [showHistory, setShowHistory] = useState(false)
 
   const [mForm, setMForm] = useState({
     name: '',
@@ -50,6 +53,10 @@ export default function CareerPage() {
   const hourOptions = Array.from({ length: 24 }, (_, i) => i)
   const pad = (n: number) => String(n).padStart(2, '0')
 
+  useEffect(() => {
+    setHistory(getHistoryByType('career'))
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -68,12 +75,23 @@ export default function CareerPage() {
       setMBazi(mBaziResult)
       setFBazi(fBaziResult)
       setResult(careerResult)
+
+      // 保存记录
+      const title = `${mForm.name || '甲方'} & ${fForm.name || '乙方'} · 事业合作`
+      addHistory('career', title, { mForm, fForm }, `${careerResult.score}分 · ${careerResult.level}`)
+      setHistory(getHistoryByType('career'))
     } catch (error) {
       console.error('Error:', error)
       alert('分析出错，请重试')
     } finally {
       setLoading(false)
     }
+  }
+
+  const loadHistory = (record: HistoryRecord) => {
+    setMForm(record.formData.mForm)
+    setFForm(record.formData.fForm)
+    setShowHistory(false)
   }
 
   return (
@@ -102,7 +120,8 @@ export default function CareerPage() {
 
         {/* 输入表单 */}
         {!result && (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <>
+            <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               {/* 甲方 */}
               <div className="bg-white rounded-xl shadow-sm p-6">
@@ -193,6 +212,40 @@ export default function CareerPage() {
               {loading ? '分析中...' : '🤝 开始事业合作分析'}
             </button>
           </form>
+
+          {/* 历史记录 */}
+          {history.length > 0 && (
+            <div className="mt-6">
+              <button
+                onClick={() => setShowHistory(!showHistory)}
+                className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3"
+              >
+                <span>📜</span>
+                <span>查询历史（{history.length} 条）</span>
+                <span>{showHistory ? '▲' : '▼'}</span>
+              </button>
+              {showHistory && (
+                <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
+                  {history.map((record) => (
+                    <div
+                      key={record.id}
+                      onClick={() => loadHistory(record)}
+                      className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                          <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+                        </div>
+                        <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          </>
         )}
 
         {/* 结果展示 */}

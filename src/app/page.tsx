@@ -108,7 +108,15 @@ export default function Home() {
       {/* Services */}
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4 font-serif">分析系统</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-3xl font-bold font-serif">分析系统</h2>
+            <Link
+              href="/history"
+              className="text-sm text-fate-600 hover:text-fate-700 flex items-center gap-1 px-3 py-1.5 rounded-md hover:bg-fate-50 transition-colors"
+            >
+              📜 查询历史
+            </Link>
+          </div>
           <p className="text-center text-ink-500 mb-12">探索我们的智能解析服务</p>
           <div className="grid md:grid-cols-2 gap-6">
             {services.map((service) => (

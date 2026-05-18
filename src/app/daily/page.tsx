@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { calculateBazi, getTodayGanZhi } from '@/lib/bazi'
 import { analyzeDailyFortune } from '@/lib/analysis'
+import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 
 interface FortuneResult {
   today: {
@@ -40,6 +41,8 @@ export default function DailyPage() {
   const [loading, setLoading] = useState(false)
   const [todayGanZhi, setTodayGanZhi] = useState<any>(null)
   const [result, setResult] = useState<FortuneResult | null>(null)
+  const [history, setHistory] = useState<HistoryRecord[]>([])
+  const [showHistory, setShowHistory] = useState(false)
   const [formData, setFormData] = useState({
     birthYear: 1990,
     birthMonth: 1,
@@ -53,6 +56,11 @@ export default function DailyPage() {
   useEffect(() => {
     const tg = getTodayGanZhi()
     setTodayGanZhi(tg)
+  }, [])
+
+  // 加载历史记录
+  useEffect(() => {
+    setHistory(getHistoryByType('daily'))
   }, [])
 
   const yearOptions = Array.from({ length: 131 }, (_, i) => 1900 + i)
@@ -76,12 +84,22 @@ export default function DailyPage() {
       // 计算日运
       const fortune = analyzeDailyFortune(todayGanZhi, bazi)
       setResult(fortune)
+
+      // 保存记录
+      const title = `${formData.name || '未命名'} · ${todayGanZhi.dateStr} 日运`
+      addHistory('daily', title, formData, `${fortune.scores.overall}分 · ${fortune.summary}`)
+      setHistory(getHistoryByType('daily'))
     } catch (error) {
       console.error('Error:', error)
       alert('分析出错，请重试')
     } finally {
       setLoading(false)
     }
+  }
+
+  const loadHistory = (record: HistoryRecord) => {
+    setFormData(record.formData)
+    setShowHistory(false)
   }
 
   const getStarCount = (score: number) => {
@@ -213,6 +231,39 @@ export default function DailyPage() {
                 {loading ? '分析中...' : '查看今日运势'}
               </button>
             </form>
+
+            {/* 历史记录 */}
+            {history.length > 0 && (
+              <div className="mt-6">
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3"
+                >
+                  <span>📜</span>
+                  <span>查询历史（{history.length} 条）</span>
+                  <span>{showHistory ? '▲' : '▼'}</span>
+                </button>
+                {showHistory && (
+                  <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
+                    {history.map((record) => (
+                      <div
+                        key={record.id}
+                        onClick={() => loadHistory(record)}
+                        className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                            <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+                          </div>
+                          <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 

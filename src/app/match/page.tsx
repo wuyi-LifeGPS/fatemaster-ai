@@ -68,12 +68,7 @@ export default function MatchPage() {
 
       const combinedM = analyzeMarriage(mBazi, fBazi, maleForm.name, femaleForm.name)
       
-      // 注意：analyzeMarriage 内部会调用 calculateCombinedGod，但当前 bazi 对象没有 combinedGod
-      // 需要在 analyzeMarriage 内部处理，或者先给 bazi 加上 combinedGod
-      // 但是 analyzeMarriage 的当前实现是从 bazi.combinedGod 读的
-      // 需要修正 analyzeMarriage 的逻辑，或者确保传入的 bazi 有 combinedGod
 
-      setMaleBazi(mBazi)
       setFemaleBazi(fBazi)
       setResult(combinedM)
     } catch (error) {

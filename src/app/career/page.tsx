@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { analyzeCareer, analyzeBazi } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
+import PersonFormSelector from '@/components/PersonFormSelector'
 
 interface CareerResult {
   score: number
@@ -50,14 +51,9 @@ export default function CareerPage() {
   const [mBazi, setMBazi] = useState<any>(null)
   const [fBazi, setFBazi] = useState<any>(null)
   const [history, setHistory] = useState<HistoryRecord[]>([])
-  const [showHistory, setShowHistory] = useState(false)
-
   const [mForm, setMForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1990 })
   const [fForm, setFForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1992 })
 
-  const yearOptions = Array.from({ length: 131 }, (_, i) => 1900 + i)
-  const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
-  const hourOptions = Array.from({ length: 24 }, (_, i) => i)
   const pad = (n: number) => String(n).padStart(2, '0')
 
   useEffect(() => {
@@ -73,15 +69,14 @@ export default function CareerPage() {
     return { year: form.birthYear, month: form.birthMonth, day: form.birthDay }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const runAnalysis = async (mData: PersonForm, fData: PersonForm) => {
     setLoading(true)
 
     try {
       let mSolar, fSolar
       try {
-        mSolar = convertDate(mForm)
-        fSolar = convertDate(fForm)
+        mSolar = convertDate(mData)
+        fSolar = convertDate(fData)
       } catch {
         alert('农历日期转换失败，请检查日期是否有效（如闰月是否存在）')
         setLoading(false)
@@ -89,21 +84,21 @@ export default function CareerPage() {
       }
 
       const mDate = `${mSolar.year}-${pad(mSolar.month)}-${pad(mSolar.day)}`
-      const mTime = `${pad(mForm.birthHour)}:00`
+      const mTime = `${pad(mData.birthHour)}:00`
       const fDate = `${fSolar.year}-${pad(fSolar.month)}-${pad(fSolar.day)}`
-      const fTime = `${pad(fForm.birthHour)}:00`
+      const fTime = `${pad(fData.birthHour)}:00`
 
-      const mBaziResult = analyzeBazi(mDate, mTime, mForm.name, 'male')
-      const fBaziResult = analyzeBazi(fDate, fTime, fForm.name, 'female')
+      const mBaziResult = analyzeBazi(mDate, mTime, mData.name, 'male')
+      const fBaziResult = analyzeBazi(fDate, fTime, fData.name, 'female')
 
-      const careerResult = analyzeCareer(mBaziResult, fBaziResult, mForm.name, fForm.name)
+      const careerResult = analyzeCareer(mBaziResult, fBaziResult, mData.name, fData.name)
 
       setMBazi(mBaziResult)
       setFBazi(fBaziResult)
       setResult(careerResult)
 
-      const title = `${mForm.name || '甲方'} & ${fForm.name || '乙方'} · 事业合作`
-      addHistory('career', title, { mForm, fForm }, `${careerResult.score}分 · ${careerResult.level}`)
+      const title = `${mData.name || '甲方'} & ${fData.name || '乙方'} · 事业合作`
+      addHistory('career', title, { mForm: mData, fForm: fData }, `${careerResult.score}分 · ${careerResult.level}`)
       setHistory(getHistoryByType('career'))
     } catch (error) {
       console.error('Error:', error)
@@ -113,98 +108,27 @@ export default function CareerPage() {
     }
   }
 
-  const loadHistory = (record: HistoryRecord) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    runAnalysis(mForm, fForm)
+  }
+
+  const handleHistoryClick = (record: HistoryRecord) => {
     const m = record.formData.mForm || defaultPerson
     const f = record.formData.fForm || defaultPerson
-    setMForm({
+    const mData = {
       ...m,
       calendarType: m.calendarType || 'solar',
       lunarIsLeap: m.lunarIsLeap || false,
-    })
-    setFForm({
+    }
+    const fData = {
       ...f,
       calendarType: f.calendarType || 'solar',
       lunarIsLeap: f.lunarIsLeap || false,
-    })
-    setShowHistory(false)
-  }
-
-  const DateSelector = ({ form, setForm, label }: { form: PersonForm; setForm: (f: PersonForm) => void; label: string }) => {
-    const monthOptions = form.calendarType === 'lunar'
-      ? getLunarMonthOptions(form.birthYear)
-      : Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({ value: m, label: `${m}月`, isLeap: false }))
-
-    return (
-      <div className="space-y-3">
-        <div>
-          <label className="block text-sm text-ink-500 mb-1">姓名（选填）</label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            placeholder="姓名"
-            className="w-full px-3 py-2 border border-fate-200 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm text-ink-500 mb-1">出生日期 *</label>
-          <div className="flex gap-1 mb-1.5 bg-fate-100 rounded-lg p-1 w-fit">
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, calendarType: 'solar', lunarIsLeap: false })}
-              className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
-                form.calendarType === 'solar'
-                  ? 'bg-white text-ink-800 shadow-sm'
-                  : 'text-ink-500 hover:text-ink-700'
-              }`}
-            >
-              公历
-            </button>
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, calendarType: 'lunar' })}
-              className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
-                form.calendarType === 'lunar'
-                  ? 'bg-white text-ink-800 shadow-sm'
-                  : 'text-ink-500 hover:text-ink-700'
-              }`}
-            >
-              农历
-            </button>
-          </div>
-          <div className="flex gap-2">
-            <select value={form.birthYear} onChange={(e) => setForm({ ...form, birthYear: Number(e.target.value) })} className="flex-1 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-              {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
-            </select>
-            <select
-              value={`${form.lunarIsLeap ? 'leap-' : ''}${form.birthMonth}`}
-              onChange={(e) => {
-                const val = e.target.value
-                const isLeap = val.startsWith('leap-')
-                const month = Number(isLeap ? val.replace('leap-', '') : val)
-                setForm({ ...form, birthMonth: month, lunarIsLeap: isLeap })
-              }}
-              className="w-24 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm"
-            >
-              {monthOptions.map(m => (
-                <option key={`${m.isLeap ? 'leap-' : ''}${m.value}`} value={`${m.isLeap ? 'leap-' : ''}${m.value}`}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-            <select value={form.birthDay} onChange={(e) => setForm({ ...form, birthDay: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-              {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
-            </select>
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm text-ink-500 mb-1">出生时辰</label>
-          <select value={form.birthHour} onChange={(e) => setForm({ ...form, birthHour: Number(e.target.value) })} className="w-full px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-            {hourOptions.map(h => <option key={h} value={h}>{pad(h)}:00</option>)}
-          </select>
-        </div>
-      </div>
-    )
+    }
+    setMForm(mData)
+    setFForm(fData)
+    runAnalysis(mData, fData)
   }
 
   return (
@@ -236,14 +160,14 @@ export default function CareerPage() {
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">甲</div>
                     <h3 className="font-bold text-lg">甲方信息</h3>
                   </div>
-                  <DateSelector form={mForm} setForm={setMForm} label="甲方" />
+                  <PersonFormSelector form={mForm} setForm={setMForm} />
                 </div>
                 <div className="bg-white rounded-xl shadow-sm p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white text-sm font-bold">乙</div>
                     <h3 className="font-bold text-lg">乙方信息</h3>
                   </div>
-                  <DateSelector form={fForm} setForm={setFForm} label="乙方" />
+                  <PersonFormSelector form={fForm} setForm={setFForm} />
                 </div>
               </div>
               <button
@@ -256,27 +180,26 @@ export default function CareerPage() {
             </form>
 
             {history.length > 0 && (
-              <div className="mt-6">
-                <button onClick={() => setShowHistory(!showHistory)} className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3">
+              <div className="mt-6 space-y-2">
+                <div className="flex items-center gap-2 text-sm text-ink-500 mb-2">
                   <span>📜</span>
                   <span>查询历史（{history.length} 条）</span>
-                  <span>{showHistory ? '▲' : '▼'}</span>
-                </button>
-                {showHistory && (
-                  <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
-                    {history.map((record) => (
-                      <div key={record.id} onClick={() => loadHistory(record)} className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <div className="font-medium text-sm text-ink-800">{record.title}</div>
-                            <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
-                          </div>
-                          <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
-                        </div>
+                </div>
+                {history.map((record) => (
+                  <button
+                    key={record.id}
+                    onClick={() => handleHistoryClick(record)}
+                    className="w-full text-left bg-white rounded-xl shadow-sm border border-fate-100 p-4 hover:shadow-md hover:border-fate-200 transition-all"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                        <div className="text-xs text-ink-400 mt-1">{record.resultSummary}</div>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                    </div>
+                  </button>
+                ))}
               </div>
             )}
           </>

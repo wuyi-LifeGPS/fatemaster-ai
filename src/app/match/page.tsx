@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { analyzeMarriage, analyzeBazi, getMatchAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
+import PersonFormSelector from '@/components/PersonFormSelector'
 
 interface MatchResult {
   score: number
@@ -56,14 +57,9 @@ export default function MatchPage() {
   const [maleBazi, setMaleBazi] = useState<any>(null)
   const [femaleBazi, setFemaleBazi] = useState<any>(null)
   const [history, setHistory] = useState<HistoryRecord[]>([])
-  const [showHistory, setShowHistory] = useState(false)
-
   const [maleForm, setMaleForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1990 })
   const [femaleForm, setFemaleForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1992 })
 
-  const yearOptions = Array.from({ length: 131 }, (_, i) => 1900 + i)
-  const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
-  const hourOptions = Array.from({ length: 24 }, (_, i) => i)
   const pad = (n: number) => String(n).padStart(2, '0')
 
   useEffect(() => {
@@ -79,16 +75,15 @@ export default function MatchPage() {
     return { year: form.birthYear, month: form.birthMonth, day: form.birthDay }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const runAnalysis = async (mData: PersonForm, fData: PersonForm) => {
     setLoading(true)
     setLoadingAi(false)
 
     try {
       let mSolar, fSolar
       try {
-        mSolar = convertDate(maleForm)
-        fSolar = convertDate(femaleForm)
+        mSolar = convertDate(mData)
+        fSolar = convertDate(fData)
       } catch {
         alert('农历日期转换失败，请检查日期是否有效（如闰月是否存在）')
         setLoading(false)
@@ -96,21 +91,21 @@ export default function MatchPage() {
       }
 
       const mDate = `${mSolar.year}-${pad(mSolar.month)}-${pad(mSolar.day)}`
-      const mTime = `${pad(maleForm.birthHour)}:00`
+      const mTime = `${pad(mData.birthHour)}:00`
       const fDate = `${fSolar.year}-${pad(fSolar.month)}-${pad(fSolar.day)}`
-      const fTime = `${pad(femaleForm.birthHour)}:00`
+      const fTime = `${pad(fData.birthHour)}:00`
 
-      const mBazi = analyzeBazi(mDate, mTime, maleForm.name, 'male')
-      const fBazi = analyzeBazi(fDate, fTime, femaleForm.name, 'female')
+      const mBazi = analyzeBazi(mDate, mTime, mData.name, 'male')
+      const fBazi = analyzeBazi(fDate, fTime, fData.name, 'female')
 
-      const combinedM = analyzeMarriage(mBazi, fBazi, maleForm.name, femaleForm.name)
+      const combinedM = analyzeMarriage(mBazi, fBazi, mData.name, fData.name)
 
       setMaleBazi(mBazi)
       setFemaleBazi(fBazi)
       setResult(combinedM)
 
-      const title = `${maleForm.name || '男方'} & ${femaleForm.name || '女方'} · 合婚`
-      addHistory('match', title, { maleForm, femaleForm }, `${combinedM.score}分 · ${combinedM.level}`)
+      const title = `${mData.name || '男方'} & ${fData.name || '女方'} · 合婚`
+      addHistory('match', title, { maleForm: mData, femaleForm: fData }, `${combinedM.score}分 · ${combinedM.level}`)
       setHistory(getHistoryByType('match'))
 
       const settings = localStorage.getItem('lifegps_settings')
@@ -120,7 +115,7 @@ export default function MatchPage() {
         setLoadingAi(true)
         try {
           const aiAnalysis = await getMatchAiAnalysis(
-            mBazi, fBazi, maleForm.name, femaleForm.name, combinedM, apiKey
+            mBazi, fBazi, mData.name, fData.name, combinedM, apiKey
           )
           if (aiAnalysis) {
             setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
@@ -139,20 +134,27 @@ export default function MatchPage() {
     }
   }
 
-  const loadHistory = (record: HistoryRecord) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    runAnalysis(maleForm, femaleForm)
+  }
+
+  const handleHistoryClick = (record: HistoryRecord) => {
     const m = record.formData.maleForm || defaultPerson
     const f = record.formData.femaleForm || defaultPerson
-    setMaleForm({
+    const mData = {
       ...m,
       calendarType: m.calendarType || 'solar',
       lunarIsLeap: m.lunarIsLeap || false,
-    })
-    setFemaleForm({
+    }
+    const fData = {
       ...f,
       calendarType: f.calendarType || 'solar',
       lunarIsLeap: f.lunarIsLeap || false,
-    })
-    setShowHistory(false)
+    }
+    setMaleForm(mData)
+    setFemaleForm(fData)
+    runAnalysis(mData, fData)
   }
 
   const renderHeChong = (label: string, match: boolean, type: 'he' | 'chong' | 'hai') => {
@@ -170,84 +172,6 @@ export default function MatchPage() {
       <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${colors[type]}`}>
         <span>{icons[type]}</span>
         <span>{label}{match ? ' ✓' : ' ✗'}</span>
-      </div>
-    )
-  }
-
-  const DateSelector = ({ form, setForm, label }: { form: PersonForm; setForm: (f: PersonForm) => void; label: string }) => {
-    const monthOptions = form.calendarType === 'lunar'
-      ? getLunarMonthOptions(form.birthYear)
-      : Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({ value: m, label: `${m}月`, isLeap: false }))
-
-    return (
-      <div className="space-y-3">
-        <div>
-          <label className="block text-sm text-ink-500 mb-1">姓名（选填）</label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            placeholder="姓名"
-            className="w-full px-3 py-2 border border-fate-200 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm text-ink-500 mb-1">出生日期 *</label>
-          <div className="flex gap-1 mb-1.5 bg-fate-100 rounded-lg p-1 w-fit">
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, calendarType: 'solar', lunarIsLeap: false })}
-              className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
-                form.calendarType === 'solar'
-                  ? 'bg-white text-ink-800 shadow-sm'
-                  : 'text-ink-500 hover:text-ink-700'
-              }`}
-            >
-              公历
-            </button>
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, calendarType: 'lunar' })}
-              className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
-                form.calendarType === 'lunar'
-                  ? 'bg-white text-ink-800 shadow-sm'
-                  : 'text-ink-500 hover:text-ink-700'
-              }`}
-            >
-              农历
-            </button>
-          </div>
-          <div className="flex gap-2">
-            <select value={form.birthYear} onChange={(e) => setForm({ ...form, birthYear: Number(e.target.value) })} className="flex-1 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-              {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
-            </select>
-            <select
-              value={`${form.lunarIsLeap ? 'leap-' : ''}${form.birthMonth}`}
-              onChange={(e) => {
-                const val = e.target.value
-                const isLeap = val.startsWith('leap-')
-                const month = Number(isLeap ? val.replace('leap-', '') : val)
-                setForm({ ...form, birthMonth: month, lunarIsLeap: isLeap })
-              }}
-              className="w-24 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm"
-            >
-              {monthOptions.map(m => (
-                <option key={`${m.isLeap ? 'leap-' : ''}${m.value}`} value={`${m.isLeap ? 'leap-' : ''}${m.value}`}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-            <select value={form.birthDay} onChange={(e) => setForm({ ...form, birthDay: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-              {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
-            </select>
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm text-ink-500 mb-1">出生时辰</label>
-          <select value={form.birthHour} onChange={(e) => setForm({ ...form, birthHour: Number(e.target.value) })} className="w-full px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-            {hourOptions.map(h => <option key={h} value={h}>{pad(h)}:00</option>)}
-          </select>
-        </div>
       </div>
     )
   }
@@ -281,14 +205,14 @@ export default function MatchPage() {
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">男</div>
                     <h3 className="font-bold text-lg">男方信息</h3>
                   </div>
-                  <DateSelector form={maleForm} setForm={setMaleForm} label="男方" />
+                  <PersonFormSelector form={maleForm} setForm={setMaleForm} />
                 </div>
                 <div className="bg-white rounded-xl shadow-sm p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">女</div>
                     <h3 className="font-bold text-lg">女方信息</h3>
                   </div>
-                  <DateSelector form={femaleForm} setForm={setFemaleForm} label="女方" />
+                  <PersonFormSelector form={femaleForm} setForm={setFemaleForm} />
                 </div>
               </div>
               <button
@@ -301,27 +225,26 @@ export default function MatchPage() {
             </form>
 
             {history.length > 0 && (
-              <div className="mt-6">
-                <button onClick={() => setShowHistory(!showHistory)} className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3">
+              <div className="mt-6 space-y-2">
+                <div className="flex items-center gap-2 text-sm text-ink-500 mb-2">
                   <span>📜</span>
                   <span>查询历史（{history.length} 条）</span>
-                  <span>{showHistory ? '▲' : '▼'}</span>
-                </button>
-                {showHistory && (
-                  <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
-                    {history.map((record) => (
-                      <div key={record.id} onClick={() => loadHistory(record)} className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <div className="font-medium text-sm text-ink-800">{record.title}</div>
-                            <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
-                          </div>
-                          <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
-                        </div>
+                </div>
+                {history.map((record) => (
+                  <button
+                    key={record.id}
+                    onClick={() => handleHistoryClick(record)}
+                    className="w-full text-left bg-white rounded-xl shadow-sm border border-fate-100 p-4 hover:shadow-md hover:border-fate-200 transition-all"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                        <div className="text-xs text-ink-400 mt-1">{record.resultSummary}</div>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                    </div>
+                  </button>
+                ))}
               </div>
             )}
           </>

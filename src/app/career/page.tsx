@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { analyzeCareer, analyzeBazi } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
+import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
 
 interface CareerResult {
   score: number
@@ -23,6 +24,26 @@ interface CareerResult {
   suggestions: string[]
 }
 
+interface PersonForm {
+  name: string
+  birthYear: number
+  birthMonth: number
+  birthDay: number
+  birthHour: number
+  calendarType: 'solar' | 'lunar'
+  lunarIsLeap: boolean
+}
+
+const defaultPerson: PersonForm = {
+  name: '',
+  birthYear: 1990,
+  birthMonth: 1,
+  birthDay: 1,
+  birthHour: 12,
+  calendarType: 'solar',
+  lunarIsLeap: false,
+}
+
 export default function CareerPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<CareerResult | null>(null)
@@ -31,25 +52,11 @@ export default function CareerPage() {
   const [history, setHistory] = useState<HistoryRecord[]>([])
   const [showHistory, setShowHistory] = useState(false)
 
-  const [mForm, setMForm] = useState({
-    name: '',
-    birthYear: 1990,
-    birthMonth: 1,
-    birthDay: 1,
-    birthHour: 12,
-  })
-
-  const [fForm, setFForm] = useState({
-    name: '',
-    birthYear: 1992,
-    birthMonth: 1,
-    birthDay: 1,
-    birthHour: 12,
-  })
+  const [mForm, setMForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1990 })
+  const [fForm, setFForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1992 })
 
   const yearOptions = Array.from({ length: 131 }, (_, i) => 1900 + i)
-  const monthOptions = Array.from({ length: 12 }, (_, i) => i + 1)
-  const dayOptions = Array.from({ length: 31 }, (_, i) => i + 1)
+  const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
   const hourOptions = Array.from({ length: 24 }, (_, i) => i)
   const pad = (n: number) => String(n).padStart(2, '0')
 
@@ -57,14 +64,33 @@ export default function CareerPage() {
     setHistory(getHistoryByType('career'))
   }, [])
 
+  const convertDate = (form: PersonForm) => {
+    if (form.calendarType === 'lunar') {
+      const solar = lunarToSolar(form.birthYear, form.birthMonth, form.birthDay, form.lunarIsLeap)
+      if (!solar) throw new Error('农历日期转换失败')
+      return { year: solar.year, month: solar.month, day: solar.day }
+    }
+    return { year: form.birthYear, month: form.birthMonth, day: form.birthDay }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      const mDate = `${mForm.birthYear}-${pad(mForm.birthMonth)}-${pad(mForm.birthDay)}`
+      let mSolar, fSolar
+      try {
+        mSolar = convertDate(mForm)
+        fSolar = convertDate(fForm)
+      } catch {
+        alert('农历日期转换失败，请检查日期是否有效（如闰月是否存在）')
+        setLoading(false)
+        return
+      }
+
+      const mDate = `${mSolar.year}-${pad(mSolar.month)}-${pad(mSolar.day)}`
       const mTime = `${pad(mForm.birthHour)}:00`
-      const fDate = `${fForm.birthYear}-${pad(fForm.birthMonth)}-${pad(fForm.birthDay)}`
+      const fDate = `${fSolar.year}-${pad(fSolar.month)}-${pad(fSolar.day)}`
       const fTime = `${pad(fForm.birthHour)}:00`
 
       const mBaziResult = analyzeBazi(mDate, mTime, mForm.name, 'male')
@@ -76,7 +102,6 @@ export default function CareerPage() {
       setFBazi(fBaziResult)
       setResult(careerResult)
 
-      // 保存记录
       const title = `${mForm.name || '甲方'} & ${fForm.name || '乙方'} · 事业合作`
       addHistory('career', title, { mForm, fForm }, `${careerResult.score}分 · ${careerResult.level}`)
       setHistory(getHistoryByType('career'))
@@ -89,25 +114,109 @@ export default function CareerPage() {
   }
 
   const loadHistory = (record: HistoryRecord) => {
-    setMForm(record.formData.mForm)
-    setFForm(record.formData.fForm)
+    const m = record.formData.mForm || defaultPerson
+    const f = record.formData.fForm || defaultPerson
+    setMForm({
+      ...m,
+      calendarType: m.calendarType || 'solar',
+      lunarIsLeap: m.lunarIsLeap || false,
+    })
+    setFForm({
+      ...f,
+      calendarType: f.calendarType || 'solar',
+      lunarIsLeap: f.lunarIsLeap || false,
+    })
     setShowHistory(false)
+  }
+
+  const DateSelector = ({ form, setForm, label }: { form: PersonForm; setForm: (f: PersonForm) => void; label: string }) => {
+    const monthOptions = form.calendarType === 'lunar'
+      ? getLunarMonthOptions(form.birthYear)
+      : Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({ value: m, label: `${m}月`, isLeap: false }))
+
+    return (
+      <div className="space-y-3">
+        <div>
+          <label className="block text-sm text-ink-500 mb-1">姓名（选填）</label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="姓名"
+            className="w-full px-3 py-2 border border-fate-200 rounded-md"
+          />
+        </div>
+        <div>
+          <label className="block text-sm text-ink-500 mb-1">出生日期 *</label>
+          <div className="flex gap-1 mb-1.5 bg-fate-100 rounded-lg p-1 w-fit">
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, calendarType: 'solar', lunarIsLeap: false })}
+              className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
+                form.calendarType === 'solar'
+                  ? 'bg-white text-ink-800 shadow-sm'
+                  : 'text-ink-500 hover:text-ink-700'
+              }`}
+            >
+              公历
+            </button>
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, calendarType: 'lunar' })}
+              className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
+                form.calendarType === 'lunar'
+                  ? 'bg-white text-ink-800 shadow-sm'
+                  : 'text-ink-500 hover:text-ink-700'
+              }`}
+            >
+              农历
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <select value={form.birthYear} onChange={(e) => setForm({ ...form, birthYear: Number(e.target.value) })} className="flex-1 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
+              {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
+            </select>
+            <select
+              value={`${form.lunarIsLeap ? 'leap-' : ''}${form.birthMonth}`}
+              onChange={(e) => {
+                const val = e.target.value
+                const isLeap = val.startsWith('leap-')
+                const month = Number(isLeap ? val.replace('leap-', '') : val)
+                setForm({ ...form, birthMonth: month, lunarIsLeap: isLeap })
+              }}
+              className="w-24 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm"
+            >
+              {monthOptions.map(m => (
+                <option key={`${m.isLeap ? 'leap-' : ''}${m.value}`} value={`${m.isLeap ? 'leap-' : ''}${m.value}`}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+            <select value={form.birthDay} onChange={(e) => setForm({ ...form, birthDay: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
+              {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm text-ink-500 mb-1">出生时辰</label>
+          <select value={form.birthHour} onChange={(e) => setForm({ ...form, birthHour: Number(e.target.value) })} className="w-full px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
+            {hourOptions.map(h => <option key={h} value={h}>{pad(h)}:00</option>)}
+          </select>
+        </div>
+      </div>
+    )
   }
 
   return (
     <main className="min-h-screen bg-fate-50">
-      {/* Header */}
       <header className="bg-ink-900 text-fate-50 py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold font-serif">
-            ← AI 命理大师
-          </Link>
+          <Link href="/" className="text-xl font-bold font-serif">← AI 命理大师</Link>
           <h1 className="text-lg font-serif">事业合作分析</h1>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto py-8 px-4">
-        {/* 说明 */}
         {!result && (
           <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 mb-6 border border-blue-100">
             <h2 className="text-xl font-bold mb-2 font-serif">事业合作八字分析</h2>
@@ -118,144 +227,64 @@ export default function CareerPage() {
           </div>
         )}
 
-        {/* 输入表单 */}
         {!result && (
           <>
             <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* 甲方 */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">甲</div>
-                  <h3 className="font-bold text-lg">甲方信息</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-xl shadow-sm p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">甲</div>
+                    <h3 className="font-bold text-lg">甲方信息</h3>
+                  </div>
+                  <DateSelector form={mForm} setForm={setMForm} label="甲方" />
                 </div>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">姓名（选填）</label>
-                    <input
-                      type="text"
-                      value={mForm.name}
-                      onChange={(e) => setMForm({ ...mForm, name: e.target.value })}
-                      placeholder="姓名"
-                      className="w-full px-3 py-2 border border-fate-200 rounded-md"
-                    />
+                <div className="bg-white rounded-xl shadow-sm p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white text-sm font-bold">乙</div>
+                    <h3 className="font-bold text-lg">乙方信息</h3>
                   </div>
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">出生日期 *</label>
-                    <div className="flex gap-2">
-                      <select value={mForm.birthYear} onChange={(e) => setMForm({ ...mForm, birthYear: Number(e.target.value) })} className="flex-1 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
-                      </select>
-                      <select value={mForm.birthMonth} onChange={(e) => setMForm({ ...mForm, birthMonth: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {monthOptions.map(m => <option key={m} value={m}>{m}月</option>)}
-                      </select>
-                      <select value={mForm.birthDay} onChange={(e) => setMForm({ ...mForm, birthDay: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">出生时辰</label>
-                    <select value={mForm.birthHour} onChange={(e) => setMForm({ ...mForm, birthHour: Number(e.target.value) })} className="w-full px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                      {hourOptions.map(h => <option key={h} value={h}>{pad(h)}:00</option>)}
-                    </select>
-                  </div>
+                  <DateSelector form={fForm} setForm={setFForm} label="乙方" />
                 </div>
               </div>
-
-              {/* 乙方 */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white text-sm font-bold">乙</div>
-                  <h3 className="font-bold text-lg">乙方信息</h3>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">姓名（选填）</label>
-                    <input
-                      type="text"
-                      value={fForm.name}
-                      onChange={(e) => setFForm({ ...fForm, name: e.target.value })}
-                      placeholder="姓名"
-                      className="w-full px-3 py-2 border border-fate-200 rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">出生日期 *</label>
-                    <div className="flex gap-2">
-                      <select value={fForm.birthYear} onChange={(e) => setFForm({ ...fForm, birthYear: Number(e.target.value) })} className="flex-1 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
-                      </select>
-                      <select value={fForm.birthMonth} onChange={(e) => setFForm({ ...fForm, birthMonth: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {monthOptions.map(m => <option key={m} value={m}>{m}月</option>)}
-                      </select>
-                      <select value={fForm.birthDay} onChange={(e) => setFForm({ ...fForm, birthDay: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">出生时辰</label>
-                    <select value={fForm.birthHour} onChange={(e) => setFForm({ ...fForm, birthHour: Number(e.target.value) })} className="w-full px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                      {hourOptions.map(h => <option key={h} value={h}>{pad(h)}:00</option>)}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-400 hover:to-emerald-400 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-blue-500/30"
-            >
-              {loading ? '分析中...' : '🤝 开始事业合作分析'}
-            </button>
-          </form>
-
-          {/* 历史记录 */}
-          {history.length > 0 && (
-            <div className="mt-6">
               <button
-                onClick={() => setShowHistory(!showHistory)}
-                className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3"
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-400 hover:to-emerald-400 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-blue-500/30"
               >
-                <span>📜</span>
-                <span>查询历史（{history.length} 条）</span>
-                <span>{showHistory ? '▲' : '▼'}</span>
+                {loading ? '分析中...' : '🤝 开始事业合作分析'}
               </button>
-              {showHistory && (
-                <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
-                  {history.map((record) => (
-                    <div
-                      key={record.id}
-                      onClick={() => loadHistory(record)}
-                      className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="font-medium text-sm text-ink-800">{record.title}</div>
-                          <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+            </form>
+
+            {history.length > 0 && (
+              <div className="mt-6">
+                <button onClick={() => setShowHistory(!showHistory)} className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3">
+                  <span>📜</span>
+                  <span>查询历史（{history.length} 条）</span>
+                  <span>{showHistory ? '▲' : '▼'}</span>
+                </button>
+                {showHistory && (
+                  <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
+                    {history.map((record) => (
+                      <div key={record.id} onClick={() => loadHistory(record)} className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                            <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+                          </div>
+                          <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
-                        <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
 
-        {/* 结果展示 */}
         {result && (
           <div className="space-y-6">
-            <button onClick={() => setResult(null)} className="text-fate-600 text-sm hover:underline">
-              ← 重新输入
-            </button>
-
-            {/* 综合评分 */}
+            <button onClick={() => setResult(null)} className="text-fate-600 text-sm hover:underline">← 重新输入</button>
             <div className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-2xl p-8 border border-blue-100 text-center">
               <div className="text-sm text-ink-500 mb-2">合作契合度</div>
               <div className={`text-6xl font-bold mb-2 ${result.levelColor}`}>{result.score}</div>
@@ -267,8 +296,6 @@ export default function CareerPage() {
               <div className={`text-xl font-bold ${result.levelColor}`}>{result.level}</div>
               <p className="text-ink-600 mt-2 max-w-md mx-auto">{result.levelDesc}</p>
             </div>
-
-            {/* 双方八字 */}
             <div className="grid md:grid-cols-2 gap-4">
               {mBazi && (
                 <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
@@ -311,8 +338,6 @@ export default function CareerPage() {
                 </div>
               )}
             </div>
-
-            {/* 合冲关系 */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">合作气场</h3>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -329,8 +354,6 @@ export default function CareerPage() {
                 {!result.ganHeMatch && !result.zhiHeMatch && <p>双方八字无明显合象，合作需要后天磨合，建议先从小项目试水。</p>}
               </div>
             </div>
-
-            {/* 十神互动 */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">角色定位</h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -354,8 +377,6 @@ export default function CareerPage() {
                 </div>
               )}
             </div>
-
-            {/* 五行互补 */}
             {result.complementDetails.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h3 className="font-bold text-lg mb-4 font-serif">资源互补</h3>
@@ -369,8 +390,6 @@ export default function CareerPage() {
                 </div>
               </div>
             )}
-
-            {/* 喜用神互济 */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">运势互济</h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -386,8 +405,6 @@ export default function CareerPage() {
                 </div>
               </div>
             </div>
-
-            {/* 建议 */}
             <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-6 border border-amber-100">
               <h3 className="font-bold text-lg mb-4 font-serif">💡 合作建议</h3>
               <div className="space-y-3">

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { calculateBazi, getTodayGanZhi } from '@/lib/bazi'
 import { analyzeDailyFortune } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
+import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
 
 interface FortuneResult {
   today: {
@@ -50,6 +51,8 @@ export default function DailyPage() {
     birthHour: 12,
     gender: 'male' as 'male' | 'female',
     name: '',
+    calendarType: 'solar' as 'solar' | 'lunar',
+    lunarIsLeap: false,
   })
 
   // 客户端获取今天干支
@@ -64,8 +67,11 @@ export default function DailyPage() {
   }, [])
 
   const yearOptions = Array.from({ length: 131 }, (_, i) => 1900 + i)
-  const monthOptions = Array.from({ length: 12 }, (_, i) => i + 1)
-  const dayOptions = Array.from({ length: 31 }, (_, i) => i + 1)
+  const isLunar = formData.calendarType === 'lunar'
+  const monthOptions = isLunar
+    ? getLunarMonthOptions(formData.birthYear)
+    : Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({ value: m, label: `${m}月`, isLeap: false }))
+  const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
   const hourOptions = Array.from({ length: 24 }, (_, i) => i)
   const pad = (n: number) => String(n).padStart(2, '0')
 
@@ -75,7 +81,23 @@ export default function DailyPage() {
     setLoading(true)
 
     try {
-      const birthDate = `${formData.birthYear}-${pad(formData.birthMonth)}-${pad(formData.birthDay)}`
+      // 农历转公历（如需要）
+      let solarYear = formData.birthYear
+      let solarMonth = formData.birthMonth
+      let solarDay = formData.birthDay
+      if (formData.calendarType === 'lunar') {
+        const solar = lunarToSolar(formData.birthYear, formData.birthMonth, formData.birthDay, formData.lunarIsLeap)
+        if (!solar) {
+          alert('农历日期转换失败，请检查日期是否有效（如闰月是否存在）')
+          setLoading(false)
+          return
+        }
+        solarYear = solar.year
+        solarMonth = solar.month
+        solarDay = solar.day
+      }
+
+      const birthDate = `${solarYear}-${pad(solarMonth)}-${pad(solarDay)}`
       const birthTime = `${pad(formData.birthHour)}:00`
 
       // 排命主八字
@@ -98,7 +120,11 @@ export default function DailyPage() {
   }
 
   const loadHistory = (record: HistoryRecord) => {
-    setFormData(record.formData)
+    setFormData({
+      ...record.formData,
+      calendarType: record.formData.calendarType || 'solar',
+      lunarIsLeap: record.formData.lunarIsLeap || false,
+    })
     setShowHistory(false)
   }
 
@@ -160,6 +186,30 @@ export default function DailyPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">出生日期</label>
+                <div className="flex gap-1 mb-2 bg-fate-100 rounded-lg p-1 w-fit">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, calendarType: 'solar', lunarIsLeap: false })}
+                    className={`px-3 py-1 rounded-md text-sm transition-colors ${
+                      formData.calendarType === 'solar'
+                        ? 'bg-white text-ink-800 shadow-sm'
+                        : 'text-ink-500 hover:text-ink-700'
+                    }`}
+                  >
+                    公历
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, calendarType: 'lunar' })}
+                    className={`px-3 py-1 rounded-md text-sm transition-colors ${
+                      formData.calendarType === 'lunar'
+                        ? 'bg-white text-ink-800 shadow-sm'
+                        : 'text-ink-500 hover:text-ink-700'
+                    }`}
+                  >
+                    农历
+                  </button>
+                </div>
                 <div className="flex gap-2">
                   <select
                     value={formData.birthYear}
@@ -169,11 +219,20 @@ export default function DailyPage() {
                     {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
                   </select>
                   <select
-                    value={formData.birthMonth}
-                    onChange={(e) => setFormData({ ...formData, birthMonth: Number(e.target.value) })}
-                    className="w-20 px-3 py-2 border border-fate-200 rounded-md bg-white"
+                    value={`${formData.lunarIsLeap ? 'leap-' : ''}${formData.birthMonth}`}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      const isLeap = val.startsWith('leap-')
+                      const month = Number(isLeap ? val.replace('leap-', '') : val)
+                      setFormData({ ...formData, birthMonth: month, lunarIsLeap: isLeap })
+                    }}
+                    className="w-28 px-3 py-2 border border-fate-200 rounded-md bg-white"
                   >
-                    {monthOptions.map(m => <option key={m} value={m}>{m}月</option>)}
+                    {monthOptions.map(m => (
+                      <option key={`${m.isLeap ? 'leap-' : ''}${m.value}`} value={`${m.isLeap ? 'leap-' : ''}${m.value}`}>
+                        {m.label}
+                      </option>
+                    ))}
                   </select>
                   <select
                     value={formData.birthDay}

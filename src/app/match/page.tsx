@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { analyzeMarriage, analyzeBazi, getMatchAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
+import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
 
 interface MatchResult {
   score: number
@@ -28,6 +29,26 @@ interface MatchResult {
   _pendingAi?: boolean
 }
 
+interface PersonForm {
+  name: string
+  birthYear: number
+  birthMonth: number
+  birthDay: number
+  birthHour: number
+  calendarType: 'solar' | 'lunar'
+  lunarIsLeap: boolean
+}
+
+const defaultPerson: PersonForm = {
+  name: '',
+  birthYear: 1990,
+  birthMonth: 1,
+  birthDay: 1,
+  birthHour: 12,
+  calendarType: 'solar',
+  lunarIsLeap: false,
+}
+
 export default function MatchPage() {
   const [loading, setLoading] = useState(false)
   const [loadingAi, setLoadingAi] = useState(false)
@@ -37,25 +58,11 @@ export default function MatchPage() {
   const [history, setHistory] = useState<HistoryRecord[]>([])
   const [showHistory, setShowHistory] = useState(false)
 
-  const [maleForm, setMaleForm] = useState({
-    name: '',
-    birthYear: 1990,
-    birthMonth: 1,
-    birthDay: 1,
-    birthHour: 12,
-  })
-
-  const [femaleForm, setFemaleForm] = useState({
-    name: '',
-    birthYear: 1992,
-    birthMonth: 1,
-    birthDay: 1,
-    birthHour: 12,
-  })
+  const [maleForm, setMaleForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1990 })
+  const [femaleForm, setFemaleForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1992 })
 
   const yearOptions = Array.from({ length: 131 }, (_, i) => 1900 + i)
-  const monthOptions = Array.from({ length: 12 }, (_, i) => i + 1)
-  const dayOptions = Array.from({ length: 31 }, (_, i) => i + 1)
+  const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
   const hourOptions = Array.from({ length: 24 }, (_, i) => i)
   const pad = (n: number) => String(n).padStart(2, '0')
 
@@ -63,15 +70,34 @@ export default function MatchPage() {
     setHistory(getHistoryByType('match'))
   }, [])
 
+  const convertDate = (form: PersonForm) => {
+    if (form.calendarType === 'lunar') {
+      const solar = lunarToSolar(form.birthYear, form.birthMonth, form.birthDay, form.lunarIsLeap)
+      if (!solar) throw new Error('农历日期转换失败')
+      return { year: solar.year, month: solar.month, day: solar.day }
+    }
+    return { year: form.birthYear, month: form.birthMonth, day: form.birthDay }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setLoadingAi(false)
 
     try {
-      const mDate = `${maleForm.birthYear}-${pad(maleForm.birthMonth)}-${pad(maleForm.birthDay)}`
+      let mSolar, fSolar
+      try {
+        mSolar = convertDate(maleForm)
+        fSolar = convertDate(femaleForm)
+      } catch {
+        alert('农历日期转换失败，请检查日期是否有效（如闰月是否存在）')
+        setLoading(false)
+        return
+      }
+
+      const mDate = `${mSolar.year}-${pad(mSolar.month)}-${pad(mSolar.day)}`
       const mTime = `${pad(maleForm.birthHour)}:00`
-      const fDate = `${femaleForm.birthYear}-${pad(femaleForm.birthMonth)}-${pad(femaleForm.birthDay)}`
+      const fDate = `${fSolar.year}-${pad(fSolar.month)}-${pad(fSolar.day)}`
       const fTime = `${pad(femaleForm.birthHour)}:00`
 
       const mBazi = analyzeBazi(mDate, mTime, maleForm.name, 'male')
@@ -83,12 +109,10 @@ export default function MatchPage() {
       setFemaleBazi(fBazi)
       setResult(combinedM)
 
-      // 保存记录
       const title = `${maleForm.name || '男方'} & ${femaleForm.name || '女方'} · 合婚`
       addHistory('match', title, { maleForm, femaleForm }, `${combinedM.score}分 · ${combinedM.level}`)
       setHistory(getHistoryByType('match'))
 
-      // 如果有 API Key，异步获取 AI 深度分析
       const settings = localStorage.getItem('lifegps_settings')
       const apiKey = settings ? JSON.parse(settings).kimiApiKey : undefined
 
@@ -116,8 +140,18 @@ export default function MatchPage() {
   }
 
   const loadHistory = (record: HistoryRecord) => {
-    setMaleForm(record.formData.maleForm)
-    setFemaleForm(record.formData.femaleForm)
+    const m = record.formData.maleForm || defaultPerson
+    const f = record.formData.femaleForm || defaultPerson
+    setMaleForm({
+      ...m,
+      calendarType: m.calendarType || 'solar',
+      lunarIsLeap: m.lunarIsLeap || false,
+    })
+    setFemaleForm({
+      ...f,
+      calendarType: f.calendarType || 'solar',
+      lunarIsLeap: f.lunarIsLeap || false,
+    })
     setShowHistory(false)
   }
 
@@ -140,20 +174,94 @@ export default function MatchPage() {
     )
   }
 
+  const DateSelector = ({ form, setForm, label }: { form: PersonForm; setForm: (f: PersonForm) => void; label: string }) => {
+    const monthOptions = form.calendarType === 'lunar'
+      ? getLunarMonthOptions(form.birthYear)
+      : Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({ value: m, label: `${m}月`, isLeap: false }))
+
+    return (
+      <div className="space-y-3">
+        <div>
+          <label className="block text-sm text-ink-500 mb-1">姓名（选填）</label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="姓名"
+            className="w-full px-3 py-2 border border-fate-200 rounded-md"
+          />
+        </div>
+        <div>
+          <label className="block text-sm text-ink-500 mb-1">出生日期 *</label>
+          <div className="flex gap-1 mb-1.5 bg-fate-100 rounded-lg p-1 w-fit">
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, calendarType: 'solar', lunarIsLeap: false })}
+              className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
+                form.calendarType === 'solar'
+                  ? 'bg-white text-ink-800 shadow-sm'
+                  : 'text-ink-500 hover:text-ink-700'
+              }`}
+            >
+              公历
+            </button>
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, calendarType: 'lunar' })}
+              className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
+                form.calendarType === 'lunar'
+                  ? 'bg-white text-ink-800 shadow-sm'
+                  : 'text-ink-500 hover:text-ink-700'
+              }`}
+            >
+              农历
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <select value={form.birthYear} onChange={(e) => setForm({ ...form, birthYear: Number(e.target.value) })} className="flex-1 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
+              {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
+            </select>
+            <select
+              value={`${form.lunarIsLeap ? 'leap-' : ''}${form.birthMonth}`}
+              onChange={(e) => {
+                const val = e.target.value
+                const isLeap = val.startsWith('leap-')
+                const month = Number(isLeap ? val.replace('leap-', '') : val)
+                setForm({ ...form, birthMonth: month, lunarIsLeap: isLeap })
+              }}
+              className="w-24 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm"
+            >
+              {monthOptions.map(m => (
+                <option key={`${m.isLeap ? 'leap-' : ''}${m.value}`} value={`${m.isLeap ? 'leap-' : ''}${m.value}`}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+            <select value={form.birthDay} onChange={(e) => setForm({ ...form, birthDay: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
+              {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm text-ink-500 mb-1">出生时辰</label>
+          <select value={form.birthHour} onChange={(e) => setForm({ ...form, birthHour: Number(e.target.value) })} className="w-full px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
+            {hourOptions.map(h => <option key={h} value={h}>{pad(h)}:00</option>)}
+          </select>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <main className="min-h-screen bg-fate-50">
-      {/* Header */}
       <header className="bg-ink-900 text-fate-50 py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold font-serif">
-            ← AI 命理大师
-          </Link>
+          <Link href="/" className="text-xl font-bold font-serif">← AI 命理大师</Link>
           <h1 className="text-lg font-serif">合婚分析</h1>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto py-8 px-4">
-        {/* 说明 */}
         {!result && (
           <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 mb-6 border border-pink-100">
             <h2 className="text-xl font-bold mb-2 font-serif">八字合婚</h2>
@@ -164,148 +272,64 @@ export default function MatchPage() {
           </div>
         )}
 
-        {/* 输入表单 */}
         {!result && (
           <>
             <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* 男方 */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">男</div>
-                  <h3 className="font-bold text-lg">男方信息</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-xl shadow-sm p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">男</div>
+                    <h3 className="font-bold text-lg">男方信息</h3>
+                  </div>
+                  <DateSelector form={maleForm} setForm={setMaleForm} label="男方" />
                 </div>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">姓名（选填）</label>
-                    <input
-                      type="text"
-                      value={maleForm.name}
-                      onChange={(e) => setMaleForm({ ...maleForm, name: e.target.value })}
-                      placeholder="姓名"
-                      className="w-full px-3 py-2 border border-fate-200 rounded-md"
-                    />
+                <div className="bg-white rounded-xl shadow-sm p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">女</div>
+                    <h3 className="font-bold text-lg">女方信息</h3>
                   </div>
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">出生日期 *</label>
-                    <div className="flex gap-2">
-                      <select value={maleForm.birthYear} onChange={(e) => setMaleForm({ ...maleForm, birthYear: Number(e.target.value) })} className="flex-1 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
-                      </select>
-                      <select value={maleForm.birthMonth} onChange={(e) => setMaleForm({ ...maleForm, birthMonth: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {monthOptions.map(m => <option key={m} value={m}>{m}月</option>)}
-                      </select>
-                      <select value={maleForm.birthDay} onChange={(e) => setMaleForm({ ...maleForm, birthDay: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">出生时辰</label>
-                    <select value={maleForm.birthHour} onChange={(e) => setMaleForm({ ...maleForm, birthHour: Number(e.target.value) })} className="w-full px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                      {hourOptions.map(h => <option key={h} value={h}>{pad(h)}:00</option>)}
-                    </select>
-                  </div>
+                  <DateSelector form={femaleForm} setForm={setFemaleForm} label="女方" />
                 </div>
               </div>
-
-              {/* 女方 */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">女</div>
-                  <h3 className="font-bold text-lg">女方信息</h3>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">姓名（选填）</label>
-                    <input
-                      type="text"
-                      value={femaleForm.name}
-                      onChange={(e) => setFemaleForm({ ...femaleForm, name: e.target.value })}
-                      placeholder="姓名"
-                      className="w-full px-3 py-2 border border-fate-200 rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">出生日期 *</label>
-                    <div className="flex gap-2">
-                      <select value={femaleForm.birthYear} onChange={(e) => setFemaleForm({ ...femaleForm, birthYear: Number(e.target.value) })} className="flex-1 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
-                      </select>
-                      <select value={femaleForm.birthMonth} onChange={(e) => setFemaleForm({ ...femaleForm, birthMonth: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {monthOptions.map(m => <option key={m} value={m}>{m}月</option>)}
-                      </select>
-                      <select value={femaleForm.birthDay} onChange={(e) => setFemaleForm({ ...femaleForm, birthDay: Number(e.target.value) })} className="w-16 px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                        {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-ink-500 mb-1">出生时辰</label>
-                    <select value={femaleForm.birthHour} onChange={(e) => setFemaleForm({ ...femaleForm, birthHour: Number(e.target.value) })} className="w-full px-2 py-2 border border-fate-200 rounded-md bg-white text-sm">
-                      {hourOptions.map(h => <option key={h} value={h}>{pad(h)}:00</option>)}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-pink-500/30"
-            >
-              {loading ? '分析中...' : '💑 开始合婚分析'}
-            </button>
-          </form>
-
-          {/* 历史记录 */}
-          {history.length > 0 && (
-            <div className="mt-6">
               <button
-                onClick={() => setShowHistory(!showHistory)}
-                className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3"
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-pink-500/30"
               >
-                <span>📜</span>
-                <span>查询历史（{history.length} 条）</span>
-                <span>{showHistory ? '▲' : '▼'}</span>
+                {loading ? '分析中...' : '💑 开始合婚分析'}
               </button>
-              {showHistory && (
-                <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
-                  {history.map((record) => (
-                    <div
-                      key={record.id}
-                      onClick={() => loadHistory(record)}
-                      className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="font-medium text-sm text-ink-800">{record.title}</div>
-                          <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+            </form>
+
+            {history.length > 0 && (
+              <div className="mt-6">
+                <button onClick={() => setShowHistory(!showHistory)} className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3">
+                  <span>📜</span>
+                  <span>查询历史（{history.length} 条）</span>
+                  <span>{showHistory ? '▲' : '▼'}</span>
+                </button>
+                {showHistory && (
+                  <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
+                    {history.map((record) => (
+                      <div key={record.id} onClick={() => loadHistory(record)} className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                            <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+                          </div>
+                          <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
-                        <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
 
-        {/* 结果展示 */}
         {result && (
           <div className="space-y-6">
-            {/* 重新输入 */}
-            <button
-              onClick={() => setResult(null)}
-              className="text-fate-600 text-sm hover:underline"
-            >
-              ← 重新输入
-            </button>
-
-            {/* 综合评分 */}
+            <button onClick={() => setResult(null)} className="text-fate-600 text-sm hover:underline">← 重新输入</button>
             <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-8 border border-pink-100 text-center">
               <div className="text-sm text-ink-500 mb-2">婚配契合度</div>
               <div className={`text-6xl font-bold mb-2 ${result.levelColor}`}>{result.score}</div>
@@ -317,8 +341,6 @@ export default function MatchPage() {
               <div className={`text-xl font-bold ${result.levelColor}`}>{result.level}</div>
               <p className="text-ink-600 mt-2 max-w-md mx-auto">{result.levelDesc}</p>
             </div>
-
-            {/* 双方八字 */}
             <div className="grid md:grid-cols-2 gap-4">
               {maleBazi && (
                 <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
@@ -361,8 +383,6 @@ export default function MatchPage() {
                 </div>
               )}
             </div>
-
-            {/* 合冲关系 */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">合冲关系</h3>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -383,8 +403,6 @@ export default function MatchPage() {
                 )}
               </div>
             </div>
-
-            {/* 十神互动 */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">十神互动</h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -408,8 +426,6 @@ export default function MatchPage() {
                 </div>
               )}
             </div>
-
-            {/* 五行互补 */}
             {result.complementDetails.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h3 className="font-bold text-lg mb-4 font-serif">五行互补</h3>
@@ -423,8 +439,6 @@ export default function MatchPage() {
                 </div>
               </div>
             )}
-
-            {/* 喜用神互济 */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">喜用神互济</h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -440,8 +454,6 @@ export default function MatchPage() {
                 </div>
               </div>
             </div>
-
-            {/* 建议 */}
             <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-6 border border-amber-100">
               <h3 className="font-bold text-lg mb-4 font-serif">💡 婚配建议</h3>
               <div className="space-y-3">
@@ -453,8 +465,6 @@ export default function MatchPage() {
                 ))}
               </div>
             </div>
-
-            {/* AI 深度分析 */}
             {loadingAi && (
               <div className="bg-white rounded-xl shadow-sm p-6 border border-fate-100">
                 <div className="flex items-center gap-3 mb-4">
@@ -472,7 +482,6 @@ export default function MatchPage() {
                 </div>
               </div>
             )}
-
             {result.aiAnalysis && (
               <div className="bg-white rounded-xl shadow-sm p-6 border border-fate-100">
                 <div className="flex items-center gap-3 mb-4">
@@ -482,9 +491,7 @@ export default function MatchPage() {
                   <h3 className="font-bold text-lg font-serif">AI 深度解读</h3>
                   <span className="text-xs bg-fate-100 text-fate-600 px-2 py-0.5 rounded-full">Kimi AI</span>
                 </div>
-                <div className="prose prose-sm max-w-none text-ink-700 leading-relaxed whitespace-pre-wrap">
-                  {result.aiAnalysis}
-                </div>
+                <div className="prose prose-sm max-w-none text-ink-700 leading-relaxed whitespace-pre-wrap">{result.aiAnalysis}</div>
               </div>
             )}
           </div>

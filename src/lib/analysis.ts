@@ -88,6 +88,137 @@ export function buildPromptPro(bazi: any, name: string, gender: string, type: st
   ].filter(Boolean).join('\n')
 }
 
+
+// ===== buildMatchPrompt =====
+export function buildMatchPrompt(
+  maleBazi: any,
+  femaleBazi: any,
+  maleName: string,
+  femaleName: string,
+  matchResult: any
+): string {
+  const m = maleBazi;
+  const f = femaleBazi;
+  const r = matchResult;
+
+  const mPillars = m.pillars.map((p: any) => `${p.name}: ${p.gan}${p.zhi}`).join('\n');
+  const fPillars = f.pillars.map((p: any) => `${p.name}: ${p.gan}${p.zhi}`).join('\n');
+
+  const mCangGan = m.cangGanDetail?.map((cg: any) => {
+    const ganTexts = cg.cangGan.map((item: any) => `${item.gan}(${item.qi}·${item.shiShen})`).join('，');
+    return `${cg.name} ${cg.zhi}：${ganTexts}`;
+  }).join('\n') || '';
+
+  const fCangGan = f.cangGanDetail?.map((cg: any) => {
+    const ganTexts = cg.cangGan.map((item: any) => `${item.gan}(${item.qi}·${item.shiShen})`).join('，');
+    return `${cg.name} ${cg.zhi}：${ganTexts}`;
+  }).join('\n') || '';
+
+  return [
+    '请为以下双方八字进行专业级合婚分析：',
+    '',
+    '【男方信息】',
+    `- 姓名：${maleName || '未提供'}`,
+    `- 日主：${m.dayMaster}（${m.yinYang}性·${m.wuXing}命）`,
+    `- 日主强弱：${m.bodyStrength?.strength || '未知'}`,
+    `- 喜用神：${m.combinedGod?.xi?.join('、') || '需结合大运判断'}`,
+    `- 忌神：${m.combinedGod?.ji?.join('、') || '需结合大运判断'}`,
+    '',
+    '男方八字排盘：',
+    mPillars,
+    '',
+    '男方地支藏干：',
+    mCangGan,
+    '',
+    '【女方信息】',
+    `- 姓名：${femaleName || '未提供'}`,
+    `- 日主：${f.dayMaster}（${f.yinYang}性·${f.wuXing}命）`,
+    `- 日主强弱：${f.bodyStrength?.strength || '未知'}`,
+    `- 喜用神：${f.combinedGod?.xi?.join('、') || '需结合大运判断'}`,
+    `- 忌神：${f.combinedGod?.ji?.join('、') || '需结合大运判断'}`,
+    '',
+    '女方八字排盘：',
+    fPillars,
+    '',
+    '女方地支藏干：',
+    fCangGan,
+    '',
+    '【算法评分结果】',
+    `- 综合契合度：${r.score}分（${r.level}）`,
+    `- 天干五合：${r.ganHeMatch ? '有' : '无'}`,
+    `- 地支六合：${r.zhiHeMatch ? '有' : '无'}`,
+    `- 地支三合：${r.sanHeMatch ? '有' : '无'}`,
+    `- 地支六冲：${r.chongMatch ? '有' : '无'}`,
+    `- 地支六害：${r.haiMatch ? '有' : '无'}`,
+    `- 男方→女方十神：${r.mToF_SS}`,
+    `- 女方→男方十神：${r.fToM_SS}`,
+    `- 五行互补评分：${r.complementScore}分`,
+    `- 喜用神互济：男方旺女方${r.mHelpF > 0 ? '✓' : '✗'}，女方旺男方${r.fHelpM > 0 ? '✓' : '✗'}`,
+    '',
+    '请从以下几个维度进行深度合婚分析：',
+    '1. 双方性格契合度分析（基于日主特质、十神互动）',
+    '2. 相处模式预测（谁主导、谁配合，潜在的摩擦点）',
+    '3. 感情婚姻走势（甜蜜期、磨合期、稳定期的特征）',
+    '4. 事业财运互助分析（双方在一起后运势如何变化）',
+    '5. 家庭关系预判（与父母、子女的关系倾向）',
+    '6. 关键风险提示（哪些年份需要特别注意感情维护）',
+    '7. 具体相处建议（沟通方式、冲突化解、关系保鲜）',
+    '',
+    '分析要求：',
+    '- 用现代亲密关系心理学的语言解读，不要迷信恐吓',
+    '- 结合双方八字的能量特征给出具体建议',
+    '- 强调婚姻需要经营，八字只是性格地图而非判决书',
+    '- 对于评分低的组合，也要给出建设性建议而非一味否定',
+    '- 总字数控制在1200-1800字',
+  ].filter(Boolean).join('\n');
+}
+
+// ===== getMatchAiAnalysis =====
+export async function getMatchAiAnalysis(
+  maleBazi: any,
+  femaleBazi: any,
+  maleName: string,
+  femaleName: string,
+  matchResult: any,
+  apiKey?: string
+): Promise<string> {
+  if (!apiKey) return '';
+
+  try {
+    const prompt = buildMatchPrompt(maleBazi, femaleBazi, maleName, femaleName, matchResult);
+    const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'moonshot-v1-8k',
+        messages: [
+          {
+            role: 'system',
+            content: '你是一位精通传统命理学的 AI 合婚分析师，擅长从八字角度分析双方的情感契合度。你用现代亲密关系语言解读命理，不迷信不恐吓，帮助情侣更好地理解彼此、经营关系。'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content || '';
+    }
+  } catch (error) {
+    console.error('Kimi API error (match):', error);
+  }
+
+  return '';
+}
+
 // ===== getAiAnalysis =====
 export async function getAiAnalysis(bazi: any, name: string, gender: string, type: string, note?: string, apiKey?: string): Promise<string> {
   if (!apiKey) return ''

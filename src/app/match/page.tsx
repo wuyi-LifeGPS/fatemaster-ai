@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { analyzeMarriage, analyzeBazi } from '@/lib/analysis'
+import { analyzeMarriage, analyzeBazi, getMatchAiAnalysis } from '@/lib/analysis'
 
 interface MatchResult {
   score: number
@@ -23,10 +23,13 @@ interface MatchResult {
   fHelpM: number
   roles: { mRole: string; fRole: string }
   suggestions: string[]
+  aiAnalysis?: string
+  _pendingAi?: boolean
 }
 
 export default function MatchPage() {
   const [loading, setLoading] = useState(false)
+  const [loadingAi, setLoadingAi] = useState(false)
   const [result, setResult] = useState<MatchResult | null>(null)
   const [maleBazi, setMaleBazi] = useState<any>(null)
   const [femaleBazi, setFemaleBazi] = useState<any>(null)
@@ -56,6 +59,7 @@ export default function MatchPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setLoadingAi(false)
 
     try {
       const mDate = `${maleForm.birthYear}-${pad(maleForm.birthMonth)}-${pad(maleForm.birthDay)}`
@@ -67,10 +71,30 @@ export default function MatchPage() {
       const fBazi = analyzeBazi(fDate, fTime, femaleForm.name, 'female')
 
       const combinedM = analyzeMarriage(mBazi, fBazi, maleForm.name, femaleForm.name)
-      
 
+      setMaleBazi(mBazi)
       setFemaleBazi(fBazi)
       setResult(combinedM)
+
+      // 如果有 API Key，异步获取 AI 深度分析
+      const settings = localStorage.getItem('lifegps_settings')
+      const apiKey = settings ? JSON.parse(settings).kimiApiKey : undefined
+
+      if (apiKey) {
+        setLoadingAi(true)
+        try {
+          const aiAnalysis = await getMatchAiAnalysis(
+            mBazi, fBazi, maleForm.name, femaleForm.name, combinedM, apiKey
+          )
+          if (aiAnalysis) {
+            setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
+          }
+        } catch (err) {
+          console.error('AI 分析失败:', err)
+        } finally {
+          setLoadingAi(false)
+        }
+      }
     } catch (error) {
       console.error('Error:', error)
       alert('分析出错，请重试')
@@ -376,6 +400,40 @@ export default function MatchPage() {
                 ))}
               </div>
             </div>
+
+            {/* AI 深度分析 */}
+            {loadingAi && (
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-fate-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-fate-500 to-fate-600 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-sm">🤖</span>
+                  </div>
+                  <h3 className="font-bold text-lg font-serif">AI 深度解读</h3>
+                  <span className="text-sm text-ink-400">分析中...</span>
+                </div>
+                <div className="space-y-3">
+                  <div className="h-4 bg-fate-100 rounded animate-pulse w-3/4"></div>
+                  <div className="h-4 bg-fate-100 rounded animate-pulse w-full"></div>
+                  <div className="h-4 bg-fate-100 rounded animate-pulse w-5/6"></div>
+                  <div className="h-4 bg-fate-100 rounded animate-pulse w-2/3"></div>
+                </div>
+              </div>
+            )}
+
+            {result.aiAnalysis && (
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-fate-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-fate-500 to-fate-600 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-sm">🤖</span>
+                  </div>
+                  <h3 className="font-bold text-lg font-serif">AI 深度解读</h3>
+                  <span className="text-xs bg-fate-100 text-fate-600 px-2 py-0.5 rounded-full">Kimi AI</span>
+                </div>
+                <div className="prose prose-sm max-w-none text-ink-700 leading-relaxed whitespace-pre-wrap">
+                  {result.aiAnalysis}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -107,25 +107,19 @@ export default function CareerPage() {
       setHistory(getHistoryByType('career'))
 
       // 异步获取AI深度分析
-      const settings = localStorage.getItem('lifegps_settings')
-      const apiKey = settings ? JSON.parse(settings).kimiApiKey : undefined
+      setAiLoading(true)
+      const aiAnalysis = await getCareerAiAnalysis(
+        mBaziResult,
+        fBaziResult,
+        mData.name,
+        fData.name,
+        careerResult,
+      )
 
-      if (apiKey) {
-        setAiLoading(true)
-        const aiAnalysis = await getCareerAiAnalysis(
-          mBaziResult,
-          fBaziResult,
-          mData.name,
-          fData.name,
-          careerResult,
-          apiKey
-        )
-
-        if (aiAnalysis) {
-          setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
-        }
-        setAiLoading(false)
+      if (aiAnalysis) {
+        setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
       }
+      setAiLoading(false)
     } catch (error) {
       console.error('Error:', error)
       alert('分析出错，请重试')

@@ -65,10 +65,6 @@ export default function BaziPage() {
     setLoading(true)
 
     try {
-      // 从设置中读取 API Key（如果有）
-      const settings = localStorage.getItem('lifegps_settings')
-      const apiKey = settings ? JSON.parse(settings).kimiApiKey : undefined
-
       // 农历转公历（如需要）
       let solarYear = formData.birthYear
       let solarMonth = formData.birthMonth
@@ -95,7 +91,6 @@ export default function BaziPage() {
         formData.name,
         formData.gender,
         formData.note,
-        apiKey
       )
 
       setResult(result)
@@ -105,26 +100,23 @@ export default function BaziPage() {
       addHistory('bazi', formData.name || `八字分析 ${birthDate}`, formData, summary)
       setHistory(getHistoryByType('bazi'))
 
-      // 如果有 API Key，异步获取 AI 深度分析
-      if (result._pendingAi && apiKey) {
-        const aiAnalysis = await getAiAnalysis(
-          {
-            ...result,
-            combinedGod: (result as any).combinedGod,
-            bodyStrength: result.bodyStrength,
-            pattern: result.pattern,
-            cangGanDetail: result.cangGanDetail,
-          },
-          formData.name,
-          formData.gender,
-          'bazi',
-          formData.note,
-          apiKey
-        )
+      // 异步获取 AI 深度分析
+      const aiAnalysis = await getAiAnalysis(
+        {
+          ...result,
+          combinedGod: (result as any).combinedGod,
+          bodyStrength: result.bodyStrength,
+          pattern: result.pattern,
+          cangGanDetail: result.cangGanDetail,
+        },
+        formData.name,
+        formData.gender,
+        'bazi',
+        formData.note,
+      )
 
-        if (aiAnalysis) {
-          setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
-        }
+      if (aiAnalysis) {
+        setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
       }
     } catch (error) {
       console.error('Error:', error)

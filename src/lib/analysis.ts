@@ -180,79 +180,48 @@ export async function getMatchAiAnalysis(
   maleName: string,
   femaleName: string,
   matchResult: any,
-  apiKey?: string
 ): Promise<string> {
-  if (!apiKey) return '';
-
   try {
     const prompt = buildMatchPrompt(maleBazi, femaleBazi, maleName, femaleName, matchResult);
-    const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+    const response = await fetch('/api/ai', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'moonshot-v1-8k',
-        messages: [
-          {
-            role: 'system',
-            content: '你是一位精通传统命理学的 AI 合婚分析师，擅长从八字角度分析双方的情感契合度。你用现代亲密关系语言解读命理，不迷信不恐吓，帮助情侣更好地理解彼此、经营关系。'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
+        prompt,
+        systemPrompt: '你是一位精通传统命理学的 AI 合婚分析师，擅长从八字角度分析双方的情感契合度。你用现代亲密关系语言解读命理，不迷信不恐吓，帮助情侣更好地理解彼此、经营关系。',
       }),
     });
 
     if (response.ok) {
       const data = await response.json();
-      return data.choices?.[0]?.message?.content || '';
+      return data.content || '';
     }
   } catch (error) {
-    console.error('Kimi API error (match):', error);
+    console.error('Match AI analysis error:', error);
   }
 
   return '';
 }
 
 // ===== getAiAnalysis =====
-export async function getAiAnalysis(bazi: any, name: string, gender: string, type: string, note?: string, apiKey?: string): Promise<string> {
-  if (!apiKey) return ''
-
+export async function getAiAnalysis(bazi: any, name: string, gender: string, type: string, note?: string): Promise<string> {
   try {
     const prompt = buildPromptPro(bazi, name, gender, type, note)
-    const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+    const response = await fetch('/api/ai', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'moonshot-v1-8k',
-        messages: [
-          {
-            role: 'system',
-            content: '你是一位精通传统命理学的 AI 命理分析师，擅长调候用神与扶抑用神的综合分析。你严格遵循「调候优先、扶抑辅助」的专业原则，用现代语言解读八字，不迷信不恐吓，帮助用户更好地认识自己。'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
+        prompt,
+        systemPrompt: '你是一位精通传统命理学的 AI 命理分析师，擅长调候用神与扶抑用神的综合分析。你严格遵循「调候优先、扶抑辅助」的专业原则，用现代语言解读八字，不迷信不恐吓，帮助用户更好地认识自己。',
       }),
     })
 
     if (response.ok) {
       const data = await response.json()
-      return data.choices?.[0]?.message?.content || ''
+      return data.content || ''
     }
   } catch (error) {
-    console.error('Kimi API error:', error)
+    console.error('AI analysis error:', error)
   }
 
   return ''
@@ -1369,40 +1338,24 @@ export async function getCareerAiAnalysis(
   maleName: string,
   femaleName: string,
   careerResult: any,
-  apiKey?: string
 ): Promise<string> {
-  if (!apiKey) return '';
-
   try {
     const prompt = buildCareerPrompt(maleBazi, femaleBazi, maleName, femaleName, careerResult);
-    const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+    const response = await fetch('/api/ai', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'moonshot-v1-8k',
-        messages: [
-          {
-            role: 'system',
-            content: '你是一位精通传统命理学的 AI 事业合作分析师，擅长从八字角度分析商业合作契合度。你用现代商业语言解读命理，不迷信不恐吓，帮助创业者和商务人士找到最佳合作伙伴，规避合作风险。'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
+        prompt,
+        systemPrompt: '你是一位精通传统命理学的 AI 事业合作分析师，擅长从八字角度分析商业合作契合度。你用现代商业语言解读命理，不迷信不恐吓，帮助创业者和商务人士找到最佳合作伙伴，规避合作风险。',
       }),
     });
 
     if (response.ok) {
       const data = await response.json();
-      return data.choices?.[0]?.message?.content || '';
+      return data.content || '';
     }
   } catch (error) {
-    console.error('Kimi API error (career):', error);
+    console.error('Career AI analysis error:', error);
   }
 
   return '';

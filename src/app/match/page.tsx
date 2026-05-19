@@ -108,23 +108,19 @@ export default function MatchPage() {
       addHistory('match', title, { maleForm: mData, femaleForm: fData }, `${combinedM.score}分 · ${combinedM.level}`)
       setHistory(getHistoryByType('match'))
 
-      const settings = localStorage.getItem('lifegps_settings')
-      const apiKey = settings ? JSON.parse(settings).kimiApiKey : undefined
-
-      if (apiKey) {
-        setLoadingAi(true)
-        try {
-          const aiAnalysis = await getMatchAiAnalysis(
-            mBazi, fBazi, mData.name, fData.name, combinedM, apiKey
-          )
-          if (aiAnalysis) {
-            setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
-          }
-        } catch (err) {
-          console.error('AI 分析失败:', err)
-        } finally {
-          setLoadingAi(false)
+      // 异步获取AI深度分析
+      setLoadingAi(true)
+      try {
+        const aiAnalysis = await getMatchAiAnalysis(
+          mBazi, fBazi, mData.name, fData.name, combinedM
+        )
+        if (aiAnalysis) {
+          setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
         }
+      } catch (err) {
+        console.error('AI 分析失败:', err)
+      } finally {
+        setLoadingAi(false)
       }
     } catch (error) {
       console.error('Error:', error)

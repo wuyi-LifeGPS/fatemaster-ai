@@ -9,7 +9,6 @@ interface Settings {
   showTenGods: boolean
   showNaYin: boolean
   language: 'zh' | 'zh-TW'
-  kimiApiKey: string
 }
 
 const defaultSettings: Settings = {
@@ -18,7 +17,6 @@ const defaultSettings: Settings = {
   showTenGods: true,
   showNaYin: false,
   language: 'zh',
-  kimiApiKey: '',
 }
 
 export default function SettingsPage() {
@@ -64,47 +62,6 @@ export default function SettingsPage() {
       </header>
 
       <div className="max-w-2xl mx-auto py-8 px-4 space-y-6">
-        {/* AI 设置 */}
-        <section className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center text-white text-lg">
-              🤖
-            </div>
-            <div>
-              <h2 className="text-xl font-bold font-serif">AI 深度分析</h2>
-              <p className="text-xs text-ink-400">接入 Kimi 大模型，获得个性化命理解读</p>
-            </div>
-          </div>
-
-          <div className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium mb-2">Kimi API Key</label>
-              <input
-                type="password"
-                value={settings.kimiApiKey}
-                onChange={(e) => update('kimiApiKey', e.target.value)}
-                placeholder="sk-xxxxxxxxxxxxxxxx"
-                className="w-full px-3 py-2.5 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-400 text-sm bg-fate-50/50"
-              />
-              <div className="mt-3 bg-fate-50 rounded-lg p-3 text-xs text-ink-500 space-y-1.5">
-                <p className="flex items-start gap-1.5">
-                  <span className="text-fate-600 font-bold">🔒</span>
-                  <span>Key 仅保存在本地浏览器，不会上传到任何服务器</span>
-                </p>
-                <p className="flex items-start gap-1.5">
-                  <span className="text-fate-600 font-bold">💡</span>
-                  <span>添加后，八字分析会自动触发 AI 深度解读（约 3-5 秒）</span>
-                </p>
-                <p>
-                  <a href="https://platform.moonshot.cn/" target="_blank" rel="noopener noreferrer" className="text-fate-600 hover:text-fate-700 underline font-medium">
-                    → 前往 Kimi 开放平台获取 API Key
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* 分析偏好 */}
         <section className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-6">

@@ -1246,3 +1246,164 @@ export function analyzeCareer(maleBazi: any, femaleBazi: any, maleName: string, 
     suggestions,
   };
 }
+
+// ===== buildCareerPrompt =====
+export function buildCareerPrompt(
+  maleBazi: any,
+  femaleBazi: any,
+  maleName: string,
+  femaleName: string,
+  careerResult: any
+): string {
+  const m = maleBazi;
+  const f = femaleBazi;
+  const r = careerResult;
+
+  const mPillars = m.pillars.map((p: any) => `${p.name}: ${p.gan}${p.zhi}`).join('\n');
+  const fPillars = f.pillars.map((p: any) => `${p.name}: ${p.gan}${p.zhi}`).join('\n');
+
+  const mCangGan = m.cangGanDetail?.map((cg: any) => {
+    const ganTexts = cg.cangGan.map((item: any) => `${item.gan}(${item.qi}·${item.shiShen})`).join('，');
+    return `${cg.name} ${cg.zhi}：${ganTexts}`;
+  }).join('\n') || '';
+
+  const fCangGan = f.cangGanDetail?.map((cg: any) => {
+    const ganTexts = cg.cangGan.map((item: any) => `${item.gan}(${item.qi}·${item.shiShen})`).join('，');
+    return `${cg.name} ${cg.zhi}：${ganTexts}`;
+  }).join('\n') || '';
+
+  const mWuXingText = Object.entries(m.wuXingFullCount || {}).map(([k, v]) => `${k}: ${v}`).join(', ');
+  const fWuXingText = Object.entries(f.wuXingFullCount || {}).map(([k, v]) => `${k}: ${v}`).join(', ');
+
+  return [
+    '请为以下双方八字进行专业级事业合作深度分析：',
+    '',
+    '【甲方信息】',
+    `- 姓名：${maleName || '未提供'}`,
+    `- 日主：${m.dayMaster}（${m.yinYang}性·${m.wuXing}命）`,
+    `- 日主强弱：${m.bodyStrength?.strength || '未知'}（评分${m.bodyStrength?.score || '-'}/10）`,
+    `- 格局：${m.pattern?.patternName || '未知'}`,
+    `- 喜用神：${m.combinedGod?.xi?.join('、') || '需结合大运判断'}`,
+    `- 忌神：${m.combinedGod?.ji?.join('、') || '需结合大运判断'}`,
+    '',
+    '甲方八字排盘：',
+    mPillars,
+    '',
+    '甲方地支藏干：',
+    mCangGan,
+    '',
+    `甲方五行分布：${mWuXingText}`,
+    '',
+    '【乙方信息】',
+    `- 姓名：${femaleName || '未提供'}`,
+    `- 日主：${f.dayMaster}（${f.yinYang}性·${f.wuXing}命）`,
+    `- 日主强弱：${f.bodyStrength?.strength || '未知'}（评分${f.bodyStrength?.score || '-'}/10）`,
+    `- 格局：${f.pattern?.patternName || '未知'}`,
+    `- 喜用神：${f.combinedGod?.xi?.join('、') || '需结合大运判断'}`,
+    `- 忌神：${f.combinedGod?.ji?.join('、') || '需结合大运判断'}`,
+    '',
+    '乙方八字排盘：',
+    fPillars,
+    '',
+    '乙方地支藏干：',
+    fCangGan,
+    '',
+    `乙方五行分布：${fWuXingText}`,
+    '',
+    '【算法评分结果】',
+    `- 综合契合度：${r.score}分（${r.level}）`,
+    `- 天干五合：${r.ganHeMatch ? '有' : '无'}`,
+    `- 地支六合：${r.zhiHeMatch ? '有' : '无'}`,
+    `- 十神互动：甲方对乙方为「${r.mToF_SS}」，乙方对甲方为「${r.fToM_SS}」`,
+    `- 五行互补：${r.complementDetails.join('；') || '无明显互补'}`,
+    `- 喜用神互济：甲方旺乙方${r.mHelpF > 0 ? '✓' : '○'}，乙方旺甲方${r.fHelpM > 0 ? '✓' : '○'}`,
+    '',
+    '请从以下几个维度进行深度分析：',
+    '',
+    '一、双方命盘基础解读',
+    '- 分别解读甲乙双方的日主特性、性格底色、行事风格',
+    '- 分析双方格局特点对事业取向的影响',
+    '',
+    '二、五行能量对比分析',
+    '- 双方五行分布对比，找出能量共振与冲突点',
+    '- 分析五行互补如何影响合作中的资源调配',
+    '',
+    '三、十神互动深度解析',
+    `- 甲方对乙方为「${r.mToF_SS}」：这种关系在商业合作中意味着什么？`,
+    `- 乙方对甲方为「${r.fToM_SS}」：这种关系在商业合作中意味着什么？`,
+    '- 双方在合作中天然形成的角色分工',
+    '',
+    '四、合作模式与场景建议',
+    '- 最适合的合作模式（合伙创业、项目合作、投资关系、顾问关系等）',
+    '- 各自在合作中的最佳角色定位',
+    '- 合作中的决策分工建议',
+    '',
+    '五、事业与财运协同分析',
+    '- 双方事业运势的协同效应',
+    '- 合作对双方财运的影响',
+    '- 最适合一起做的行业/项目类型',
+    '',
+    '六、风险预警与规避建议',
+    '- 合作中可能出现的摩擦点',
+    '- 利益分配的建议原则',
+    '- 需要特别警惕的合作陷阱',
+    '',
+    '七、综合结论与行动建议',
+    '- 给出明确的合作建议（强烈推荐/值得尝试/谨慎推进/不建议）',
+    '- 如果建议合作，给出第一步行动建议',
+    '- 合作中的关键成功因素',
+    '',
+    '分析要求：',
+    '- 用现代商业语言解读，避免传统命理术语堆砌',
+    '- 结合双方八字特点给出具体的、可执行的建议',
+    '- 不迷信不恐吓，理性分析合作的优劣势',
+    '- 总字数控制在1500-2500字',
+    '- 结构清晰，使用Markdown格式的小标题',
+  ].filter(Boolean).join('\n');
+}
+
+// ===== getCareerAiAnalysis =====
+export async function getCareerAiAnalysis(
+  maleBazi: any,
+  femaleBazi: any,
+  maleName: string,
+  femaleName: string,
+  careerResult: any,
+  apiKey?: string
+): Promise<string> {
+  if (!apiKey) return '';
+
+  try {
+    const prompt = buildCareerPrompt(maleBazi, femaleBazi, maleName, femaleName, careerResult);
+    const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'moonshot-v1-8k',
+        messages: [
+          {
+            role: 'system',
+            content: '你是一位精通传统命理学的 AI 事业合作分析师，擅长从八字角度分析商业合作契合度。你用现代商业语言解读命理，不迷信不恐吓，帮助创业者和商务人士找到最佳合作伙伴，规避合作风险。'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content || '';
+    }
+  } catch (error) {
+    console.error('Kimi API error (career):', error);
+  }
+
+  return '';
+}

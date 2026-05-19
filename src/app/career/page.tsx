@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { analyzeCareer, analyzeBazi } from '@/lib/analysis'
+import { analyzeCareer, analyzeBazi, getCareerAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
 import PersonFormSelector from '@/components/PersonFormSelector'
@@ -23,6 +23,8 @@ interface CareerResult {
   fHelpM: number
   roles: { mRole: string; fRole: string }
   suggestions: string[]
+  aiAnalysis?: string
+  _pendingAi?: boolean
 }
 
 interface PersonForm {
@@ -47,6 +49,7 @@ const defaultPerson: PersonForm = {
 
 export default function CareerPage() {
   const [loading, setLoading] = useState(false)
+  const [aiLoading, setAiLoading] = useState(false)
   const [result, setResult] = useState<CareerResult | null>(null)
   const [mBazi, setMBazi] = useState<any>(null)
   const [fBazi, setFBazi] = useState<any>(null)
@@ -71,6 +74,7 @@ export default function CareerPage() {
 
   const runAnalysis = async (mData: PersonForm, fData: PersonForm) => {
     setLoading(true)
+    setAiLoading(false)
 
     try {
       let mSolar, fSolar
@@ -97,9 +101,31 @@ export default function CareerPage() {
       setFBazi(fBaziResult)
       setResult(careerResult)
 
+      // 保存查询记录
       const title = `${mData.name || '甲方'} & ${fData.name || '乙方'} · 事业合作`
       addHistory('career', title, { mForm: mData, fForm: fData }, `${careerResult.score}分 · ${careerResult.level}`)
       setHistory(getHistoryByType('career'))
+
+      // 异步获取AI深度分析
+      const settings = localStorage.getItem('lifegps_settings')
+      const apiKey = settings ? JSON.parse(settings).kimiApiKey : undefined
+
+      if (apiKey) {
+        setAiLoading(true)
+        const aiAnalysis = await getCareerAiAnalysis(
+          mBaziResult,
+          fBaziResult,
+          mData.name,
+          fData.name,
+          careerResult,
+          apiKey
+        )
+
+        if (aiAnalysis) {
+          setResult((prev) => prev ? { ...prev, aiAnalysis } : null)
+        }
+        setAiLoading(false)
+      }
     } catch (error) {
       console.error('Error:', error)
       alert('分析出错，请重试')
@@ -113,7 +139,7 @@ export default function CareerPage() {
     runAnalysis(mForm, fForm)
   }
 
-  const handleHistoryClick = (record: HistoryRecord) => {
+  const handleHistoryClick = async (record: HistoryRecord) => {
     const m = record.formData.mForm || defaultPerson
     const f = record.formData.fForm || defaultPerson
     const mData = {
@@ -128,7 +154,7 @@ export default function CareerPage() {
     }
     setMForm(mData)
     setFForm(fData)
-    runAnalysis(mData, fData)
+    await runAnalysis(mData, fData)
   }
 
   return (
@@ -339,6 +365,42 @@ export default function CareerPage() {
                 ))}
               </div>
             </div>
+
+            {/* AI 深度分析 */}
+            {(aiLoading || result.aiAnalysis) && (
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-fate-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white text-sm">
+                    🤖
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg font-serif">AI 深度分析</h3>
+                    <p className="text-xs text-ink-400">基于双方八字的专业级合作解读</p>
+                  </div>
+                </div>
+
+                {aiLoading ? (
+                  <div className="flex items-center gap-3 py-8">
+                    <div className="w-5 h-5 border-2 border-fate-300 border-t-fate-600 rounded-full animate-spin" />
+                    <span className="text-sm text-ink-500">正在调用 Kimi AI 进行深度分析...</span>
+                  </div>
+                ) : result.aiAnalysis ? (
+                  <div className="prose max-w-none text-ink-700 whitespace-pre-line text-sm leading-relaxed">
+                    {result.aiAnalysis}
+                  </div>
+                ) : null}
+              </div>
+            )}
+
+            {!aiLoading && !result.aiAnalysis && (
+              <div className="bg-fate-50 rounded-xl p-4 border border-fate-100 text-center">
+                <p className="text-sm text-ink-500">
+                  💡 在
+                  <Link href="/settings" className="text-fate-600 hover:underline mx-1">设置页面</Link>
+                  添加 Kimi API Key，可解锁 AI 深度合作分析
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

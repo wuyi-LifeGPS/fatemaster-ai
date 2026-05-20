@@ -11,11 +11,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing prompt' }, { status: 400 })
     }
 
-    const apiKey = process.env.KIMI_API_KEY
+    const apiKey = body.apiKey || process.env.KIMI_API_KEY
 
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'KIMI_API_KEY not configured on server' },
+        { error: 'KIMI_API_KEY not configured. Please add your API key in Settings page.' },
         { status: 500 }
       )
     }

@@ -182,17 +182,12 @@ export async function getMatchAiAnalysis(
   matchResult: any,
 ): Promise<string> {
   try {
-    const settings = typeof window !== 'undefined' ? localStorage.getItem('lifegps_settings') : null
-    const apiKey = settings ? JSON.parse(settings).kimiApiKey : ''
-    if (!apiKey) return ''
-
     const prompt = buildMatchPrompt(maleBazi, femaleBazi, maleName, femaleName, matchResult);
     const response = await fetch('/api/ai', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt,
-        apiKey,
         systemPrompt: '你是一位精通传统命理学的 AI 合婚分析师，擅长从八字角度分析双方的情感契合度。你用现代亲密关系语言解读命理，不迷信不恐吓，帮助情侣更好地理解彼此、经营关系。',
       }),
     });
@@ -211,17 +206,12 @@ export async function getMatchAiAnalysis(
 // ===== getAiAnalysis =====
 export async function getAiAnalysis(bazi: any, name: string, gender: string, type: string, note?: string): Promise<string> {
   try {
-    const settings = typeof window !== 'undefined' ? localStorage.getItem('lifegps_settings') : null
-    const apiKey = settings ? JSON.parse(settings).kimiApiKey : ''
-    if (!apiKey) return ''
-
     const prompt = buildPromptPro(bazi, name, gender, type, note)
     const response = await fetch('/api/ai', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt,
-        apiKey,
         systemPrompt: '你是一位精通传统命理学的 AI 命理分析师，擅长调候用神与扶抑用神的综合分析。你严格遵循「调候优先、扶抑辅助」的专业原则，用现代语言解读八字，不迷信不恐吓，帮助用户更好地认识自己。',
       }),
     })
@@ -1350,17 +1340,12 @@ export async function getCareerAiAnalysis(
   careerResult: any,
 ): Promise<string> {
   try {
-    const settings = typeof window !== 'undefined' ? localStorage.getItem('lifegps_settings') : null
-    const apiKey = settings ? JSON.parse(settings).kimiApiKey : ''
-    if (!apiKey) return ''
-
     const prompt = buildCareerPrompt(maleBazi, femaleBazi, maleName, femaleName, careerResult);
     const response = await fetch('/api/ai', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt,
-        apiKey,
         systemPrompt: '你是一位精通传统命理学的 AI 事业合作分析师，擅长从八字角度分析商业合作契合度。你用现代商业语言解读命理，不迷信不恐吓，帮助创业者和商务人士找到最佳合作伙伴，规避合作风险。',
       }),
     });

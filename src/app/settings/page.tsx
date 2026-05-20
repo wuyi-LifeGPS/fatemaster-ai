@@ -9,7 +9,6 @@ interface Settings {
   showTenGods: boolean
   showNaYin: boolean
   language: 'zh' | 'zh-TW'
-  kimiApiKey: string
 }
 
 const defaultSettings: Settings = {
@@ -18,7 +17,6 @@ const defaultSettings: Settings = {
   showTenGods: true,
   showNaYin: false,
   language: 'zh',
-  kimiApiKey: '',
 }
 
 export default function SettingsPage() {
@@ -132,40 +130,26 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* API Key 设置 */}
+        {/* AI 服务 */}
         <section className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white text-lg">
-              🔑
+              🤖
             </div>
             <div>
               <h2 className="text-xl font-bold font-serif">AI 深度分析</h2>
-              <p className="text-xs text-ink-400">添加 Kimi API Key 解锁 AI 深度合作分析</p>
+              <p className="text-xs text-ink-400">智能解读已内置，无需配置</p>
             </div>
           </div>
 
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Kimi API Key</label>
-              <input
-                type="password"
-                value={settings.kimiApiKey}
-                onChange={(e) => update('kimiApiKey', e.target.value)}
-                className="w-full px-3 py-2 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-400 text-sm"
-                placeholder="sk-xxxxxxxxxxxxxxxx"
-              />
-              <p className="text-xs text-ink-400 mt-2 leading-relaxed">
-                API Key 仅保存在本机浏览器中，不会上传到服务器。获取方式：
-                <a href="https://platform.moonshot.cn" target="_blank" rel="noopener noreferrer" className="text-fate-600 hover:underline">Kimi 开放平台</a>
-                → 账户总览 → API Key 管理
-              </p>
+            <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">
+              <span>✓</span>
+              <span>AI 深度分析服务已就绪，所有功能均可直接使用</span>
             </div>
-            {settings.kimiApiKey && (
-              <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">
-                <span>✓</span>
-                <span>API Key 已设置，可解锁 AI 深度分析</span>
-              </div>
-            )}
+            <p className="text-xs text-ink-400 leading-relaxed">
+              系统已内置 Kimi AI 分析能力，八字分析、合婚分析、事业合作等模块均可自动调用 AI 进行深度解读。
+            </p>
           </div>
         </section>
 

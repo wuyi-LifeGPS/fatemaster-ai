@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'KIMI_API_KEY not configured. Please add your API key in Settings page.' },
+        { error: 'KIMI_API_KEY not configured. Please contact the site administrator.' },
         { status: 500 }
       )
     }

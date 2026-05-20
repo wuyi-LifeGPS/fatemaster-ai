@@ -385,16 +385,6 @@ export default function CareerPage() {
                 ) : null}
               </div>
             )}
-
-            {!aiLoading && !result.aiAnalysis && (
-              <div className="bg-fate-50 rounded-xl p-4 border border-fate-100 text-center">
-                <p className="text-sm text-ink-500">
-                  💡 在
-                  <Link href="/settings" className="text-fate-600 hover:underline mx-1">设置页面</Link>
-                  添加 Kimi API Key，可解锁 AI 深度合作分析
-                </p>
-              </div>
-            )}
           </div>
         )}
       </div>

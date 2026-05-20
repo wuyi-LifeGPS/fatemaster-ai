@@ -358,14 +358,22 @@ export default function BaziPage() {
             {/* 四柱 */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-xl font-bold mb-4 font-serif">八字命盘</h3>
-              <div className="grid grid-cols-4 gap-4 text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                 {result.pillars.map((pillar) => (
-                  <div key={pillar.name} className="border border-fate-100 rounded-lg p-4">
+                  <div key={pillar.name} className="border border-fate-100 rounded-lg p-3 sm:p-4">
                     <div className="text-sm text-ink-500 mb-2">{pillar.name}</div>
                     <div className="text-2xl font-bold text-fate-700">{pillar.gan}{pillar.zhi}</div>
                     <div className="text-xs text-ink-400 mt-1">
-                      {result.tenGods[pillar.gan] && `天干: ${result.tenGods[pillar.gan]}`}
-                      {result.tenGods[pillar.zhi] && ` · 地支: ${result.tenGods[pillar.zhi]}`}
+                      {result.tenGods[pillar.gan] && (
+                        <div className="text-xs text-ink-400">
+                          <span className="text-ink-300">天干:</span> {result.tenGods[pillar.gan]}
+                        </div>
+                      )}
+                      {result.tenGods[pillar.zhi] && (
+                        <div className="text-xs text-ink-400">
+                          <span className="text-ink-300">地支:</span> {result.tenGods[pillar.zhi]}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

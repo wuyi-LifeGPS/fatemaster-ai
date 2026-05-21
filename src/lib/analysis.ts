@@ -1331,6 +1331,229 @@ export function buildCareerPrompt(
   ].filter(Boolean).join('\n');
 }
 
+// ===== buildDaYunPrompt =====
+export function buildDaYunPrompt(
+  bazi: any,
+  daYun: { ganZhi: string; gan: string; zhi: string; startYear: number; endYear: number; startAge: number; endAge: number; shiShen: string; wuXing: string; yinYang: string; score: number; fortuneLevel: string; keywords: string[] },
+  name: string,
+  gender: string,
+): string {
+  const { pillars, dayMaster, bodyStrength, pattern, combinedGod, cangGanDetail } = bazi;
+
+  const pillarsText = pillars.map((p: any) => `${p.name}: ${p.gan}${p.zhi}`).join('\n');
+  const cangGanText = cangGanDetail?.map((cg: any) => {
+    const ganTexts = cg.cangGan.map((item: any) => `${item.gan}(${item.qi}·${item.shiShen})`).join('，');
+    return `${cg.name} ${cg.zhi}：${ganTexts}`;
+  }).join('\n') || '';
+
+  return [
+    '请为以下命主的大运进行专业级深度解读：',
+    '',
+    '【命主基础信息】',
+    `- 姓名：${name || '未提供'}`,
+    `- 性别：${gender === 'male' ? '男' : '女'}`,
+    `- 日主：${dayMaster}（${bodyStrength?.strength || '未知'}）`,
+    `- 格局：${pattern?.patternName || '未知'}`,
+    `- 喜用神：${combinedGod?.xi?.join('、') || '需结合大运判断'}`,
+    `- 忌神：${combinedGod?.ji?.join('、') || '需结合大运判断'}`,
+    '',
+    '八字排盘：',
+    pillarsText,
+    '',
+    '地支藏干：',
+    cangGanText,
+    '',
+    '【当前大运信息】',
+    `- 大运干支：${daYun.ganZhi}`,
+    `- 天干：${daYun.gan}（${daYun.yinYang}性·${daYun.wuXing}）`,
+    `- 地支：${daYun.zhi}`,
+    `- 十神：${daYun.shiShen}`,
+    `- 起止时间：${daYun.startYear}年 - ${daYun.endYear}年（${daYun.startAge}岁 - ${daYun.endAge}岁）`,
+    `- 运势评分：${daYun.score}分（${daYun.fortuneLevel}）`,
+    `- 运势标签：${daYun.keywords.join('、')}`,
+    '',
+    '请从以下几个维度进行大运深度解读：',
+    '',
+    '一、大运整体能量特征',
+    '- 此步大运的核心能量主题是什么？',
+    '- 天干透出的十神对命主意味着什么？',
+    '- 地支藏干对运势的深层影响？',
+    '',
+    '二、事业运势分析',
+    '- 这十年事业发展的总体趋势（上升期/平稳期/调整期）',
+    '- 适合的职业方向或转型建议',
+    '- 关键的事业节点年份（哪几年最利于升职/跳槽/创业）',
+    '',
+    '三、财运分析',
+    '- 这十年的财运特征（稳定收入/波动收入/意外之财）',
+    '- 理财建议（保守型/稳健型/激进型）',
+    '- 需要注意的破财年份',
+    '',
+    '四、感情婚姻分析',
+    '- 这十年感情运势的总体特征',
+    '- 单身者：哪几年桃花最旺？适合主动追求还是被动等待？',
+    '- 已婚者：需要注意哪些年份的感情波动？',
+    '',
+    '五、健康提醒',
+    '- 这十年需要重点关注的健康问题',
+    '- 基于大运五行对日主的影响推导',
+    '',
+    '六、改运建议',
+    '- 此步大运中，哪些方位/颜色/行业对命主有利？',
+    '- 需要避免什么样的决策和行为模式？',
+    '- 如何最大化利用这步大运的能量？',
+    '',
+    '分析要求：',
+    '- 严格遵循「调候优先、扶抑辅助」的专业命理原则',
+    '- 用现代生活语言解读，避免纯术语堆砌',
+    '- 给出具体的年份建议和可操作的行动指南',
+    '- 不要恐吓，即使运势评分低也要给出建设性建议',
+    '- 总字数控制在1000-1500字',
+    '- 结构清晰，使用Markdown小标题',
+  ].filter(Boolean).join('\n');
+}
+
+// ===== buildLiuNianPrompt =====
+export function buildLiuNianPrompt(
+  bazi: any,
+  daYun: { ganZhi: string; gan: string; zhi: string; shiShen: string },
+  liuNian: { year: number; ganZhi: string; gan: string; zhi: string; shiShen: string; wuXing: string; score: number; fortuneLevel: string; monthHighlights: { month: number; desc: string; level: string }[] },
+  name: string,
+  gender: string,
+): string {
+  const { pillars, dayMaster, bodyStrength, pattern, combinedGod } = bazi;
+
+  const pillarsText = pillars.map((p: any) => `${p.name}: ${p.gan}${p.zhi}`).join('\n');
+
+  return [
+    '请为以下命主的流年进行专业级深度解读：',
+    '',
+    '【命主基础信息】',
+    `- 姓名：${name || '未提供'}`,
+    `- 性别：${gender === 'male' ? '男' : '女'}`,
+    `- 日主：${dayMaster}（${bodyStrength?.strength || '未知'}）`,
+    `- 格局：${pattern?.patternName || '未知'}`,
+    `- 喜用神：${combinedGod?.xi?.join('、') || '需结合大运判断'}`,
+    `- 忌神：${combinedGod?.ji?.join('、') || '需结合大运判断'}`,
+    '',
+    '八字排盘：',
+    pillarsText,
+    '',
+    '【当前大运背景】',
+    `- 大运干支：${daYun.ganZhi}`,
+    `- 大运十神：${daYun.shiShen}`,
+    '',
+    '【流年信息】',
+    `- 年份：${liuNian.year}年`,
+    `- 流年干支：${liuNian.ganZhi}`,
+    `- 天干：${liuNian.gan}（${liuNian.wuXing}）`,
+    `- 十神：${liuNian.shiShen}`,
+    `- 运势评分：${liuNian.score}分（${liuNian.fortuneLevel}）`,
+    '',
+    '请从以下几个维度进行流年深度解读：',
+    '',
+    '一、年度总体运势',
+    '- 这一年的核心主题是什么？',
+    '- 流年天干十神与大运的互动关系？',
+    '- 此年在大运十年中的位置意义（开头/中间/结尾）？',
+    '',
+    '二、事业运势',
+    '- 今年是否适合升职、跳槽、创业、转行？',
+    '- 工作中需要注意的人际关系和职场动态',
+    '- 具体建议：主动争取还是韬光养晦？',
+    '',
+    '三、财运分析',
+    '- 今年的收入特征（稳定增长/波动较大/意外收获）',
+    '- 投资建议（适合什么类型的投资/理财）',
+    '- 需要注意的财务风险',
+    '',
+    '四、感情运势',
+    '- 单身者：今年桃花质量如何？遇到正缘的概率？',
+    '- 有伴者：感情是升温/平淡/考验？需要注意什么？',
+    '- 关键月份的感情波动提示',
+    '',
+    '五、健康提醒',
+    '- 今年身体容易出问题的部位',
+    '- 基于流年五行与日主的关系推导',
+    '- 养生建议',
+    '',
+    '六、关键月份指南',
+    '- 根据以下关键月份提示，给出更详细的每月运势',
+    liuNian.monthHighlights.map(mh => `- ${mh.desc}（${mh.level}）`).join('\n'),
+    '',
+    '七、年度宜忌清单',
+    '- 今年最适合做的3件事',
+    '- 今年最需要避免的3件事',
+    '- 今年的幸运方位/颜色/数字',
+    '',
+    '分析要求：',
+    '- 用现代生活语言解读，给出具体场景建议',
+    '- 即使运势评分低，也要给出建设性建议而非恐吓',
+    '- 结合大运背景分析，不要孤立看流年',
+    '- 总字数控制在800-1200字',
+    '- 结构清晰，使用Markdown小标题',
+  ].filter(Boolean).join('\n');
+}
+
+// ===== getDaYunAiAnalysis =====
+export async function getDaYunAiAnalysis(
+  bazi: any,
+  daYun: any,
+  name: string,
+  gender: string,
+): Promise<string> {
+  try {
+    const prompt = buildDaYunPrompt(bazi, daYun, name, gender);
+    const response = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt,
+        systemPrompt: '你是一位精通传统命理学的 AI 大运分析师，擅长从八字角度分析十年大运的运势走向。你严格遵循「调候优先、扶抑辅助」的专业原则，用现代语言解读大运，不迷信不恐吓，帮助用户把握人生节奏。',
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.content || '';
+    }
+  } catch (error) {
+    console.error('DaYun AI analysis error:', error);
+  }
+
+  return '';
+}
+
+// ===== getLiuNianAiAnalysis =====
+export async function getLiuNianAiAnalysis(
+  bazi: any,
+  daYun: any,
+  liuNian: any,
+  name: string,
+  gender: string,
+): Promise<string> {
+  try {
+    const prompt = buildLiuNianPrompt(bazi, daYun, liuNian, name, gender);
+    const response = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt,
+        systemPrompt: '你是一位精通传统命理学的 AI 流年分析师，擅长从八字角度分析年度运势。你结合大运背景解读流年，用现代生活语言给出具体建议，不迷信不恐吓，帮助用户规划年度重点。',
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.content || '';
+    }
+  } catch (error) {
+    console.error('LiuNian AI analysis error:', error);
+  }
+
+  return '';
+}
+
 // ===== getCareerAiAnalysis =====
 export async function getCareerAiAnalysis(
   maleBazi: any,

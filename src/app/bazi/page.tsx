@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { analyzeBazi, getAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
+import DaYunFlow from '@/components/DaYunFlow'
 
 interface BaziResult {
   pillars: { name: string; gan: string; zhi: string }[]
@@ -553,6 +554,19 @@ export default function BaziPage() {
               </div>
               <p className="text-xs text-ink-400 mt-4">总计含天干 + 地支全部藏干（本气·中气·余气）。天干透出能量最强，藏干为潜在能量。</p>
             </div>
+
+            {/* 大运流年 */}
+            {result.pillars && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="text-xl font-bold mb-4 font-serif">大运流年</h3>
+                <DaYunFlow
+                  bazi={result}
+                  gender={formData.gender}
+                  name={formData.name}
+                  birthDate={`${formData.birthYear}-${pad(formData.birthMonth)}-${pad(formData.birthDay)}`}
+                />
+              </div>
+            )}
 
             {/* AI 分析 */}
             {result.aiAnalysis && (

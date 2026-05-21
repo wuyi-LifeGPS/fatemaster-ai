@@ -705,9 +705,480 @@ export function calculateYearPillar(year: number): [string, string] {
   return [TIAN_GAN[ganIdx], DI_ZHI[zhiIdx]];
 }
 
-export function calculateDayPillar(date: Date): [string, string] {
-  const { Solar } = require('lunar-javascript');
-  const solar = Solar.fromDate(date);
-  const gz = solar.getLunar().getDayInGanZhi();
-  return [gz[0], gz[1]];
+
+// ========== 大运流年排盘核心算法 ==========
+
+export interface DaYunInfo {
+  ganZhi: string;        // 大运干支，如"辛丑"
+  gan: string;           // 天干
+  zhi: string;           // 地支
+  startYear: number;     // 开始年份
+  startAge: number;      // 开始年龄（精确到0.1岁）
+  endYear: number;       // 结束年份
+  endAge: number;        // 结束年龄
+  index: number;         // 第几步大运（1-based）
+  shiShen: string;       // 大运天干对日主的十神
+  wuXing: string;        // 大运天干五行
+  yinYang: string;       // 大运天干阴阳
+  isCurrent: boolean;    // 是否当前大运
+  years: LiuNianInfo[];  // 此运下的流年
+  score: number;         // 运势评分 0-100
+  fortuneLevel: '大吉' | '吉' | '平' | '凶' | '大凶';
+  keywords: string[];    // 关键词标签
 }
+
+export interface LiuNianInfo {
+  year: number;          // 公历年份
+  ganZhi: string;        // 流年干支
+  gan: string;
+  zhi: string;
+  age: number;           // 命主年龄
+  shiShen: string;       // 流年天干对日主的十神
+  wuXing: string;        // 流年天干五行
+  isCurrent: boolean;    // 是否今年
+  score: number;         // 运势评分 0-100
+  fortuneLevel: '大吉' | '吉' | '平' | '凶' | '大凶';
+  monthHighlights: { month: number; desc: string; level: '吉' | '平' | '凶' }[];
+}
+
+/**
+ * 计算大运 + 流年完整数据
+ * @param yearGan 年柱天干
+ * @param monthGan 月柱天干
+ * @param monthZhi 月柱地支
+ * @param dayMaster 日主
+ * @param gender 'male' | 'female'
+ * @param birthDate 出生日期 'YYYY-MM-DD'
+ * @returns DaYunInfo[]
+ */
+export function calculateDaYun(
+  yearGan: string,
+  monthGan: string,
+  monthZhi: string,
+  dayMaster: string,
+  gender: 'male' | 'female',
+  birthDate: string
+): DaYunInfo[] {
+  // 1. 判断顺逆：阳年男顺、阴年男逆、阳年女逆、阴年女顺
+  const yearYinYang = YIN_YANG[yearGan];
+  const isForward = (yearYinYang === '阳' && gender === 'male') ||
+                    (yearYinYang === '阴' && gender === 'female');
+
+  // 2. 计算起运年龄
+  const qiYunAge = calculateQiYunAge(birthDate, isForward);
+
+  // 3. 从月柱开始排大运干支
+  const monthGanIdx = TIAN_GAN.indexOf(monthGan);
+  const monthZhiIdx = DI_ZHI.indexOf(monthZhi);
+
+  const daYunList: DaYunInfo[] = [];
+  const birthYear = parseInt(birthDate.split('-')[0]);
+  const currentYear = new Date().getFullYear();
+
+  // 排10步大运（覆盖约100年）
+  for (let i = 0; i < 10; i++) {
+    let ganIdx: number;
+    let zhiIdx: number;
+
+    if (isForward) {
+      ganIdx = (monthGanIdx + i + 1) % 10;
+      zhiIdx = (monthZhiIdx + i + 1) % 12;
+    } else {
+      ganIdx = (monthGanIdx - i - 1 + 10) % 10;
+      zhiIdx = (monthZhiIdx - i - 1 + 12) % 12;
+    }
+
+    const gan = TIAN_GAN[ganIdx];
+    const zhi = DI_ZHI[zhiIdx];
+    const startAge = Math.floor(qiYunAge * 10) / 10 + i * 10;
+    const endAge = startAge + 10;
+    const startYear = birthYear + Math.floor(startAge);
+    const endYear = startYear + 9;
+
+    // 十神 + 五行 + 阴阳
+    const shiShen = SHI_SHEN_MAP[dayMaster]?.[gan] || '未知';
+    const wx = WU_XING[gan] || '未知';
+    const yy = YIN_YANG[gan] || '未知';
+
+    // 是否当前大运
+    const isCurrent = currentYear >= startYear && currentYear <= endYear;
+
+    // 运势评分（基于五行生克 + 十神吉凶）
+    const { score, fortuneLevel, keywords } = evaluateDaYun(dayMaster, gan, zhi, shiShen);
+
+    // 生成此大运下的流年
+    const years: LiuNianInfo[] = [];
+    for (let y = startYear; y <= endYear; y++) {
+      const yearGZ = calculateYearPillar(y);
+      const lnGan = yearGZ[0];
+      const lnZhi = yearGZ[1];
+      const lnShiShen = SHI_SHEN_MAP[dayMaster]?.[lnGan] || '未知';
+      const lnAge = y - birthYear;
+      const lnIsCurrent = y === currentYear;
+
+      // 流年评分
+      const lnEval = evaluateLiuNian(dayMaster, lnGan, lnZhi, lnShiShen, gan, zhi);
+
+      // 关键月份提示（简化版：基于流年干支与大运干支的刑冲合害）
+      const monthHighlights = generateMonthHighlights(lnGan, lnZhi, gan, zhi, dayMaster);
+
+      years.push({
+        year: y,
+        ganZhi: lnGan + lnZhi,
+        gan: lnGan,
+        zhi: lnZhi,
+        age: lnAge,
+        shiShen: lnShiShen,
+        wuXing: WU_XING[lnGan] || '未知',
+        isCurrent: lnIsCurrent,
+        score: lnEval.score,
+        fortuneLevel: lnEval.fortuneLevel,
+        monthHighlights,
+      });
+    }
+
+    daYunList.push({
+      ganZhi: gan + zhi,
+      gan,
+      zhi,
+      startYear,
+      startAge,
+      endYear,
+      endAge,
+      index: i + 1,
+      shiShen,
+      wuXing: wx,
+      yinYang: yy,
+      isCurrent,
+      years,
+      score,
+      fortuneLevel,
+      keywords,
+    });
+  }
+
+  return daYunList;
+}
+
+/** 计算起运年龄：从出生日到最近节气的天数 ÷ 3 */
+function calculateQiYunAge(birthDate: string, isForward: boolean): number {
+  const { Solar } = require('lunar-javascript');
+  const [year, month, day] = birthDate.split('-').map(Number);
+
+  // 搜索最近的节气（最多搜90天，节气间隔约15天，一定能找到）
+  let targetDate: Date | null = null;
+  let daysDiff = 0;
+
+  for (let i = 1; i <= 90; i++) {
+    const checkDate = new Date(year, month - 1, day);
+    if (isForward) {
+      checkDate.setDate(checkDate.getDate() + i);
+    } else {
+      checkDate.setDate(checkDate.getDate() - i);
+    }
+
+    const checkSolar = Solar.fromDate(checkDate);
+    const checkLunar = checkSolar.getLunar();
+    const jieQi = checkLunar.getJieQi?.(); // 如果在节气当天，返回名称
+
+    if (jieQi) {
+      targetDate = checkDate;
+      const birthTime = new Date(year, month - 1, day).getTime();
+      const targetTime = checkDate.getTime();
+      daysDiff = Math.abs(Math.round((targetTime - birthTime) / (1000 * 60 * 60 * 24)));
+      break;
+    }
+  }
+
+  if (!targetDate) {
+    // 保底：如果没找到节气，用默认值
+    return isForward ? 3 : 1;
+  }
+
+  // 1天 = 4个月，3天 = 1年。精确到0.1岁
+  const years = daysDiff / 3;
+  return Math.round(years * 10) / 10;
+}
+
+/** 评估大运吉凶 */
+function evaluateDaYun(
+  dayMaster: string,
+  daYunGan: string,
+  daYunZhi: string,
+  daYunShiShen: string
+): { score: number; fortuneLevel: DaYunInfo['fortuneLevel']; keywords: string[] } {
+  let score = 50;
+  const keywords: string[] = [];
+
+  const dayMasterWX = WU_XING[dayMaster];
+  const daYunGanWX = WU_XING[daYunGan];
+  const daYunZhiWX = WU_XING[daYunZhi];
+
+  // 天干五行生克评分
+  // 生我者（印星）+15
+  if (
+    (dayMasterWX === '木' && daYunGanWX === '水') ||
+    (dayMasterWX === '火' && daYunGanWX === '木') ||
+    (dayMasterWX === '土' && daYunGanWX === '火') ||
+    (dayMasterWX === '金' && daYunGanWX === '土') ||
+    (dayMasterWX === '水' && daYunGanWX === '金')
+  ) {
+    score += 15;
+    keywords.push('贵人扶持');
+  }
+  // 同我者（比劫）+5
+  else if (daYunGanWX === dayMasterWX) {
+    score += 5;
+    keywords.push('自力更生');
+  }
+  // 我生者（食伤）-5（泄气）
+  else if (
+    (dayMasterWX === '木' && daYunGanWX === '火') ||
+    (dayMasterWX === '火' && daYunGanWX === '土') ||
+    (dayMasterWX === '土' && daYunGanWX === '金') ||
+    (dayMasterWX === '金' && daYunGanWX === '水') ||
+    (dayMasterWX === '水' && daYunGanWX === '木')
+  ) {
+    score -= 5;
+    keywords.push('才华输出');
+  }
+  // 克我者（官杀）-10（压力）
+  else if (
+    (dayMasterWX === '木' && daYunGanWX === '金') ||
+    (dayMasterWX === '火' && daYunGanWX === '水') ||
+    (dayMasterWX === '土' && daYunGanWX === '木') ||
+    (dayMasterWX === '金' && daYunGanWX === '火') ||
+    (dayMasterWX === '水' && daYunGanWX === '土')
+  ) {
+    score -= 10;
+    keywords.push('压力挑战');
+  }
+  // 我克者（财星）-5（耗身）
+  else {
+    score -= 5;
+    keywords.push('求财奔波');
+  }
+
+  // 十神加权
+  const shiShenBonus: Record<string, number> = {
+    '正印': 10, '偏印': 5, '正官': 8, '正财': 5, '食神': 5,
+    '比肩': 0, '劫财': -5, '伤官': -8, '偏财': 0, '七杀': -12,
+  };
+  score += shiShenBonus[daYunShiShen] || 0;
+
+  // 地支藏干加分（如果地支藏干有印星或比劫）
+  const cangGan = DI_ZHI_CANG_GAN[daYunZhi] || [];
+  cangGan.forEach(gan => {
+    const ganWX = WU_XING[gan];
+    const ganSS = SHI_SHEN_MAP[dayMaster]?.[gan];
+    if (ganSS === '正印' || ganSS === '偏印') score += 3;
+    if (ganSS === '比肩' || ganSS === '劫财') score += 2;
+  });
+
+  // 限定范围
+  score = Math.min(95, Math.max(15, score));
+
+  // 判定等级
+  let fortuneLevel: DaYunInfo['fortuneLevel'];
+  if (score >= 80) fortuneLevel = '大吉';
+  else if (score >= 65) fortuneLevel = '吉';
+  else if (score >= 45) fortuneLevel = '平';
+  else if (score >= 30) fortuneLevel = '凶';
+  else fortuneLevel = '大凶';
+
+  // 补充关键词
+  if (daYunShiShen === '正官') keywords.push('事业上升');
+  if (daYunShiShen === '七杀') keywords.push('挑战机遇');
+  if (daYunShiShen === '正财') keywords.push('财运稳定');
+  if (daYunShiShen === '偏财') keywords.push('意外收获');
+  if (daYunShiShen === '食神') keywords.push('才华绽放');
+  if (daYunShiShen === '伤官') keywords.push('变革突破');
+  if (daYunShiShen === '正印') keywords.push('贵人提携');
+  if (daYunShiShen === '偏印') keywords.push('灵感涌现');
+  if (daYunShiShen === '比肩') keywords.push('合作共赢');
+  if (daYunShiShen === '劫财') keywords.push('竞争加剧');
+
+  if (keywords.length === 0) keywords.push('平稳过渡');
+
+  return { score, fortuneLevel, keywords };
+}
+
+/** 评估流年吉凶 */
+function evaluateLiuNian(
+  dayMaster: string,
+  lnGan: string,
+  lnZhi: string,
+  lnShiShen: string,
+  daYunGan: string,
+  daYunZhi: string
+): { score: number; fortuneLevel: LiuNianInfo['fortuneLevel'] } {
+  let score = 50;
+
+  const dayMasterWX = WU_XING[dayMaster];
+  const lnGanWX = WU_XING[lnGan];
+
+  // 流年天干五行生克（同大运逻辑，但权重减半）
+  if (
+    (dayMasterWX === '木' && lnGanWX === '水') ||
+    (dayMasterWX === '火' && lnGanWX === '木') ||
+    (dayMasterWX === '土' && lnGanWX === '火') ||
+    (dayMasterWX === '金' && lnGanWX === '土') ||
+    (dayMasterWX === '水' && lnGanWX === '金')
+  ) {
+    score += 10;
+  } else if (lnGanWX === dayMasterWX) {
+    score += 3;
+  } else if (
+    (dayMasterWX === '木' && lnGanWX === '火') ||
+    (dayMasterWX === '火' && lnGanWX === '土') ||
+    (dayMasterWX === '土' && lnGanWX === '金') ||
+    (dayMasterWX === '金' && lnGanWX === '水') ||
+    (dayMasterWX === '水' && lnGanWX === '木')
+  ) {
+    score -= 3;
+  } else if (
+    (dayMasterWX === '木' && lnGanWX === '金') ||
+    (dayMasterWX === '火' && lnGanWX === '水') ||
+    (dayMasterWX === '土' && lnGanWX === '木') ||
+    (dayMasterWX === '金' && lnGanWX === '火') ||
+    (dayMasterWX === '水' && lnGanWX === '土')
+  ) {
+    score -= 8;
+  } else {
+    score -= 3;
+  }
+
+  // 十神加权
+  const shiShenBonus: Record<string, number> = {
+    '正印': 8, '偏印': 4, '正官': 6, '正财': 4, '食神': 4,
+    '比肩': 0, '劫财': -3, '伤官': -6, '偏财': 0, '七杀': -10,
+  };
+  score += shiShenBonus[lnShiShen] || 0;
+
+  // 流年与大运的相互作用
+  // 如果流年天干与大运天干相同（伏吟），加重效果
+  if (lnGan === daYunGan) {
+    if (score > 50) score += 5;
+    else score -= 5;
+  }
+
+  // 地支刑冲合害（简化判断）
+  const zhiRelation = getZhiRelation(lnZhi, daYunZhi);
+  if (zhiRelation === '合') score += 5;
+  if (zhiRelation === '冲') score -= 8;
+  if (zhiRelation === '刑') score -= 5;
+  if (zhiRelation === '害') score -= 3;
+
+  score = Math.min(95, Math.max(15, score));
+
+  let fortuneLevel: LiuNianInfo['fortuneLevel'];
+  if (score >= 80) fortuneLevel = '大吉';
+  else if (score >= 65) fortuneLevel = '吉';
+  else if (score >= 45) fortuneLevel = '平';
+  else if (score >= 30) fortuneLevel = '凶';
+  else fortuneLevel = '大凶';
+
+  return { score, fortuneLevel };
+}
+
+/** 地支关系判断（六合、六冲、三刑、六害） */
+function getZhiRelation(zhi1: string, zhi2: string): '合' | '冲' | '刑' | '害' | '无' {
+  // 六合
+  const liuHe: Record<string, string> = {
+    '子': '丑', '丑': '子', '寅': '亥', '亥': '寅',
+    '卯': '戌', '戌': '卯', '辰': '酉', '酉': '辰',
+    '巳': '申', '申': '巳', '午': '未', '未': '午',
+  };
+  if (liuHe[zhi1] === zhi2) return '合';
+
+  // 六冲
+  const liuChong: Record<string, string> = {
+    '子': '午', '午': '子', '丑': '未', '未': '丑',
+    '寅': '申', '申': '寅', '卯': '酉', '酉': '卯',
+    '辰': '戌', '戌': '辰', '巳': '亥', '亥': '巳',
+  };
+  if (liuChong[zhi1] === zhi2) return '冲';
+
+  // 六害
+  const liuHai: Record<string, string> = {
+    '子': '未', '未': '子', '丑': '午', '午': '丑',
+    '寅': '巳', '巳': '寅', '卯': '辰', '辰': '卯',
+    '申': '亥', '亥': '申', '酉': '戌', '戌': '酉',
+  };
+  if (liuHai[zhi1] === zhi2) return '害';
+
+  // 三刑（简化判断常见刑）
+  const sanXing: string[][] = [
+    ['寅', '巳', '申'], // 无恩之刑
+    ['丑', '戌', '未'], // 恃势之刑
+    ['子', '卯'],      // 无礼之刑
+    ['辰', '午', '酉', '亥'], // 自刑
+  ];
+  for (const group of sanXing) {
+    if (group.includes(zhi1) && group.includes(zhi2) && zhi1 !== zhi2) {
+      return '刑';
+    }
+  }
+
+  return '无';
+}
+
+/** 生成年份关键月份提示 */
+function generateMonthHighlights(
+  lnGan: string,
+  lnZhi: string,
+  daYunGan: string,
+  daYunZhi: string,
+  dayMaster: string
+): { month: number; desc: string; level: '吉' | '平' | '凶' }[] {
+  const highlights: { month: number; desc: string; level: '吉' | '平' | '凶' }[] = [];
+
+  // 流月干支：从寅月开始，按60甲子循环
+  // 流月天干 = 流年天干顺推（甲己之年丙作首...）
+  const yearGanIdx = TIAN_GAN.indexOf(lnGan);
+  const monthStartGanIdx = [0, 2, 4, 6, 8, 0, 2, 4, 6, 8][yearGanIdx]; // 甲己=丙(2), 乙庚=戊(4), 丙辛=庚(6), 丁壬=壬(8), 戊癸=甲(0)
+
+  // 关键月份：基于流月干支与大运/命局的刑冲合害
+  const keyMonths = [1, 4, 7, 10]; // 寅、巳、申、亥（四驿马月，变动大）
+
+  keyMonths.forEach((monthIdx, i) => {
+    const monthGanIdx = (monthStartGanIdx + monthIdx - 1) % 10;
+    const monthGan = TIAN_GAN[monthGanIdx];
+    const monthZhi = DI_ZHI[monthIdx - 1]; // 寅=1, 巳=4, 申=7, 亥=10
+
+    const monthSS = SHI_SHEN_MAP[dayMaster]?.[monthGan] || '未知';
+    const relation = getZhiRelation(monthZhi, daYunZhi);
+    const relation2 = getZhiRelation(monthZhi, lnZhi);
+
+    let desc = '';
+    let level: '吉' | '平' | '凶' = '平';
+
+    if (relation === '合' || relation2 === '合') {
+      desc = `${monthZhi}月逢合，人缘佳，利合作`;
+      level = '吉';
+    } else if (relation === '冲' || relation2 === '冲') {
+      desc = `${monthZhi}月逢冲，变动大，需谨慎`;
+      level = '凶';
+    } else if (['正印', '正官', '正财', '食神'].includes(monthSS)) {
+      desc = `${monthZhi}月${monthSS}当令，运势顺畅`;
+      level = '吉';
+    } else if (['七杀', '伤官', '劫财'].includes(monthSS)) {
+      desc = `${monthZhi}月${monthSS}当令，注意波折`;
+      level = '凶';
+    } else {
+      desc = `${monthZhi}月运势平稳`;
+      level = '平';
+    }
+
+    // 农历月份数字
+    const lunarMonthNames = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊'];
+    highlights.push({
+      month: monthIdx,
+      desc: `${lunarMonthNames[monthIdx - 1]}月：${desc}`,
+      level,
+    });
+  });
+
+  return highlights;
+}
+

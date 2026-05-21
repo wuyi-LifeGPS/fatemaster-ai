@@ -29,6 +29,7 @@ export default function DaYunFlow({
   const [liuNianAiResult, setLiuNianAiResult] = useState<Record<number, string>>({})
   const [loadingDaYunAi, setLoadingDaYunAi] = useState<number | null>(null)
   const [loadingLiuNianAi, setLoadingLiuNianAi] = useState<number | null>(null)
+  const [aiError, setAiError] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const currentRef = useRef<HTMLDivElement>(null)
 
@@ -92,11 +93,19 @@ export default function DaYunFlow({
   const handleDaYunAi = async (daYun: DaYunInfo) => {
     if (daYunAiResult[daYun.index]) return
     setLoadingDaYunAi(daYun.index)
-    const result = await getDaYunAiAnalysis(bazi, daYun, name, gender)
-    if (result) {
-      setDaYunAiResult((prev) => ({ ...prev, [daYun.index]: result }))
+    setAiError(null)
+    try {
+      const result = await getDaYunAiAnalysis(bazi, daYun, name, gender)
+      if (result && result.trim()) {
+        setDaYunAiResult((prev) => ({ ...prev, [daYun.index]: result }))
+      } else {
+        setAiError('AI 解读返回为空，请检查 API 配置')
+      }
+    } catch (err: any) {
+      setAiError('AI 解读失败：' + (err.message || '未知错误'))
+    } finally {
+      setLoadingDaYunAi(null)
     }
-    setLoadingDaYunAi(null)
   }
 
   // AI 流年解读
@@ -104,16 +113,33 @@ export default function DaYunFlow({
     if (!selectedDaYun) return
     if (liuNianAiResult[liuNian.year]) return
     setLoadingLiuNianAi(liuNian.year)
-    const daYunData = { ganZhi: selectedDaYun.ganZhi, gan: selectedDaYun.gan, zhi: selectedDaYun.zhi, shiShen: selectedDaYun.shiShen }
-    const result = await getLiuNianAiAnalysis(bazi, daYunData, liuNian, name, gender)
-    if (result) {
-      setLiuNianAiResult((prev) => ({ ...prev, [liuNian.year]: result }))
+    setAiError(null)
+    try {
+      const daYunData = { ganZhi: selectedDaYun.ganZhi, gan: selectedDaYun.gan, zhi: selectedDaYun.zhi, shiShen: selectedDaYun.shiShen }
+      const result = await getLiuNianAiAnalysis(bazi, daYunData, liuNian, name, gender)
+      if (result && result.trim()) {
+        setLiuNianAiResult((prev) => ({ ...prev, [liuNian.year]: result }))
+      } else {
+        setAiError('AI 解读返回为空，请检查 API 配置')
+      }
+    } catch (err: any) {
+      setAiError('AI 解读失败：' + (err.message || '未知错误'))
+    } finally {
+      setLoadingLiuNianAi(null)
     }
-    setLoadingLiuNianAi(null)
   }
 
   return (
     <div className="space-y-6">
+      {/* 全局错误提示 */}
+      {aiError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700 flex items-center gap-2">
+          <span>⚠️</span>
+          <span>{aiError}</span>
+          <button onClick={() => setAiError(null)} className="ml-auto text-red-400 hover:text-red-600">✕</button>
+        </div>
+      )}
+
       {/* ===== 顶部当前定位卡 ===== */}
       {currentDaYun && (
         <div className="bg-gradient-to-br from-fate-700 to-fate-600 text-white rounded-xl p-5 shadow-lg">

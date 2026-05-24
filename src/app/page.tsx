@@ -10,6 +10,13 @@ export default function Home() {
       color: 'from-amber-500 to-orange-600',
     },
     {
+      title: '姓名学分析',
+      desc: '三才五格姓名分析，AI智能起名推荐',
+      icon: '✍',
+      href: '/naming',
+      color: 'from-purple-500 to-violet-600',
+    },
+    {
       title: '每日运势',
       desc: '基于八字的每日运势分析，助你把握每日吉凶',
       icon: '🌅',

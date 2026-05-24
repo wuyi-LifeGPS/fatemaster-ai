@@ -158,7 +158,8 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           const isPast = p.dy.endYear < currentYear
 
           const color = fortuneLevelColor(p.dy.fortuneLevel)
-          const radius = isSelected || isCurrent ? 7 : 5
+          // 增大节点：普通10px，选中/当前13px
+          const radius = isSelected || isCurrent ? 13 : 10
           const starText = getStarText(p.dy.score)
 
           return (
@@ -179,6 +180,16 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                   opacity="0.4"
                 />
               )}
+
+              {/* 透明点击区域（比节点大很多，方便手机端触摸） */}
+              <circle
+                cx={p.x}
+                cy={p.y}
+                r={radius + 10}
+                fill="transparent"
+                stroke="none"
+                className="cursor-pointer"
+              />
 
               {/* 节点圆 */}
               <circle
@@ -241,7 +252,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               {isCurrent && (
                 <text
                   x={p.x}
-                  y={p.y - radius - 22}
+                  y={p.y - radius - 26}
                   textAnchor="middle"
                   className="text-[10px] fill-amber-600 font-bold"
                 >
@@ -253,7 +264,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               {isSelected && !isCurrent && (
                 <text
                   x={p.x}
-                  y={p.y - radius - 22}
+                  y={p.y - radius - 26}
                   textAnchor="middle"
                   className="text-[10px] fill-fate-600"
                 >

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import type { DaYunInfo } from '@/lib/bazi'
 import { fortuneLevelColor } from '@/components/StarRating'
 
@@ -10,8 +10,19 @@ interface DaYunCurveProps {
   onSelect: (dy: DaYunInfo) => void
 }
 
+/** 根据分数生成星级文本 */
+function getStarText(score: number): string {
+  let full = 0
+  if (score >= 85) full = 5
+  else if (score >= 70) full = 4
+  else if (score >= 55) full = 3
+  else if (score >= 40) full = 2
+  else full = 1
+  return '★'.repeat(full) + '☆'.repeat(5 - full)
+}
+
 export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurveProps) {
-  const svgRef = useRef<SVGSVGElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   if (daYunList.length === 0) return null
 
@@ -29,7 +40,24 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
     return { x, y, dy }
   })
 
-  // 生成平滑曲线路径（Catmull-Rom 简化版 → 三次贝塞尔）
+  // 找到当前节点
+  const currentPoint = points.find((p) => p.dy.isCurrent)
+
+  // 默认滚动到当前大运位置（居中）
+  useEffect(() => {
+    if (containerRef.current && currentPoint) {
+      const container = containerRef.current
+      // 计算当前节点在 SVG 中的相对位置
+      const svgWidth = container.scrollWidth
+      const nodeRatio = currentPoint.x / width
+      const nodeScrollX = nodeRatio * svgWidth
+      // 居中滚动
+      const scrollLeft = nodeScrollX - container.clientWidth / 2
+      container.scrollTo({ left: Math.max(0, scrollLeft), behavior: 'auto' })
+    }
+  }, [daYunList])
+
+  // 生成平滑曲线路径
   const getSmoothPath = (pts: typeof points) => {
     if (pts.length < 2) return ''
 
@@ -59,17 +87,13 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
   }
 
   const curvePath = getSmoothPath(points)
-
-  // 填充区域（曲线 + 底部闭合）
   const fillPath = `${curvePath} L ${points[points.length - 1].x} ${padding.top + chartHeight} L ${points[0].x} ${padding.top + chartHeight} Z`
 
   const currentYear = new Date().getFullYear()
-  const currentPoint = points.find((p) => p.dy.isCurrent)
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div ref={containerRef} className="w-full overflow-x-auto">
       <svg
-        ref={svgRef}
         viewBox={`0 0 ${width} ${height}`}
         className="w-full min-w-[600px]"
         preserveAspectRatio="xMidYMid meet"
@@ -135,6 +159,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
 
           const color = fortuneLevelColor(p.dy.fortuneLevel)
           const radius = isSelected || isCurrent ? 7 : 5
+          const starText = getStarText(p.dy.score)
 
           return (
             <g
@@ -165,6 +190,22 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 strokeWidth="2"
                 opacity={isPast ? 0.4 : 1}
               />
+
+              {/* 星级标签（仅选中和当前显示） */}
+              {(isSelected || isCurrent) && (
+                <g>
+                  {/* 星星 */}
+                  <text
+                    x={p.x}
+                    y={p.y - 12}
+                    textAnchor="middle"
+                    className="text-[10px] fill-amber-500"
+                    style={{ fontSize: 10 }}
+                  >
+                    {starText}
+                  </text>
+                </g>
+              )}
 
               {/* 大运名称标签 */}
               <text
@@ -200,7 +241,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               {isCurrent && (
                 <text
                   x={p.x}
-                  y={p.y - radius - 8}
+                  y={p.y - radius - 22}
                   textAnchor="middle"
                   className="text-[10px] fill-amber-600 font-bold"
                 >
@@ -212,23 +253,11 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               {isSelected && !isCurrent && (
                 <text
                   x={p.x}
-                  y={p.y - radius - 8}
+                  y={p.y - radius - 22}
                   textAnchor="middle"
                   className="text-[10px] fill-fate-600"
                 >
                   选中
-                </text>
-              )}
-
-              {/* 分数标签（仅选中和当前显示） */}
-              {(isSelected || isCurrent) && (
-                <text
-                  x={p.x}
-                  y={p.y - 14}
-                  textAnchor="middle"
-                  className="text-[11px] fill-ink-700 font-bold"
-                >
-                  {p.dy.score}分
                 </text>
               )}
             </g>

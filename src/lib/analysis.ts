@@ -228,7 +228,7 @@ export async function getAiAnalysis(bazi: any, name: string, gender: string, typ
 }
 
 // ===== calculateCombinedGod =====
-function calculateCombinedGod(bazi: any) {
+export function calculateCombinedGod(bazi: any) {
   const { dayMaster, tenGods, bodyStrength, tiaoHou, wuXingFullCount } = bazi;
 
   const wxNameMap: Record<string, string> = {

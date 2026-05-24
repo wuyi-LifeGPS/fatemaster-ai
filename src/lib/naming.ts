@@ -155,6 +155,44 @@ export function getStrokeCount(char: string): number {
   return strokeMap[char] || 0
 }
 
+// 获取字的五行（基于笔画尾数）
+export function getCharWuxing(char: string): string {
+  const strokes = getStrokeCount(char)
+  return getNumberWuxing(strokes)
+}
+
+// 获取名字中每个字的五行
+export function getNameWuxing(name: string): { char: string; strokes: number; wuxing: string }[] {
+  return name.split('').map(char => {
+    const strokes = getStrokeCount(char)
+    return { char, strokes, wuxing: getNumberWuxing(strokes) }
+  })
+}
+
+// 计算名字五行与八字喜用神的匹配度
+export function calculateWuxingMatch(
+  nameWuxing: { char: string; wuxing: string }[],
+  xi: string[],
+  ji: string[]
+): { score: number; details: { char: string; wuxing: string; status: '喜用' | '忌神' | '中性'; points: number }[] } {
+  const details = nameWuxing.map(item => {
+    if (xi.includes(item.wuxing)) {
+      return { ...item, status: '喜用' as const, points: 20 }
+    }
+    if (ji.includes(item.wuxing)) {
+      return { ...item, status: '忌神' as const, points: -15 }
+    }
+    return { ...item, status: '中性' as const, points: 0 }
+  })
+  
+  const totalPoints = details.reduce((sum, d) => sum + d.points, 0)
+  const maxPossible = nameWuxing.length * 20
+  const score = maxPossible > 0 ? Math.round((totalPoints / maxPossible) * 100) : 50
+  
+  return { score: Math.max(0, Math.min(100, score)), details }
+}
+
+
 // 计算名字的总笔画数
 export function getTotalStrokes(name: string): number {
   return name.split('').reduce((sum, char) => sum + getStrokeCount(char), 0)

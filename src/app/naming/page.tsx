@@ -2,7 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { analyzeName, type NameAnalysis } from '@/lib/naming'
+import { calculateBazi } from '@/lib/bazi'
+import { calculateCombinedGod } from '@/lib/analysis'
+import {
+  analyzeName,
+  getNameWuxing,
+  calculateWuxingMatch,
+  type NameAnalysis,
+} from '@/lib/naming'
 
 export default function NamingPage() {
   const [mode, setMode] = useState<'analyze' | 'generate'>('analyze')
@@ -11,12 +18,58 @@ export default function NamingPage() {
   const [analysis, setAnalysis] = useState<NameAnalysis | null>(null)
   const [loading, setLoading] = useState(false)
 
+  // 出生信息
+  const [birthDate, setBirthDate] = useState('')
+  const [birthTime, setBirthTime] = useState('')
+  const [gender, setGender] = useState<'male' | 'female'>('male')
+  const [baziInfo, setBaziInfo] = useState<any>(null)
+  const [combinedGod, setCombinedGod] = useState<any>(null)
+  const [wuxingMatch, setWuxingMatch] = useState<any>(null)
+
   const handleAnalyze = () => {
-    if (!surname || !givenName) return
+    if (!surname || (mode === 'analyze' && !givenName)) return
     setLoading(true)
-    // 模拟加载
+
     setTimeout(() => {
+      // 1. 如果有出生信息，计算八字
+      let bazi = null
+      let god = null
+      let wxMatch = null
+
+      if (birthDate && birthTime) {
+        try {
+          bazi = calculateBazi(birthDate, birthTime)
+          god = calculateCombinedGod(bazi)
+          setBaziInfo(bazi)
+          setCombinedGod(god)
+
+          // 计算名字五行与喜用神匹配
+          const fullName = surname + givenName
+          const nameWuxing = getNameWuxing(fullName)
+          wxMatch = calculateWuxingMatch(
+            nameWuxing,
+            god.xi || [],
+            god.ji || []
+          )
+          setWuxingMatch(wxMatch)
+        } catch (e) {
+          console.error('八字计算出错:', e)
+        }
+      }
+
+      // 2. 算五格
       const result = analyzeName(surname, givenName)
+
+      // 3. 如果有五行匹配，综合到总分
+      if (wxMatch) {
+        const wuxingWeight = 0.3
+        const baseScore = result.overallScore
+        const wuxingScore = wxMatch.score
+        result.overallScore = Math.round(
+          baseScore * (1 - wuxingWeight) + wuxingScore * wuxingWeight
+        )
+      }
+
       setAnalysis(result)
       setLoading(false)
     }, 500)
@@ -26,6 +79,14 @@ export default function NamingPage() {
     if (level === '吉') return 'text-green-600 bg-green-50'
     if (level === '凶') return 'text-red-600 bg-red-50'
     return 'text-yellow-600 bg-yellow-50'
+  }
+
+  const getWuxingColor = (wx: string) => {
+    if (wx === '金') return 'text-amber-600'
+    if (wx === '木') return 'text-green-600'
+    if (wx === '水') return 'text-blue-600'
+    if (wx === '火') return 'text-red-600'
+    return 'text-yellow-700'
   }
 
   return (
@@ -63,6 +124,47 @@ export default function NamingPage() {
 
         {/* 输入区 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          {/* 出生信息（可选） */}
+          <div className="mb-6 p-4 bg-fate-50 rounded-lg">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-sm text-ink-700">
+                📅 出生信息（可选，填写后结合八字喜用神分析更精准）
+              </h3>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="col-span-2">
+                <label className="block text-xs text-ink-400 mb-1">阳历生日</label>
+                <input
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-300 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-ink-400 mb-1">出生时间</label>
+                <input
+                  type="time"
+                  value={birthTime}
+                  onChange={(e) => setBirthTime(e.target.value)}
+                  className="w-full px-3 py-2 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-300 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-ink-400 mb-1">性别</label>
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value as 'male' | 'female')}
+                  className="w-full px-3 py-2 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-300 text-sm"
+                >
+                  <option value="male">男</option>
+                  <option value="female">女</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* 姓名输入 */}
           <div className="flex gap-4 mb-4">
             <div className="flex-1">
               <label className="block text-sm text-ink-500 mb-1">姓氏</label>
@@ -101,6 +203,83 @@ export default function NamingPage() {
         {/* 分析结果 */}
         {analysis && mode === 'analyze' && (
           <div className="space-y-6">
+            {/* 八字概览（如果有） */}
+            {baziInfo && combinedGod && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold font-serif">八字命盘概览</h2>
+                  <div className="text-sm text-ink-400">
+                    {baziInfo.dayMaster}日主 · {baziInfo.yinYang}性{baziInfo.wuXing}命
+                  </div>
+                </div>
+
+                {/* 四柱 */}
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  {baziInfo.pillars.map((p: any) => (
+                    <div key={p.name} className="text-center p-2 bg-fate-50 rounded">
+                      <div className="text-xs text-ink-400 mb-1">{p.name}</div>
+                      <div className="text-lg font-bold">
+                        <span className={getWuxingColor(baziInfo.tenGods[p.gan] ? '未知' : baziInfo.wuXing)}>
+                          {p.gan}
+                        </span>
+                        <span className={getWuxingColor(baziInfo.wuXing)}>{p.zhi}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 喜用神 */}
+                <div className="bg-fate-50 rounded-lg p-4">
+                  <div className="flex items-center gap-4 mb-2">
+                    <div>
+                      <span className="text-sm text-ink-500">喜用神：</span>
+                      <span className="font-bold text-green-600">
+                        {combinedGod.xi?.join('、') || '无'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-sm text-ink-500">忌神：</span>
+                      <span className="font-bold text-red-600">
+                        {combinedGod.ji?.join('、') || '无'}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-ink-400">{combinedGod.tiaoHouDesc}</p>
+                </div>
+
+                {/* 五行补益评分 */}
+                {wuxingMatch && (
+                  <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-100">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-bold text-green-800">🌿 五行补益评分</span>
+                      <span className="text-2xl font-bold text-green-700">
+                        {wuxingMatch.score}分
+                      </span>
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      {wuxingMatch.details.map((d: any) => (
+                        <span
+                          key={d.char}
+                          className={`px-2 py-1 rounded text-xs ${
+                            d.status === '喜用'
+                              ? 'bg-green-100 text-green-700'
+                              : d.status === '忌神'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}
+                        >
+                          {d.char}·{d.wuxing}·{d.status}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-xs text-ink-500 mt-2">
+                      名字中带有喜用神五行得+20分/字，带有忌神五行-15分/字
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* 综合评分 */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">

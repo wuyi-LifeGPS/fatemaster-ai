@@ -130,9 +130,9 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 x={padding.left - 8}
                 y={y + 4}
                 textAnchor="end"
-                className="text-[10px] fill-ink-300"
+                className="text-[8px] fill-ink-300"
               >
-                {v}分
+                {v}
               </text>
             </g>
           )
@@ -191,14 +191,14 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 className="cursor-pointer"
               />
 
-              {/* 节点圆 */}
+              {/* 节点圆 - 当前节点空心描边，其他节点实心 */}
               <circle
                 cx={p.x}
                 cy={p.y}
                 r={radius}
-                fill={color}
-                stroke="white"
-                strokeWidth="2"
+                fill={isCurrent ? 'white' : color}
+                stroke={color}
+                strokeWidth={isCurrent ? 3 : 2}
                 opacity={isPast ? 0.4 : 1}
               />
 

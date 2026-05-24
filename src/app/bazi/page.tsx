@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import Link from 'next/link'
 import { analyzeBazi, getAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
@@ -377,12 +377,12 @@ export default function BaziPage() {
                     '火': 'bg-red-50',
                     '土': 'bg-yellow-50',
                   }
-                  const wxIcon: Record<string, string> = {
-                    '金': '🪙',
-                    '木': '🌲',
-                    '水': '💧',
-                    '火': '🔥',
-                    '土': '⛰️',
+                  const wxIcon: Record<string, ReactNode> = {
+                    '金': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><path d="M5 1L9 5L5 9L1 5Z" fill="#d97706"/></svg>,
+                    '木': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><ellipse cx="5" cy="5" rx="4" ry="3" fill="#16a34a"/></svg>,
+                    '水': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><path d="M5 1c0 0-4 2.5-4 5a4 4 0 1 0 8 0c0-2.5-4-5-4-5z" fill="#2563eb"/></svg>,
+                    '火': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><path d="M5 1l3 7H2z" fill="#dc2626"/></svg>,
+                    '土': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><rect x="1" y="3" width="8" height="5" rx="1" fill="#a16207"/></svg>,
                   }
                   const ganToWx: Record<string, string> = {
                     '甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土',
@@ -405,7 +405,7 @@ export default function BaziPage() {
                           <div className="flex flex-col items-center">
                             <span className={`text-2xl font-bold ${ganColor}`}>{pillar.gan}</span>
                             <div className="flex items-center gap-0.5 mt-0.5">
-                              <span className="text-[10px]">{wxIcon[ganWx]}</span>
+                              {wxIcon[ganWx]}
                               <span className="text-[10px] text-ink-400">{ganWx}</span>
                             </div>
                             {result.tenGods[pillar.gan] && (
@@ -416,7 +416,7 @@ export default function BaziPage() {
                           <div className="flex flex-col items-center">
                             <span className={`text-2xl font-bold ${zhiColor}`}>{pillar.zhi}</span>
                             <div className="flex items-center gap-0.5 mt-0.5">
-                              <span className="text-[10px]">{wxIcon[zhiWx]}</span>
+                              {wxIcon[zhiWx]}
                               <span className="text-[10px] text-ink-400">{zhiWx}</span>
                             </div>
                             {result.tenGods[pillar.zhi] && (

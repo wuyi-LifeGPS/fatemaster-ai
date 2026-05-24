@@ -170,17 +170,11 @@ export default function DaYunFlow({
         <div className="bg-gradient-to-br from-fate-700 to-fate-600 text-white rounded-xl p-5 shadow-lg">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <div className="text-fate-200 text-sm mb-1">
-                您当前正处于 · 第{currentDaYun.index}步大运
-              </div>
               <div className="text-2xl font-bold">
-                {viewMode === 'simple'
-                  ? `${getDaYunStageLabel(currentDaYun.index, currentDaYun.fortuneLevel)} · ${currentDaYun.ganZhi}运`
-                  : `第${currentDaYun.index}步大运 · ${currentDaYun.ganZhi}运`}
+                {currentDaYun.ganZhi}运 · {currentDaYun.startYear}-{currentDaYun.endYear}
               </div>
               <div className="text-fate-200 text-sm mt-1">
-                {currentDaYun.startYear} - {currentDaYun.endYear}（
-                {currentDaYun.startAge}岁 - {currentDaYun.endAge}岁）
+                第{currentDaYun.index}步大运 · {currentDaYun.startAge}岁起运 · 还剩 {currentDaYun.endYear - new Date().getFullYear()} 年
               </div>
 
               {/* 人话版一句话结论 */}
@@ -198,12 +192,9 @@ export default function DaYunFlow({
               >
                 {currentDaYun.fortuneLevel}
               </div>
-              <div className="text-fate-200 text-xs">
-                还剩 {currentDaYun.endYear - new Date().getFullYear()} 年
-              </div>
               <div className="flex items-center gap-1">
                 <StarRating score={currentDaYun.score} size="sm" showLabel={false} />
-                <span className="text-xs text-fate-200 ml-1">运势评分</span>
+                <span className="text-xs text-fate-200">运势评分</span>
               </div>
             </div>
           </div>
@@ -328,9 +319,9 @@ export default function DaYunFlow({
           </div>
 
           <div className="p-5">
-          {/* 标题 + 运势等级 */}
+          {/* 运势等级 + 五星（最醒目） */}
           <div className="flex items-center justify-between mb-4 pb-4 border-b border-fate-100">
-            <div className="flex-1">
+            <div>
               <div className="flex items-center gap-2 mb-1">
                 <h3 className="text-xl font-bold font-serif">
                   {viewMode === 'simple'
@@ -365,17 +356,19 @@ export default function DaYunFlow({
             </div>
           </div>
 
-          {/* 一句话结论 */}
-          {viewMode === 'simple' && (
-            <div className="bg-fate-50 border border-fate-200 rounded-lg p-4 mb-4">
-              <p className="text-sm text-ink-700 font-medium">
-                {getDaYunHumanSummary(selectedDaYun)}
-              </p>
+          {/* 大运结论一句话 */}
+          <div className="bg-fate-50 border border-fate-200 rounded-lg p-4 mb-4">
+            <p className="text-sm text-ink-700 font-medium">
+              {viewMode === 'simple'
+                ? getDaYunHumanSummary(selectedDaYun)
+                : `此运天干${selectedDaYun.gan}为日主${dayMaster}之${selectedDaYun.shiShen}，地支${selectedDaYun.zhi}藏${selectedDaYun.keywords.slice(0, 2).join('、')}，整体${selectedDaYun.fortuneLevel}。`}
+            </p>
+            {viewMode === 'simple' && (
               <p className="text-xs text-ink-500 mt-2">
                 {getDaYunOneLiner(selectedDaYun)}
               </p>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* 人话版：四宫格建议 - 优化视觉 */}
           {viewMode === 'simple' && (

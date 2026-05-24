@@ -25,13 +25,13 @@ export function StarRating({ score, size = 'md', showLabel = true }: StarRatingP
 
   const emptyStars = 5 - fullStars
 
-  // 运势标签
+  // 运势标签（删除，不再显示旺极/旺/平等文字）
   let label: string
-  if (score >= 85) label = '旺极'
-  else if (score >= 70) label = '旺'
-  else if (score >= 55) label = '平'
-  else if (score >= 40) label = '弱'
-  else label = '弱极'
+  if (score >= 85) label = ''
+  else if (score >= 70) label = ''
+  else if (score >= 55) label = ''
+  else if (score >= 40) label = ''
+  else label = ''
 
   return (
     <div className="flex items-center gap-1">

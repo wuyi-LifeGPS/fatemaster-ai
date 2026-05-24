@@ -190,20 +190,20 @@ export default function DaYunFlow({
                 </div>
               )}
             </div>
-            <div className="text-right ml-4">
+            <div className="text-right ml-4 flex flex-col items-end gap-2">
               <div
-                className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${fortuneColor(
+                className={`inline-block px-4 py-2 rounded-full text-lg font-bold ${fortuneColor(
                   currentDaYun.fortuneLevel
                 )}`}
               >
                 {currentDaYun.fortuneLevel}
               </div>
-              <div className="text-fate-200 text-xs mt-1">
+              <div className="text-fate-200 text-xs">
                 还剩 {currentDaYun.endYear - new Date().getFullYear()} 年
               </div>
-              {/* 五星评分替代数字评分 */}
-              <div className="mt-2 flex justify-end">
+              <div className="flex items-center gap-1">
                 <StarRating score={currentDaYun.score} size="sm" showLabel={false} />
+                <span className="text-xs text-fate-200 ml-1">运势评分</span>
               </div>
             </div>
           </div>
@@ -253,8 +253,6 @@ export default function DaYunFlow({
 
       {/* ===== 一生大运走势 —— 曲线图 ===== */}
       <div className="bg-white rounded-lg shadow-sm p-4">
-        <h3 className="text-lg font-bold font-serif mb-1">一生大运走势</h3>
-        <p className="text-xs text-ink-400 mb-3">点击节点查看大运详情</p>
         <DaYunCurve
           daYunList={daYunList}
           selectedDaYun={selectedDaYun}

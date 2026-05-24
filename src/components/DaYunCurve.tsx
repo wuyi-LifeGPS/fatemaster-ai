@@ -215,30 +215,26 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 </text>
               )}
 
-              {/* 大运名称标签 */}
+              {/* 大运名称标签 + 年份区间 + 年龄区间 */}
               <text
                 x={p.x}
-                y={padding.top + chartHeight + 18}
+                y={padding.top + chartHeight + 16}
                 textAnchor="middle"
                 className="text-[11px] fill-fate-700 font-medium"
               >
                 {p.dy.ganZhi}
               </text>
-
-              {/* 年份区间 */}
               <text
                 x={p.x}
-                y={padding.top + chartHeight + 32}
+                y={padding.top + chartHeight + 30}
                 textAnchor="middle"
                 className="text-[10px] fill-ink-400"
               >
                 {p.dy.startYear}-{p.dy.endYear}
               </text>
-
-              {/* 年龄区间 */}
               <text
                 x={p.x}
-                y={padding.top + chartHeight + 44}
+                y={padding.top + chartHeight + 42}
                 textAnchor="middle"
                 className="text-[10px] fill-ink-300"
               >
@@ -289,9 +285,9 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
         {/* 标题 */}
         <text
           x={width / 2}
-          y={20}
+          y={14}
           textAnchor="middle"
-          className="text-sm fill-ink-500 font-serif"
+          className="text-[10px] fill-ink-300"
         >
           人生运势起伏图
         </text>

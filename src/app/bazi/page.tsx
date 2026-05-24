@@ -378,11 +378,28 @@ export default function BaziPage() {
                     '土': 'bg-yellow-50',
                   }
                   const wxIcon: Record<string, ReactNode> = {
-                    '金': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><path d="M5 1L9 5L5 9L1 5Z" fill="#d97706"/></svg>,
-                    '木': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><ellipse cx="5" cy="5" rx="4" ry="3" fill="#16a34a"/></svg>,
-                    '水': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><path d="M5 1c0 0-4 2.5-4 5a4 4 0 1 0 8 0c0-2.5-4-5-4-5z" fill="#2563eb"/></svg>,
-                    '火': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><path d="M5 1l3 7H2z" fill="#dc2626"/></svg>,
-                    '土': <svg width="10" height="10" viewBox="0 0 10 10" className="inline-block align-middle"><rect x="1" y="3" width="8" height="5" rx="1" fill="#a16207"/></svg>,
+                    '金': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
+                      <path d="M6 1L10.5 6L6 11L1.5 6Z" fill="#d97706" opacity="0.9"/>
+                      <path d="M6 2.5L8.5 6L6 9.5L3.5 6Z" fill="#f59e0b" opacity="0.6"/>
+                    </svg>,
+                    '木': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
+                      <path d="M6 1C6 1 3 3.5 3 6C3 8 4.5 10 6 11C7.5 10 9 8 9 6C9 3.5 6 1 6 1Z" fill="#16a34a" opacity="0.9"/>
+                      <path d="M6 3L6 8" stroke="#15803d" strokeWidth="0.8" strokeLinecap="round"/>
+                      <path d="M6 5.5L4.5 4.5M6 6.5L7.5 5.5" stroke="#15803d" strokeWidth="0.6" strokeLinecap="round"/>
+                    </svg>,
+                    '水': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
+                      <path d="M6 1.5C6 1.5 2.5 4 2.5 7C2.5 9.5 4 11 6 11C8 11 9.5 9.5 9.5 7C9.5 4 6 1.5 6 1.5Z" fill="#2563eb" opacity="0.9"/>
+                      <ellipse cx="6" cy="7.5" rx="1.5" ry="2" fill="#60a5fa" opacity="0.5"/>
+                    </svg>,
+                    '火': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
+                      <path d="M6 1C6 1 4 3 4 5.5C4 6.5 4.5 7.5 5 8C4.5 7 4 5.5 4.5 4C3.5 5 3 6.5 3.5 8C3.5 9.5 5 10.5 6 11C7 10.5 8.5 9.5 8.5 8C9 6.5 8.5 5 7.5 4C8 5.5 7.5 7 7 8C7.5 7.5 8 6.5 8 5.5C8 3 6 1 6 1Z" fill="#dc2626" opacity="0.9"/>
+                      <path d="M6 4L6 9" stroke="#fca5a5" strokeWidth="0.5" strokeLinecap="round" opacity="0.6"/>
+                    </svg>,
+                    '土': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
+                      <path d="M2 8L6 3L10 8Z" fill="#a16207" opacity="0.8"/>
+                      <path d="M1.5 8.5L6 4L10.5 8.5" stroke="#ca8a04" strokeWidth="0.8" strokeLinejoin="round" fill="none"/>
+                      <rect x="1" y="8" width="10" height="2" rx="0.5" fill="#a16207" opacity="0.9"/>
+                    </svg>,
                   }
                   const ganToWx: Record<string, string> = {
                     '甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土',

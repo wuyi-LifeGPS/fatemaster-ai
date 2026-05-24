@@ -11,9 +11,9 @@ import {
   getShiShenSimpleMeaning,
   getLiuNianHumanSummary,
   getLiuNianOneLiner,
-  getRadarData,
-  type RadarData,
 } from '@/lib/dayun-simple'
+import { StarRating } from '@/components/StarRating'
+import { DaYunCurve } from '@/components/DaYunCurve'
 
 interface DaYunFlowProps {
   bazi: any
@@ -45,8 +45,6 @@ export default function DaYunFlow({
   const [loadingLiuNianAi, setLoadingLiuNianAi] = useState<number | null>(null)
   const [aiError, setAiError] = useState<string | null>(null)
 
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const currentRef = useRef<HTMLDivElement>(null)
   const detailRef = useRef<HTMLDivElement>(null)
 
   // 计算大运数据
@@ -65,19 +63,6 @@ export default function DaYunFlow({
     const current = list.find((d) => d.isCurrent)
     if (current) setSelectedDaYun(current)
   }, [yearGan, monthGan, monthZhi, dayMaster, gender, birthDate])
-
-  // 滚动到当前大运
-  useEffect(() => {
-    if (currentRef.current && scrollRef.current) {
-      const container = scrollRef.current
-      const element = currentRef.current
-      const scrollLeft =
-        element.offsetLeft -
-        container.clientWidth / 2 +
-        element.clientWidth / 2
-      container.scrollTo({ left: scrollLeft, behavior: 'smooth' })
-    }
-  }, [daYunList])
 
   if (daYunList.length === 0) return null
 
@@ -101,27 +86,6 @@ export default function DaYunFlow({
       default:
         return 'text-ink-500 bg-fate-50 border-fate-200'
     }
-  }
-
-  const fortuneBarColor = (level: string) => {
-    switch (level) {
-      case '大吉':
-        return 'bg-gradient-to-t from-red-500 to-red-400'
-      case '吉':
-        return 'bg-gradient-to-t from-amber-500 to-amber-400'
-      case '平':
-        return 'bg-gradient-to-t from-blue-400 to-blue-300'
-      case '凶':
-        return 'bg-gradient-to-t from-slate-500 to-slate-400'
-      case '大凶':
-        return 'bg-gradient-to-t from-gray-500 to-gray-400'
-      default:
-        return 'bg-gradient-to-t from-fate-400 to-fate-300'
-    }
-  }
-
-  const scoreBarHeight = (score: number) => {
-    return Math.max(20, Math.min(100, score))
   }
 
   // AI 大运解读
@@ -185,111 +149,6 @@ export default function DaYunFlow({
     }, 100)
   }
 
-  // ========== 雷达图组件 ==========
-  const RadarChart = ({ data }: { data: RadarData }) => {
-    const size = 220
-    const center = size / 2
-    const radius = 80
-    const levels = 4
-    const labels = data.labels
-    const values = data.values.map((v) => Math.max(0, Math.min(100, v)))
-    const count = labels.length
-
-    const getPoint = (i: number, r: number) => {
-      const angle = (Math.PI * 2 * i) / count - Math.PI / 2
-      return {
-        x: center + r * Math.cos(angle),
-        y: center + r * Math.sin(angle),
-      }
-    }
-
-    // 网格线
-    const gridLines = []
-    for (let l = 1; l <= levels; l++) {
-      const r = (radius * l) / levels
-      const points = Array.from({ length: count }, (_, i) => {
-        const p = getPoint(i, r)
-        return `${p.x},${p.y}`
-      }).join(' ')
-      gridLines.push(
-        <polygon
-          key={`grid-${l}`}
-          points={points}
-          fill="none"
-          stroke="#e5e7eb"
-          strokeWidth="1"
-        />
-      )
-    }
-
-    // 轴线
-    const axes = Array.from({ length: count }, (_, i) => {
-      const p = getPoint(i, radius)
-      return (
-        <line
-          key={`axis-${i}`}
-          x1={center}
-          y1={center}
-          x2={p.x}
-          y2={p.y}
-          stroke="#e5e7eb"
-          strokeWidth="1"
-        />
-      )
-    })
-
-    // 数据区域
-    const dataPoints = values.map((v, i) => {
-      const r = (radius * v) / 100
-      return getPoint(i, r)
-    })
-    const dataPolygon = dataPoints.map((p) => `${p.x},${p.y}`).join(' ')
-
-    // 标签
-    const labelEls = labels.map((label, i) => {
-      const p = getPoint(i, radius + 22)
-      return (
-        <text
-          key={`label-${i}`}
-          x={p.x}
-          y={p.y}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          className="text-xs fill-ink-500"
-          style={{ fontSize: 12 }}
-        >
-          {label}
-        </text>
-      )
-    })
-
-    // 数值点
-    const dots = dataPoints.map((p, i) => (
-      <circle
-        key={`dot-${i}`}
-        cx={p.x}
-        cy={p.y}
-        r="3"
-        fill="#8b6b4a"
-      />
-    ))
-
-    return (
-      <svg width={size} height={size} className="mx-auto">
-        {gridLines}
-        {axes}
-        <polygon
-          points={dataPolygon}
-          fill="rgba(139, 107, 74, 0.15)"
-          stroke="#8b6b4a"
-          strokeWidth="2"
-        />
-        {dots}
-        {labelEls}
-      </svg>
-    )
-  }
-
   return (
     <div className="space-y-6">
       {/* 全局错误提示 */}
@@ -342,8 +201,9 @@ export default function DaYunFlow({
               <div className="text-fate-200 text-xs mt-1">
                 还剩 {currentDaYun.endYear - new Date().getFullYear()} 年
               </div>
-              <div className="text-fate-200 text-xs mt-0.5">
-                评分 {currentDaYun.score}分
+              {/* 五星评分替代数字评分 */}
+              <div className="mt-2 flex justify-end">
+                <StarRating score={currentDaYun.score} size="sm" showLabel={false} />
               </div>
             </div>
           </div>
@@ -391,115 +251,40 @@ export default function DaYunFlow({
         </div>
       )}
 
-      {/* ===== 一生大运走势 ===== */}
+      {/* ===== 一生大运走势 —— 曲线图 ===== */}
       <div className="bg-white rounded-lg shadow-sm p-4">
-        <h3 className="text-lg font-bold font-serif mb-4">一生大运走势</h3>
-
-        <div
-          ref={scrollRef}
-          className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {daYunList.map((dy) => {
-            const isSelected = selectedDaYun?.index === dy.index
-            const isCurrent = dy.isCurrent
-            const isPast = dy.endYear < new Date().getFullYear()
-            const stageLabel = getDaYunStageLabel(dy.index, dy.fortuneLevel)
-
-            return (
-              <div
-                key={dy.index}
-                ref={isCurrent ? currentRef : null}
-                onClick={() => handleSelectDaYun(dy)}
-                className={`flex-shrink-0 w-24 cursor-pointer transition-all duration-200 ${
-                  isSelected ? 'scale-105' : 'opacity-80 hover:opacity-100'
-                }`}
-              >
-                {/* 柱子高度表示运势强弱 */}
-                <div className="flex flex-col items-center mb-2">
-                  <div
-                    className={`w-14 rounded-t-lg ${fortuneBarColor(
-                      dy.fortuneLevel
-                    )} transition-all duration-300`}
-                    style={{
-                      height: `${scoreBarHeight(dy.score)}px`,
-                      opacity: isPast ? 0.5 : 1,
-                    }}
-                  />
-                </div>
-
-                {/* 标签 */}
-                <div
-                  className={`text-center py-2 rounded-lg border-2 transition-colors ${
-                    isSelected
-                      ? 'border-fate-500 bg-fate-50'
-                      : isCurrent
-                      ? 'border-fate-400 bg-fate-50'
-                      : 'border-fate-100 bg-white'
-                  }`}
-                >
-                  <div className="font-bold text-base text-fate-700">
-                    {viewMode === 'simple' ? stageLabel : dy.ganZhi}
-                  </div>
-                  <div className="text-xs text-ink-400">
-                    {dy.startAge}-{dy.endAge}岁
-                  </div>
-                  {isCurrent && (
-                    <div className="text-xs text-fate-600 font-bold mt-1">
-                      当前
-                    </div>
-                  )}
-                </div>
-
-                {/* 年份 + 干支（人话版也保留，但小字） */}
-                <div className="text-center text-xs text-ink-400 mt-1">
-                  {dy.startYear}
-                </div>
-                {viewMode === 'simple' && (
-                  <div className="text-center text-[10px] text-ink-300 mt-0.5">
-                    {dy.ganZhi}运
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+        <h3 className="text-lg font-bold font-serif mb-1">一生大运走势</h3>
+        <p className="text-xs text-ink-400 mb-3">点击节点查看大运详情</p>
+        <DaYunCurve
+          daYunList={daYunList}
+          selectedDaYun={selectedDaYun}
+          onSelect={handleSelectDaYun}
+        />
 
         {/* 图例 */}
-        <div className="flex items-center gap-4 mt-2 text-xs text-ink-400">
+        <div className="flex items-center gap-4 mt-3 text-xs text-ink-400">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-red-400" />
+            <div className="w-3 h-3 rounded-full bg-red-500" />
             <span>大吉</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-amber-400" />
+            <div className="w-3 h-3 rounded-full bg-amber-500" />
             <span>吉</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-blue-400" />
+            <div className="w-3 h-3 rounded-full bg-blue-500" />
             <span>平</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-slate-400" />
+            <div className="w-3 h-3 rounded-full bg-slate-500" />
             <span>凶</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-gray-400 opacity-50" />
+            <div className="w-3 h-3 rounded-full bg-gray-500 opacity-50" />
             <span>已走过</span>
           </div>
         </div>
       </div>
-
-      {/* ===== 运势雷达图（当前大运） ===== */}
-      {currentDaYun && viewMode === 'simple' && (
-        <div className="bg-white rounded-lg shadow-sm p-5">
-          <h3 className="text-lg font-bold font-serif mb-4">当前十年六维运势</h3>
-          <RadarChart data={getRadarData(currentDaYun)} />
-          <p className="text-center text-xs text-ink-400 mt-2">
-            基于大运特性 + 五行生克估算，仅供参考
-          </p>
-        </div>
-      )}
 
       {/* ===== 大运详情面板 ===== */}
       {selectedDaYun && (
@@ -529,8 +314,9 @@ export default function DaYunFlow({
               >
                 {selectedDaYun.fortuneLevel}
               </div>
-              <div className="text-sm font-bold text-fate-700 mt-1">
-                评分 {selectedDaYun.score}分
+              {/* 五星评分 */}
+              <div className="mt-1 flex justify-end">
+                <StarRating score={selectedDaYun.score} size="sm" />
               </div>
             </div>
           </div>
@@ -700,6 +486,10 @@ export default function DaYunFlow({
                   >
                     {ln.fortuneLevel}
                   </div>
+                  {/* 流年五星评分 */}
+                  <div className="mt-1 flex justify-center">
+                    <StarRating score={ln.score} size="sm" showLabel={false} />
+                  </div>
                   {ln.isCurrent && (
                     <div className="text-xs text-fate-600 mt-0.5">今年</div>
                   )}
@@ -805,8 +595,9 @@ export default function DaYunFlow({
               >
                 {selectedLiuNian.fortuneLevel}
               </div>
-              <div className="text-xs text-ink-400">
-                评分 {selectedLiuNian.score}分
+              {/* 五星评分替代数字 */}
+              <div className="mt-1 flex justify-center">
+                <StarRating score={selectedLiuNian.score} size="sm" showLabel={false} />
               </div>
             </div>
           </div>

@@ -1,0 +1,264 @@
+'use client'
+
+import { useRef } from 'react'
+import type { DaYunInfo } from '@/lib/bazi'
+import { fortuneLevelColor } from '@/components/StarRating'
+
+interface DaYunCurveProps {
+  daYunList: DaYunInfo[]
+  selectedDaYun: DaYunInfo | null
+  onSelect: (dy: DaYunInfo) => void
+}
+
+export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurveProps) {
+  const svgRef = useRef<SVGSVGElement>(null)
+
+  if (daYunList.length === 0) return null
+
+  const width = 700
+  const height = 240
+  const padding = { top: 40, right: 30, bottom: 60, left: 30 }
+
+  const chartWidth = width - padding.left - padding.right
+  const chartHeight = height - padding.top - padding.bottom
+
+  // 数据点
+  const points = daYunList.map((dy, i) => {
+    const x = padding.left + (i / (daYunList.length - 1)) * chartWidth
+    const y = padding.top + chartHeight - (dy.score / 100) * chartHeight
+    return { x, y, dy }
+  })
+
+  // 生成平滑曲线路径（Catmull-Rom 简化版 → 三次贝塞尔）
+  const getSmoothPath = (pts: typeof points) => {
+    if (pts.length < 2) return ''
+
+    const extended = [
+      { ...pts[0], x: pts[0].x - (pts[1]?.x - pts[0].x || 0) },
+      ...pts,
+      { ...pts[pts.length - 1], x: pts[pts.length - 1].x + (pts[pts.length - 1].x - pts[pts.length - 2]?.x || 0) },
+    ]
+
+    let d = `M ${pts[0].x} ${pts[0].y}`
+
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = extended[i]
+      const p1 = extended[i + 1]
+      const p2 = extended[i + 2]
+      const p3 = extended[i + 3]
+
+      const cp1x = p1.x + (p2.x - p0.x) / 6
+      const cp1y = p1.y + (p2.y - p0.y) / 6
+      const cp2x = p2.x - (p3.x - p1.x) / 6
+      const cp2y = p2.y - (p3.y - p1.y) / 6
+
+      d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`
+    }
+
+    return d
+  }
+
+  const curvePath = getSmoothPath(points)
+
+  // 填充区域（曲线 + 底部闭合）
+  const fillPath = `${curvePath} L ${points[points.length - 1].x} ${padding.top + chartHeight} L ${points[0].x} ${padding.top + chartHeight} Z`
+
+  const currentYear = new Date().getFullYear()
+  const currentPoint = points.find((p) => p.dy.isCurrent)
+
+  return (
+    <div className="w-full overflow-x-auto">
+      <svg
+        ref={svgRef}
+        viewBox={`0 0 ${width} ${height}`}
+        className="w-full min-w-[600px]"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <defs>
+          <linearGradient id="curveFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#8b6b4a" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#8b6b4a" stopOpacity="0.02" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* 背景网格 */}
+        {[20, 40, 60, 80].map((v) => {
+          const y = padding.top + chartHeight - (v / 100) * chartHeight
+          return (
+            <g key={`grid-${v}`}>
+              <line
+                x1={padding.left}
+                y1={y}
+                x2={width - padding.right}
+                y2={y}
+                stroke="#f0ebe5"
+                strokeWidth="1"
+                strokeDasharray="4 4"
+              />
+              <text
+                x={padding.left - 8}
+                y={y + 4}
+                textAnchor="end"
+                className="text-[10px] fill-ink-300"
+              >
+                {v}分
+              </text>
+            </g>
+          )
+        })}
+
+        {/* 填充区域 */}
+        <path d={fillPath} fill="url(#curveFill)" />
+
+        {/* 曲线 */}
+        <path
+          d={curvePath}
+          fill="none"
+          stroke="#8b6b4a"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          filter="url(#glow)"
+        />
+
+        {/* 数据点 + 节点 */}
+        {points.map((p) => {
+          const isSelected = selectedDaYun?.index === p.dy.index
+          const isCurrent = p.dy.isCurrent
+          const isPast = p.dy.endYear < currentYear
+
+          const color = fortuneLevelColor(p.dy.fortuneLevel)
+          const radius = isSelected || isCurrent ? 7 : 5
+
+          return (
+            <g
+              key={p.dy.index}
+              className="cursor-pointer"
+              onClick={() => onSelect(p.dy)}
+            >
+              {/* 外圈高亮 */}
+              {(isSelected || isCurrent) && (
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={radius + 4}
+                  fill="none"
+                  stroke={color}
+                  strokeWidth="2"
+                  opacity="0.4"
+                />
+              )}
+
+              {/* 节点圆 */}
+              <circle
+                cx={p.x}
+                cy={p.y}
+                r={radius}
+                fill={color}
+                stroke="white"
+                strokeWidth="2"
+                opacity={isPast ? 0.4 : 1}
+              />
+
+              {/* 大运名称标签 */}
+              <text
+                x={p.x}
+                y={padding.top + chartHeight + 18}
+                textAnchor="middle"
+                className="text-[11px] fill-fate-700 font-medium"
+              >
+                {p.dy.ganZhi}
+              </text>
+
+              {/* 年份 */}
+              <text
+                x={p.x}
+                y={padding.top + chartHeight + 32}
+                textAnchor="middle"
+                className="text-[10px] fill-ink-400"
+              >
+                {p.dy.startYear}
+              </text>
+
+              {/* 年龄 */}
+              <text
+                x={p.x}
+                y={padding.top + chartHeight + 44}
+                textAnchor="middle"
+                className="text-[10px] fill-ink-300"
+              >
+                {p.dy.startAge}岁
+              </text>
+
+              {/* 当前标记 */}
+              {isCurrent && (
+                <text
+                  x={p.x}
+                  y={p.y - radius - 8}
+                  textAnchor="middle"
+                  className="text-[10px] fill-amber-600 font-bold"
+                >
+                  当前
+                </text>
+              )}
+
+              {/* 选中标记 */}
+              {isSelected && !isCurrent && (
+                <text
+                  x={p.x}
+                  y={p.y - radius - 8}
+                  textAnchor="middle"
+                  className="text-[10px] fill-fate-600"
+                >
+                  选中
+                </text>
+              )}
+
+              {/* 分数标签（仅选中和当前显示） */}
+              {(isSelected || isCurrent) && (
+                <text
+                  x={p.x}
+                  y={p.y - 14}
+                  textAnchor="middle"
+                  className="text-[11px] fill-ink-700 font-bold"
+                >
+                  {p.dy.score}分
+                </text>
+              )}
+            </g>
+          )
+        })}
+
+        {/* 当前年份竖线 */}
+        {currentPoint && (
+          <line
+            x1={currentPoint.x}
+            y1={padding.top}
+            x2={currentPoint.x}
+            y2={padding.top + chartHeight}
+            stroke="#8b6b4a"
+            strokeWidth="1"
+            strokeDasharray="6 3"
+            opacity="0.6"
+          />
+        )}
+
+        {/* 标题 */}
+        <text
+          x={width / 2}
+          y={20}
+          textAnchor="middle"
+          className="text-sm fill-ink-500 font-serif"
+        >
+          人生运势起伏图
+        </text>
+      </svg>
+    </div>
+  )
+}

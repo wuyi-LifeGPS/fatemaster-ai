@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, type ReactNode } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { analyzeBazi, getAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
@@ -377,27 +377,6 @@ export default function BaziPage() {
                     '火': 'bg-red-50',
                     '土': 'bg-yellow-50',
                   }
-                  const wxIcon: Record<string, ReactNode> = {
-                    '金': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
-                      <circle cx="6" cy="6" r="4" fill="#d97706" opacity="0.9"/>
-                      <circle cx="6" cy="6" r="2.5" fill="#f59e0b" opacity="0.7"/>
-                    </svg>,
-                    '木': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
-                      <ellipse cx="6" cy="6" rx="4" ry="3.5" fill="#16a34a" opacity="0.9"/>
-                    </svg>,
-                    '水': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
-                      <path d="M6 1.5C6 1.5 2.5 4 2.5 7C2.5 9.5 4 11 6 11C8 11 9.5 9.5 9.5 7C9.5 4 6 1.5 6 1.5Z" fill="#2563eb" opacity="0.9"/>
-                      <ellipse cx="6" cy="7.5" rx="1.5" ry="2" fill="#60a5fa" opacity="0.5"/>
-                    </svg>,
-                    '火': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
-                      <path d="M6 1C6 1 4 3 4 5.5C4 6.5 4.5 7.5 5 8C4.5 7 4 5.5 4.5 4C3.5 5 3 6.5 3.5 8C3.5 9.5 5 10.5 6 11C7 10.5 8.5 9.5 8.5 8C9 6.5 8.5 5 7.5 4C8 5.5 7.5 7 7 8C7.5 7.5 8 6.5 8 5.5C8 3 6 1 6 1Z" fill="#dc2626" opacity="0.9"/>
-                      <path d="M6 4L6 9" stroke="#fca5a5" strokeWidth="0.5" strokeLinecap="round" opacity="0.6"/>
-                    </svg>,
-                    '土': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
-                      <path d="M2 8.5L6 3.5L10 8.5Z" fill="#a16207" opacity="0.9"/>
-                      <path d="M1.5 9L6 4L10.5 9" stroke="#ca8a04" strokeWidth="0.8" strokeLinejoin="round" fill="none"/>
-                    </svg>,
-                  }
                   const ganToWx: Record<string, string> = {
                     '甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土',
                     '庚':'金','辛':'金','壬':'水','癸':'水'
@@ -419,7 +398,6 @@ export default function BaziPage() {
                           <div className="flex flex-col items-center">
                             <span className={`text-2xl font-bold ${ganColor}`}>{pillar.gan}</span>
                             <div className="flex items-center gap-0.5 mt-0.5">
-                              {wxIcon[ganWx]}
                               <span className="text-[10px] text-ink-400">{ganWx}</span>
                             </div>
                             {result.tenGods[pillar.gan] && (
@@ -430,7 +408,6 @@ export default function BaziPage() {
                           <div className="flex flex-col items-center">
                             <span className={`text-2xl font-bold ${zhiColor}`}>{pillar.zhi}</span>
                             <div className="flex items-center gap-0.5 mt-0.5">
-                              {wxIcon[zhiWx]}
                               <span className="text-[10px] text-ink-400">{zhiWx}</span>
                             </div>
                             {result.tenGods[pillar.zhi] && (

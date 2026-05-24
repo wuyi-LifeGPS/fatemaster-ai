@@ -393,26 +393,28 @@ export default function BaziPage() {
                     return (
                       <div key={pillar.name} className="border border-fate-100 rounded-lg p-3 sm:p-4">
                         <div className="text-sm text-ink-500 mb-2">{pillar.name}</div>
-                        <div className="flex items-center justify-center gap-1">
-                          {/* 天干 */}
-                          <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center">
+                          {/* 天干地支大字 — 强制同一基线 */}
+                          <div className="flex items-center justify-center gap-1">
                             <span className={`text-2xl font-bold ${ganColor}`}>{pillar.gan}</span>
-                            <div className="flex items-center gap-0.5 mt-0.5">
-                              <span className="text-[10px] text-ink-400">{ganWx}</span>
-                            </div>
-                            {result.tenGods[pillar.gan] && (
-                              <div className="text-[10px] text-ink-400 mt-0.5">{result.tenGods[pillar.gan]}</div>
-                            )}
-                          </div>
-                          {/* 地支 */}
-                          <div className="flex flex-col items-center">
                             <span className={`text-2xl font-bold ${zhiColor}`}>{pillar.zhi}</span>
-                            <div className="flex items-center gap-0.5 mt-0.5">
-                              <span className="text-[10px] text-ink-400">{zhiWx}</span>
+                          </div>
+                          {/* 五行 + 十神信息 */}
+                          <div className="flex items-start justify-center gap-1 mt-1">
+                            {/* 天干侧信息 */}
+                            <div className="flex flex-col items-center min-w-[2.5rem]">
+                              <span className="text-[10px] text-ink-400">{ganWx}</span>
+                              {result.tenGods[pillar.gan] && (
+                                <span className="text-[10px] text-ink-400">{result.tenGods[pillar.gan]}</span>
+                              )}
                             </div>
-                            {result.tenGods[pillar.zhi] && (
-                              <div className="text-[10px] text-ink-400 mt-0.5">{result.tenGods[pillar.zhi]}</div>
-                            )}
+                            {/* 地支侧信息 */}
+                            <div className="flex flex-col items-center min-w-[2.5rem]">
+                              <span className="text-[10px] text-ink-400">{zhiWx}</span>
+                              {result.tenGods[pillar.zhi] && (
+                                <span className="text-[10px] text-ink-400">{result.tenGods[pillar.zhi]}</span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>

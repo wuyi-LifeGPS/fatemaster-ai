@@ -751,6 +751,7 @@ export interface LiuNianInfo {
  * @param birthDate 出生日期 'YYYY-MM-DD'
  * @returns DaYunInfo[]
  */
+// 修复起运年份计算：考虑精确到小时的天数差，避免跨年误差
 export function calculateDaYun(
   yearGan: string,
   monthGan: string,
@@ -764,7 +765,7 @@ export function calculateDaYun(
   const isForward = (yearYinYang === '阳' && gender === 'male') ||
                     (yearYinYang === '阴' && gender === 'female');
 
-  // 2. 计算起运年龄
+  // 2. 计算起运年龄（精确到0.1岁）
   const qiYunAge = calculateQiYunAge(birthDate, isForward);
 
   // 3. 从月柱开始排大运干支
@@ -774,6 +775,26 @@ export function calculateDaYun(
   const daYunList: DaYunInfo[] = [];
   const birthYear = parseInt(birthDate.split('-')[0]);
   const currentYear = new Date().getFullYear();
+
+  // 精确计算起运年份：使用月份累加避免Date对象跨年bug
+  const [birthY, birthM, birthD] = birthDate.split('-').map(Number);
+  const wholeYears = Math.floor(qiYunAge);
+  const extraMonthsFloat = (qiYunAge - wholeYears) * 12;
+  const extraMonths = Math.round(extraMonthsFloat);
+
+  // 使用月份累加计算，避免Date.setMonth跨年问题
+  let qiYunYear = birthY + wholeYears;
+  let qiYunMonth = birthM + extraMonths;
+
+  // 处理月份溢出（>12或<1）
+  while (qiYunMonth > 12) {
+    qiYunMonth -= 12;
+    qiYunYear += 1;
+  }
+  while (qiYunMonth < 1) {
+    qiYunMonth += 12;
+    qiYunYear -= 1;
+  }
 
   // 排10步大运（覆盖约100年）
   for (let i = 0; i < 10; i++) {
@@ -790,9 +811,10 @@ export function calculateDaYun(
 
     const gan = TIAN_GAN[ganIdx];
     const zhi = DI_ZHI[zhiIdx];
+
     const startAge = Math.floor(qiYunAge * 10) / 10 + i * 10;
     const endAge = startAge + 10;
-    const startYear = birthYear + Math.floor(startAge);
+    const startYear = qiYunYear + i * 10;
     const endYear = startYear + 9;
 
     // 十神 + 五行 + 阴阳
@@ -813,13 +835,13 @@ export function calculateDaYun(
       const lnGan = yearGZ[0];
       const lnZhi = yearGZ[1];
       const lnShiShen = SHI_SHEN_MAP[dayMaster]?.[lnGan] || '未知';
-      const lnAge = y - birthYear;
+      const lnAge = y - birthY;
       const lnIsCurrent = y === currentYear;
 
       // 流年评分
       const lnEval = evaluateLiuNian(dayMaster, lnGan, lnZhi, lnShiShen, gan, zhi);
 
-      // 关键月份提示（简化版：基于流年干支与大运干支的刑冲合害）
+      // 关键月份提示
       const monthHighlights = generateMonthHighlights(lnGan, lnZhi, gan, zhi, dayMaster);
 
       years.push({
@@ -860,40 +882,32 @@ export function calculateDaYun(
   return daYunList;
 }
 
-/** 计算起运年龄：从出生日到最近节气的天数 ÷ 3 */
+/** 计算起运年龄：从出生日到最近节的天数 ÷ 3 */
 function calculateQiYunAge(birthDate: string, isForward: boolean): number {
   const { Solar } = require('lunar-javascript');
   const [year, month, day] = birthDate.split('-').map(Number);
 
-  // 搜索最近的节气（最多搜90天，节气间隔约15天，一定能找到）
-  let targetDate: Date | null = null;
-  let daysDiff = 0;
+  const solar = Solar.fromYmd(year, month, day);
+  const lunar = solar.getLunar();
 
-  for (let i = 1; i <= 90; i++) {
-    const checkDate = new Date(year, month - 1, day);
-    if (isForward) {
-      checkDate.setDate(checkDate.getDate() + i);
-    } else {
-      checkDate.setDate(checkDate.getDate() - i);
-    }
-
-    const checkSolar = Solar.fromDate(checkDate);
-    const checkLunar = checkSolar.getLunar();
-    const jieQi = checkLunar.getJieQi?.(); // 如果在节气当天，返回名称
-
-    if (jieQi) {
-      targetDate = checkDate;
-      const birthTime = new Date(year, month - 1, day).getTime();
-      const targetTime = checkDate.getTime();
-      daysDiff = Math.abs(Math.round((targetTime - birthTime) / (1000 * 60 * 60 * 24)));
-      break;
-    }
+  let jieSolar;
+  if (isForward) {
+    // 顺行：找出生日之后的下一个【节】（不是气！）
+    const nextJie = lunar.getNextJie();
+    jieSolar = nextJie.getSolar();
+  } else {
+    // 逆行：找出生日之前的上一个【节】
+    const prevJie = lunar.getPrevJie();
+    jieSolar = prevJie.getSolar();
   }
 
-  if (!targetDate) {
-    // 保底：如果没找到节气，用默认值
-    return isForward ? 3 : 1;
-  }
+  const jieYear = jieSolar.getYear();
+  const jieMonth = jieSolar.getMonth();
+  const jieDay = jieSolar.getDay();
+
+  const birthTime = new Date(year, month - 1, day).getTime();
+  const jieTime = new Date(jieYear, jieMonth - 1, jieDay).getTime();
+  const daysDiff = Math.abs(Math.round((jieTime - birthTime) / (1000 * 60 * 60 * 24)));
 
   // 1天 = 4个月，3天 = 1年。精确到0.1岁
   const years = daysDiff / 3;

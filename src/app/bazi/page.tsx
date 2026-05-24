@@ -28,6 +28,7 @@ export default function BaziPage() {
   const [result, setResult] = useState<BaziResult | null>(null)
   const [history, setHistory] = useState<HistoryRecord[]>([])
   const [showHistory, setShowHistory] = useState(false)
+  const [solarBirthDate, setSolarBirthDate] = useState<string>('')
   const [formData, setFormData] = useState({
     name: '',
     gender: 'male' as 'male' | 'female',
@@ -83,6 +84,7 @@ export default function BaziPage() {
       }
 
       const birthDate = `${solarYear}-${pad(solarMonth)}-${pad(solarDay)}`
+      setSolarBirthDate(birthDate)
       const birthTime = `${pad(formData.birthHour)}:${pad(formData.birthMinute)}`
 
       // 前端直接计算八字 + 生成基础分析
@@ -563,7 +565,7 @@ export default function BaziPage() {
                   bazi={result}
                   gender={formData.gender}
                   name={formData.name}
-                  birthDate={`${formData.birthYear}-${pad(formData.birthMonth)}-${pad(formData.birthDay)}`}
+                  birthDate={solarBirthDate}
                 />
               </div>
             )}

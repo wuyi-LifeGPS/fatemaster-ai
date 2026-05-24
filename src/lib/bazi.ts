@@ -758,7 +758,8 @@ export function calculateDaYun(
   monthZhi: string,
   dayMaster: string,
   gender: 'male' | 'female',
-  birthDate: string
+  birthDate: string,
+  pillars?: { gan: string; zhi: string }[]
 ): DaYunInfo[] {
   // 1. 判断顺逆：阳年男顺、阴年男逆、阳年女逆、阴年女顺
   const yearYinYang = YIN_YANG[yearGan];
@@ -825,8 +826,8 @@ export function calculateDaYun(
     // 是否当前大运
     const isCurrent = currentYear >= startYear && currentYear <= endYear;
 
-    // 运势评分（基于五行生克 + 十神吉凶）
-    const { score, fortuneLevel, keywords } = evaluateDaYun(dayMaster, gan, zhi, shiShen);
+    // 运势评分（基于五行生克 + 十神吉凶 + 命局特点）
+    const { score, fortuneLevel, keywords } = evaluateDaYun(dayMaster, gan, zhi, shiShen, pillars);
 
     // 生成此大运下的流年
     const years: LiuNianInfo[] = [];
@@ -914,12 +915,79 @@ function calculateQiYunAge(birthDate: string, isForward: boolean): number {
   return Math.round(years * 10) / 10;
 }
 
-/** 评估大运吉凶 */
+// ========== 命局特征辅助判断 ==========
+
+/** 计算命局中土的数量（含天干、地支、藏干） */
+function getEarthCount(pillars?: { gan: string; zhi: string }[]): number {
+  if (!pillars) return 0;
+  let count = 0;
+  const earthGan = ['戊', '己'];
+  const earthZhi = ['辰', '戌', '丑', '未'];
+  for (const p of pillars) {
+    if (earthGan.includes(p.gan)) count += 1;
+    if (earthZhi.includes(p.zhi)) count += 2; // 地支土力量更大
+    const cangGan = DI_ZHI_CANG_GAN[p.zhi] || [];
+    for (const cg of cangGan) {
+      if (earthGan.includes(cg)) count += 0.5;
+    }
+  }
+  return count;
+}
+
+/** 判断命局是否偏寒湿（冬季或水旺） */
+function isColdWet(pillars?: { gan: string; zhi: string }[]): boolean {
+  if (!pillars || pillars.length < 2) return false;
+  const waterGan = ['壬', '癸'];
+  const waterZhi = ['子', '亥'];
+  const winterZhi = ['亥', '子', '丑'];
+  let waterCount = 0;
+  for (const p of pillars) {
+    if (waterGan.includes(p.gan)) waterCount += 1;
+    if (waterZhi.includes(p.zhi)) waterCount += 2;
+  }
+  const monthZhi = pillars[1]?.zhi || '';
+  return winterZhi.includes(monthZhi) || waterCount >= 3;
+}
+
+/** 判断命局是否偏燥热（夏季或火旺） */
+function isHotDry(pillars?: { gan: string; zhi: string }[]): boolean {
+  if (!pillars || pillars.length < 2) return false;
+  const fireGan = ['丙', '丁'];
+  const fireZhi = ['巳', '午'];
+  const summerZhi = ['巳', '午', '未'];
+  let fireCount = 0;
+  for (const p of pillars) {
+    if (fireGan.includes(p.gan)) fireCount += 1;
+    if (fireZhi.includes(p.zhi)) fireCount += 2;
+  }
+  const monthZhi = pillars[1]?.zhi || '';
+  return summerZhi.includes(monthZhi) || fireCount >= 3;
+}
+
+/** 判断命局木的数量（用于"破土疏金"判断） */
+function getWoodCount(pillars?: { gan: string; zhi: string }[]): number {
+  if (!pillars) return 0;
+  let count = 0;
+  const woodGan = ['甲', '乙'];
+  const woodZhi = ['寅', '卯'];
+  for (const p of pillars) {
+    if (woodGan.includes(p.gan)) count += 1;
+    if (woodZhi.includes(p.zhi)) count += 2;
+    const cangGan = DI_ZHI_CANG_GAN[p.zhi] || [];
+    for (const cg of cangGan) {
+      if (woodGan.includes(cg)) count += 0.5;
+    }
+  }
+  return count;
+}
+
+/** 评估大运吉凶（改进版：考虑命局特点） */
 function evaluateDaYun(
   dayMaster: string,
   daYunGan: string,
   daYunZhi: string,
-  daYunShiShen: string
+  daYunShiShen: string,
+  pillars?: { gan: string; zhi: string }[]
 ): { score: number; fortuneLevel: DaYunInfo['fortuneLevel']; keywords: string[] } {
   let score = 50;
   const keywords: string[] = [];
@@ -928,8 +996,17 @@ function evaluateDaYun(
   const daYunGanWX = WU_XING[daYunGan];
   const daYunZhiWX = WU_XING[daYunZhi];
 
-  // 天干五行生克评分
-  // 生我者（印星）+15
+  // 命局特征
+  const earthCount = getEarthCount(pillars);
+  const woodCount = getWoodCount(pillars);
+  const isCold = isColdWet(pillars);
+  const isHot = isHotDry(pillars);
+  const isGold = dayMasterWX === '金';
+  const isWood = dayMasterWX === '木';
+
+  // ========== 天干五行生克评分（改进版）==========
+
+  // 1. 生我者（印星）
   if (
     (dayMasterWX === '木' && daYunGanWX === '水') ||
     (dayMasterWX === '火' && daYunGanWX === '木') ||
@@ -937,15 +1014,39 @@ function evaluateDaYun(
     (dayMasterWX === '金' && daYunGanWX === '土') ||
     (dayMasterWX === '水' && daYunGanWX === '金')
   ) {
-    score += 15;
-    keywords.push('贵人扶持');
+    // 特殊：金命遇土运 → 土厚埋金风险
+    if (isGold && daYunGanWX === '土') {
+      if (earthCount >= 4) {
+        score -= 5;
+        keywords.push('土厚埋金');
+      } else if (earthCount >= 2) {
+        score += 5;
+        keywords.push('稳中有进');
+      } else {
+        score += 15;
+        keywords.push('贵人扶持');
+      }
+    }
+    // 特殊：木命遇水运 → 水多木漂风险
+    else if (isWood && daYunGanWX === '水') {
+      if (isCold) {
+        score += 8;
+        keywords.push('温润生发');
+      } else {
+        score += 15;
+        keywords.push('贵人扶持');
+      }
+    } else {
+      score += 15;
+      keywords.push('贵人扶持');
+    }
   }
-  // 同我者（比劫）+5
+  // 2. 同我者（比劫）
   else if (daYunGanWX === dayMasterWX) {
     score += 5;
     keywords.push('自力更生');
   }
-  // 我生者（食伤）-5（泄气）
+  // 3. 我生者（食伤）
   else if (
     (dayMasterWX === '木' && daYunGanWX === '火') ||
     (dayMasterWX === '火' && daYunGanWX === '土') ||
@@ -956,7 +1057,7 @@ function evaluateDaYun(
     score -= 5;
     keywords.push('才华输出');
   }
-  // 克我者（官杀）-10（压力）
+  // 4. 克我者（官杀）- 改进版
   else if (
     (dayMasterWX === '木' && daYunGanWX === '金') ||
     (dayMasterWX === '火' && daYunGanWX === '水') ||
@@ -964,16 +1065,53 @@ function evaluateDaYun(
     (dayMasterWX === '金' && daYunGanWX === '火') ||
     (dayMasterWX === '水' && daYunGanWX === '土')
   ) {
-    score -= 10;
-    keywords.push('压力挑战');
+    // 特殊：金命遇火运 → 火炼金（成器之象）
+    if (isGold && daYunGanWX === '火') {
+      if (daYunGan === '丁') {
+        // 丁火正官炼庚金 = 成器之象
+        score += 12;
+        keywords.push('炼金成器');
+        if (isCold) {
+          score += 5; // 调候加分：寒湿命局遇火暖局
+          keywords.push('暖局解冻');
+        }
+      } else if (daYunGan === '丙') {
+        // 丙火七杀炼庚金
+        score += 5;
+        keywords.push('烈火锻金');
+        if (isCold) {
+          score += 5;
+          keywords.push('暖局解冻');
+        }
+      }
+    }
+    // 特殊：木命遇金运 → 金克木（修剪成材）
+    else if (isWood && daYunGanWX === '金') {
+      if (woodCount >= 3) {
+        score += 5; // 木旺可受修剪
+        keywords.push('修剪成材');
+      } else {
+        score -= 10;
+        keywords.push('压力挑战');
+      }
+    } else {
+      score -= 10;
+      keywords.push('压力挑战');
+    }
   }
-  // 我克者（财星）-5（耗身）
+  // 5. 我克者（财星）- 改进：木疏土
   else {
-    score -= 5;
-    keywords.push('求财奔波');
+    // 特殊：金命遇木运 → 木能疏土（破土解埋金）
+    if (isGold && earthCount >= 3 && daYunGanWX === '木') {
+      score += 8;
+      keywords.push('破土疏金');
+    } else {
+      score -= 5;
+      keywords.push('求财奔波');
+    }
   }
 
-  // 十神加权
+  // 十神加权（正官已在上面的特殊逻辑中加分，这里微调）
   const shiShenBonus: Record<string, number> = {
     '正印': 10, '偏印': 5, '正官': 8, '正财': 5, '食神': 5,
     '比肩': 0, '劫财': -5, '伤官': -8, '偏财': 0, '七杀': -12,
@@ -983,11 +1121,23 @@ function evaluateDaYun(
   // 地支藏干加分（如果地支藏干有印星或比劫）
   const cangGan = DI_ZHI_CANG_GAN[daYunZhi] || [];
   cangGan.forEach(gan => {
-    const ganWX = WU_XING[gan];
     const ganSS = SHI_SHEN_MAP[dayMaster]?.[gan];
     if (ganSS === '正印' || ganSS === '偏印') score += 3;
     if (ganSS === '比肩' || ganSS === '劫财') score += 2;
   });
+
+  // 特殊：地支火局加分（巳午未会火局，加强炼金效果）
+  if (isGold && ['巳', '午', '未'].includes(daYunZhi)) {
+    if (isCold) score += 3; // 暖局加分
+    if (daYunGan === '丁' || daYunGan === '丙') score += 3; // 天干地支都是火
+  }
+
+  // 特殊：地支土局（辰戌丑未）对金命的影响
+  if (isGold && ['辰', '戌', '丑', '未'].includes(daYunZhi)) {
+    if (earthCount >= 4) {
+      score -= 3; // 土太旺埋金
+    }
+  }
 
   // 限定范围
   score = Math.min(95, Math.max(15, score));

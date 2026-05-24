@@ -58,7 +58,8 @@ export default function DaYunFlow({
       monthZhi,
       dayMaster,
       gender,
-      birthDate
+      birthDate,
+      pillars
     )
     setDaYunList(list)
     const current = list.find((d) => d.isCurrent)

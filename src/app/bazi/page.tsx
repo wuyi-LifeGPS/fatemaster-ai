@@ -362,24 +362,72 @@ export default function BaziPage() {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-xl font-bold mb-4 font-serif">八字命盘</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                {result.pillars.map((pillar) => (
-                  <div key={pillar.name} className="border border-fate-100 rounded-lg p-3 sm:p-4">
-                    <div className="text-sm text-ink-500 mb-2">{pillar.name}</div>
-                    <div className="text-2xl font-bold text-fate-700">{pillar.gan}{pillar.zhi}</div>
-                    <div className="text-xs text-ink-400 mt-1">
-                      {result.tenGods[pillar.gan] && (
-                        <div className="text-xs text-ink-400">
-                          <span className="text-ink-300">天干:</span> {result.tenGods[pillar.gan]}
+                {(() => {
+                  const wxColor: Record<string, string> = {
+                    '金': 'text-amber-600',
+                    '木': 'text-green-600',
+                    '水': 'text-blue-600',
+                    '火': 'text-red-600',
+                    '土': 'text-yellow-700',
+                  }
+                  const wxBg: Record<string, string> = {
+                    '金': 'bg-amber-50',
+                    '木': 'bg-green-50',
+                    '水': 'bg-blue-50',
+                    '火': 'bg-red-50',
+                    '土': 'bg-yellow-50',
+                  }
+                  const wxIcon: Record<string, string> = {
+                    '金': '🪙',
+                    '木': '🌲',
+                    '水': '💧',
+                    '火': '🔥',
+                    '土': '⛰️',
+                  }
+                  const ganToWx: Record<string, string> = {
+                    '甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土',
+                    '庚':'金','辛':'金','壬':'水','癸':'水'
+                  }
+                  const zhiToWx: Record<string, string> = {
+                    '子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火',
+                    '午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'
+                  }
+                  return result.pillars.map((pillar) => {
+                    const ganWx = ganToWx[pillar.gan] || ''
+                    const zhiWx = zhiToWx[pillar.zhi] || ''
+                    const ganColor = wxColor[ganWx] || 'text-fate-700'
+                    const zhiColor = wxColor[zhiWx] || 'text-fate-700'
+                    return (
+                      <div key={pillar.name} className="border border-fate-100 rounded-lg p-3 sm:p-4">
+                        <div className="text-sm text-ink-500 mb-2">{pillar.name}</div>
+                        <div className="flex items-center justify-center gap-1">
+                          {/* 天干 */}
+                          <div className="flex flex-col items-center">
+                            <span className={`text-2xl font-bold ${ganColor}`}>{pillar.gan}</span>
+                            <div className="flex items-center gap-0.5 mt-0.5">
+                              <span className="text-[10px]">{wxIcon[ganWx]}</span>
+                              <span className="text-[10px] text-ink-400">{ganWx}</span>
+                            </div>
+                            {result.tenGods[pillar.gan] && (
+                              <div className="text-[10px] text-ink-400 mt-0.5">{result.tenGods[pillar.gan]}</div>
+                            )}
+                          </div>
+                          {/* 地支 */}
+                          <div className="flex flex-col items-center">
+                            <span className={`text-2xl font-bold ${zhiColor}`}>{pillar.zhi}</span>
+                            <div className="flex items-center gap-0.5 mt-0.5">
+                              <span className="text-[10px]">{wxIcon[zhiWx]}</span>
+                              <span className="text-[10px] text-ink-400">{zhiWx}</span>
+                            </div>
+                            {result.tenGods[pillar.zhi] && (
+                              <div className="text-[10px] text-ink-400 mt-0.5">{result.tenGods[pillar.zhi]}</div>
+                            )}
+                          </div>
                         </div>
-                      )}
-                      {result.tenGods[pillar.zhi] && (
-                        <div className="text-xs text-ink-400">
-                          <span className="text-ink-300">地支:</span> {result.tenGods[pillar.zhi]}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                      </div>
+                    )
+                  })
+                })()}
               </div>
             </div>
 

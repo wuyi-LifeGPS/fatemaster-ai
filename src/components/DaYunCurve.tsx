@@ -202,25 +202,13 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 opacity={isPast ? 0.4 : 1}
               />
 
-              {/* 星级标签（仅选中和当前显示）—— 放在节点右上方，避免和"当前"重叠 */}
-              {(isSelected || isCurrent) && (
-                <text
-                  x={p.x + radius + 6}
-                  y={p.y - 4}
-                  textAnchor="start"
-                  className="text-[10px] fill-amber-500"
-                  style={{ fontSize: 10 }}
-                >
-                  {starText}
-                </text>
-              )}
 
               {/* 大运名称标签 + 年份区间 + 年龄区间 */}
               <text
                 x={p.x}
                 y={padding.top + chartHeight + 16}
                 textAnchor="middle"
-                className="text-[11px] fill-fate-700 font-medium"
+                className="text-[13px] fill-fate-700 font-bold"
               >
                 {p.dy.ganZhi}
               </text>
@@ -240,6 +228,19 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               >
                 {p.dy.startAge}-{p.dy.endAge}岁
               </text>
+
+              {/* 星级（仅选中和当前显示，放在岁数下方） */}
+              {(isSelected || isCurrent) && (
+                <text
+                  x={p.x}
+                  y={padding.top + chartHeight + 58}
+                  textAnchor="middle"
+                  className="text-[10px] fill-amber-500"
+                  style={{ fontSize: 10 }}
+                >
+                  {starText}
+                </text>
+              )}
 
               {/* 当前标记 */}
               {isCurrent && (

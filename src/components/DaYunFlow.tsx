@@ -208,23 +208,30 @@ export default function DaYunFlow({
             </div>
           </div>
 
-          {/* 关键词标签 */}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {currentDaYun.keywords.map((k, i) => (
-              <span
-                key={i}
-                className="bg-white/20 px-3 py-1 rounded-full text-sm text-fate-100"
-              >
-                {k}
-              </span>
-            ))}
+          {/* 关键词标签 + 全局切换 */}
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex flex-wrap gap-2">
+              {currentDaYun.keywords.map((k, i) => (
+                <span
+                  key={i}
+                  className="bg-white/20 px-3 py-1 rounded-full text-sm text-fate-100"
+                >
+                  {k}
+                </span>
+              ))}
+            </div>
+            {/* 全局版本切换 - 更显眼的开关 */}
             <button
-              onClick={() =>
-                setViewMode(viewMode === 'simple' ? 'pro' : 'simple')
-              }
-              className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-sm text-fate-200 transition-colors ml-auto"
+              onClick={() => setViewMode(viewMode === 'simple' ? 'pro' : 'simple')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all ${
+                viewMode === 'simple'
+                  ? 'bg-white/20 text-white hover:bg-white/30'
+                  : 'bg-fate-200 text-fate-700 hover:bg-fate-300'
+              }`}
             >
-              {viewMode === 'simple' ? '🔮 切换到专业版' : '👤 切换到简易版'}
+              <span className="text-base">{viewMode === 'simple' ? '👤' : '🔮'}</span>
+              <span>{viewMode === 'simple' ? '简易版' : '专业版'}</span>
+              <span className="text-[10px] opacity-70">切换</span>
             </button>
           </div>
 
@@ -284,18 +291,57 @@ export default function DaYunFlow({
         </div>
       </div>
 
-      {/* ===== 大运详情面板 ===== */}
+      {/* ===== 大运详情面板 - 增加头部标签栏 ===== */}
       {selectedDaYun && (
-        <div ref={detailRef} className="bg-white rounded-lg shadow-sm p-5">
-          {/* 标题 + 切换按钮 */}
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-xl font-bold font-serif">
-                {viewMode === 'simple'
-                  ? `${getDaYunStageLabel(selectedDaYun.index, selectedDaYun.fortuneLevel)}（${selectedDaYun.startYear}-${selectedDaYun.endYear}）`
-                  : `${selectedDaYun.ganZhi}运（${selectedDaYun.startYear}-${selectedDaYun.endYear}）`}
-              </h3>
-              <p className="text-sm text-ink-500 mt-1">
+        <div ref={detailRef} className="bg-white rounded-lg shadow-sm border border-fate-100">
+          {/* 顶部标签栏 */}
+          <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-fate-100">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-fate-700">
+                {selectedDaYun.ganZhi}运
+              </span>
+              <span className="text-xs text-ink-400">
+                {selectedDaYun.startYear}-{selectedDaYun.endYear}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 bg-fate-50 rounded-full p-1">              <button
+                onClick={() => setViewMode('simple')}
+                className={`text-xs px-3 py-1 rounded-full transition-all ${
+                  viewMode === 'simple'
+                    ? 'bg-white text-fate-700 shadow-sm font-bold'
+                    : 'text-ink-400 hover:text-ink-600'
+                }`}
+              >
+                👤 简易
+              </button>
+              <button
+                onClick={() => setViewMode('pro')}
+                className={`text-xs px-3 py-1 rounded-full transition-all ${
+                  viewMode === 'pro'
+                    ? 'bg-white text-fate-700 shadow-sm font-bold'
+                    : 'text-ink-400 hover:text-ink-600'
+                }`}
+              >
+                🔮 专业
+              </button>
+            </div>
+          </div>
+
+          <div className="p-5">
+          {/* 标题 + 运势等级 */}
+          <div className="flex items-center justify-between mb-4 pb-4 border-b border-fate-100">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-xl font-bold font-serif">
+                  {viewMode === 'simple'
+                    ? `${getDaYunStageLabel(selectedDaYun.index, selectedDaYun.fortuneLevel)}`
+                    : `${selectedDaYun.ganZhi}运`}
+                </h3>
+                <span className="text-sm text-ink-400">
+                  {selectedDaYun.startYear}-{selectedDaYun.endYear}
+                </span>
+              </div>
+              <p className="text-sm text-ink-500">
                 第{selectedDaYun.index}步大运 · {selectedDaYun.startAge}岁起运
                 {viewMode === 'simple' && (
                   <span className="ml-2 text-fate-600">
@@ -304,17 +350,17 @@ export default function DaYunFlow({
                 )}
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-right flex flex-col items-end gap-1">
               <div
-                className={`inline-block px-4 py-2 rounded-lg text-lg font-bold ${fortuneColor(
+                className={`inline-block px-4 py-2 rounded-full text-lg font-bold ${fortuneColor(
                   selectedDaYun.fortuneLevel
                 )}`}
               >
                 {selectedDaYun.fortuneLevel}
               </div>
-              {/* 五星评分 */}
-              <div className="mt-1 flex justify-end">
-                <StarRating score={selectedDaYun.score} size="sm" />
+              <div className="flex items-center gap-1">
+                <StarRating score={selectedDaYun.score} size="sm" showLabel={false} />
+                <span className="text-xs text-ink-400">运势评分</span>
               </div>
             </div>
           </div>
@@ -331,23 +377,28 @@ export default function DaYunFlow({
             </div>
           )}
 
-          {/* 人话版：四宫格建议 */}
+          {/* 人话版：四宫格建议 - 优化视觉 */}
           {viewMode === 'simple' && (
             <div className="grid grid-cols-2 gap-3 mb-4">
               {(() => {
                 const advice = getDaYunAdvice(selectedDaYun)
-                const icons = ['💼', '💰', '❤️', '🏥']
-                const titles = ['事业', '财运', '感情', '健康']
-                const keys = ['career', 'wealth', 'love', 'health'] as const
-                return keys.map((key, i) => (
+                const items = [
+                  { icon: '💼', title: '事业', key: 'career', color: 'border-l-4 border-l-blue-400' },
+                  { icon: '💰', title: '财运', key: 'wealth', color: 'border-l-4 border-l-amber-400' },
+                  { icon: '❤️', title: '感情', key: 'love', color: 'border-l-4 border-l-red-400' },
+                  { icon: '🏥', title: '健康', key: 'health', color: 'border-l-4 border-l-green-400' },
+                ]
+                return items.map((item) => (
                   <div
-                    key={key}
-                    className="bg-fate-50 rounded-lg p-3"
+                    key={item.key}
+                    className={`bg-white border border-fate-100 rounded-lg p-3 shadow-sm ${item.color}`}
                   >
-                    <div className="text-lg mb-1">{icons[i]}</div>
-                    <div className="text-xs text-ink-500">{titles[i]}</div>
-                    <div className="text-sm font-medium text-ink-700 mt-0.5">
-                      {advice[key]}
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-lg">{item.icon}</span>
+                      <span className="text-xs font-bold text-ink-500">{item.title}</span>
+                    </div>
+                    <div className="text-sm font-medium text-ink-700">
+                      {advice[item.key as 'career' | 'wealth' | 'love' | 'health']}
                     </div>
                   </div>
                 ))
@@ -355,41 +406,31 @@ export default function DaYunFlow({
             </div>
           )}
 
-          {/* 专业版：原样十神解读 */}
+          {/* 专业版：命理术语卡片 - 优化视觉 */}
           {viewMode === 'pro' && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-              <div className="bg-fate-50 rounded-lg p-3 text-center">
-                <div className="text-xs text-ink-500">大运天干</div>
-                <div className="text-xl font-bold text-fate-700">
-                  {selectedDaYun.gan}
-                </div>
-                <div className="text-xs text-ink-400">
-                  {selectedDaYun.yinYang}性 · {selectedDaYun.wuXing}
-                </div>
+              <div className="bg-white border border-fate-200 rounded-lg p-3 text-center shadow-sm">
+                <div className="text-xs text-ink-400 mb-1">大运天干</div>
+                <div className="text-2xl font-bold text-fate-700">{selectedDaYun.gan}</div>
+                <div className="text-xs text-ink-400 mt-1">{selectedDaYun.yinYang} · {selectedDaYun.wuXing}</div>
               </div>
-              <div className="bg-fate-50 rounded-lg p-3 text-center">
-                <div className="text-xs text-ink-500">十神关系</div>
-                <div className="text-lg font-bold text-fate-700">
-                  {selectedDaYun.shiShen}
-                </div>
-                <div className="text-xs text-ink-400">
-                  对日主{dayMaster}
-                </div>
+              <div className="bg-white border border-fate-200 rounded-lg p-3 text-center shadow-sm">
+                <div className="text-xs text-ink-400 mb-1">十神关系</div>
+                <div className="text-lg font-bold text-fate-700">{selectedDaYun.shiShen}</div>
+                <div className="text-xs text-ink-400 mt-1">对日主{dayMaster}</div>
               </div>
-              <div className="bg-fate-50 rounded-lg p-3 text-center">
-                <div className="text-xs text-ink-500">地支</div>
-                <div className="text-xl font-bold text-fate-700">
-                  {selectedDaYun.zhi}
-                </div>
-                <div className="text-xs text-ink-400">藏干待展开</div>
+              <div className="bg-white border border-fate-200 rounded-lg p-3 text-center shadow-sm">
+                <div className="text-xs text-ink-400 mb-1">地支</div>
+                <div className="text-2xl font-bold text-fate-700">{selectedDaYun.zhi}</div>
+                <div className="text-xs text-ink-400 mt-1">藏干待展开</div>
               </div>
-              <div className="bg-fate-50 rounded-lg p-3 text-center">
-                <div className="text-xs text-ink-500">运势标签</div>
+              <div className="bg-white border border-fate-200 rounded-lg p-3 text-center shadow-sm">
+                <div className="text-xs text-ink-400 mb-1">运势标签</div>
                 <div className="flex flex-wrap gap-1 justify-center mt-1">
                   {selectedDaYun.keywords.slice(0, 2).map((k, i) => (
                     <span
                       key={i}
-                      className="text-xs bg-fate-200 px-2 py-0.5 rounded text-fate-700"
+                      className="text-xs bg-fate-100 px-2 py-0.5 rounded text-fate-700"
                     >
                       {k}
                     </span>
@@ -399,16 +440,30 @@ export default function DaYunFlow({
             </div>
           )}
 
-          {/* 模式切换按钮 */}
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={() =>
-                setViewMode(viewMode === 'simple' ? 'pro' : 'simple')
-              }
-              className="text-xs text-fate-600 hover:text-fate-800 underline"
-            >
-              {viewMode === 'simple' ? '🔮 查看专业版术语' : '👤 返回简易版'}
-            </button>
+          {/* 模式切换 - 改成更明显的标签 */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <span className={`text-xs px-2 py-1 rounded-full ${
+                viewMode === 'simple' ? 'bg-fate-600 text-white' : 'bg-fate-100 text-fate-500'
+              }`}>
+                👤 简易版
+              </span>
+              <button
+                onClick={() => setViewMode(viewMode === 'simple' ? 'pro' : 'simple')}
+                className="relative w-10 h-5 bg-fate-200 rounded-full transition-colors hover:bg-fate-300"
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                    viewMode === 'pro' ? 'translate-x-5' : ''
+                  }`}
+                />
+              </button>
+              <span className={`text-xs px-2 py-1 rounded-full ${
+                viewMode === 'pro' ? 'bg-fate-600 text-white' : 'bg-fate-100 text-fate-500'
+              }`}>
+                🔮 专业版
+              </span>
+            </div>
           </div>
 
           {/* AI 深度解读按钮 */}
@@ -507,6 +562,7 @@ export default function DaYunFlow({
               ? '收起 · 只看今年明年'
               : `查看完整十年流年 (${selectedDaYun.years.length}年) →`}
           </button>
+        </div>
         </div>
       )}
 

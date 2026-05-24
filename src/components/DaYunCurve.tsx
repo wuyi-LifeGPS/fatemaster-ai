@@ -202,20 +202,17 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 opacity={isPast ? 0.4 : 1}
               />
 
-              {/* 星级标签（仅选中和当前显示） */}
+              {/* 星级标签（仅选中和当前显示）—— 放在节点右上方，避免和"当前"重叠 */}
               {(isSelected || isCurrent) && (
-                <g>
-                  {/* 星星 */}
-                  <text
-                    x={p.x}
-                    y={p.y - 12}
-                    textAnchor="middle"
-                    className="text-[10px] fill-amber-500"
-                    style={{ fontSize: 10 }}
-                  >
-                    {starText}
-                  </text>
-                </g>
+                <text
+                  x={p.x + radius + 6}
+                  y={p.y - 4}
+                  textAnchor="start"
+                  className="text-[10px] fill-amber-500"
+                  style={{ fontSize: 10 }}
+                >
+                  {starText}
+                </text>
               )}
 
               {/* 大运名称标签 */}
@@ -228,24 +225,24 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 {p.dy.ganZhi}
               </text>
 
-              {/* 年份 */}
+              {/* 年份区间 */}
               <text
                 x={p.x}
                 y={padding.top + chartHeight + 32}
                 textAnchor="middle"
                 className="text-[10px] fill-ink-400"
               >
-                {p.dy.startYear}
+                {p.dy.startYear}-{p.dy.endYear}
               </text>
 
-              {/* 年龄 */}
+              {/* 年龄区间 */}
               <text
                 x={p.x}
                 y={padding.top + chartHeight + 44}
                 textAnchor="middle"
                 className="text-[10px] fill-ink-300"
               >
-                {p.dy.startAge}岁
+                {p.dy.startAge}-{p.dy.endAge}岁
               </text>
 
               {/* 当前标记 */}

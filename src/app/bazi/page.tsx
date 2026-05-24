@@ -379,13 +379,11 @@ export default function BaziPage() {
                   }
                   const wxIcon: Record<string, ReactNode> = {
                     '金': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
-                      <path d="M6 1L10.5 6L6 11L1.5 6Z" fill="#d97706" opacity="0.9"/>
-                      <path d="M6 2.5L8.5 6L6 9.5L3.5 6Z" fill="#f59e0b" opacity="0.6"/>
+                      <circle cx="6" cy="6" r="4" fill="#d97706" opacity="0.9"/>
+                      <circle cx="6" cy="6" r="2.5" fill="#f59e0b" opacity="0.7"/>
                     </svg>,
                     '木': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
-                      <path d="M6 1C6 1 3 3.5 3 6C3 8 4.5 10 6 11C7.5 10 9 8 9 6C9 3.5 6 1 6 1Z" fill="#16a34a" opacity="0.9"/>
-                      <path d="M6 3L6 8" stroke="#15803d" strokeWidth="0.8" strokeLinecap="round"/>
-                      <path d="M6 5.5L4.5 4.5M6 6.5L7.5 5.5" stroke="#15803d" strokeWidth="0.6" strokeLinecap="round"/>
+                      <ellipse cx="6" cy="6" rx="4" ry="3.5" fill="#16a34a" opacity="0.9"/>
                     </svg>,
                     '水': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
                       <path d="M6 1.5C6 1.5 2.5 4 2.5 7C2.5 9.5 4 11 6 11C8 11 9.5 9.5 9.5 7C9.5 4 6 1.5 6 1.5Z" fill="#2563eb" opacity="0.9"/>
@@ -396,9 +394,8 @@ export default function BaziPage() {
                       <path d="M6 4L6 9" stroke="#fca5a5" strokeWidth="0.5" strokeLinecap="round" opacity="0.6"/>
                     </svg>,
                     '土': <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block align-middle">
-                      <path d="M2 8L6 3L10 8Z" fill="#a16207" opacity="0.8"/>
-                      <path d="M1.5 8.5L6 4L10.5 8.5" stroke="#ca8a04" strokeWidth="0.8" strokeLinejoin="round" fill="none"/>
-                      <rect x="1" y="8" width="10" height="2" rx="0.5" fill="#a16207" opacity="0.9"/>
+                      <path d="M2 8.5L6 3.5L10 8.5Z" fill="#a16207" opacity="0.9"/>
+                      <path d="M1.5 9L6 4L10.5 9" stroke="#ca8a04" strokeWidth="0.8" strokeLinejoin="round" fill="none"/>
                     </svg>,
                   }
                   const ganToWx: Record<string, string> = {

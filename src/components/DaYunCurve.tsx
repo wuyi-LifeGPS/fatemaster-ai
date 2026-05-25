@@ -27,8 +27,8 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
   if (daYunList.length === 0) return null
 
   const width = 700
-  const height = 240
-  const padding = { top: 40, right: 30, bottom: 60, left: 30 }
+  const height = 310
+  const padding = { top: 30, right: 30, bottom: 82, left: 30 }
 
   const chartWidth = width - padding.left - padding.right
   const chartHeight = height - padding.top - padding.bottom
@@ -112,6 +112,16 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           </filter>
         </defs>
 
+        {/* 标题 - 左上角避免重叠 */}
+        <text
+          x={padding.left}
+          y={16}
+          textAnchor="start"
+          className="text-[11px] fill-ink-400 font-bold"
+        >
+          人生运势起伏图
+        </text>
+
         {/* 背景网格 */}
         {[20, 40, 60, 80].map((v) => {
           const y = padding.top + chartHeight - (v / 100) * chartHeight
@@ -151,16 +161,38 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           filter="url(#glow)"
         />
 
-        {/* 数据点 + 节点 */}
+        {/* 数据点 + 大运卡片 */}
         {points.map((p) => {
           const isSelected = selectedDaYun?.index === p.dy.index
           const isCurrent = p.dy.isCurrent
           const isPast = p.dy.endYear < currentYear
 
           const color = fortuneLevelColor(p.dy.fortuneLevel)
-          // 增大节点：普通10px，选中/当前13px
           const radius = isSelected || isCurrent ? 13 : 10
           const starText = getStarText(p.dy.score)
+
+          // 卡片样式
+          const cardW = 64
+          const cardH = 62
+          const cardY = padding.top + chartHeight + 10
+
+          let cardBg = '#ffffff'
+          let cardStroke = '#e8e2da'
+          let cardStrokeWidth = 1
+          if (isPast) {
+            cardBg = '#f5f2ee'
+            cardStroke = '#d9d3cb'
+          }
+          if (isCurrent) {
+            cardBg = '#fff8f0'
+            cardStroke = color
+            cardStrokeWidth = 2
+          }
+          if (isSelected) {
+            cardBg = '#fff0d9'
+            cardStroke = color
+            cardStrokeWidth = 2.5
+          }
 
           return (
             <g
@@ -191,7 +223,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 className="cursor-pointer"
               />
 
-              {/* 节点圆 - 当前节点空心描边，其他节点实心 */}
+              {/* 节点圆 */}
               <circle
                 cx={p.x}
                 cy={p.y}
@@ -202,69 +234,84 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 opacity={isPast ? 0.4 : 1}
               />
 
+              {/* 当前/选中标记 - 卡片上方小字 */}
+              {isCurrent && (
+                <text
+                  x={p.x}
+                  y={cardY - 4}
+                  textAnchor="middle"
+                  className="text-[9px] fill-amber-600 font-bold"
+                >
+                  当前
+                </text>
+              )}
+              {isSelected && !isCurrent && (
+                <text
+                  x={p.x}
+                  y={cardY - 4}
+                  textAnchor="middle"
+                  className="text-[9px] fill-fate-600"
+                >
+                  选中
+                </text>
+              )}
 
-              {/* 大运名称标签 + 年份区间 + 年龄区间 */}
+              {/* 大运卡片背景 */}
+              <rect
+                x={p.x - cardW / 2}
+                y={cardY}
+                width={cardW}
+                height={cardH}
+                rx={6}
+                fill={cardBg}
+                stroke={cardStroke}
+                strokeWidth={cardStrokeWidth}
+              />
+
+              {/* 卡片内容 */}
               <text
                 x={p.x}
-                y={padding.top + chartHeight + 16}
+                y={cardY + 14}
                 textAnchor="middle"
-                className="text-[13px] fill-fate-700 font-bold"
+                className="text-[12px] fill-fate-700 font-bold"
               >
                 {p.dy.ganZhi}
               </text>
               <text
                 x={p.x}
-                y={padding.top + chartHeight + 30}
+                y={cardY + 27}
                 textAnchor="middle"
-                className="text-[10px] fill-ink-400"
+                className="text-[9px] fill-ink-400"
               >
                 {p.dy.startYear}-{p.dy.endYear}
               </text>
               <text
                 x={p.x}
-                y={padding.top + chartHeight + 42}
+                y={cardY + 39}
                 textAnchor="middle"
-                className="text-[10px] fill-ink-300"
+                className="text-[9px] fill-ink-300"
               >
                 {p.dy.startAge}-{p.dy.endAge}岁
               </text>
+              <text
+                x={p.x}
+                y={cardY + 53}
+                textAnchor="middle"
+                className="text-[9px] fill-amber-500"
+              >
+                {starText}
+              </text>
 
-              {/* 星级（仅选中和当前显示，放在岁数下方） */}
-              {(isSelected || isCurrent) && (
-                <text
-                  x={p.x}
-                  y={padding.top + chartHeight + 58}
-                  textAnchor="middle"
-                  className="text-[10px] fill-amber-500"
-                  style={{ fontSize: 10 }}
-                >
-                  {starText}
-                </text>
-              )}
-
-              {/* 当前标记 */}
-              {isCurrent && (
-                <text
-                  x={p.x}
-                  y={p.y - radius - 26}
-                  textAnchor="middle"
-                  className="text-[10px] fill-amber-600 font-bold"
-                >
-                  当前
-                </text>
-              )}
-
-              {/* 选中标记 */}
-              {isSelected && !isCurrent && (
-                <text
-                  x={p.x}
-                  y={p.y - radius - 26}
-                  textAnchor="middle"
-                  className="text-[10px] fill-fate-600"
-                >
-                  选中
-                </text>
-              )}
+              {/* 透明点击区域覆盖整个卡片 */}
+              <rect
+                x={p.x - cardW / 2}
+                y={cardY}
+                width={cardW}
+                height={cardH}
+                fill="transparent"
+                stroke="none"
+                className="cursor-pointer"
+              />
             </g>
           )
         })}
@@ -282,16 +329,6 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
             opacity="0.6"
           />
         )}
-
-        {/* 标题 */}
-        <text
-          x={width / 2}
-          y={14}
-          textAnchor="middle"
-          className="text-[10px] fill-ink-300"
-        >
-          人生运势起伏图
-        </text>
       </svg>
     </div>
   )

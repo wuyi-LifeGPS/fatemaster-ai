@@ -168,8 +168,8 @@ export default function DaYunFlow({
       {/* ===== 顶部当前定位卡（人话版为主） ===== */}
       {currentDaYun && (
         <div className="bg-gradient-to-br from-fate-700 to-fate-600 text-white rounded-xl p-5 shadow-lg">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div className="flex-1 min-w-0">
               <div className="text-2xl font-bold">
                 {currentDaYun.ganZhi}运 · {currentDaYun.startYear}-{currentDaYun.endYear}
               </div>
@@ -179,12 +179,12 @@ export default function DaYunFlow({
 
               {/* 人话版一句话结论 */}
               {viewMode === 'simple' && (
-                <div className="mt-3 text-sm text-white/90 leading-relaxed">
+                <div className="mt-3 text-sm text-white/90 leading-relaxed break-words">
                   {getDaYunHumanSummary(currentDaYun)}
                 </div>
               )}
             </div>
-            <div className="text-right ml-4 flex flex-col items-end gap-2">
+            <div className="text-right flex flex-col items-end gap-2 sm:ml-4">
               <div
                 className={`inline-block px-4 py-2 rounded-full text-lg font-bold ${fortuneColor(
                   currentDaYun.fortuneLevel
@@ -200,7 +200,7 @@ export default function DaYunFlow({
           </div>
 
           {/* 关键词标签 + 全局切换 */}
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2">
               {currentDaYun.keywords.map((k, i) => (
                 <span
@@ -211,10 +211,10 @@ export default function DaYunFlow({
                 </span>
               ))}
             </div>
-            {/* 全局版本切换 - 更显眼的开关 */}
+            {/* 全局版本切换 */}
             <button
               onClick={() => setViewMode(viewMode === 'simple' ? 'pro' : 'simple')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all shrink-0 ${
                 viewMode === 'simple'
                   ? 'bg-white/20 text-white hover:bg-white/30'
                   : 'bg-fate-200 text-fate-700 hover:bg-fate-300'
@@ -229,8 +229,8 @@ export default function DaYunFlow({
           {/* 今年流年速览 */}
           {currentLiuNian && (
             <div className="mt-3 pt-3 border-t border-white/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <span className="text-sm">
                     今年 {currentLiuNian.year} {currentLiuNian.ganZhi}年：
                   </span>
@@ -432,32 +432,6 @@ export default function DaYunFlow({
               </div>
             </div>
           )}
-
-          {/* 模式切换 - 改成更明显的标签 */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <span className={`text-xs px-2 py-1 rounded-full ${
-                viewMode === 'simple' ? 'bg-fate-600 text-white' : 'bg-fate-100 text-fate-500'
-              }`}>
-                👤 简易版
-              </span>
-              <button
-                onClick={() => setViewMode(viewMode === 'simple' ? 'pro' : 'simple')}
-                className="relative w-10 h-5 bg-fate-200 rounded-full transition-colors hover:bg-fate-300"
-              >
-                <span
-                  className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-                    viewMode === 'pro' ? 'translate-x-5' : ''
-                  }`}
-                />
-              </button>
-              <span className={`text-xs px-2 py-1 rounded-full ${
-                viewMode === 'pro' ? 'bg-fate-600 text-white' : 'bg-fate-100 text-fate-500'
-              }`}>
-                🔮 专业版
-              </span>
-            </div>
-          </div>
 
           {/* AI 深度解读按钮 */}
           <button

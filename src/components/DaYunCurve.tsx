@@ -10,7 +10,7 @@ interface DaYunCurveProps {
   onSelect: (dy: DaYunInfo) => void
 }
 
-/** 根据分数生成星级文本 */
+/** 根据分数生成星级文本（实心+灰色空心） */
 function getStarText(score: number): string {
   let full = 0
   if (score >= 85) full = 5
@@ -26,9 +26,9 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
 
   if (daYunList.length === 0) return null
 
-  const width = 700
-  const height = 310
-  const padding = { top: 30, right: 30, bottom: 82, left: 30 }
+  const width = 780
+  const height = 330
+  const padding = { top: 30, right: 48, bottom: 90, left: 48 }
 
   const chartWidth = width - padding.left - padding.right
   const chartHeight = height - padding.top - padding.bottom
@@ -47,11 +47,9 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
   useEffect(() => {
     if (containerRef.current && currentPoint) {
       const container = containerRef.current
-      // 计算当前节点在 SVG 中的相对位置
       const svgWidth = container.scrollWidth
       const nodeRatio = currentPoint.x / width
       const nodeScrollX = nodeRatio * svgWidth
-      // 居中滚动
       const scrollLeft = nodeScrollX - container.clientWidth / 2
       container.scrollTo({ left: Math.max(0, scrollLeft), behavior: 'auto' })
     }
@@ -95,7 +93,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
     <div ref={containerRef} className="w-full overflow-x-auto">
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="w-full min-w-[600px]"
+        className="w-full min-w-[660px]"
         preserveAspectRatio="xMidYMid meet"
       >
         <defs>
@@ -112,7 +110,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           </filter>
         </defs>
 
-        {/* 标题 - 左上角避免重叠 */}
+        {/* 标题 - 左上角 */}
         <text
           x={padding.left}
           y={16}
@@ -171,10 +169,10 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           const radius = isSelected || isCurrent ? 13 : 10
           const starText = getStarText(p.dy.score)
 
-          // 卡片样式
-          const cardW = 64
-          const cardH = 62
-          const cardY = padding.top + chartHeight + 10
+          // 卡片样式 - 加大
+          const cardW = 76
+          const cardH = 72
+          const cardY = padding.top + chartHeight + 12
 
           let cardBg = '#ffffff'
           let cardStroke = '#e8e2da'
@@ -213,7 +211,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 />
               )}
 
-              {/* 透明点击区域（比节点大很多，方便手机端触摸） */}
+              {/* 透明点击区域 */}
               <circle
                 cx={p.x}
                 cy={p.y}
@@ -234,7 +232,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 opacity={isPast ? 0.4 : 1}
               />
 
-              {/* 当前/选中标记 - 卡片上方小字 */}
+              {/* 仅当前标记 */}
               {isCurrent && (
                 <text
                   x={p.x}
@@ -245,16 +243,6 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                   当前
                 </text>
               )}
-              {isSelected && !isCurrent && (
-                <text
-                  x={p.x}
-                  y={cardY - 4}
-                  textAnchor="middle"
-                  className="text-[9px] fill-fate-600"
-                >
-                  选中
-                </text>
-              )}
 
               {/* 大运卡片背景 */}
               <rect
@@ -262,24 +250,24 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 y={cardY}
                 width={cardW}
                 height={cardH}
-                rx={6}
+                rx={8}
                 fill={cardBg}
                 stroke={cardStroke}
                 strokeWidth={cardStrokeWidth}
               />
 
-              {/* 卡片内容 */}
+              {/* 卡片内容 - 间距加大 */}
               <text
                 x={p.x}
-                y={cardY + 14}
+                y={cardY + 16}
                 textAnchor="middle"
-                className="text-[12px] fill-fate-700 font-bold"
+                className="text-[13px] fill-fate-700 font-bold"
               >
                 {p.dy.ganZhi}
               </text>
               <text
                 x={p.x}
-                y={cardY + 27}
+                y={cardY + 30}
                 textAnchor="middle"
                 className="text-[9px] fill-ink-400"
               >
@@ -287,19 +275,25 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               </text>
               <text
                 x={p.x}
-                y={cardY + 39}
+                y={cardY + 43}
                 textAnchor="middle"
                 className="text-[9px] fill-ink-300"
               >
                 {p.dy.startAge}-{p.dy.endAge}岁
               </text>
+              {/* 星级 - 实色+灰色空心 */}
               <text
                 x={p.x}
-                y={cardY + 53}
+                y={cardY + 60}
                 textAnchor="middle"
-                className="text-[9px] fill-amber-500"
+                style={{ fontSize: 11 }}
               >
-                {starText}
+                <tspan className="fill-amber-500">
+                  {starText.replace(/☆/g, '')}
+                </tspan>
+                <tspan className="fill-ink-300">
+                  {'☆'.repeat((5 - (starText.match(/★/g)?.length || 0)))}
+                </tspan>
               </text>
 
               {/* 透明点击区域覆盖整个卡片 */}

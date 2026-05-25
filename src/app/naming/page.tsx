@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { calculateBazi } from '@/lib/bazi'
 import { calculateCombinedGod } from '@/lib/analysis'
+import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
 import {
   analyzeName,
   getNameWuxing,
@@ -18,13 +19,32 @@ export default function NamingPage() {
   const [analysis, setAnalysis] = useState<NameAnalysis | null>(null)
   const [loading, setLoading] = useState(false)
 
-  // 出生信息
-  const [birthDate, setBirthDate] = useState('')
-  const [birthTime, setBirthTime] = useState('')
-  const [gender, setGender] = useState<'male' | 'female'>('male')
+  // 出生信息 - 复用八字页面的选择器
+  const [formData, setFormData] = useState({
+    gender: 'male' as 'male' | 'female',
+    birthYear: 1990,
+    birthMonth: 1,
+    birthDay: 1,
+    birthHour: 12,
+    birthMinute: 0,
+    calendarType: 'solar' as 'solar' | 'lunar',
+    lunarIsLeap: false,
+  })
   const [baziInfo, setBaziInfo] = useState<any>(null)
   const [combinedGod, setCombinedGod] = useState<any>(null)
   const [wuxingMatch, setWuxingMatch] = useState<any>(null)
+
+  // 生成日期/时间选项（复用八字页面逻辑）
+  const isLunar = formData.calendarType === 'lunar'
+  const yearOptions = Array.from({length: 131}, (_, i) => 1900 + i)
+  const monthOptions = isLunar
+    ? getLunarMonthOptions(formData.birthYear)
+    : Array.from({length: 12}, (_, i) => i + 1).map(m => ({ value: m, label: `${m}月`, isLeap: false }))
+  const dayOptions = Array.from({length: 30}, (_, i) => i + 1)
+  const hourOptions = Array.from({length: 24}, (_, i) => i)
+  const minuteOptions = Array.from({length: 12}, (_, i) => i * 5)
+
+  const pad = (n: number) => String(n).padStart(2, '0')
 
   const handleAnalyze = () => {
     if (!surname || (mode === 'analyze' && !givenName)) return
@@ -35,6 +55,21 @@ export default function NamingPage() {
       let bazi = null
       let god = null
       let wxMatch = null
+
+      // 农历转公历
+      let solarYear = formData.birthYear
+      let solarMonth = formData.birthMonth
+      let solarDay = formData.birthDay
+      if (formData.calendarType === 'lunar') {
+        const solar = lunarToSolar(formData.birthYear, formData.birthMonth, formData.birthDay, formData.lunarIsLeap)
+        if (solar) {
+          solarYear = solar.year
+          solarMonth = solar.month
+          solarDay = solar.day
+        }
+      }
+      const birthDate = `${solarYear}-${pad(solarMonth)}-${pad(solarDay)}`
+      const birthTime = `${pad(formData.birthHour)}:${pad(formData.birthMinute)}`
 
       if (birthDate && birthTime) {
         try {
@@ -131,36 +166,116 @@ export default function NamingPage() {
                 📅 出生信息（可选，填写后结合八字喜用神分析更精准）
               </h3>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="col-span-2">
-                <label className="block text-xs text-ink-400 mb-1">阳历生日</label>
-                <input
-                  type="date"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-300 text-sm"
-                />
+            
+            {/* 性别 */}
+            <div className="mb-3">
+              <label className="block text-xs text-ink-400 mb-1">性别</label>
+              <div className="flex gap-4">
+                <label className="flex items-center text-sm">
+                  <input
+                    type="radio"
+                    value="male"
+                    checked={formData.gender === 'male'}
+                    onChange={(e) => setFormData({ ...formData, gender: e.target.value as 'male' | 'female' })}
+                    className="mr-2"
+                  />
+                  男
+                </label>
+                <label className="flex items-center text-sm">
+                  <input
+                    type="radio"
+                    value="female"
+                    checked={formData.gender === 'female'}
+                    onChange={(e) => setFormData({ ...formData, gender: e.target.value as 'male' | 'female' })}
+                    className="mr-2"
+                  />
+                  女
+                </label>
               </div>
-              <div>
-                <label className="block text-xs text-ink-400 mb-1">出生时间</label>
-                <input
-                  type="time"
-                  value={birthTime}
-                  onChange={(e) => setBirthTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-300 text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-ink-400 mb-1">性别</label>
-                <select
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value as 'male' | 'female')}
-                  className="w-full px-3 py-2 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-300 text-sm"
+            </div>
+
+            {/* 公历/农历切换 */}
+            <div className="mb-2">
+              <label className="block text-xs text-ink-400 mb-1">出生日期</label>
+              <div className="flex gap-1 mb-2 bg-fate-100 rounded-lg p-1 w-fit">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, calendarType: 'solar', lunarIsLeap: false })}
+                  className={`px-3 py-1 rounded-md text-sm transition-colors ${
+                    formData.calendarType === 'solar'
+                      ? 'bg-white text-ink-800 shadow-sm'
+                      : 'text-ink-500 hover:text-ink-700'
+                  }`}
                 >
-                  <option value="male">男</option>
-                  <option value="female">女</option>
+                  公历
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, calendarType: 'lunar' })}
+                  className={`px-3 py-1 rounded-md text-sm transition-colors ${
+                    formData.calendarType === 'lunar'
+                      ? 'bg-white text-ink-800 shadow-sm'
+                      : 'text-ink-500 hover:text-ink-700'
+                  }`}
+                >
+                  农历
+                </button>
+              </div>
+              <div className="flex gap-2">
+                <select
+                  value={formData.birthYear}
+                  onChange={(e) => setFormData({ ...formData, birthYear: Number(e.target.value) })}
+                  className="flex-1 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm"
+                >
+                  {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
+                </select>
+                <select
+                  value={`${formData.lunarIsLeap ? 'leap-' : ''}${formData.birthMonth}`}
+                  onChange={(e) => {
+                    const val = e.target.value
+                    const isLeap = val.startsWith('leap-')
+                    const month = Number(isLeap ? val.replace('leap-', '') : val)
+                    setFormData({ ...formData, birthMonth: month, lunarIsLeap: isLeap })
+                  }}
+                  className="w-28 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm"
+                >
+                  {monthOptions.map(m => (
+                    <option key={`${m.isLeap ? 'leap-' : ''}${m.value}`} value={`${m.isLeap ? 'leap-' : ''}${m.value}`}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={formData.birthDay}
+                  onChange={(e) => setFormData({ ...formData, birthDay: Number(e.target.value) })}
+                  className="w-20 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm"
+                >
+                  {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
                 </select>
               </div>
+            </div>
+
+            {/* 出生时间 */}
+            <div className="mb-2">
+              <label className="block text-xs text-ink-400 mb-1">出生时间</label>
+              <div className="flex gap-2 items-center">
+                <select
+                  value={formData.birthHour}
+                  onChange={(e) => setFormData({ ...formData, birthHour: Number(e.target.value) })}
+                  className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm"
+                >
+                  {hourOptions.map(h => <option key={h} value={h}>{pad(h)}</option>)}
+                </select>
+                <span className="text-ink-400">:</span>
+                <select
+                  value={formData.birthMinute}
+                  onChange={(e) => setFormData({ ...formData, birthMinute: Number(e.target.value) })}
+                  className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm"
+                >
+                  {minuteOptions.map(m => <option key={m} value={m}>{pad(m)}</option>)}
+                </select>
+              </div>
+              <p className="text-xs text-ink-400 mt-1">24小时制，不确定可默认 12:00</p>
             </div>
           </div>
 

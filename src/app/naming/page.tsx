@@ -1,16 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { calculateBazi } from '@/lib/bazi'
 import { calculateCombinedGod } from '@/lib/analysis'
 import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
-import {
-  analyzeName,
+import { analyzeName,
   getNameWuxing,
   calculateWuxingMatch,
   type NameAnalysis,
 } from '@/lib/naming'
+import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 
 export default function NamingPage() {
   const [mode, setMode] = useState<'analyze' | 'generate'>('analyze')
@@ -18,6 +18,8 @@ export default function NamingPage() {
   const [givenName, setGivenName] = useState('')
   const [analysis, setAnalysis] = useState<NameAnalysis | null>(null)
   const [loading, setLoading] = useState(false)
+  const [history, setHistory] = useState<HistoryRecord[]>([])
+  const [showHistory, setShowHistory] = useState(false)
 
   // 出生信息 - 复用八字页面的选择器
   const [formData, setFormData] = useState({
@@ -33,6 +35,11 @@ export default function NamingPage() {
   const [baziInfo, setBaziInfo] = useState<any>(null)
   const [combinedGod, setCombinedGod] = useState<any>(null)
   const [wuxingMatch, setWuxingMatch] = useState<any>(null)
+
+  // 加载历史记录
+  useEffect(() => {
+    setHistory(getHistoryByType('naming'))
+  }, [])
 
   // 生成日期/时间选项（复用八字页面逻辑）
   const isLunar = formData.calendarType === 'lunar'
@@ -105,9 +112,32 @@ export default function NamingPage() {
         )
       }
 
+      // 保存查询记录
+      const title = mode === 'analyze'
+        ? `${surname}${givenName} · 名字分析`
+        : `${surname} · AI起名`
+      addHistory('naming', title, { mode, surname, givenName, formData }, `${result.overallScore}分`)
+      setHistory(getHistoryByType('naming'))
+
       setAnalysis(result)
       setLoading(false)
     }, 500)
+  }
+
+  const handleHistoryClick = (record: HistoryRecord) => {
+    const data = record.formData
+    if (data.mode) setMode(data.mode)
+    if (data.surname) setSurname(data.surname)
+    if (data.givenName !== undefined) setGivenName(data.givenName)
+    if (data.formData) {
+      setFormData({
+        ...formData,
+        ...data.formData,
+        calendarType: data.formData.calendarType || 'solar',
+        lunarIsLeap: data.formData.lunarIsLeap || false,
+      })
+    }
+    setShowHistory(false)
   }
 
   const getLevelColor = (level: string) => {
@@ -169,7 +199,7 @@ export default function NamingPage() {
             
             {/* 性别 */}
             <div className="mb-3">
-              <label className="block text-xs text-ink-400 mb-1">性别</label>
+              <label className="block text-sm font-medium mb-1">性别</label>
               <div className="flex gap-4">
                 <label className="flex items-center text-sm">
                   <input
@@ -196,7 +226,7 @@ export default function NamingPage() {
 
             {/* 公历/农历切换 */}
             <div className="mb-2">
-              <label className="block text-xs text-ink-400 mb-1">出生日期</label>
+              <label className="block text-sm font-medium mb-1">出生日期</label>
               <div className="flex gap-1 mb-2 bg-fate-100 rounded-lg p-1 w-fit">
                 <button
                   type="button"
@@ -257,7 +287,7 @@ export default function NamingPage() {
 
             {/* 出生时间 */}
             <div className="mb-2">
-              <label className="block text-xs text-ink-400 mb-1">出生时间</label>
+              <label className="block text-sm font-medium mb-1">出生时间</label>
               <div className="flex gap-2 items-center">
                 <select
                   value={formData.birthHour}
@@ -309,11 +339,44 @@ export default function NamingPage() {
           <button
             onClick={handleAnalyze}
             disabled={!surname || (mode === 'analyze' && !givenName) || loading}
-            className="w-full bg-fate-700 text-white py-3 rounded-lg font-medium hover:bg-fate-800 transition-colors disabled:opacity-50"
+            className="w-full bg-fate-600 hover:bg-fate-500 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
           >
             {loading ? '分析中...' : mode === 'analyze' ? '分析名字' : 'AI智能起名'}
           </button>
         </div>
+
+        {/* 历史记录 */}
+        {history.length > 0 && (
+          <div className="mb-6">
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3"
+            >
+              <span>📜</span>
+              <span>查询历史（{history.length} 条）</span>
+              <span>{showHistory ? '▲' : '▼'}</span>
+            </button>
+            {showHistory && (
+              <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
+                {history.map((record) => (
+                  <div
+                    key={record.id}
+                    onClick={() => handleHistoryClick(record)}
+                    className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                        <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+                      </div>
+                      <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 分析结果 */}
         {analysis && mode === 'analyze' && (

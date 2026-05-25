@@ -4,7 +4,7 @@
 const STORAGE_KEY = 'lifegps_query_history'
 const MAX_RECORDS = 50  // 每个模块最多保留条数
 
-export type QueryType = 'bazi' | 'match' | 'career' | 'daily'
+export type QueryType = 'bazi' | 'match' | 'career' | 'daily' | 'naming'
 
 export interface HistoryRecord {
   id: string
@@ -135,6 +135,7 @@ export function getTypeLabel(type: QueryType): string {
     match: '合婚分析',
     career: '事业合作',
     daily: '每日运势',
+    naming: '姓名学分析',
   }
   return map[type]
 }
@@ -148,6 +149,7 @@ export function getTypeColor(type: QueryType): string {
     match: 'bg-pink-100 text-pink-700',
     career: 'bg-green-100 text-green-700',
     daily: 'bg-blue-100 text-blue-700',
+    naming: 'bg-purple-100 text-purple-700',
   }
   return map[type]
 }

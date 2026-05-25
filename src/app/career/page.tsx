@@ -33,6 +33,7 @@ interface PersonForm {
   birthMonth: number
   birthDay: number
   birthHour: number
+  birthMinute: number
   calendarType: 'solar' | 'lunar'
   lunarIsLeap: boolean
 }
@@ -43,6 +44,7 @@ const defaultPerson: PersonForm = {
   birthMonth: 1,
   birthDay: 1,
   birthHour: 12,
+  birthMinute: 0,
   calendarType: 'solar',
   lunarIsLeap: false,
 }
@@ -54,6 +56,7 @@ export default function CareerPage() {
   const [mBazi, setMBazi] = useState<any>(null)
   const [fBazi, setFBazi] = useState<any>(null)
   const [history, setHistory] = useState<HistoryRecord[]>([])
+  const [showHistory, setShowHistory] = useState(false)
   const [mForm, setMForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1990 })
   const [fForm, setFForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1992 })
 
@@ -88,9 +91,9 @@ export default function CareerPage() {
       }
 
       const mDate = `${mSolar.year}-${pad(mSolar.month)}-${pad(mSolar.day)}`
-      const mTime = `${pad(mData.birthHour)}:00`
+      const mTime = `${pad(mData.birthHour)}:${pad(mData.birthMinute || 0)}`
       const fDate = `${fSolar.year}-${pad(fSolar.month)}-${pad(fSolar.day)}`
-      const fTime = `${pad(fData.birthHour)}:00`
+      const fTime = `${pad(fData.birthHour)}:${pad(fData.birthMinute || 0)}`
 
       const mBaziResult = analyzeBazi(mDate, mTime, mData.name, 'male')
       const fBaziResult = analyzeBazi(fDate, fTime, fData.name, 'female')
@@ -140,14 +143,17 @@ export default function CareerPage() {
       ...m,
       calendarType: m.calendarType || 'solar',
       lunarIsLeap: m.lunarIsLeap || false,
+      birthMinute: m.birthMinute || 0,
     }
     const fData = {
       ...f,
       calendarType: f.calendarType || 'solar',
       lunarIsLeap: f.lunarIsLeap || false,
+      birthMinute: f.birthMinute || 0,
     }
     setMForm(mData)
     setFForm(fData)
+    setShowHistory(false)
     await runAnalysis(mData, fData)
   }
 
@@ -193,33 +199,41 @@ export default function CareerPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-400 hover:to-emerald-400 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-blue-500/30"
+                className="w-full bg-fate-600 hover:bg-fate-500 text-white py-3 rounded-lg font-bold text-lg transition-all shadow-lg shadow-fate-500/30"
               >
                 {loading ? '分析中...' : '🤝 开始事业合作分析'}
               </button>
             </form>
 
             {history.length > 0 && (
-              <div className="mt-6 space-y-2">
-                <div className="flex items-center gap-2 text-sm text-ink-500 mb-2">
+              <div className="mt-6">
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="flex items-center gap-2 text-sm text-ink-500 hover:text-fate-600 mb-3"
+                >
                   <span>📜</span>
                   <span>查询历史（{history.length} 条）</span>
-                </div>
-                {history.map((record) => (
-                  <button
-                    key={record.id}
-                    onClick={() => handleHistoryClick(record)}
-                    className="w-full text-left bg-white rounded-xl shadow-sm border border-fate-100 p-4 hover:shadow-md hover:border-fate-200 transition-all"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="font-medium text-sm text-ink-800">{record.title}</div>
-                        <div className="text-xs text-ink-400 mt-1">{record.resultSummary}</div>
+                  <span>{showHistory ? '▲' : '▼'}</span>
+                </button>
+                {showHistory && (
+                  <div className="bg-white rounded-lg shadow-sm border border-fate-100 overflow-hidden">
+                    {history.map((record) => (
+                      <div
+                        key={record.id}
+                        onClick={() => handleHistoryClick(record)}
+                        className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-fate-50 cursor-pointer transition-colors"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="font-medium text-sm text-ink-800">{record.title}</div>
+                            <div className="text-xs text-ink-400 mt-0.5">{record.resultSummary}</div>
+                          </div>
+                          <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                        </div>
                       </div>
-                      <div className="text-xs text-ink-300 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
-                    </div>
-                  </button>
-                ))}
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </>

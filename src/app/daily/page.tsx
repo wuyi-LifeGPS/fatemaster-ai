@@ -49,6 +49,7 @@ export default function DailyPage() {
     birthMonth: 1,
     birthDay: 1,
     birthHour: 12,
+    birthMinute: 0,
     gender: 'male' as 'male' | 'female',
     name: '',
     calendarType: 'solar' as 'solar' | 'lunar',
@@ -73,6 +74,7 @@ export default function DailyPage() {
     : Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({ value: m, label: `${m}月`, isLeap: false }))
   const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
   const hourOptions = Array.from({ length: 24 }, (_, i) => i)
+  const minuteOptions = Array.from({ length: 12 }, (_, i) => i * 5)
   const pad = (n: number) => String(n).padStart(2, '0')
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -98,7 +100,7 @@ export default function DailyPage() {
       }
 
       const birthDate = `${solarYear}-${pad(solarMonth)}-${pad(solarDay)}`
-      const birthTime = `${pad(formData.birthHour)}:00`
+      const birthTime = `${pad(formData.birthHour)}:${pad(formData.birthMinute)}`
 
       // 排命主八字
       const bazi = calculateBazi(birthDate, birthTime)
@@ -124,6 +126,7 @@ export default function DailyPage() {
       ...record.formData,
       calendarType: record.formData.calendarType || 'solar',
       lunarIsLeap: record.formData.lunarIsLeap || false,
+      birthMinute: record.formData.birthMinute || 0,
     })
     setShowHistory(false)
   }
@@ -214,7 +217,7 @@ export default function DailyPage() {
                   <select
                     value={formData.birthYear}
                     onChange={(e) => setFormData({ ...formData, birthYear: Number(e.target.value) })}
-                    className="flex-1 px-3 py-2 border border-fate-200 rounded-md bg-white"
+                    className="flex-1 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
                   >
                     {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
                   </select>
@@ -226,7 +229,7 @@ export default function DailyPage() {
                       const month = Number(isLeap ? val.replace('leap-', '') : val)
                       setFormData({ ...formData, birthMonth: month, lunarIsLeap: isLeap })
                     }}
-                    className="w-28 px-3 py-2 border border-fate-200 rounded-md bg-white"
+                    className="w-28 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
                   >
                     {monthOptions.map(m => (
                       <option key={`${m.isLeap ? 'leap-' : ''}${m.value}`} value={`${m.isLeap ? 'leap-' : ''}${m.value}`}>
@@ -237,7 +240,7 @@ export default function DailyPage() {
                   <select
                     value={formData.birthDay}
                     onChange={(e) => setFormData({ ...formData, birthDay: Number(e.target.value) })}
-                    className="w-20 px-3 py-2 border border-fate-200 rounded-md bg-white"
+                    className="w-20 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
                   >
                     {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
                   </select>
@@ -246,10 +249,11 @@ export default function DailyPage() {
 
               <div>
                 <label className="block text-sm font-medium mb-2">出生时辰（选填）</label>
+              <div className="flex gap-2 items-center">
                 <select
                   value={formData.birthHour}
                   onChange={(e) => setFormData({ ...formData, birthHour: Number(e.target.value) })}
-                  className="w-full px-3 py-2 border border-fate-200 rounded-md bg-white"
+                  className="w-24 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
                 >
                   {hourOptions.map(h => (
                     <option key={h} value={h}>
@@ -257,6 +261,18 @@ export default function DailyPage() {
                     </option>
                   ))}
                 </select>
+                <span className="text-ink-400">:</span>
+                <select
+                  value={formData.birthMinute}
+                  onChange={(e) => setFormData({ ...formData, birthMinute: Number(e.target.value) })}
+                  className="w-24 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
+                >
+                  {minuteOptions.map(m => (
+                    <option key={m} value={m}>{pad(m)}</option>
+                  ))}
+                </select>
+              </div>
+              <p className="text-xs text-ink-400 mt-1">24小时制，不确定可默认 12:00</p>
               </div>
 
               <div>

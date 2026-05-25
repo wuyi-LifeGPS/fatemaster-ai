@@ -5,7 +5,9 @@ import Link from 'next/link'
 import { calculateBazi } from '@/lib/bazi'
 import { calculateCombinedGod } from '@/lib/analysis'
 import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
-import { analyzeName,
+import {
+  analyzeName,
+  analyzeBrandName,
   getNameWuxing,
   calculateWuxingMatch,
   type NameAnalysis,
@@ -13,13 +15,16 @@ import { analyzeName,
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 
 export default function NamingPage() {
-  const [mode, setMode] = useState<'analyze' | 'generate'>('analyze')
+  const [mode, setMode] = useState<'analyze' | 'generate' | 'brand'>('analyze')
   const [surname, setSurname] = useState('')
   const [givenName, setGivenName] = useState('')
   const [analysis, setAnalysis] = useState<NameAnalysis | null>(null)
   const [loading, setLoading] = useState(false)
   const [history, setHistory] = useState<HistoryRecord[]>([])
   const [showHistory, setShowHistory] = useState(false)
+
+  const [brandName, setBrandName] = useState('')
+  const [brandResult, setBrandResult] = useState<any>(null)
 
   // 出生信息 - 复用八字页面的选择器
   const [formData, setFormData] = useState({
@@ -54,6 +59,19 @@ export default function NamingPage() {
   const pad = (n: number) => String(n).padStart(2, '0')
 
   const handleAnalyze = () => {
+    if (mode === 'brand') {
+      if (!brandName) return
+      setLoading(true)
+      setTimeout(() => {
+        const result = analyzeBrandName(brandName)
+        setBrandResult(result)
+        addHistory('naming', `${brandName} · 品牌分析`, { mode: 'brand', brandName }, `${result.brandScore}分`)
+        setHistory(getHistoryByType('naming'))
+        setLoading(false)
+      }, 500)
+      return
+    }
+
     if (!surname || (mode === 'analyze' && !givenName)) return
     setLoading(true)
 
@@ -126,7 +144,15 @@ export default function NamingPage() {
 
   const handleHistoryClick = (record: HistoryRecord) => {
     const data = record.formData
-    if (data.mode) setMode(data.mode)
+    if (data.mode) {
+      setMode(data.mode)
+      setAnalysis(null)
+      setBrandResult(null)
+    }
+    if (data.brandName) {
+      setBrandName(data.brandName)
+      setBrandResult(null)
+    }
     if (data.surname) setSurname(data.surname)
     if (data.givenName !== undefined) setGivenName(data.givenName)
     if (data.formData) {
@@ -170,7 +196,7 @@ export default function NamingPage() {
         {/* 模式切换 */}
         <div className="bg-white rounded-lg shadow-sm p-1 mb-6 flex">
           <button
-            onClick={() => setMode('analyze')}
+            onClick={() => { setMode('analyze'); setAnalysis(null); setBrandResult(null) }}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
               mode === 'analyze' ? 'bg-fate-100 text-fate-800' : 'text-ink-400 hover:text-ink-600'
             }`}
@@ -178,12 +204,20 @@ export default function NamingPage() {
             名字分析
           </button>
           <button
-            onClick={() => setMode('generate')}
+            onClick={() => { setMode('generate'); setAnalysis(null); setBrandResult(null) }}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
               mode === 'generate' ? 'bg-fate-100 text-fate-800' : 'text-ink-400 hover:text-ink-600'
             }`}
           >
             AI起名
+          </button>
+          <button
+            onClick={() => { setMode('brand'); setAnalysis(null); setBrandResult(null) }}
+            className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
+              mode === 'brand' ? 'bg-fate-100 text-fate-800' : 'text-ink-400 hover:text-ink-600'
+            }`}
+          >
+            品牌分析
           </button>
         </div>
 
@@ -312,18 +346,19 @@ export default function NamingPage() {
           {/* 姓名输入 */}
           <div className="flex gap-4 mb-4">
             <div className="flex-1">
-              <label className="block text-sm text-ink-500 mb-1">姓氏</label>
+              <label className="block text-sm font-medium mb-1">{mode === 'brand' ? '公司/品牌名' : '姓氏'}</label>
               <input
                 type="text"
-                value={surname}
-                onChange={(e) => setSurname(e.target.value)}
+                value={mode === 'brand' ? brandName : surname}
+                onChange={(e) => mode === 'brand' ? setBrandName(e.target.value) : setSurname(e.target.value)}
                 className="w-full px-3 py-2 border border-fate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-300 text-center text-lg"
-                placeholder="如：张"
-                maxLength={2}
+                placeholder={mode === 'brand' ? '如：华为' : '如：张'}
+                maxLength={mode === 'brand' ? 10 : 2}
               />
             </div>
+            {mode !== 'brand' && (
             <div className="flex-[2]">
-              <label className="block text-sm text-ink-500 mb-1">
+              <label className="block text-sm font-medium mb-1">
                 {mode === 'analyze' ? '名字' : '期望用字（可选）'}
               </label>
               <input
@@ -335,13 +370,18 @@ export default function NamingPage() {
                 maxLength={4}
               />
             </div>
+            )}
           </div>
           <button
             onClick={handleAnalyze}
-            disabled={!surname || (mode === 'analyze' && !givenName) || loading}
+            disabled={
+              (mode === 'brand' && !brandName) ||
+              (mode !== 'brand' && (!surname || (mode === 'analyze' && !givenName))) ||
+              loading
+            }
             className="w-full bg-fate-600 hover:bg-fate-500 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
           >
-            {loading ? '分析中...' : mode === 'analyze' ? '分析名字' : 'AI智能起名'}
+            {loading ? '分析中...' : mode === 'analyze' ? '分析名字' : mode === 'brand' ? '分析品牌名' : 'AI智能起名'}
           </button>
         </div>
 
@@ -549,6 +589,106 @@ export default function NamingPage() {
             <p className="text-ink-500 text-center py-8">
               AI起名功能开发中，敬请期待...
             </p>
+          </div>
+        )}
+
+        {/* 品牌名分析结果 */}
+        {brandResult && mode === 'brand' && (
+          <div className="space-y-6">
+            {/* 综合评分 */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold font-serif">品牌名分析结果</h2>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-fate-700">{brandResult.brandScore}分</div>
+                  <div className="text-sm text-ink-400">品牌综合评分</div>
+                </div>
+              </div>
+
+              {/* 总格信息 */}
+              <div className="bg-fate-50 rounded-lg p-4 mb-4">
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-sm text-ink-500">总格数理：</span>
+                  <span className="font-bold text-fate-700 text-lg">{brandResult.totalStrokes}</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    brandResult.totalLuck.level === '吉' ? 'text-green-600 bg-green-50' :
+                    brandResult.totalLuck.level === '凶' ? 'text-red-600 bg-red-50' :
+                    'text-yellow-600 bg-yellow-50'
+                  }`}>
+                    {brandResult.totalLuck.level}
+                  </span>
+                </div>
+                <p className="text-sm text-ink-600">{brandResult.totalLuck.desc}</p>
+              </div>
+
+              {/* 单字拆解 */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                {brandResult.charDetails.map((c: any) => (
+                  <div key={c.char} className="border border-fate-100 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-fate-700">{c.char}</div>
+                    <div className="text-xs text-ink-400 mt-1">{c.strokes}画 · {c.wuxing}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 五行分布 */}
+              <div className="bg-fate-50 rounded-lg p-4 mb-4">
+                <h3 className="font-bold mb-2">五行分布</h3>
+                <div className="flex gap-3 flex-wrap">
+                  {(Object.entries(brandResult.wuxingDistribution) as [string, number][])
+                    .filter(([_, count]) => count > 0)
+                    .map(([wx, count]) => (
+                      <span key={wx} className={`px-3 py-1 rounded-full text-sm ${
+                        wx === '金' ? 'bg-amber-50 text-amber-700' :
+                        wx === '木' ? 'bg-green-50 text-green-700' :
+                        wx === '水' ? 'bg-blue-50 text-blue-700' :
+                        wx === '火' ? 'bg-red-50 text-red-700' :
+                        'bg-yellow-50 text-yellow-700'
+                      }`}>
+                        {wx} {count}个
+                      </span>
+                    ))}
+                </div>
+                <p className="text-xs text-ink-400 mt-2">主导五行：<span className="font-bold text-fate-700">{brandResult.dominantWuxing}</span></p>
+              </div>
+            </div>
+
+            {/* 商业维度分析 */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-bold font-serif mb-4">商业维度评估</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { key: 'brand', title: '品牌传播', icon: '📢' },
+                  { key: 'wealth', title: '财运聚集', icon: '💰' },
+                  { key: 'industry', title: '行业适配', icon: '🏭' },
+                  { key: 'growth', title: '发展前景', icon: '📈' },
+                ].map((item) => {
+                  const aspect = brandResult.businessAspects[item.key]
+                  return (
+                    <div key={item.key} className="bg-fate-50 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium">{item.icon} {item.title}</span>
+                        <span className="text-lg font-bold text-fate-700">{aspect.score}分</span>
+                      </div>
+                      <p className="text-xs text-ink-500">{aspect.desc}</p>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* 建议 */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-bold font-serif mb-3">命名建议</h3>
+              <div className="space-y-2">
+                {brandResult.recommendations.map((rec: string, i: number) => (
+                  <div key={i} className="flex items-start gap-2 p-3 bg-fate-50 rounded-lg">
+                    <span className="text-fate-600 font-bold">{i + 1}.</span>
+                    <span className="text-sm text-ink-600">{rec}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>

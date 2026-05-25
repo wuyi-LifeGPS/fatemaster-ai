@@ -184,9 +184,9 @@ export default function DaYunFlow({
                 </div>
               )}
             </div>
-            <div className="text-right flex flex-col items-end gap-2 sm:ml-4">
+            <div className="flex flex-col items-center sm:items-end gap-2 sm:ml-4">
               <div
-                className={`inline-block px-4 py-2 rounded-full text-lg font-bold ${fortuneColor(
+                className={`inline-flex items-center justify-center w-14 h-14 rounded-full text-lg font-bold ${fortuneColor(
                   currentDaYun.fortuneLevel
                 )}`}
               >
@@ -199,7 +199,7 @@ export default function DaYunFlow({
             </div>
           </div>
 
-          {/* 关键词标签 + 全局切换 */}
+          {/* 关键词标签 + 底部滑块切换 */}
           <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2">
               {currentDaYun.keywords.map((k, i) => (
@@ -211,19 +211,21 @@ export default function DaYunFlow({
                 </span>
               ))}
             </div>
-            {/* 全局版本切换 */}
-            <button
-              onClick={() => setViewMode(viewMode === 'simple' ? 'pro' : 'simple')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all shrink-0 ${
-                viewMode === 'simple'
-                  ? 'bg-white/20 text-white hover:bg-white/30'
-                  : 'bg-fate-200 text-fate-700 hover:bg-fate-300'
-              }`}
-            >
-              <span className="text-base">{viewMode === 'simple' ? '👤' : '🔮'}</span>
-              <span>{viewMode === 'simple' ? '简易版' : '专业版'}</span>
-              <span className="text-[10px] opacity-70">切换</span>
-            </button>
+            {/* 滑块切换 - 右下角 */}
+            <div className="flex items-center gap-2 self-end">
+              <span className={`text-xs ${viewMode === 'simple' ? 'text-white font-bold' : 'text-white/60'}`}>简易版</span>
+              <button
+                onClick={() => setViewMode(viewMode === 'simple' ? 'pro' : 'simple')}
+                className="relative w-11 h-6 bg-white/30 rounded-full transition-colors"
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                    viewMode === 'pro' ? 'translate-x-5' : ''
+                  }`}
+                />
+              </button>
+              <span className={`text-xs ${viewMode === 'pro' ? 'text-white font-bold' : 'text-white/60'}`}>专业版</span>
+            </div>
           </div>
 
           {/* 今年流年速览 */}

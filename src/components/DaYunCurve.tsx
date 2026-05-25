@@ -26,9 +26,9 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
 
   if (daYunList.length === 0) return null
 
-  const width = 780
-  const height = 330
-  const padding = { top: 30, right: 48, bottom: 90, left: 48 }
+  const width = 960
+  const height = 340
+  const padding = { top: 32, right: 60, bottom: 96, left: 60 }
 
   const chartWidth = width - padding.left - padding.right
   const chartHeight = height - padding.top - padding.bottom
@@ -110,10 +110,10 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           </filter>
         </defs>
 
-        {/* 标题 - 左上角 */}
+          {/* 标题 - 左上角 */}
         <text
           x={padding.left}
-          y={16}
+          y={18}
           textAnchor="start"
           className="text-[11px] fill-ink-400 font-bold"
         >
@@ -169,10 +169,10 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           const radius = isSelected || isCurrent ? 13 : 10
           const starText = getStarText(p.dy.score)
 
-          // 卡片样式 - 加大
-          const cardW = 76
-          const cardH = 72
-          const cardY = padding.top + chartHeight + 12
+          // 卡片样式 - 加大间距
+          const cardW = 84
+          const cardH = 78
+          const cardY = padding.top + chartHeight + 14
 
           let cardBg = '#ffffff'
           let cardStroke = '#e8e2da'
@@ -259,7 +259,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               {/* 卡片内容 - 间距加大 */}
               <text
                 x={p.x}
-                y={cardY + 16}
+                y={cardY + 17}
                 textAnchor="middle"
                 className="text-[13px] fill-fate-700 font-bold"
               >
@@ -267,7 +267,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               </text>
               <text
                 x={p.x}
-                y={cardY + 30}
+                y={cardY + 32}
                 textAnchor="middle"
                 className="text-[9px] fill-ink-400"
               >
@@ -275,7 +275,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               </text>
               <text
                 x={p.x}
-                y={cardY + 43}
+                y={cardY + 45}
                 textAnchor="middle"
                 className="text-[9px] fill-ink-300"
               >
@@ -284,7 +284,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
               {/* 星级 - 实色+灰色空心 */}
               <text
                 x={p.x}
-                y={cardY + 60}
+                y={cardY + 64}
                 textAnchor="middle"
                 style={{ fontSize: 11 }}
               >

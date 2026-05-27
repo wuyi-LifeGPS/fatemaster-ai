@@ -56,12 +56,12 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#0a0808] text-white/80">
-      {/* Hero Section */}
-      <section className="relative text-white py-16 px-4 overflow-hidden"
+      {/* Hero Section - 罗盘背景 + 标题浮层 */}
+      <section className="relative min-h-[85vh] text-white pt-16 pb-8 px-4 overflow-hidden"
         style={{
           background: 'radial-gradient(ellipse at 20% 50%, rgba(88, 60, 120, 0.6) 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(180, 120, 60, 0.4) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(60, 80, 140, 0.5) 0%, transparent 50%), #0c0a0a',
         }}>
-        {/* 背景粒子效果 */}
+        {/* 背景粒子 */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(20)].map((_, i) => (
             <div
@@ -79,7 +79,7 @@ export default function Home() {
         </div>
 
         {/* 右上角设置 */}
-        <div className="absolute top-4 right-4 z-20">
+        <div className="absolute top-4 right-4 z-30">
           <Link
             href="/settings"
             className="text-white/60 hover:text-white text-sm transition-colors"
@@ -88,8 +88,8 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* 顶部导航：一命二运三风水... */}
-        <div className="relative z-10 max-w-6xl mx-auto mb-12">
+        {/* 顶部导航 */}
+        <div className="relative z-30 max-w-6xl mx-auto mb-6">
           <div className="flex flex-wrap justify-center gap-2 md:gap-3">
             {navItems.map((item) => (
               <Link
@@ -114,160 +114,202 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 动态罗盘 - 放大2倍 */}
-        <div className="relative z-10 flex justify-center mb-8">
-          <div className="relative w-96 h-96 md:w-[28rem] md:h-[28rem]">
-            {/* 外圈旋转 - 十二地支 */}
-            <svg
-              className="absolute inset-0 w-full h-full"
-              style={{ animation: 'spin 60s linear infinite' }}
-              viewBox="0 0 200 200"
-            >
-              <circle cx="100" cy="100" r="95" fill="none" stroke="rgba(201,147,90,0.2)" strokeWidth="1" />
-              {[...Array(24)].map((_, i) => {
-                const angle = (i * 15 * Math.PI) / 180
-                const x1 = 100 + 85 * Math.cos(angle)
-                const y1 = 100 + 85 * Math.sin(angle)
-                const x2 = 100 + 95 * Math.cos(angle)
-                const y2 = 100 + 95 * Math.sin(angle)
-                return (
-                  <line
-                    key={i}
-                    x1={x1}
-                    y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    stroke="rgba(201,147,90,0.3)"
-                    strokeWidth={i % 6 === 0 ? 2 : 1}
-                  />
-                )
-              })}
-              {/* 外圈十二地支文字 */}
-              {['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'].map((zhi, i) => {
-                const angle = ((i * 30 - 90) * Math.PI) / 180
-                const x = 100 + 78 * Math.cos(angle)
-                const y = 100 + 78 * Math.sin(angle)
-                return (
-                  <text
-                    key={zhi}
-                    x={x}
-                    y={y}
-                    textAnchor="middle"
-                    fill="rgba(201,147,90,0.6)"
-                    fontSize="14"
-                    fontFamily="Georgia, 'Times New Roman', serif"
-                    dy="0.35em"
-                  >
-                    {zhi}
-                  </text>
-                )
-              })}
-            </svg>
-
-            {/* 中圈反向旋转 - 八卦 */}
-            <svg
-              className="absolute inset-0 w-full h-full"
-              style={{ animation: 'spin-reverse 45s linear infinite' }}
-              viewBox="0 0 200 200"
-            >
-              <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(124,111,174,0.2)" strokeWidth="1" />
-              {[...Array(8)].map((_, i) => {
-                const angle = (i * 45 * Math.PI) / 180
-                const x1 = 100 + 60 * Math.cos(angle)
-                const y1 = 100 + 60 * Math.sin(angle)
-                const x2 = 100 + 70 * Math.cos(angle)
-                const y2 = 100 + 70 * Math.sin(angle)
-                return (
-                  <line
-                    key={i}
-                    x1={x1}
-                    y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    stroke="rgba(124,111,174,0.3)"
-                    strokeWidth={2}
-                  />
-                )
-              })}
-              {['乾', '坎', '艮', '震', '巽', '离', '坤', '兑'].map((gua, i) => {
-                const angle = ((i * 45 - 90) * Math.PI) / 180
-                const x = 100 + 52 * Math.cos(angle)
-                const y = 100 + 52 * Math.sin(angle)
-                return (
-                  <text
-                    key={gua}
-                    x={x}
-                    y={y}
-                    textAnchor="middle"
-                    fill="rgba(124,111,174,0.6)"
-                    fontSize="13"
-                    fontFamily="Georgia, 'Times New Roman', serif"
-                    dy="0.35em"
-                  >
-                    {gua}
-                  </text>
-                )
-              })}
-            </svg>
-
-            {/* 内圈 - 太极 */}
-            <svg
-              className="absolute inset-0 w-full h-full"
-              style={{ animation: 'spin 30s linear infinite' }}
-              viewBox="0 0 200 200"
-            >
-              <circle cx="100" cy="100" r="45" fill="none" stroke="rgba(201,147,90,0.15)" strokeWidth="1" />
-              <circle cx="100" cy="100" r="35" fill="none" stroke="rgba(124,111,174,0.15)" strokeWidth="1" />
-              {/* 太极阴阳 */}
-              <path
-                d="M 100 65 A 35 35 0 0 1 100 135 A 17.5 17.5 0 0 0 100 100 A 17.5 17.5 0 0 1 100 65"
-                fill="rgba(201,147,90,0.2)"
-              />
-              <path
-                d="M 100 65 A 35 35 0 0 0 100 135 A 17.5 17.5 0 0 1 100 100 A 17.5 17.5 0 0 0 100 65"
-                fill="rgba(124,111,174,0.2)"
-              />
-              <circle cx="100" cy="82.5" r="5" fill="rgba(124,111,174,0.5)" />
-              <circle cx="100" cy="117.5" r="5" fill="rgba(201,147,90,0.5)" />
-            </svg>
-
-            {/* 中心光点 */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div
-                className="w-4 h-4 rounded-full"
-                style={{
-                  background: 'radial-gradient(circle, rgba(201,147,90,0.9) 0%, transparent 70%)',
-                  animation: 'pulse-glow 3s ease-in-out infinite',
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 font-serif text-white">
+        {/* 标题层 - 浮在罗盘上方 */}
+        <div className="relative z-20 text-center mb-2">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 font-serif text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
             LifeGPS · 人生导航
           </h1>
-          <p className="text-xl md:text-2xl text-white/60 mb-8 font-serif">
+          <p className="text-lg md:text-xl text-white/60 mb-4 font-serif drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
             古老东方智慧解析系统
           </p>
-          <blockquote className="text-white/40 italic text-lg max-w-2xl mx-auto mb-12 leading-relaxed">
+          <blockquote className="text-white/40 italic text-base max-w-xl mx-auto mb-6 leading-relaxed drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
             "除非你意识到你的潜意识，否则潜意识将主导你的人生，而你将其称为命运。"
-            <span className="text-sm not-italic mt-3 block text-white/30">— 卡尔·荣格</span>
+            <span className="text-sm not-italic mt-2 block text-white/30">— 卡尔·荣格</span>
           </blockquote>
 
-          <div className="flex justify-center">
-            <Link
-              href="/bazi"
-              className="inline-block bg-fate-600 hover:bg-fate-500 text-white px-8 py-4 rounded-lg text-lg transition-all shadow-lg shadow-fate-600/30 hover:shadow-xl hover:shadow-fate-500/40 hover:-translate-y-0.5"
+          <Link
+            href="/bazi"
+            className="inline-block bg-fate-600 hover:bg-fate-500 text-white px-8 py-3.5 rounded-lg text-base transition-all shadow-lg shadow-fate-600/30 hover:shadow-xl hover:shadow-fate-500/40 hover:-translate-y-0.5"
+          >
+            🔮 开始八字分析
+          </Link>
+        </div>
+
+        {/* 罗盘层 - 从标题下方露出 */}
+        <div className="relative z-10 flex justify-center mt-[-20px] md:mt-[-40px]">
+          <div className="relative w-[320px] h-[320px] sm:w-[380px] sm:h-[380px] md:w-[460px] md:h-[460px] lg:w-[520px] lg:h-[520px]">
+            <svg
+              className="absolute inset-0 w-full h-full"
+              viewBox="0 0 400 400"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              🔮 开始八字分析
-            </Link>
+              {/* === 固定底盘：十字线 + 指北箭头 === */}
+              <g>
+                {/* 十字线 */}
+                <line x1="200" y1="8" x2="200" y2="392" stroke="rgba(201,147,90,0.12)" strokeWidth="1" />
+                <line x1="8" y1="200" x2="392" y2="200" stroke="rgba(201,147,90,0.12)" strokeWidth="1" />
+                {/* 指北箭头 */}
+                <polygon points="200,12 194,28 206,28" fill="#c9935a" opacity="0.7" />
+                <text x="200" y="42" textAnchor="middle" fill="#c9935a" fontSize="12" fontFamily="Georgia, serif" opacity="0.7">N</text>
+                {/* 底盘同心圆 */}
+                <circle cx="200" cy="200" r="195" fill="none" stroke="rgba(201,147,90,0.08)" strokeWidth="1" />
+              </g>
+
+              {/* === 外圈旋转：360度刻度 + 天干 === */}
+              <g style={{ animation: 'spin 80s linear infinite', transformOrigin: '200px 200px' }}>
+                <circle cx="200" cy="200" r="188" fill="none" stroke="rgba(201,147,90,0.15)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="178" fill="none" stroke="rgba(201,147,90,0.08)" strokeWidth="0.5" />
+                {/* 360度刻度 */}
+                {[...Array(72)].map((_, i) => {
+                  const angle = (i * 5 * Math.PI) / 180
+                  const isMajor = i % 6 === 0
+                  const isMedium = i % 2 === 0
+                  const r1 = isMajor ? 170 : (isMedium ? 176 : 182)
+                  const r2 = 188
+                  const x1 = 200 + r1 * Math.cos(angle)
+                  const y1 = 200 + r1 * Math.sin(angle)
+                  const x2 = 200 + r2 * Math.cos(angle)
+                  const y2 = 200 + r2 * Math.sin(angle)
+                  return (
+                    <line
+                      key={`tick-${i}`}
+                      x1={x1} y1={y1} x2={x2} y2={y2}
+                      stroke={isMajor ? 'rgba(201,147,90,0.35)' : 'rgba(201,147,90,0.15)'}
+                      strokeWidth={isMajor ? 1.5 : 0.5}
+                    />
+                  )
+                })}
+                {/* 天干 */}
+                {['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'].map((gan, i) => {
+                  const angle = ((i * 36 - 90) * Math.PI) / 180
+                  const x = 200 + 162 * Math.cos(angle)
+                  const y = 200 + 162 * Math.sin(angle)
+                  return (
+                    <text
+                      key={gan}
+                      x={x} y={y}
+                      textAnchor="middle"
+                      fill="rgba(201,147,90,0.55)"
+                      fontSize="13"
+                      fontFamily="Georgia, 'Times New Roman', serif"
+                      dy="0.35em"
+                    >{gan}</text>
+                  )
+                })}
+              </g>
+
+              {/* === 第二圈旋转：地支 === */}
+              <g style={{ animation: 'spin-reverse 55s linear infinite', transformOrigin: '200px 200px' }}>
+                <circle cx="200" cy="200" r="158" fill="none" stroke="rgba(201,147,90,0.12)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="148" fill="none" stroke="rgba(201,147,90,0.06)" strokeWidth="0.5" />
+                {/* 地支 */}
+                {['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'].map((zhi, i) => {
+                  const angle = ((i * 30 - 90) * Math.PI) / 180
+                  const x = 200 + 136 * Math.cos(angle)
+                  const y = 200 + 136 * Math.sin(angle)
+                  return (
+                    <text
+                      key={zhi}
+                      x={x} y={y}
+                      textAnchor="middle"
+                      fill="rgba(201,147,90,0.5)"
+                      fontSize="15"
+                      fontFamily="Georgia, 'Times New Roman', serif"
+                      dy="0.35em"
+                    >{zhi}</text>
+                  )
+                })}
+              </g>
+
+              {/* === 第三圈固定：方位 === */}
+              <g>
+                <circle cx="200" cy="200" r="124" fill="none" stroke="rgba(124,111,174,0.1)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="114" fill="none" stroke="rgba(124,111,174,0.06)" strokeWidth="0.5" />
+                {/* 方位 */}
+                {[
+                  { text: '北', sub: '' },
+                  { text: '东北', sub: '' },
+                  { text: '东', sub: '' },
+                  { text: '东南', sub: '' },
+                  { text: '南', sub: '' },
+                  { text: '西南', sub: '' },
+                  { text: '西', sub: '' },
+                  { text: '西北', sub: '' },
+                ].map((dir, i) => {
+                  const angle = ((i * 45 - 90) * Math.PI) / 180
+                  const x = 200 + 104 * Math.cos(angle)
+                  const y = 200 + 104 * Math.sin(angle)
+                  return (
+                    <text
+                      key={dir.text}
+                      x={x} y={y}
+                      textAnchor="middle"
+                      fill="rgba(124,111,174,0.4)"
+                      fontSize="11"
+                      fontFamily="Georgia, 'Times New Roman', serif"
+                      dy="0.35em"
+                    >{dir.text}</text>
+                  )
+                })}
+              </g>
+
+              {/* === 第四圈旋转：八卦 === */}
+              <g style={{ animation: 'spin 40s linear infinite', transformOrigin: '200px 200px' }}>
+                <circle cx="200" cy="200" r="92" fill="none" stroke="rgba(124,111,174,0.15)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="84" fill="none" stroke="rgba(124,111,174,0.08)" strokeWidth="0.5" />
+                {/* 八卦 */}
+                {['乾', '坎', '艮', '震', '巽', '离', '坤', '兑'].map((gua, i) => {
+                  const angle = ((i * 45 - 90) * Math.PI) / 180
+                  const x = 200 + 74 * Math.cos(angle)
+                  const y = 200 + 74 * Math.sin(angle)
+                  return (
+                    <text
+                      key={gua}
+                      x={x} y={y}
+                      textAnchor="middle"
+                      fill="rgba(124,111,174,0.5)"
+                      fontSize="14"
+                      fontFamily="Georgia, 'Times New Roman', serif"
+                      dy="0.35em"
+                    >{gua}</text>
+                  )
+                })}
+              </g>
+
+              {/* === 中心层：太极图 === */}
+              <g style={{ animation: 'spin-reverse 30s linear infinite', transformOrigin: '200px 200px' }}>
+                <circle cx="200" cy="200" r="62" fill="none" stroke="rgba(201,147,90,0.1)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="54" fill="none" stroke="rgba(201,147,90,0.06)" strokeWidth="0.5" />
+                {/* 太极阴阳鱼 */}
+                <path
+                  d="M 200 146 A 54 54 0 0 1 200 254 A 27 27 0 0 0 200 200 A 27 27 0 0 1 200 146"
+                  fill="rgba(201,147,90,0.12)"
+                />
+                <path
+                  d="M 200 146 A 54 54 0 0 0 200 254 A 27 27 0 0 1 200 200 A 27 27 0 0 0 200 146"
+                  fill="rgba(124,111,174,0.12)"
+                />
+                <circle cx="200" cy="173" r="5" fill="rgba(124,111,174,0.3)" />
+                <circle cx="200" cy="227" r="5" fill="rgba(201,147,90,0.3)" />
+              </g>
+
+              {/* === 中心光点 === */}
+              <g>
+                <circle cx="200" cy="200" r="5" fill="rgba(201,147,90,0.7)">
+                  <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3s" repeatCount="indefinite" />
+                  <animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="200" cy="200" r="12" fill="none" stroke="rgba(201,147,90,0.15)" strokeWidth="1">
+                  <animate attributeName="r" values="10;18;10" dur="4s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.2;0;0.2" dur="4s" repeatCount="indefinite" />
+                </circle>
+              </g>
+            </svg>
           </div>
         </div>
 
         {/* 底部渐变过渡到暗色 */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0808] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0808] to-transparent" />
       </section>
 
       {/* Core Concepts - 暗色主题 */}

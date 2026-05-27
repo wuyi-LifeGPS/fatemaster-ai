@@ -121,8 +121,12 @@ export default function Home() {
 
         {/* 标题层 - 浮在罗盘上方 */}
         <div className="relative z-20 text-center mb-2">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 font-serif text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-            LifeGPS · 人生导航
+          <h1 className="text-5xl md:text-6xl lg:text-7xl mb-3 font-brush text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide"
+            style={{ fontWeight: 400 }}
+          >
+            <span className="text-white/90">LifeGPS</span>
+            <span className="text-fate-400 mx-2">·</span>
+            <span>人生导航</span>
           </h1>
           <p className="text-lg md:text-xl text-white/60 mb-4 font-serif drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
             古老东方智慧解析系统

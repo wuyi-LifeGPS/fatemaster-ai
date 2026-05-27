@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+
 :root {
   --foreground-rgb: 28, 25, 23;
   --background-rgb: 253, 248, 240;
@@ -14,6 +16,10 @@ body {
 
 .font-serif {
   font-family: Georgia, Cambria, 'Times New Roman', serif;
+}
+
+.font-brush {
+  font-family: 'Ma Shan Zheng', 'STXingkai', 'Xingkai SC', 'KaiTi', cursive;
 }
 
 @keyframes spin {

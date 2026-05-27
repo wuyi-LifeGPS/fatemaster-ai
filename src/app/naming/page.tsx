@@ -62,6 +62,7 @@ export default function NamingPage() {
     if (mode === 'brand') {
       if (!brandName) return
       setLoading(true)
+      setBrandResult(null) // 先清空旧结果，防止残留
       setTimeout(() => {
         const result = analyzeBrandName(brandName)
         setBrandResult(result)

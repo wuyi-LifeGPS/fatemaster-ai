@@ -121,31 +121,31 @@ export default function Home() {
 
         {/* 标题层 - 浮在罗盘上方 */}
         <div className="relative z-20 text-center mb-2">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl mb-3 font-brush text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide"
+          <h1 className="text-4xl sm:text-5xl md:text-6xl mb-2 font-brush text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide"
             style={{ fontWeight: 400 }}
           >
-            <span className="text-white/90">LifeGPS</span>
-            <span className="text-fate-400 mx-2">·</span>
+            <span className="text-white/90">知命改运</span>
+            <span className="text-fate-400 mx-1 sm:mx-2">·</span>
             <span>人生导航</span>
           </h1>
-          <p className="text-lg md:text-xl text-white/60 mb-4 font-serif drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
+          <p className="text-base sm:text-lg text-white/60 mb-3 font-serif drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
             古老东方智慧解析系统
           </p>
-          <blockquote className="text-white/40 italic text-base max-w-xl mx-auto mb-6 leading-relaxed drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
+          <blockquote className="text-white/40 italic text-sm max-w-lg mx-auto mb-5 leading-relaxed drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
             "除非你意识到你的潜意识，否则潜意识将主导你的人生，而你将其称为命运。"
-            <span className="text-sm not-italic mt-2 block text-white/30">— 卡尔·荣格</span>
+            <span className="text-xs not-italic mt-1 block text-white/30">— 卡尔·荣格</span>
           </blockquote>
 
           <Link
             href="/bazi"
-            className="inline-block bg-fate-600 hover:bg-fate-500 text-white px-8 py-3.5 rounded-lg text-base transition-all shadow-lg shadow-fate-600/30 hover:shadow-xl hover:shadow-fate-500/40 hover:-translate-y-0.5"
+            className="inline-block bg-fate-600 hover:bg-fate-500 text-white px-8 py-3 rounded-lg text-base transition-all shadow-lg shadow-fate-600/30 hover:shadow-xl hover:shadow-fate-500/40 hover:-translate-y-0.5"
           >
             🔮 开始八字分析
           </Link>
         </div>
 
-        {/* 罗盘层 - 从标题下方露出 */}
-        <div className="relative z-10 flex justify-center mt-[-20px] md:mt-[-40px]">
+        {/* 罗盘层 - 上移与标题重叠 */}
+        <div className="relative z-10 flex justify-center mt-[-120px] sm:mt-[-150px] md:mt-[-180px]">
           <div className="relative w-[320px] h-[320px] sm:w-[380px] sm:h-[380px] md:w-[460px] md:h-[460px] lg:w-[520px] lg:h-[520px]">
             <svg
               className="absolute inset-0 w-full h-full"

@@ -4,16 +4,16 @@ import Link from 'next/link'
 
 export default function Home() {
   const navItems = [
-    { num: '一', label: '命', href: '/bazi', available: true },
-    { num: '二', label: '运', href: '/bazi', available: true },
-    { num: '三', label: '风水', href: '/bazi', available: true },
-    { num: '四', label: '积阴德', href: '#', available: false },
-    { num: '五', label: '读书', href: '#', available: false },
-    { num: '六', label: '名', href: '/naming', available: true },
-    { num: '七', label: '相', href: '#', available: false },
-    { num: '八', label: '敬神', href: '#', available: false },
-    { num: '九', label: '遇贵人', href: '/match', available: true },
-    { num: '十', label: '养生', href: '#', available: false },
+    { num: '一', label: '命', subtitle: '八字命理', href: '/bazi', available: true },
+    { num: '二', label: '运', subtitle: '大运流年', href: '/bazi', available: true },
+    { num: '三', label: '风水', subtitle: '改运建议', href: '/bazi', available: true },
+    { num: '四', label: '积阴德', subtitle: '积德行善', href: '#', available: false },
+    { num: '五', label: '读书', subtitle: '学习书架', href: '#', available: false },
+    { num: '六', label: '名', subtitle: '姓名分析', href: '/naming', available: true },
+    { num: '七', label: '相', subtitle: '面相手相', href: '#', available: false },
+    { num: '八', label: '敬神', subtitle: '阴符经', href: '#', available: false },
+    { num: '九', label: '遇贵人', subtitle: '神煞合盘', href: '/match', available: true },
+    { num: '十', label: '养生', subtitle: '健康建议', href: '#', available: false },
   ]
 
   const services = [
@@ -101,14 +101,19 @@ export default function Home() {
                     alert('功能即将上线，敬请期待')
                   }
                 }}
-                className={`flex items-center gap-1 px-2 py-1.5 rounded-md text-sm md:text-base transition-all ${
+                className={`group relative flex flex-col items-center px-2 py-1.5 rounded-md text-sm md:text-base transition-all ${
                   item.available
                     ? 'text-white/70 hover:text-white hover:bg-white/10 cursor-pointer'
                     : 'text-white/30 cursor-not-allowed'
                 }`}
               >
-                <span className="text-fate-400 font-serif text-xs">{item.num}</span>
-                <span className="font-serif">{item.label}</span>
+                <span className="flex items-center gap-1">
+                  <span className="text-fate-400 font-serif text-xs">{item.num}</span>
+                  <span className="font-serif">{item.label}</span>
+                </span>
+                <span className="absolute top-full mt-1 px-2 py-0.5 rounded text-xs text-white/70 bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                  {item.subtitle}
+                </span>
               </Link>
             ))}
           </div>

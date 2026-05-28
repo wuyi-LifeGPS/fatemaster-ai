@@ -35,6 +35,7 @@ module.exports = {
       },
       fontFamily: {
         'serif': ['Georgia', 'Cambria', 'serif'],
+        'slidefu': ['Slidefu', 'Georgia', 'serif'],
       }
     },
   },

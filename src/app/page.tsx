@@ -290,9 +290,9 @@ export default function Home() {
               </g>
             </svg>
 
-            {/* 标题层 - 绝对定位覆盖罗盘中心 */}
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl mb-2 font-brush text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide"
+            {/* 标题层 - 绝对定位覆盖罗盘中心，整体下移使标题位于中心点 */}
+            <div className="absolute inset-0 z-20 flex flex-col items-center text-center px-4 translate-y-10">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl mb-2 font-slidefu text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide"
                 style={{ fontWeight: 400 }}
               >
                 <span className="text-white/90">知命改运</span>

@@ -43,3 +43,12 @@ body {
   50% { transform: translateY(-10px) translateX(-10px); }
   75% { transform: translateY(-30px) translateX(5px); }
 }
+
+/* 隐藏滚动条 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

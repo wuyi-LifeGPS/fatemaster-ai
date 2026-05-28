@@ -88,9 +88,9 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* 顶部导航 */}
+        {/* 顶部导航 - 移动端横向滚动 */}
         <div className="relative z-30 max-w-6xl mx-auto mb-6">
-          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+          <div className="flex overflow-x-auto scrollbar-hide justify-start md:justify-center gap-2 md:gap-3 whitespace-nowrap px-4 md:px-0 pb-2">
             {navItems.map((item) => (
               <Link
                 key={item.label}
@@ -101,7 +101,7 @@ export default function Home() {
                     alert('功能即将上线，敬请期待')
                   }
                 }}
-                className={`group relative flex flex-col items-center px-2 py-1.5 rounded-md text-sm md:text-base transition-all ${
+                className={`group relative inline-flex flex-col items-center px-2 py-1.5 rounded-md text-sm md:text-base transition-all shrink-0 ${
                   item.available
                     ? 'text-white/70 hover:text-white hover:bg-white/10 cursor-pointer'
                     : 'text-white/30 cursor-not-allowed'
@@ -292,7 +292,7 @@ export default function Home() {
 
             {/* 标题层 - 绝对定位覆盖罗盘中心，整体下移使标题位于中心点 */}
             <div className="absolute inset-0 z-20 flex flex-col items-center text-center px-4 translate-y-10">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl mb-2 font-slidefu text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide"
+              <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl mb-2 font-slidefu text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide whitespace-nowrap"
                 style={{ fontWeight: 400 }}
               >
                 <span className="text-white/90">知命改运</span>

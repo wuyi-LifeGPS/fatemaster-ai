@@ -241,8 +241,8 @@ export default function Home() {
               <g style={{ animation: 'spin 40s linear infinite', transformOrigin: '200px 200px' }}>
                 <circle cx="200" cy="200" r="92" fill="none" stroke="rgba(124,111,174,0.15)" strokeWidth="1" />
                 <circle cx="200" cy="200" r="84" fill="none" stroke="rgba(124,111,174,0.08)" strokeWidth="0.5" />
-                {/* 八卦 */}
-                {['乾', '坎', '艮', '震', '巽', '离', '坤', '兑'].map((gua, i) => {
+                {/* 八卦 — 后天八卦方位：坎北起始，顺时针 */}
+                {['坎', '艮', '震', '巽', '离', '坤', '兑', '乾'].map((gua, i) => {
                   const angle = ((i * 45 - 90) * Math.PI) / 180
                   const x = 200 + 74 * Math.cos(angle)
                   const y = 200 + 74 * Math.sin(angle)

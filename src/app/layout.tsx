@@ -18,6 +18,10 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://chinese-fonts-cdn.netlify.app/packages/ysfxt/dist/Slidefu-Regular/result.css"
         />
+        <link
+          rel="stylesheet"
+          href="https://chinese-fonts-cdn.netlify.app/packages/alimama-dlt/dist/AlimamaDaoLiTi/result.css"
+        />
         {children}
       </body>
     </html>

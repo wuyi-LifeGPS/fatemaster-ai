@@ -620,6 +620,58 @@ export default function BaziPage() {
                 </div>
               </div>
             )}
+
+            {/* 更多分析导航 */}
+            <div className="bg-gradient-to-br from-fate-50 to-white rounded-xl p-6 border border-fate-200">
+              <h3 className="font-bold text-lg mb-4 font-serif">🔮 深入探索</h3>
+              <p className="text-sm text-ink-500 mb-4">基于当前命盘，还可以进行以下深度分析：</p>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <a
+                  href={`/match?mode=match&name=${encodeURIComponent(formData.name || '命主')}&gender=${formData.gender}&birthYear=${formData.birthYear}&birthMonth=${formData.birthMonth}&birthDay=${formData.birthDay}&birthHour=${formData.birthHour}&birthMinute=${formData.birthMinute}&calendarType=${formData.calendarType}`}
+                  className="flex items-center gap-3 p-4 rounded-lg bg-pink-50 border border-pink-100 hover:bg-pink-100 transition-colors"
+                >
+                  <span className="text-2xl">💑</span>
+                  <div>
+                    <div className="font-bold text-ink-800">婚姻分析</div>
+                    <div className="text-xs text-ink-500">合婚匹配 · 姻缘契合度</div>
+                  </div>
+                  <span className="ml-auto text-pink-400">→</span>
+                </a>
+                <a
+                  href={`/match?mode=career&name=${encodeURIComponent(formData.name || '命主')}&gender=${formData.gender}&birthYear=${formData.birthYear}&birthMonth=${formData.birthMonth}&birthDay=${formData.birthDay}&birthHour=${formData.birthHour}&birthMinute=${formData.birthMinute}&calendarType=${formData.calendarType}`}
+                  className="flex items-center gap-3 p-4 rounded-lg bg-blue-50 border border-blue-100 hover:bg-blue-100 transition-colors"
+                >
+                  <span className="text-2xl">🤝</span>
+                  <div>
+                    <div className="font-bold text-ink-800">事业合作</div>
+                    <div className="text-xs text-ink-500">合伙人匹配 · 商业契合度</div>
+                  </div>
+                  <span className="ml-auto text-blue-400">→</span>
+                </a>
+                <a
+                  href={`/talent?name=${encodeURIComponent(formData.name || '命主')}&gender=${formData.gender}&birthYear=${formData.birthYear}&birthMonth=${formData.birthMonth}&birthDay=${formData.birthDay}&birthHour=${formData.birthHour}&birthMinute=${formData.birthMinute}&calendarType=${formData.calendarType}`}
+                  className="flex items-center gap-3 p-4 rounded-lg bg-teal-50 border border-teal-100 hover:bg-teal-100 transition-colors"
+                >
+                  <span className="text-2xl">🧬</span>
+                  <div>
+                    <div className="font-bold text-ink-800">天赋分析</div>
+                    <div className="text-xs text-ink-500">多元智能雷达 · 职业方向</div>
+                  </div>
+                  <span className="ml-auto text-teal-400">→</span>
+                </a>
+                <a
+                  href={`/daily?name=${encodeURIComponent(formData.name || '命主')}&gender=${formData.gender}&birthYear=${formData.birthYear}&birthMonth=${formData.birthMonth}&birthDay=${formData.birthDay}&birthHour=${formData.birthHour}&birthMinute=${formData.birthMinute}&calendarType=${formData.calendarType}`}
+                  className="flex items-center gap-3 p-4 rounded-lg bg-amber-50 border border-amber-100 hover:bg-amber-100 transition-colors"
+                >
+                  <span className="text-2xl">🌅</span>
+                  <div>
+                    <div className="font-bold text-ink-800">每日运势</div>
+                    <div className="text-xs text-ink-500">今日吉凶 · 开运指南</div>
+                  </div>
+                  <span className="ml-auto text-amber-400">→</span>
+                </a>
+              </div>
+            </div>
           </div>
         )}
       </div>

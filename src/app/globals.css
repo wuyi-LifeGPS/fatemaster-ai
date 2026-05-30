@@ -44,6 +44,11 @@ body {
   75% { transform: translateY(-30px) translateX(5px); }
 }
 
+/* 阿里妈妈刀隶体 */
+.font-daoli {
+  font-family: 'AlimamaDaoLiTi', 'LiSu', 'STLiti', serif;
+}
+
 /* 隐藏滚动条 */
 .scrollbar-hide {
   -ms-overflow-style: none;

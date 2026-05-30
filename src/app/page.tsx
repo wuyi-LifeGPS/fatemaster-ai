@@ -12,8 +12,9 @@ export default function Home() {
     { num: '六', label: '名', subtitle: '姓名分析', href: '/naming', available: true },
     { num: '七', label: '相', subtitle: '面相手相', href: '#', available: false },
     { num: '八', label: '敬神', subtitle: '阴符经', href: '#', available: false },
-    { num: '九', label: '遇贵人', subtitle: '神煞合盘', href: '/match', available: true },
+    { num: '九', label: '遇贵人', subtitle: '合婚合作', href: '/match', available: true },
     { num: '十', label: '养生', subtitle: '健康建议', href: '#', available: false },
+    { num: '天赋', label: '天赋', subtitle: '天赋解码', href: '/talent', available: true },
   ]
 
   const services = [
@@ -51,6 +52,13 @@ export default function Home() {
       icon: '🤝',
       href: '/career',
       color: 'from-green-500 to-emerald-600',
+    },
+    {
+      title: '天赋分析',
+      desc: '融合八字命理 × 多元智能理论，发现你的天赋密码与职业方向',
+      icon: '🧬',
+      href: '/talent',
+      color: 'from-teal-500 to-cyan-600',
     },
   ]
 
@@ -292,7 +300,7 @@ export default function Home() {
 
             {/* 标题层 - 绝对定位覆盖罗盘中心，整体下移使标题位于中心点 */}
             <div className="absolute inset-0 z-20 flex flex-col items-center text-center px-4 translate-y-10">
-              <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl mb-2 font-slidefu text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide whitespace-nowrap"
+              <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl mb-2 font-daoli text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide whitespace-nowrap"
                 style={{ fontWeight: 400 }}
               >
                 <span className="text-white/90">知命改运</span>

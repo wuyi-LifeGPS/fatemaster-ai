@@ -1,0 +1,689 @@
+// ===== 天赋分析模块 =====
+// 融合八字命理 + 霍华德·加德纳多元智能理论
+// 8维智能：语言、逻辑数学、空间、身体动觉、音乐、人际、自省、自然
+
+import { getWuXing, getShiShen, SHI_SHEN_MAP, WU_XING } from './bazi'
+
+export interface TalentDimension {
+  key: string
+  name: string
+  label: string
+  icon: string
+  score: number      // 0-100
+  level: '极高' | '高' | '中等' | '一般' | '较弱'
+  description: string
+  strengths: string[]
+}
+
+export interface TalentResult {
+  dimensions: TalentDimension[]
+  top3: string[]
+  dominantType: string
+  careerSuggestions: CareerSuggestion[]
+  lifeAdvice: string
+  patternDescription: string
+}
+
+export interface CareerSuggestion {
+  field: string
+  roles: string[]
+  reason: string
+  matchScore: number
+}
+
+// ===== 五行 → 智能维度 基础映射权重 =====
+// 每个五行对各智能维度的基础贡献值（0-10）
+const WX_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
+  '木': {
+    linguistic: 7,      // 木主生发，语言表达
+    logical: 3,
+    spatial: 4,
+    bodily: 8,         // 木主肢体、运动
+    musical: 5,
+    interpersonal: 5,
+    intrapersonal: 4,
+    naturalist: 9,       // 木主自然、生命
+  },
+  '火': {
+    linguistic: 6,
+    logical: 4,
+    spatial: 3,
+    bodily: 4,
+    musical: 6,         // 火主韵律、热情
+    interpersonal: 9,  // 火主人际、社交
+    intrapersonal: 5,
+    naturalist: 4,
+  },
+  '土': {
+    linguistic: 3,
+    logical: 5,
+    spatial: 5,
+    bodily: 3,
+    musical: 3,
+    interpersonal: 6,
+    intrapersonal: 9,  // 土主内省、稳定
+    naturalist: 7,      // 土主大地、孕育
+  },
+  '金': {
+    linguistic: 3,
+    logical: 10,       // 金主精准、逻辑
+    spatial: 7,         // 金主结构、空间
+    bodily: 4,
+    musical: 5,
+    interpersonal: 3,
+    intrapersonal: 5,
+    naturalist: 3,
+  },
+  '水': {
+    linguistic: 8,      // 水主智慧、表达
+    logical: 5,
+    spatial: 9,         // 水主流动、空间感知
+    bodily: 3,
+    musical: 9,       // 水主韵律、音乐
+    interpersonal: 5,
+    intrapersonal: 6,
+    naturalist: 5,
+  },
+}
+
+// ===== 十神 → 智能维度 加成映射 =====
+const SHI_SHEN_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
+  '食神': {
+    linguistic: 4, musical: 4, interpersonal: 2, bodily: 2,
+    logical: 1, spatial: 1, intrapersonal: 2, naturalist: 2,
+  },
+  '伤官': {
+    linguistic: 5, musical: 3, interpersonal: 1, creative: 3,
+    logical: 2, spatial: 2, intrapersonal: 1, naturalist: 1,
+  },
+  '正财': {
+    interpersonal: 4, logical: 3, intrapersonal: 2,
+    linguistic: 1, musical: 1, spatial: 1, bodily: 1, naturalist: 1,
+  },
+  '偏财': {
+    interpersonal: 5, logical: 2, musical: 2,
+    linguistic: 2, spatial: 2, bodily: 2, intrapersonal: 1, naturalist: 2,
+  },
+  '正官': {
+    logical: 4, interpersonal: 3, intrapersonal: 3,
+    linguistic: 1, spatial: 1, musical: 1, bodily: 1, naturalist: 1,
+  },
+  '七杀': {
+    logical: 3, bodily: 4, spatial: 3, interpersonal: 2,
+    linguistic: 1, musical: 1, intrapersonal: 2, naturalist: 2,
+  },
+  '正印': {
+    intrapersonal: 5, linguistic: 4, logical: 3, musical: 2,
+    spatial: 1, bodily: 1, interpersonal: 2, naturalist: 2,
+  },
+  '偏印': {
+    intrapersonal: 5, spatial: 4, logical: 3, musical: 2,
+    linguistic: 2, bodily: 1, interpersonal: 1, naturalist: 2,
+  },
+  '比肩': {
+    bodily: 4, interpersonal: 3, naturalist: 2,
+    linguistic: 1, logical: 1, spatial: 1, musical: 1, intrapersonal: 1,
+  },
+  '劫财': {
+    bodily: 3, interpersonal: 3, logical: 2,
+    linguistic: 1, spatial: 1, musical: 1, intrapersonal: 1, naturalist: 1,
+  },
+}
+
+// ===== 日主天干 → 天赋倾向加成 =====
+const DAY_MASTER_BONUS: Record<string, Record<string, number>> = {
+  '甲': { linguistic: 2, naturalist: 3, bodily: 2, interpersonal: 1 },
+  '乙': { linguistic: 3, musical: 2, intrapersonal: 2, interpersonal: 1 },
+  '丙': { interpersonal: 4, musical: 2, linguistic: 2, intrapersonal: 1 },
+  '丁': { musical: 3, interpersonal: 3, intrapersonal: 2, linguistic: 1 },
+  '戊': { intrapersonal: 3, naturalist: 2, logical: 2, interpersonal: 1 },
+  '己': { intrapersonal: 3, naturalist: 2, musical: 1, interpersonal: 2 },
+  '庚': { logical: 4, spatial: 3, bodily: 1, intrapersonal: 1 },
+  '辛': { spatial: 3, musical: 3, logical: 2, intrapersonal: 2 },
+  '壬': { linguistic: 3, spatial: 3, musical: 2, logical: 2 },
+  '癸': { musical: 3, linguistic: 3, intrapersonal: 3, spatial: 2 },
+}
+
+// ===== 地支 → 智能维度（地支本身特性） =====
+const ZHI_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
+  '子': { linguistic: 2, logical: 2, musical: 1 },
+  '丑': { intrapersonal: 2, naturalist: 2, logical: 1 },
+  '寅': { bodily: 3, naturalist: 2, linguistic: 1 },
+  '卯': { bodily: 2, musical: 2, naturalist: 2 },
+  '辰': { intrapersonal: 2, naturalist: 1, logical: 1 },
+  '巳': { interpersonal: 2, musical: 2, logical: 1 },
+  '午': { interpersonal: 3, musical: 2, bodily: 1 },
+  '未': { intrapersonal: 2, naturalist: 2, interpersonal: 1 },
+  '申': { logical: 3, spatial: 2, bodily: 1 },
+  '酉': { musical: 3, spatial: 2, intrapersonal: 1 },
+  '戌': { intrapersonal: 2, naturalist: 1, logical: 1 },
+  '亥': { musical: 2, linguistic: 2, intrapersonal: 2 },
+}
+
+// ===== 智能维度元数据 =====
+const DIMENSION_META: Record<string, { name: string; label: string; icon: string; desc: string }> = {
+  linguistic:     { name: '语言智能',     label: '语言',     icon: '🗣️', desc: '对文字、语言敏感，擅长表达、写作、沟通、演讲' },
+  logical:        { name: '逻辑数学智能', label: '逻辑数学', icon: '🧮', desc: '逻辑推理能力强，擅长数学、分析、编程、科学研究' },
+  spatial:        { name: '空间智能',     label: '空间',     icon: '🎯', desc: '空间感知敏锐，擅长设计、建筑、绘画、导航、三维思维' },
+  bodily:         { name: '身体动觉智能', label: '身体动觉', icon: '⚡', desc: '身体协调性好，擅长运动、表演、手工、舞蹈、肢体表达' },
+  musical:        { name: '音乐智能',     label: '音乐',     icon: '🎵', desc: '对音律敏感，擅长音乐创作、演奏、歌唱、声音辨识' },
+  interpersonal:  { name: '人际智能',     label: '人际',     icon: '🤝', desc: '善于理解他人，擅长社交、领导、教育、咨询、团队协作' },
+  intrapersonal:  { name: '自省智能',     label: '自省',     icon: '🧘', desc: '自我觉察深刻，擅长反思、哲学、心理学、独立研究' },
+  naturalist:     { name: '自然智能',     label: '自然',     icon: '🌿', desc: '亲近自然，擅长观察、分类、生物学、农业、生态保护' },
+}
+
+// ===== 职业建议库 =====
+const CAREER_LIBRARY: Record<string, CareerSuggestion[]> = {
+  linguistic: [
+    { field: '内容创作', roles: ['作家', '编剧', '自媒体人', '文案策划'], reason: '文字是你的天然武器，表达欲旺盛', matchScore: 95 },
+    { field: '教育传播', roles: ['教师', '培训师', '主播', '主持人'], reason: '善于把复杂概念讲得通俗易懂', matchScore: 90 },
+    { field: '法律政务', roles: ['律师', '外交官', '公关', '翻译'], reason: '语言逻辑缜密，擅长说服与辩论', matchScore: 85 },
+  ],
+  logical: [
+    { field: '科技研发', roles: ['软件工程师', '数据科学家', '算法工程师', '研究员'], reason: '抽象思维和逻辑推演是你的主场', matchScore: 95 },
+    { field: '金融分析', roles: ['量化分析师', '精算师', '投资顾问', '风控'], reason: '擅长数字敏感度与风险评估', matchScore: 90 },
+    { field: '医疗健康', roles: ['外科医生', '药剂师', '医学研究员'], reason: '精准、冷静、系统性思维', matchScore: 85 },
+  ],
+  spatial: [
+    { field: '设计创意', roles: ['UI/UX设计师', '建筑师', '室内设计师', '摄影师'], reason: '空间想象力和视觉审美出众', matchScore: 95 },
+    { field: '工程建造', roles: ['土木工程师', '机械设计师', '航拍摄影师'], reason: '三维空间感知与结构理解力强', matchScore: 88 },
+    { field: '游戏开发', roles: ['3D建模师', '游戏策划', 'VR开发者'], reason: '虚拟空间构建能力突出', matchScore: 85 },
+  ],
+  bodily: [
+    { field: '体育竞技', roles: ['职业运动员', '健身教练', '瑜伽导师', '舞蹈家'], reason: '身体控制力和协调性极佳', matchScore: 95 },
+    { field: '表演艺术', roles: ['演员', '特技演员', '舞台表演者'], reason: '肢体表达力强，情感传递精准', matchScore: 90 },
+    { field: '手工技艺', roles: ['外科医生', '手工艺人', '厨师', '技师'], reason: '精细动作控制能力优秀', matchScore: 85 },
+  ],
+  musical: [
+    { field: '音乐创作', roles: ['作曲家', '音乐制作人', '编曲', 'DJ'], reason: '旋律感知和创作力强', matchScore: 95 },
+    { field: '演奏表演', roles: ['乐器演奏家', '歌手', '乐队成员'], reason: '乐器操控和声音表现力突出', matchScore: 92 },
+    { field: '声音相关', roles: ['配音演员', '音频工程师', '声乐教师'], reason: '对音色、音高、节奏的敏感度高', matchScore: 88 },
+  ],
+  interpersonal: [
+    { field: '商业管理', roles: ['企业家', '销售总监', '市场负责人', 'HR'], reason: '识人用人、资源整合能力强', matchScore: 95 },
+    { field: '教育咨询', roles: ['心理咨询师', '教练', '教师', '培训师'], reason: '善于理解他人需求、激励他人', matchScore: 92 },
+    { field: '社会服务', roles: ['社会工作者', 'HR', '客户关系', '公关'], reason: '同理心强，擅长协调关系', matchScore: 88 },
+  ],
+  intrapersonal: [
+    { field: '学术研究', roles: ['学者', '研究员', '哲学家', '理论物理学家'], reason: '独立思考、深度钻研能力强', matchScore: 95 },
+    { field: '心理疗愈', roles: ['心理咨询师', '冥想导师', '生涯规划师'], reason: '自我觉察深刻，善于引导他人内省', matchScore: 92 },
+    { field: '独立创作', roles: ['独立作家', '艺术家', '自由职业者', '投资家'], reason: '享受独处，内在驱动力强', matchScore: 90 },
+  ],
+  naturalist: [
+    { field: '生命科学', roles: ['生物学家', '生态学家', '植物学家', '动物行为学家'], reason: '对自然生命系统的观察力敏锐', matchScore: 95 },
+    { field: '农业环保', roles: ['农艺师', '园艺师', '环保工程师', '林业专家'], reason: '亲近自然，善于与生态系统互动', matchScore: 90 },
+    { field: '自然教育', roles: ['自然导览', '科学教育者', '博物馆策展人'], reason: '善于发现和讲解自然之美', matchScore: 85 },
+  ],
+}
+
+// ===== 组合天赋 → 跨界职业建议 =====
+const COMBO_CAREERS: Record<string, { field: string; roles: string[]; reason: string }[]> = {
+  'linguistic+interpersonal': [
+    { field: '品牌公关', roles: ['品牌经理', '公关总监', '社群运营'], reason: '语言+人际 = 说服力MAX' },
+    { field: '教育培训', roles: ['企业培训师', '知识付费讲师'], reason: '既会讲又懂人' },
+  ],
+  'logical+spatial': [
+    { field: '数据可视化', roles: ['数据可视化专家', 'BI分析师', '信息设计师'], reason: '逻辑+空间 = 用图形讲数据' },
+    { field: '工业设计', roles: ['工业设计师', '产品设计师'], reason: '理性结构与美感并重' },
+  ],
+  'musical+linguistic': [
+    { field: '歌词创作', roles: ['作词人', '音乐评论', '播客主持人'], reason: '文字+旋律双通道输出' },
+  ],
+  'bodily+interpersonal': [
+    { field: '体育教练', roles: ['运动教练', '体能训练师', '团队拓展教练'], reason: '身体+人际 = 带团队做运动' },
+  ],
+  'intrapersonal+logical': [
+    { field: '战略咨询', roles: ['战略顾问', '管理咨询师', '研究员'], reason: '内省+逻辑 = 深度洞察与系统分析' },
+  ],
+  'naturalist+spatial': [
+    { field: '景观设计', roles: ['景观设计师', '生态设计师', '园林规划师'], reason: '自然+空间 = 打造生态空间' },
+  ],
+}
+
+// ===== 核心计算函数 =====
+export function analyzeTalent(
+  bazi: {
+    pillars: { name: string; gan: string; zhi: string }[]
+    dayMaster: string
+    wuXingFullCount: Record<string, number>
+    tenGods: Record<string, string>
+    cangGanDetail?: { name: string; zhi: string; cangGan: { gan: string; qi: string; wuXing: string; shiShen: string }[] }[]
+    bodyStrength?: any
+    pattern?: any
+  }
+): TalentResult {
+  const { pillars, dayMaster, wuXingFullCount, tenGods, cangGanDetail } = bazi
+
+  // 基础得分（所有维度0-100）
+  const scores: Record<string, number> = {
+    linguistic: 40, logical: 40, spatial: 40, bodily: 40,
+    musical: 40, interpersonal: 40, intrapersonal: 40, naturalist: 40,
+  }
+
+  // 1. 五行能量加权（天干+所有藏干统计）
+  const totalWX = Object.values(wuXingFullCount).reduce((a, b) => a + b, 0) || 1
+  Object.entries(wuXingFullCount).forEach(([wx, count]) => {
+    const ratio = count / totalWX  // 该五行占比
+    const weights = WX_TO_INTELLIGENCE[wx]
+    if (weights) {
+      Object.entries(weights).forEach(([intel, weight]) => {
+        scores[intel] += ratio * weight * 12  // 五行能量贡献
+      })
+    }
+  })
+
+  // 2. 十神透出加权（天干透出更明显，权重更高）
+  const ganShiShens: string[] = []
+  pillars.forEach(p => {
+    if (p.name !== '日柱') {
+      const ss = tenGods[p.gan]
+      if (ss) ganShiShens.push(ss)
+    }
+  })
+
+  ganShiShens.forEach(ss => {
+    const weights = SHI_SHEN_TO_INTELLIGENCE[ss]
+    if (weights) {
+      Object.entries(weights).forEach(([intel, weight]) => {
+        if (scores[intel] !== undefined) {
+          scores[intel] += weight * 3  // 天干透出加成
+        }
+      })
+    }
+  })
+
+  // 3. 地支藏干十神加成（潜在天赋，权重较低）
+  if (cangGanDetail) {
+    cangGanDetail.forEach(cg => {
+      cg.cangGan.forEach((item, idx) => {
+        const weights = SHI_SHEN_TO_INTELLIGENCE[item.shiShen]
+        if (weights) {
+          const multiplier = idx === 0 ? 1.5 : idx === 1 ? 1 : 0.5  // 本气>中气>余气
+          Object.entries(weights).forEach(([intel, weight]) => {
+            if (scores[intel] !== undefined) {
+              scores[intel] += weight * multiplier
+            }
+          })
+        }
+      })
+    })
+  }
+
+  // 4. 地支本身特性加成
+  pillars.forEach(p => {
+    const weights = ZHI_TO_INTELLIGENCE[p.zhi]
+    if (weights) {
+      Object.entries(weights).forEach(([intel, weight]) => {
+        if (scores[intel] !== undefined) {
+          scores[intel] += weight * 1.5
+        }
+      })
+    }
+  })
+
+  // 5. 日主天干加成（先天底色）
+  const dmBonus = DAY_MASTER_BONUS[dayMaster]
+  if (dmBonus) {
+    Object.entries(dmBonus).forEach(([intel, bonus]) => {
+      if (scores[intel] !== undefined) {
+        scores[intel] += bonus * 3
+      }
+    })
+  }
+
+  // 6. 格局加成
+  const patternType = bazi.pattern?.patternType || ''
+  const patternBonus: Record<string, Record<string, number>> = {
+    '食神': { linguistic: 3, musical: 3, interpersonal: 2 },
+    '伤官': { linguistic: 4, musical: 2, logical: 2 },
+    '正财': { interpersonal: 4, logical: 2 },
+    '偏财': { interpersonal: 4, musical: 2, naturalist: 2 },
+    '正官': { logical: 4, intrapersonal: 2, interpersonal: 2 },
+    '七杀': { logical: 3, bodily: 3, spatial: 2 },
+    '正印': { intrapersonal: 4, linguistic: 3, logical: 2 },
+    '偏印': { intrapersonal: 4, spatial: 3, logical: 2 },
+    '比肩': { bodily: 3, interpersonal: 2, naturalist: 2 },
+    '劫财': { bodily: 3, interpersonal: 3 },
+  }
+  const pb = patternBonus[patternType]
+  if (pb) {
+    Object.entries(pb).forEach(([intel, bonus]) => {
+      if (scores[intel] !== undefined) scores[intel] += bonus * 2
+    })
+  }
+
+  // 7. 日主强弱调和
+  // 身强之人：外向型智能（人际、语言、身体）+5
+  // 身弱之人：内向型智能（内省、逻辑、音乐）+5
+  if (bazi.bodyStrength?.strength === '强') {
+    scores.interpersonal += 5
+    scores.linguistic += 4
+    scores.bodily += 4
+  } else if (bazi.bodyStrength?.strength === '偏弱') {
+    scores.intrapersonal += 5
+    scores.logical += 4
+    scores.musical += 4
+  }
+
+  // 归一化到 0-100
+  Object.keys(scores).forEach(key => {
+    scores[key] = Math.min(100, Math.max(15, Math.round(scores[key])))
+  })
+
+  // 构建维度结果
+  const dimensionKeys = ['linguistic', 'logical', 'spatial', 'bodily', 'musical', 'interpersonal', 'intrapersonal', 'naturalist']
+  const dimensions: TalentDimension[] = dimensionKeys.map(key => {
+    const score = scores[key]
+    const meta = DIMENSION_META[key]
+    let level: TalentDimension['level']
+    if (score >= 80) level = '极高'
+    else if (score >= 65) level = '高'
+    else if (score >= 50) level = '中等'
+    else if (score >= 35) level = '一般'
+    else level = '较弱'
+
+    // 生成优势描述
+    const strengths = generateStrengths(key, score, bazi)
+
+    return {
+      key,
+      name: meta.name,
+      label: meta.label,
+      icon: meta.icon,
+      score,
+      level,
+      description: meta.desc,
+      strengths,
+    }
+  })
+
+  // 排序找Top3
+  const sorted = [...dimensions].sort((a, b) => b.score - a.score)
+  const top3 = sorted.slice(0, 3).map(d => d.key)
+  const dominantType = sorted[0].key
+
+  // 职业建议
+  const careerSuggestions = generateCareerSuggestions(top3, scores)
+
+  // 人生发展建议
+  const lifeAdvice = generateLifeAdvice(top3, scores, bazi)
+
+  // 天赋模式描述
+  const patternDescription = generatePatternDescription(top3, scores, bazi)
+
+  return {
+    dimensions,
+    top3,
+    dominantType,
+    careerSuggestions,
+    lifeAdvice,
+    patternDescription,
+  }
+}
+
+function generateStrengths(key: string, score: number, bazi: any): string[] {
+  const strengths: string[] = []
+  const dm = bazi.dayMaster
+  const wx = WU_XING[dm] || ''
+
+  switch (key) {
+    case 'linguistic':
+      if (score >= 70) strengths.push('文字表达流畅，善于用语言构建影响力')
+      if (['甲', '乙', '壬', '癸'].includes(dm)) strengths.push('对文字有天然的亲近感和创造力')
+      if (bazi.tenGods && (bazi.tenGods['食神'] || bazi.tenGods['伤官'])) strengths.push('食伤透出，表达欲旺盛，观点鲜明')
+      break
+    case 'logical':
+      if (score >= 70) strengths.push('推理能力强，善于从复杂信息中提炼规律')
+      if (['庚', '辛'].includes(dm)) strengths.push('金日主天生具备精准、理性的思维模式')
+      if (bazi.pattern?.patternType === '正官' || bazi.pattern?.patternType === '七杀') strengths.push('官杀格局赋予你系统性思维和规则意识')
+      break
+    case 'spatial':
+      if (score >= 70) strengths.push('空间想象力丰富，善于在脑中构建三维模型')
+      if (['壬', '癸'].includes(dm)) strengths.push('水日主天生具有流动的空间感知力')
+      break
+    case 'bodily':
+      if (score >= 70) strengths.push('身体协调性好，动作学习与模仿能力强')
+      if (['甲', '乙', '寅', '卯'].some(x => dm.includes(x) || bazi.pillars.some((p: any) => p.zhi === x))) {
+        strengths.push('木旺赋予你充沛的肢体能量和运动天赋')
+      }
+      break
+    case 'musical':
+      if (score >= 70) strengths.push('对音高、节奏、音色有敏锐的辨识力')
+      if (['丙', '丁', '壬', '癸'].includes(dm)) strengths.push('水火日主往往自带韵律感和节奏感')
+      break
+    case 'interpersonal':
+      if (score >= 70) strengths.push('察言观色能力强，善于建立和维护关系')
+      if (['丙', '丁'].includes(dm)) strengths.push('火日主天生具有感染力和亲和力')
+      if (bazi.tenGods && (bazi.tenGods['正财'] || bazi.tenGods['偏财'])) strengths.push('财星透出，懂得价值交换和关系经营')
+      break
+    case 'intrapersonal':
+      if (score >= 70) strengths.push('自我觉察深刻，善于反思和内省')
+      if (['戊', '己'].includes(dm)) strengths.push('土日主天生沉稳内敛，向内求索')
+      if (bazi.pattern?.patternType === '正印' || bazi.pattern?.patternType === '偏印') {
+        strengths.push('印格赋予你独处时的深度思考能力')
+      }
+      break
+    case 'naturalist':
+      if (score >= 70) strengths.push('对自然界的规律有敏锐的观察力')
+      if (['甲', '乙'].includes(dm)) strengths.push('木日主天生与植物、生命有深层连接')
+      break
+  }
+
+  if (strengths.length === 0) {
+    if (score >= 60) strengths.push('此维度表现良好，具备进一步开发的潜力')
+    else strengths.push('此维度相对普通，但可以通过后天训练提升')
+  }
+
+  return strengths
+}
+
+function generateCareerSuggestions(top3: string[], scores: Record<string, number>): CareerSuggestion[] {
+  const suggestions: CareerSuggestion[] = []
+  const added = new Set<string>()
+
+  // 优先取Top3维度的职业
+  top3.forEach(key => {
+    const careers = CAREER_LIBRARY[key]
+    if (careers) {
+      careers.forEach(c => {
+        if (!added.has(c.field)) {
+          added.add(c.field)
+          suggestions.push({ ...c, matchScore: Math.min(100, c.matchScore + (scores[key] - 70) * 0.5) })
+        }
+      })
+    }
+  })
+
+  // 组合职业建议（Top2组合）
+  const comboKey = `${top3[0]}+${top3[1]}`
+  const comboCareers = COMBO_CAREERS[comboKey]
+  if (comboCareers) {
+    comboCareers.forEach(c => {
+      if (!added.has(c.field)) {
+        added.add(c.field)
+        suggestions.push({ ...c, matchScore: 88 })
+      }
+    })
+  }
+
+  // 按匹配度排序，取前6个
+  return suggestions
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, 6)
+}
+
+function generateLifeAdvice(top3: string[], scores: Record<string, number>, bazi: any): string {
+  const [first, second, third] = top3
+  const weakest = Object.entries(scores).sort((a, b) => a[1] - b[1])[0][0]
+
+  const adviceParts: string[] = []
+
+  // 主导天赋建议
+  const dmAdvice: Record<string, string> = {
+    linguistic: '你的语言天赋是核心竞争力。建议多写作、多表达，不必等"准备好了"才开始——你的表达能力本身就是准备。',
+    logical: '你的逻辑天赋让你在复杂系统中游刃有余。建议深入一个技术/分析领域做深做透，成为某个细分方向的专家。',
+    spatial: '你的空间感知力是稀缺的。建议尝试设计、视觉、建筑或任何需要"看见看不见的东西"的领域。',
+    bodily: '你的身体是你最好的工具。不要浪费这份天赋，运动、表演、手工——任何需要身体参与的领域你都可能出彩。',
+    musical: '音乐是你与世界对话的方式。即使没有走专业路线，保持与音乐的连接也能持续滋养你的灵魂。',
+    interpersonal: '你的人际敏感度是财富。学会用它去连接人、整合资源，而不是仅仅消耗在维护关系上。',
+    intrapersonal: '你的内省深度是少数人才有的礼物。建议给自己留出足够的独处时间，那里才是你的能量充电站。',
+    naturalist: '你与自然的连接力在现代社会越来越稀缺。多走进自然，那份宁静和观察力会反哺你的所有其他能力。',
+  }
+
+  adviceParts.push(`**${DIMENSION_META[first].name}**（${scores[first]}分）：${dmAdvice[first]}`)
+
+  // 第二、三维度
+  if (scores[second] >= 60) {
+    adviceParts.push(`**${DIMENSION_META[second].name}**（${scores[second]}分）：这是你值得信赖的辅助优势，与主导天赋结合会形成独特的竞争力。`)
+  }
+  if (scores[third] >= 60) {
+    adviceParts.push(`**${DIMENSION_META[third].name}**（${scores[third]}分）：第三优势领域，可以作为兴趣深化或跨界融合的切入点。`)
+  }
+
+  // 弱势维度建议
+  if (scores[weakest] < 45) {
+    const weakName = DIMENSION_META[weakest].name
+    adviceParts.push(`**${weakName}**（${scores[weakest]}分）：这是你的相对短板。建议不必强求补齐，而是找到能互补的合作伙伴或工具来弥补。`)
+  }
+
+  // 通用建议
+  adviceParts.push(`**人生策略**：以${DIMENSION_META[first].label}能力为根基，以${DIMENSION_META[second].label}能力为翅膀，在需要${DIMENSION_META[third].label}的场景中寻找差异化定位。你不需要成为全能选手，只需要在"最擅长的战场"上持续积累。`)
+
+  return adviceParts.join('\n\n')
+}
+
+function generatePatternDescription(top3: string[], scores: Record<string, number>, bazi: any): string {
+  const [first, second] = top3
+  const dm = bazi.dayMaster
+  const wx = WU_XING[dm] || ''
+  const yy = bazi.yinYang || ''
+  const strength = bazi.bodyStrength?.strength || '中和'
+
+  const patterns: Record<string, string> = {
+    'linguistic+interpersonal': '「传播者型」—— 你天生适合把想法传递给更多人，语言是你的桥梁，人际是你的舞台。',
+    'linguistic+intrapersonal': '「写作者型」—— 你擅长把内心的世界用文字表达，写作、创作、深度内容是适合你的方向。',
+    'logical+spatial': '「架构师型」—— 你能在抽象逻辑和具象空间之间自由切换，适合设计、工程、数据可视化。',
+    'logical+intrapersonal': '「战略家型」—— 独立思考+逻辑推演，你适合需要深度分析和独立判断的角色。',
+    'musical+linguistic': '「韵律诗人型」—— 文字与旋律的跨界组合，歌词、朗诵、播客、声音设计都是你的舞台。',
+    'bodily+interpersonal': '「团队领袖型」—— 身体能量+人际魅力，你在团队中自带气场，适合带队冲锋。',
+    'interpersonal+intrapersonal': '「导师型」—— 既懂自己又懂他人，心理咨询、教练、教育是你天然的优势区。',
+    'naturalist+spatial': '「生态设计师型」—— 对自然与空间的综合感知，景观、生态、可持续设计是你的方向。',
+    'spatial+musical': '「视听艺术家型」—— 空间与声音的组合，影视、游戏、多媒体艺术是你的天赋区。',
+  }
+
+  const comboKey = `${first}+${second}`
+  let desc = patterns[comboKey] || `「复合型天赋」—— 你的${DIMENSION_META[first].label}与${DIMENSION_META[second].label}双高，适合跨界融合的领域，不要把自己框死在单一赛道。`
+
+  // 补充日主信息
+  desc += ` 日主${dm}（${yy}性·${wx}命，${strength}）赋予你${wx === '木' ? '生长的韧性与表达欲' : wx === '火' ? '热情的感染力与行动力' : wx === '土' ? '沉稳的内省力与包容心' : wx === '金' ? '精准的决断力与执行力' : '流动的智慧与适应力'}。`
+
+  return desc
+}
+
+// ===== 获取AI分析Prompt =====
+export function buildTalentPrompt(
+  bazi: any,
+  talentResult: TalentResult,
+  name: string,
+  gender: string,
+): string {
+  const dims = talentResult.dimensions.map(d => `${d.name}：${d.score}分（${d.level}）`).join('\n')
+  const top3 = talentResult.top3.map(k => DIMENSION_META[k].name).join('、')
+
+  return [
+    '请为以下命主的天赋分析结果进行深度解读：',
+    '',
+    '【命主信息】',
+    `- 姓名：${name || '未提供'}`,
+    `- 性别：${gender === 'male' ? '男' : '女'}`,
+    `- 日主：${bazi.dayMaster}（${bazi.yinYang}性·${bazi.wuXing}命）`,
+    `- 日主强弱：${bazi.bodyStrength?.strength || '未知'}`,
+    `- 格局：${bazi.pattern?.patternName || '未知'}`,
+    '',
+    '【多元智能评估结果】',
+    dims,
+    '',
+    `天赋模式：${talentResult.patternDescription}`,
+    '',
+    `Top3天赋维度：${top3}`,
+    '',
+    '【职业建议】',
+    talentResult.careerSuggestions.map((c, i) => `${i + 1}. ${c.field}：${c.roles.join('、')}（匹配度${Math.round(c.matchScore)}%）\n   原因：${c.reason}`).join('\n'),
+    '',
+    '请从以下维度进行深度解读：',
+    '',
+    '一、天赋模式解读',
+    `- 分析命主的Top3天赋组合意味着什么性格底色和行为模式`,
+    `- 这种天赋组合在现代社会中的竞争优势和潜在盲区`,
+    '',
+    '二、事业发展建议',
+    `- 基于天赋组合，给出3-5个最适合的职业方向（要具体、现代、可落地）`,
+    `- 每个方向给出"为什么适合你"的命理学解释`,
+    `- 给出"第一步行动建议"——如果命主现在想开始，具体做什么`,
+    '',
+    '三、学习与成长策略',
+    `- 基于天赋短板，给出"不必补短板，要搭伙伴"的具体建议`,
+    `- 给出持续提升Top3天赋的具体方法`,
+    '',
+    '四、人际关系建议',
+    `- 这种天赋模式的人在团队中适合什么角色`,
+    `- 与什么天赋类型的人合作最互补`,
+    '',
+    '五、人生发展路线图',
+    `- 短期（1-3年）：聚焦哪个天赋，做什么具体积累`,
+    `- 中期（3-10年）：天赋组合如何形成职业护城河`,
+    `- 长期：天赋驱动的人生意义建议`,
+    '',
+    '分析要求：',
+    '- 用现代职业发展语言解读，结合当下热门行业（AI、自媒体、跨境电商、知识付费等）',
+    '- 语气温暖、有启发性，像一位了解命理的职业导师',
+    '- 不要恐吓，不要宿命论，强调天赋是起点，努力是放大器',
+    '- 总字数控制在1200-1800字',
+    '- 结构清晰，使用Markdown小标题',
+  ].join('\n')
+}
+
+export async function getTalentAiAnalysis(
+  bazi: any,
+  talentResult: TalentResult,
+  name: string,
+  gender: string,
+): Promise<string> {
+  try {
+    const prompt = buildTalentPrompt(bazi, talentResult, name, gender)
+    const response = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt,
+        systemPrompt: '你是一位融合命理学与职业发展的天赋分析师。你擅长把八字命理映射到现代职业场景，帮助人们发现自己的天赋优势。你说话温暖有洞察力，像一位懂命理的职业导师。',
+      }),
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      return data.content || ''
+    }
+  } catch (error) {
+    console.error('Talent AI analysis error:', error)
+  }
+
+  return ''
+}
+
+// 根据分数获取颜色（用于雷达图和UI）
+export function getScoreColor(score: number): string {
+  if (score >= 80) return '#F59E0B'  // 极高 - 金色
+  if (score >= 65) return '#10B981'  // 高 - 绿色
+  if (score >= 50) return '#3B82F6'  // 中等 - 蓝色
+  if (score >= 35) return '#6B7280'  // 一般 - 灰色
+  return '#9CA3AF'                    // 较弱 - 浅灰
+}
+
+export function getLevelFromScore(score: number): string {
+  if (score >= 80) return '极高'
+  if (score >= 65) return '高'
+  if (score >= 50) return '中等'
+  if (score >= 35) return '一般'
+  return '较弱'
+}

@@ -13,6 +13,7 @@ export interface TalentDimension {
   level: '极高' | '高' | '中等' | '一般' | '较弱'
   description: string
   strengths: string[]
+  dailySigns: string[]  // 日常行为对照
 }
 
 export interface TalentResult {
@@ -161,15 +162,15 @@ const ZHI_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
 }
 
 // ===== 智能维度元数据 =====
-const DIMENSION_META: Record<string, { name: string; label: string; icon: string; desc: string }> = {
-  linguistic:     { name: '语言智能',     label: '语言',     icon: '🗣️', desc: '对文字、语言敏感，擅长表达、写作、沟通、演讲' },
-  logical:        { name: '逻辑数学智能', label: '逻辑数学', icon: '🧮', desc: '逻辑推理能力强，擅长数学、分析、编程、科学研究' },
-  spatial:        { name: '空间智能',     label: '空间',     icon: '🎯', desc: '空间感知敏锐，擅长设计、建筑、绘画、导航、三维思维' },
-  bodily:         { name: '身体动觉智能', label: '身体动觉', icon: '⚡', desc: '身体协调性好，擅长运动、表演、手工、舞蹈、肢体表达' },
-  musical:        { name: '音乐智能',     label: '音乐',     icon: '🎵', desc: '对音律敏感，擅长音乐创作、演奏、歌唱、声音辨识' },
-  interpersonal:  { name: '人际智能',     label: '人际',     icon: '🤝', desc: '善于理解他人，擅长社交、领导、教育、咨询、团队协作' },
-  intrapersonal:  { name: '自省智能',     label: '自省',     icon: '🧘', desc: '自我觉察深刻，擅长反思、哲学、心理学、独立研究' },
-  naturalist:     { name: '自然智能',     label: '自然',     icon: '🌿', desc: '亲近自然，擅长观察、分类、生物学、农业、生态保护' },
+const DIMENSION_META: Record<string, { name: string; label: string; icon: string; desc: string; dailySigns: string[] }> = {
+  linguistic:     { name: '语言智能',     label: '语言',     icon: '🗣️', desc: '对文字和语言高度敏感，擅长表达、写作、沟通与说服。这类人往往是朋友圈里"最会接话"的人。', dailySigns: ['喜欢阅读，能轻松记住新词和名字','喜欢文字游戏、双关语、绕口令','写作文或发朋友圈比其他人更顺手','擅长把复杂概念讲成大白话'] },
+  logical:        { name: '逻辑数学智能', label: '逻辑数学', icon: '🧮', desc: '逻辑推理清晰，擅长找规律、做分析、拆解系统。遇到问题时，第一反应是"先理清楚因果关系"。', dailySigns: ['喜欢问"为什么"，对因果关系着迷','擅长策略类游戏（象棋、围棋、数独）','看到数据就想分析、找规律','做事喜欢列步骤、做流程图'] },
+  spatial:        { name: '空间智能',     label: '空间',     icon: '🎯', desc: '脑中能清晰构建三维画面，对颜色、形状、空间位置敏感。看地图比看文字更舒服，迷路概率较低。', dailySigns: ['脑中能"看见"画面，比如回忆房间布局','喜欢看地图、建筑图纸、室内设计','对色彩、穿搭、视觉效果有直觉判断','玩拼图、乐高、迷宫类游戏很顺手'] },
+  bodily:         { name: '身体动觉智能', label: '身体动觉', icon: '⚡', desc: '身体协调性好，动作学习与模仿能力强。闲不住，通过"动起来"来思考和学习。', dailySigns: ['喜欢运动、舞蹈、手工、拆装东西','学新动作时看一遍就能模仿','聊天时喜欢用手势辅助表达','坐着开会容易走神，走动时思路更活跃'] },
+  musical:        { name: '音乐智能',     label: '音乐',     icon: '🎵', desc: '对音律、节奏、音色敏感。听几遍歌就能哼出旋律，能分辨出不同乐器的声音。', dailySigns: ['听几遍歌就能记住旋律和节奏','走路、工作时无意识打拍子或哼歌','能分辨出音高差异和不同乐器音色','喜欢音乐，对声音环境很敏感'] },
+  interpersonal:  { name: '人际智能',     label: '人际',     icon: '🤝', desc: '善于察言观色，能敏锐感知他人情绪和需求。在人群中如鱼得水，是天然的"气氛调节者"。', dailySigns: ['能敏锐察觉别人的情绪变化','喜欢组织活动、召集朋友聚会','擅长调解矛盾、撮合合作','聊天时能让对方感到被理解和重视'] },
+  intrapersonal:  { name: '自省智能',     label: '自省',     icon: '🧘', desc: '自我觉察深刻，喜欢独处和思考。对自己想要什么、不想要什么，有清晰的内在坐标。', dailySigns: ['喜欢独处、写日记或反思复盘','对自己优缺点有清醒认知','做决定时先问"这是我真正想要的吗"','能从过去的成功和失败中总结经验'] },
+  naturalist:     { name: '自然智能',     label: '自然',     icon: '🌿', desc: '对自然界的规律和生命现象敏感。喜欢动植物、观察环境变化，能从大自然中获得能量。', dailySigns: ['喜欢养植物、宠物，或观察昆虫鸟类','能注意到季节、天气的细微变化','在户外（公园、山林、海边）感到放松和充电','对生物、地理、天文等自然知识感兴趣'] },
 }
 
 // ===== 职业建议库 =====
@@ -256,8 +257,8 @@ export function analyzeTalent(
 
   // 基础得分（所有维度0-100）
   const scores: Record<string, number> = {
-    linguistic: 40, logical: 40, spatial: 40, bodily: 40,
-    musical: 40, interpersonal: 40, intrapersonal: 40, naturalist: 40,
+    linguistic: 20, logical: 20, spatial: 20, bodily: 20,
+    musical: 20, interpersonal: 20, intrapersonal: 20, naturalist: 20,
   }
 
   // 1. 五行能量加权（天干+所有藏干统计）
@@ -267,7 +268,7 @@ export function analyzeTalent(
     const weights = WX_TO_INTELLIGENCE[wx]
     if (weights) {
       Object.entries(weights).forEach(([intel, weight]) => {
-        scores[intel] += ratio * weight * 12  // 五行能量贡献
+        scores[intel] += ratio * weight * 6  // 五行能量贡献（降低系数避免爆表）
       })
     }
   })
@@ -286,7 +287,7 @@ export function analyzeTalent(
     if (weights) {
       Object.entries(weights).forEach(([intel, weight]) => {
         if (scores[intel] !== undefined) {
-          scores[intel] += weight * 3  // 天干透出加成
+          scores[intel] += weight * 1.5  // 天干透出加成（降低）
         }
       })
     }
@@ -298,7 +299,7 @@ export function analyzeTalent(
       cg.cangGan.forEach((item, idx) => {
         const weights = SHI_SHEN_TO_INTELLIGENCE[item.shiShen]
         if (weights) {
-          const multiplier = idx === 0 ? 1.5 : idx === 1 ? 1 : 0.5  // 本气>中气>余气
+          const multiplier = idx === 0 ? 1.0 : idx === 1 ? 0.6 : 0.3  // 本气>中气>余气（降低）
           Object.entries(weights).forEach(([intel, weight]) => {
             if (scores[intel] !== undefined) {
               scores[intel] += weight * multiplier
@@ -315,7 +316,7 @@ export function analyzeTalent(
     if (weights) {
       Object.entries(weights).forEach(([intel, weight]) => {
         if (scores[intel] !== undefined) {
-          scores[intel] += weight * 1.5
+          scores[intel] += weight * 0.8  // 降低
         }
       })
     }
@@ -326,7 +327,7 @@ export function analyzeTalent(
   if (dmBonus) {
     Object.entries(dmBonus).forEach(([intel, bonus]) => {
       if (scores[intel] !== undefined) {
-        scores[intel] += bonus * 3
+        scores[intel] += bonus * 1.5  // 降低
       }
     })
   }
@@ -348,27 +349,43 @@ export function analyzeTalent(
   const pb = patternBonus[patternType]
   if (pb) {
     Object.entries(pb).forEach(([intel, bonus]) => {
-      if (scores[intel] !== undefined) scores[intel] += bonus * 2
+      if (scores[intel] !== undefined) scores[intel] += bonus * 1  // 降低
     })
   }
 
   // 7. 日主强弱调和
-  // 身强之人：外向型智能（人际、语言、身体）+5
-  // 身弱之人：内向型智能（内省、逻辑、音乐）+5
+  // 身强之人：外向型智能（人际、语言、身体）+3
+  // 身弱之人：内向型智能（内省、逻辑、音乐）+3
   if (bazi.bodyStrength?.strength === '强') {
-    scores.interpersonal += 5
-    scores.linguistic += 4
-    scores.bodily += 4
+    scores.interpersonal += 3
+    scores.linguistic += 2
+    scores.bodily += 2
   } else if (bazi.bodyStrength?.strength === '偏弱') {
-    scores.intrapersonal += 5
-    scores.logical += 4
-    scores.musical += 4
+    scores.intrapersonal += 3
+    scores.logical += 2
+    scores.musical += 2
   }
 
-  // 归一化到 0-100
-  Object.keys(scores).forEach(key => {
-    scores[key] = Math.min(100, Math.max(15, Math.round(scores[key])))
-  })
+  // 8. 归一化：确保分数有合理分布（30-90），避免全部爆表或过于集中
+  const allScores = Object.values(scores)
+  const maxScore = Math.max(...allScores)
+  const minScore = Math.min(...allScores)
+  const scoreRange = maxScore - minScore
+
+  // 如果最高分超过90或分数差异太小（<20），做归一化映射
+  if (maxScore > 90 || scoreRange < 20) {
+    const targetMin = 28
+    const targetMax = 88
+    Object.keys(scores).forEach(key => {
+      const normalized = targetMin + (scores[key] - minScore) / scoreRange * (targetMax - targetMin)
+      scores[key] = Math.round(normalized)
+    })
+  } else {
+    // 正常范围，只做封顶保底
+    Object.keys(scores).forEach(key => {
+      scores[key] = Math.min(92, Math.max(18, Math.round(scores[key])))
+    })
+  }
 
   // 构建维度结果
   const dimensionKeys = ['linguistic', 'logical', 'spatial', 'bodily', 'musical', 'interpersonal', 'intrapersonal', 'naturalist']
@@ -394,6 +411,7 @@ export function analyzeTalent(
       level,
       description: meta.desc,
       strengths,
+      dailySigns: meta.dailySigns,
     }
   })
 
@@ -424,47 +442,46 @@ export function analyzeTalent(
 function generateStrengths(key: string, score: number, bazi: any): string[] {
   const strengths: string[] = []
   const dm = bazi.dayMaster
-  const wx = WU_XING[dm] || ''
 
   switch (key) {
     case 'linguistic':
-      if (score >= 70) strengths.push('文字表达流畅，善于用语言构建影响力')
-      if (['甲', '乙', '壬', '癸'].includes(dm)) strengths.push('对文字有天然的亲近感和创造力')
-      if (bazi.tenGods && (bazi.tenGods['食神'] || bazi.tenGods['伤官'])) strengths.push('食伤透出，表达欲旺盛，观点鲜明')
+      if (score >= 70) strengths.push('你是朋友圈里的"接话王"，表达欲和说服力都很强')
+      if (['甲', '乙', '壬', '癸'].includes(dm)) strengths.push('对文字有天然的亲近感，写作和表达像呼吸一样自然')
+      if (bazi.tenGods && (bazi.tenGods['食神'] || bazi.tenGods['伤官'])) strengths.push('食伤透出，观点鲜明，不喜欢被堵住嘴')
       break
     case 'logical':
-      if (score >= 70) strengths.push('推理能力强，善于从复杂信息中提炼规律')
-      if (['庚', '辛'].includes(dm)) strengths.push('金日主天生具备精准、理性的思维模式')
+      if (score >= 70) strengths.push('遇到问题时先拆解再找规律，逻辑链条很清晰')
+      if (['庚', '辛'].includes(dm)) strengths.push('金日主自带精准理性的思维底色，做事讲究章法')
       if (bazi.pattern?.patternType === '正官' || bazi.pattern?.patternType === '七杀') strengths.push('官杀格局赋予你系统性思维和规则意识')
       break
     case 'spatial':
-      if (score >= 70) strengths.push('空间想象力丰富，善于在脑中构建三维模型')
-      if (['壬', '癸'].includes(dm)) strengths.push('水日主天生具有流动的空间感知力')
+      if (score >= 70) strengths.push('脑中能"看见"三维画面，空间想象力是你的隐性优势')
+      if (['壬', '癸'].includes(dm)) strengths.push('水日主天生具有流动的空间感知力，对方向和环境变化敏感')
       break
     case 'bodily':
-      if (score >= 70) strengths.push('身体协调性好，动作学习与模仿能力强')
+      if (score >= 70) strengths.push('身体协调性很好，动作学习和模仿能力突出')
       if (['甲', '乙', '寅', '卯'].some(x => dm.includes(x) || bazi.pillars.some((p: any) => p.zhi === x))) {
-        strengths.push('木旺赋予你充沛的肢体能量和运动天赋')
+        strengths.push('木旺赋予你充沛的肢体能量，动起来比坐着更舒服')
       }
       break
     case 'musical':
-      if (score >= 70) strengths.push('对音高、节奏、音色有敏锐的辨识力')
+      if (score >= 70) strengths.push('对音高、节奏、音色有敏锐辨识力，音乐是你与世界对话的通道')
       if (['丙', '丁', '壬', '癸'].includes(dm)) strengths.push('水火日主往往自带韵律感和节奏感')
       break
     case 'interpersonal':
-      if (score >= 70) strengths.push('察言观色能力强，善于建立和维护关系')
-      if (['丙', '丁'].includes(dm)) strengths.push('火日主天生具有感染力和亲和力')
+      if (score >= 70) strengths.push('察言观色能力强，在人群中如鱼得水，天生的"气氛调节者"')
+      if (['丙', '丁'].includes(dm)) strengths.push('火日主天生具有感染力和亲和力，社交场合自带光环')
       if (bazi.tenGods && (bazi.tenGods['正财'] || bazi.tenGods['偏财'])) strengths.push('财星透出，懂得价值交换和关系经营')
       break
     case 'intrapersonal':
-      if (score >= 70) strengths.push('自我觉察深刻，善于反思和内省')
-      if (['戊', '己'].includes(dm)) strengths.push('土日主天生沉稳内敛，向内求索')
+      if (score >= 70) strengths.push('自我觉察深刻，独处时反而最清醒，内心世界很丰富')
+      if (['戊', '己'].includes(dm)) strengths.push('土日主天生沉稳内敛，向内求索是你的本能')
       if (bazi.pattern?.patternType === '正印' || bazi.pattern?.patternType === '偏印') {
         strengths.push('印格赋予你独处时的深度思考能力')
       }
       break
     case 'naturalist':
-      if (score >= 70) strengths.push('对自然界的规律有敏锐的观察力')
+      if (score >= 70) strengths.push('对自然界的规律有敏锐观察力，亲近自然会让你充满能量')
       if (['甲', '乙'].includes(dm)) strengths.push('木日主天生与植物、生命有深层连接')
       break
   }

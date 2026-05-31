@@ -484,6 +484,19 @@ export default function TalentPage() {
 
                     <p className="text-sm text-white/50 mb-3">{dim.description}</p>
 
+                    {/* 日常表现对照 */}
+                    <div className="bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 mb-3">
+                      <p className="text-xs text-fate-400/80 mb-1.5 font-medium">✨ 日常表现对照</p>
+                      <div className="space-y-1">
+                        {dim.dailySigns.map((s: string, idx: number) => (
+                          <div key={idx} className="flex items-start gap-2 text-sm">
+                            <span className="text-white/25 mt-0.5 text-[10px]">○</span>
+                            <span className="text-white/55 text-sm">{s}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* 优势列表 */}
                     <div className="space-y-1.5">
                       {dim.strengths.map((s, idx) => (

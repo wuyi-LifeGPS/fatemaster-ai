@@ -175,32 +175,36 @@ export default function TalentRadar({ data, size = 320 }: TalentRadarProps) {
 
         {/* 维度标签 */}
         {data.map((d, i) => {
-          const lp = getLabelPoint(i, radius + 28)
+          const lp = getLabelPoint(i, radius + 32)
           const isTop = i === 0
           const isBottom = i === 4
+          const icon = getIconForLabel(d.label)
+          const dyText = isTop ? -10 : isBottom ? 18 : 4
+          const dyIcon = isTop ? -26 : isBottom ? 2 : -12
           return (
             <g key={`label-${i}`}>
+              {/* 图标 */}
               <text
                 x={lp.x}
-                y={lp.y}
+                y={lp.y + dyIcon}
                 textAnchor="middle"
-                dominantBaseline={isTop ? 'auto' : isBottom ? 'hanging' : 'middle'}
-                fill="rgba(255,255,255,0.7)"
-                fontSize="13"
+                dominantBaseline="middle"
+                fontSize="15"
+              >
+                {icon}
+              </text>
+              {/* 文字 */}
+              <text
+                x={lp.x}
+                y={lp.y + dyText}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill="rgba(255,255,255,0.75)"
+                fontSize="12"
                 fontWeight="500"
                 fontFamily="system-ui, sans-serif"
               >
                 {d.label}
-              </text>
-              {/* 图标 */}
-              <text
-                x={lp.x}
-                y={lp.y + (isTop ? -16 : isBottom ? 20 : 0)}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize="14"
-              >
-                {getIconForLabel(d.label)}
               </text>
             </g>
           )

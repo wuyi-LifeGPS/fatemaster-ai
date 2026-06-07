@@ -1,6 +1,6 @@
 'use client'
 
-import { getLunarMonthOptions } from '@/lib/lunar'
+import { getLunarMonthOptions, getSolarDaysInMonth, getLunarDaysInMonth } from '@/lib/lunar'
 
 export interface PersonFormData {
   name: string
@@ -14,10 +14,16 @@ export interface PersonFormData {
 }
 
 const yearOptions = Array.from({ length: 131 }, (_, i) => 1900 + i)
-const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
 const hourOptions = Array.from({ length: 24 }, (_, i) => i)
 const minuteOptions = Array.from({ length: 12 }, (_, i) => i * 5)
 const pad = (n: number) => String(n).padStart(2, '0')
+
+function getDaysInMonth(form: PersonFormData): number {
+  if (form.calendarType === 'lunar') {
+    return getLunarDaysInMonth(form.birthYear, form.birthMonth, form.lunarIsLeap)
+  }
+  return getSolarDaysInMonth(form.birthYear, form.birthMonth)
+}
 
 interface Props {
   form: PersonFormData
@@ -68,7 +74,13 @@ export default function PersonFormSelector({ form, setForm }: Props) {
           </button>
         </div>
         <div className="flex gap-2">
-          <select value={form.birthYear} onChange={(e) => setForm({ ...form, birthYear: Number(e.target.value) })} className="flex-1 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm">
+          <select value={form.birthYear} onChange={(e) => {
+            const year = Number(e.target.value)
+            const maxDay = form.calendarType === 'lunar'
+              ? getLunarDaysInMonth(year, form.birthMonth, form.lunarIsLeap)
+              : getSolarDaysInMonth(year, form.birthMonth)
+            setForm({ ...form, birthYear: year, birthDay: Math.min(form.birthDay, maxDay) })
+          }} className="flex-1 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm">
             {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
           </select>
           <select
@@ -77,7 +89,10 @@ export default function PersonFormSelector({ form, setForm }: Props) {
               const val = e.target.value
               const isLeap = val.startsWith('leap-')
               const month = Number(isLeap ? val.replace('leap-', '') : val)
-              setForm({ ...form, birthMonth: month, lunarIsLeap: isLeap })
+              const maxDay = form.calendarType === 'lunar'
+                ? getLunarDaysInMonth(form.birthYear, month, isLeap)
+                : getSolarDaysInMonth(form.birthYear, month)
+              setForm({ ...form, birthMonth: month, lunarIsLeap: isLeap, birthDay: Math.min(form.birthDay, maxDay) })
             }}
             className="w-28 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm"
           >
@@ -88,7 +103,7 @@ export default function PersonFormSelector({ form, setForm }: Props) {
             ))}
           </select>
           <select value={form.birthDay} onChange={(e) => setForm({ ...form, birthDay: Number(e.target.value) })} className="w-20 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm">
-            {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
+            {Array.from({ length: getDaysInMonth(form) }, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}日</option>)}
           </select>
         </div>
       </div>

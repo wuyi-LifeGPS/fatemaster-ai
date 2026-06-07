@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { analyzeBazi } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
-import { analyzeTalent, type TalentResult, getTalentAiAnalysis, getScoreColor, type SelfTestResult, SELF_TEST_QUESTIONS, calculateSelfTestCalibration } from '@/lib/talent'
+import { analyzeTalent, type TalentResult, getTalentAiAnalysis, getScoreColor } from '@/lib/talent'
 import TalentRadar from '@/components/TalentRadar'
 
 interface FormData {
@@ -31,9 +31,6 @@ export default function TalentPage() {
   const [aiAnalysis, setAiAnalysis] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
   const [solarBirthDate, setSolarBirthDate] = useState('')
-  // 自测相关状态
-  const [selfTestAnswers, setSelfTestAnswers] = useState<Record<string, number>>({})
-  const [showSelfTest, setShowSelfTest] = useState(false)
   const [formData, setFormData] = useState<FormData>({
     name: '',
     gender: 'male',
@@ -93,9 +90,8 @@ export default function TalentPage() {
       const bazi = analyzeBazi(birthDate, birthTime, formData.name, formData.gender, formData.note)
       setBaziResult(bazi)
 
-      // 计算天赋（带自测校准）
-      const selfTestCalibration = calculateSelfTestCalibration(selfTestAnswers)
-      const talent = analyzeTalent(bazi, selfTestCalibration)
+      // 计算天赋
+      const talent = analyzeTalent(bazi, formData.gender)
       setResult(talent)
 
       // 保存历史
@@ -322,75 +318,6 @@ export default function TalentPage() {
                 />
               </div>
 
-              {/* 自测校准 */}
-              <div className="mb-4">
-                <button
-                  type="button"
-                  onClick={() => setShowSelfTest(!showSelfTest)}
-                  className="flex items-center gap-2 text-sm text-white/40 hover:text-white/70 transition-colors"
-                >
-                  <span>🎯</span>
-                  <span>快速自测校准（可选）</span>
-                  <span>{showSelfTest ? '▲' : '▼'}</span>
-                  {Object.keys(selfTestAnswers).length > 0 && (
-                    <span className="text-xs text-fate-400">已选 {Object.values(selfTestAnswers).reduce((a,b) => a+b, 0)} 项</span>
-                  )}
-                </button>
-                {showSelfTest && (
-                  <div className="mt-3 bg-white/[0.03] border border-white/10 rounded-lg p-4">
-                    <p className="text-xs text-white/40 mb-3">
-                      勾选符合你日常表现的选项，算法会结合你的体感进行校准。不勾选则完全按八字推算。
-                    </p>
-                    {['linguistic','logical','spatial','bodily','musical','interpersonal','intrapersonal','naturalist'].map(dim => {
-                      const questions = SELF_TEST_QUESTIONS.filter(q => q.dimension === dim)
-                      const meta = {
-                        linguistic: { name: '语言', icon: '🗣️' },
-                        logical: { name: '逻辑', icon: '🧮' },
-                        spatial: { name: '空间', icon: '🎯' },
-                        bodily: { name: '动觉', icon: '⚡' },
-                        musical: { name: '音乐', icon: '🎵' },
-                        interpersonal: { name: '人际', icon: '🤝' },
-                        intrapersonal: { name: '自省', icon: '🧘' },
-                        naturalist: { name: '自然', icon: '🌿' },
-                      }[dim]
-                      return (
-                        <div key={dim} className="mb-3 last:mb-0">
-                          <div className="flex items-center gap-1.5 mb-1.5">
-                            <span className="text-sm">{meta?.icon}</span>
-                            <span className="text-sm font-medium text-white/60">{meta?.name}</span>
-                          </div>
-                          <div className="space-y-1.5 ml-5">
-                            {questions.map((q, idx) => {
-                              const key = `${dim}-${idx}`
-                              const checked = (selfTestAnswers[dim] || 0) > idx
-                              return (
-                                <label key={key} className="flex items-start gap-2 cursor-pointer group">
-                                  <input
-                                    type="checkbox"
-                                    checked={checked}
-                                    onChange={(e) => {
-                                      const current = selfTestAnswers[dim] || 0
-                                      const newCount = e.target.checked
-                                        ? Math.max(current, idx + 1)
-                                        : (idx === 0 ? 0 : current)
-                                      setSelfTestAnswers({ ...selfTestAnswers, [dim]: newCount })
-                                    }}
-                                    className="mt-0.5 accent-fate-500 w-3.5 h-3.5"
-                                  />
-                                  <span className={`text-sm leading-snug ${checked ? 'text-white/70' : 'text-white/40 group-hover:text-white/60'}`}>
-                                    {q.text}
-                                  </span>
-                                </label>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
-
               <button
                 type="submit"
                 disabled={loading}
@@ -496,11 +423,6 @@ export default function TalentPage() {
             <div className="bg-white/[0.03] border border-white/10 rounded-xl p-6">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xl font-bold font-serif text-white">🔮 天赋模式</h3>
-                {result.selfTestApplied && (
-                  <span className="text-xs bg-fate-400/15 text-fate-400 border border-fate-400/20 px-2 py-0.5 rounded-full">
-                    已校准
-                  </span>
-                )}
               </div>
               <p className="text-white/70 leading-relaxed mb-4">{result.patternDescription}</p>
               <div className="flex flex-wrap gap-2">

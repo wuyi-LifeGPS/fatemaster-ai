@@ -1,6 +1,21 @@
 // lib/lunar.ts — 农历公历转换工具
 import { Lunar, Solar } from 'lunar-javascript'
 
+/** 公历月份天数 */
+export function getSolarDaysInMonth(year: number, month: number): number {
+  return new Date(year, month, 0).getDate()
+}
+
+/** 农历月份天数（含闰月） */
+export function getLunarDaysInMonth(year: number, month: number, isLeap = false): number {
+  try {
+    Lunar.fromYmd(year, month, 30, isLeap)
+    return 30
+  } catch {
+    return 29
+  }
+}
+
 /**
  * 农历日期 → 公历日期
  * @param lunarYear 农历年（如 1990）

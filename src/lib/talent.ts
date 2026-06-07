@@ -108,38 +108,40 @@ const DIMENSION_CORE_MAP: Record<string, {
   },
 }
 
-// ===== 五行 → 各智能维度的基础贡献（权重微调） =====
+// ===== 五行 → 各智能维度的基础贡献（权重微调 v3.0） =====
+// 优化：降低水→语言权重（水主智≠主说），提高比劫→动觉权重
 const WX_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
   '木': {
-    linguistic: 5, logical: 3, spatial: 4, bodily: 9,     // 木主肢体 → 动觉高
-    musical: 5, interpersonal: 5, intrapersonal: 4, naturalist: 9,  // 木主自然 → 自然高
+    linguistic: 4, logical: 3, spatial: 4, bodily: 10,     // 木主肢体 → 动觉最高
+    musical: 5, interpersonal: 5, intrapersonal: 4, naturalist: 10,  // 木主自然 → 自然最高
   },
   '火': {
-    linguistic: 6, logical: 4, spatial: 7, bodily: 4,   // 火主影像 → 空间高
-    musical: 6, interpersonal: 9, intrapersonal: 5, naturalist: 4,   // 火主礼 → 人际高
+    linguistic: 5, logical: 4, spatial: 7, bodily: 4,   // 火主影像 → 空间高
+    musical: 6, interpersonal: 10, intrapersonal: 5, naturalist: 4,   // 火主礼 → 人际最高
   },
   '土': {
     linguistic: 3, logical: 5, spatial: 5, bodily: 3,
-    musical: 3, interpersonal: 6, intrapersonal: 9, naturalist: 7,    // 土主反思 → 内省高
+    musical: 3, interpersonal: 6, intrapersonal: 10, naturalist: 7,    // 土主反思 → 内省最高
   },
   '金': {
-    linguistic: 3, logical: 10, spatial: 7, bodily: 4,   // 金主精准 → 逻辑高
+    linguistic: 3, logical: 10, spatial: 7, bodily: 4,   // 金主精准 → 逻辑最高
     musical: 5, interpersonal: 3, intrapersonal: 5, naturalist: 3,
   },
   '水': {
-    linguistic: 9, logical: 5, spatial: 6, bodily: 3,    // 水主智 → 语言高
-    musical: 9, interpersonal: 5, intrapersonal: 6, naturalist: 5,     // 水主韵律 → 音乐高
+    linguistic: 6, logical: 5, spatial: 6, bodily: 3,    // 水主智 → 语言中高（但不过高）
+    musical: 8, interpersonal: 5, intrapersonal: 6, naturalist: 5,     // 水主韵律 → 音乐高
   },
 }
 
-// ===== 十神 → 各智能维度加成 =====
+// ===== 十神 → 各智能维度加成（v3.0） =====
+// 优化：降低食伤语言权重，提高比劫/七杀动觉权重
 const SHI_SHEN_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
   '食神': {
-    linguistic: 4, musical: 5, interpersonal: 2, bodily: 2,
+    linguistic: 3, musical: 4, interpersonal: 2, bodily: 2,
     logical: 1, spatial: 2, intrapersonal: 2, naturalist: 2,
   },
   '伤官': {
-    linguistic: 5, spatial: 3, interpersonal: 1,
+    linguistic: 3, spatial: 3, interpersonal: 1,
     logical: 2, musical: 2, bodily: 1, intrapersonal: 1, naturalist: 1,
   },
   '正财': {
@@ -155,7 +157,7 @@ const SHI_SHEN_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
     linguistic: 1, spatial: 1, musical: 1, bodily: 1, naturalist: 1,
   },
   '七杀': {
-    logical: 4, bodily: 5, spatial: 3, interpersonal: 2,  // 七杀主行动力 → 动觉高
+    logical: 4, bodily: 6, spatial: 3, interpersonal: 2,  // 七杀主行动力 → 动觉高
     linguistic: 1, musical: 1, intrapersonal: 2, naturalist: 2,
   },
   '正印': {
@@ -167,12 +169,44 @@ const SHI_SHEN_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
     linguistic: 2, bodily: 1, interpersonal: 1,
   },
   '比肩': {
-    bodily: 5, interpersonal: 3, naturalist: 2,  // 比肩主身体动能 → 动觉高
+    bodily: 6, interpersonal: 3, naturalist: 2,  // 比肩主身体动能 → 动觉高
     linguistic: 1, logical: 1, spatial: 1, musical: 1, intrapersonal: 1,
   },
   '劫财': {
-    bodily: 4, interpersonal: 3, logical: 2,
+    bodily: 5, interpersonal: 3, logical: 2,
     linguistic: 1, spatial: 1, musical: 1, intrapersonal: 1, naturalist: 1,
+  },
+}
+
+// ===== 性别 → 各智能维度加成（统计学微调） =====
+const GENDER_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
+  'male': {
+    bodily: 5, spatial: 3, logical: 2,
+    linguistic: 0, musical: 0, interpersonal: 0, intrapersonal: 0, naturalist: 0,
+  },
+  'female': {
+    linguistic: 3, interpersonal: 3, musical: 2, intrapersonal: 2,
+    bodily: 0, spatial: 0, logical: 0, naturalist: 0,
+  },
+}
+
+// ===== 血型 → 各智能维度加成（心理学参考微调） =====
+const BLOOD_TYPE_TO_INTELLIGENCE: Record<string, Record<string, number>> = {
+  'A': {
+    logical: 3, intrapersonal: 3, linguistic: 1,
+    bodily: 0, spatial: 0, musical: 0, interpersonal: 0, naturalist: 0,
+  },
+  'B': {
+    spatial: 3, naturalist: 3, musical: 2,
+    linguistic: 0, logical: 0, bodily: 0, interpersonal: 0, intrapersonal: 0,
+  },
+  'O': {
+    bodily: 3, interpersonal: 3, logical: 2,
+    linguistic: 0, spatial: 0, musical: 0, intrapersonal: 0, naturalist: 0,
+  },
+  'AB': {
+    linguistic: 3, musical: 3, logical: 2,
+    bodily: 0, spatial: 0, interpersonal: 0, intrapersonal: 0, naturalist: 0,
   },
 }
 
@@ -382,7 +416,8 @@ function checkHeJu(zhiList: string[]): Record<string, number> {
   return wxBoost
 }
 
-// ===== 核心计算函数 v2.0 =====
+// ===== 核心计算函数 v3.0 =====
+// 移除自测校准，加入性别/血型因子，优化映射逻辑
 export function analyzeTalent(
   bazi: {
     pillars: { name: string; gan: string; zhi: string }[]
@@ -393,7 +428,8 @@ export function analyzeTalent(
     bodyStrength?: any
     pattern?: any
   },
-  selfTest?: SelfTestResult  // 可选的自测校准
+  gender?: string,      // 'male' | 'female'
+  bloodType?: string    // 'A' | 'B' | 'O' | 'AB'
 ): TalentResult {
   const { pillars, dayMaster, wuXingFullCount, tenGods, cangGanDetail } = bazi
   const dimensionKeys = ['linguistic', 'logical', 'spatial', 'bodily', 'musical', 'interpersonal', 'intrapersonal', 'naturalist']
@@ -528,44 +564,49 @@ export function analyzeTalent(
     }
   })
 
-  // ---- 7. 日主强弱调和（微调） ----
+  // ---- 7. 日主强弱调和（加大权重） ----
   if (bazi.bodyStrength?.strength === '强') {
-    rawScores.interpersonal += 1.5
-    rawScores.linguistic += 1
-    rawScores.bodily += 1.5
+    rawScores.bodily += 4
+    rawScores.interpersonal += 3
+    rawScores.linguistic += 2
   } else if (bazi.bodyStrength?.strength === '偏弱') {
-    rawScores.intrapersonal += 1.5
-    rawScores.logical += 1
-    rawScores.musical += 1
+    rawScores.intrapersonal += 4
+    rawScores.logical += 2
+    rawScores.musical += 2
   }
 
-  // ---- 8. 自测校准（如果提供了） ----
-  let selfTestApplied = false
-  if (selfTest) {
-    selfTestApplied = true
+  // ---- 8. 性别因子加成 ----
+  if (gender && GENDER_TO_INTELLIGENCE[gender]) {
+    const genderBoost = GENDER_TO_INTELLIGENCE[gender]
     dimensionKeys.forEach(dim => {
-      const calibration = selfTest[dim as keyof SelfTestResult] || 0
-      // 校准量：每1分自测偏移 ≈ 1.5分原始分偏移
-      rawScores[dim] += calibration * 1.5
+      rawScores[dim] += (genderBoost[dim] || 0)
     })
   }
 
-  // ---- 9. 映射到 0-100 分制（线性映射，保留差异） ----
+  // ---- 9. 血型因子加成 ----
+  if (bloodType && BLOOD_TYPE_TO_INTELLIGENCE[bloodType]) {
+    const bloodBoost = BLOOD_TYPE_TO_INTELLIGENCE[bloodType]
+    dimensionKeys.forEach(dim => {
+      rawScores[dim] += (bloodBoost[dim] || 0)
+    })
+  }
+
+  // ---- 10. 映射到 0-100 分制（非线性映射，保留真实差异） ----
   // 找到原始分数的范围
   const allRaw = Object.values(rawScores)
   const maxRaw = Math.max(...allRaw)
   const minRaw = Math.min(...allRaw)
   const range = maxRaw - minRaw
 
-  // 映射参数：最低分不低于20，最高分不超过95，保留真实差异比例
-  const targetMin = 22
-  const targetMax = 92
+  // 使用更宽松的映射：最低不低于15，最高不超过95，但保留真实比例
+  const targetMin = 15
+  const targetMax = 95
 
   const scores: Record<string, number> = {}
   dimensionKeys.forEach(key => {
     if (range > 0) {
       const normalized = targetMin + (rawScores[key] - minRaw) / range * (targetMax - targetMin)
-      scores[key] = Math.round(Math.min(95, Math.max(18, normalized)))
+      scores[key] = Math.round(Math.min(95, Math.max(15, normalized)))
     } else {
       scores[key] = 50
     }
@@ -617,7 +658,7 @@ export function analyzeTalent(
     lifeAdvice,
     patternDescription,
     rawScores,
-    selfTestApplied,
+    selfTestApplied: false,
   }
 }
 
@@ -775,53 +816,61 @@ function generatePatternDescription(top3: string[], scores: Record<string, numbe
   return desc
 }
 
-// ===== 自测问卷定义 =====
+// ===== 自测问卷定义（每维度一正一负，双向校准） =====
 export interface SelfTestQuestion {
   dimension: string
+  positive: boolean  // true=正向题，false=负向题
   text: string
-  weight: number  // 该问题对维度的影响权重
+  weight: number
 }
 
 export const SELF_TEST_QUESTIONS: SelfTestQuestion[] = [
-  // 语言智能
-  { dimension: 'linguistic', text: '你喜欢阅读、写作，或经常被人夸"会说话"', weight: 3 },
-  { dimension: 'linguistic', text: '发朋友圈、写东西对你来说很轻松自然', weight: 2 },
-  // 逻辑数学
-  { dimension: 'logical', text: '你喜欢分析数据、找规律，玩策略游戏很溜', weight: 3 },
-  { dimension: 'logical', text: '遇到复杂问题时，你习惯拆解步骤再解决', weight: 2 },
-  // 空间智能
-  { dimension: 'spatial', text: '你脑中能"看见"画面，方向感不错，很少迷路', weight: 3 },
-  { dimension: 'spatial', text: '对色彩搭配、室内布置、设计图有直觉判断', weight: 2 },
-  // 身体动觉
-  { dimension: 'bodily', text: '你喜欢运动、舞蹈、手工，身体协调性好', weight: 3 },
-  { dimension: 'bodily', text: '学新动作看一遍就能模仿，动手能力强', weight: 2 },
-  // 音乐智能
-  { dimension: 'musical', text: '听几遍歌就能哼出旋律，对节奏敏感', weight: 3 },
-  { dimension: 'musical', text: '能分辨不同乐器音色，走路时经常打拍子', weight: 2 },
-  // 人际智能
-  { dimension: 'interpersonal', text: '你擅长察言观色，组织聚会、撮合合作很自然', weight: 3 },
-  { dimension: 'interpersonal', text: '聊天时能让对方感到被理解和重视', weight: 2 },
-  // 内省智能
-  { dimension: 'intrapersonal', text: '你喜欢独处思考，对自己想要什么很清晰', weight: 3 },
-  { dimension: 'intrapersonal', text: '经常复盘反思，能从失败中快速总结经验', weight: 2 },
-  // 自然智能
-  { dimension: 'naturalist', text: '你喜欢动植物，在户外感到放松充电', weight: 3 },
-  { dimension: 'naturalist', text: '能注意到季节、天气的细微变化，对自然知识感兴趣', weight: 2 },
+  // 语言
+  { dimension: 'linguistic', positive: true,  text: '你喜欢阅读、写作，或经常被人夸"会说话"', weight: 3 },
+  { dimension: 'linguistic', positive: false, text: '看大段文字容易走神，写东西觉得费劲', weight: 3 },
+  // 逻辑
+  { dimension: 'logical', positive: true,  text: '你喜欢分析数据、找规律，玩策略游戏很溜', weight: 3 },
+  { dimension: 'logical', positive: false, text: '看到数字和公式就头大，不喜欢做计划', weight: 3 },
+  // 空间
+  { dimension: 'spatial', positive: true,  text: '你脑中能"看见"画面，方向感不错，很少迷路', weight: 3 },
+  { dimension: 'spatial', positive: false, text: '经常迷路，对空间方位没什么概念', weight: 3 },
+  // 动觉
+  { dimension: 'bodily', positive: true,  text: '你喜欢运动、舞蹈、手工，身体协调性好', weight: 3 },
+  { dimension: 'bodily', positive: false, text: '你不喜欢运动，能坐着绝不站着，手脚不太灵活', weight: 3 },
+  // 音乐
+  { dimension: 'musical', positive: true,  text: '听几遍歌就能哼出旋律，对节奏敏感', weight: 3 },
+  { dimension: 'musical', positive: false, text: '唱歌跑调，对音高节奏没什么感觉', weight: 3 },
+  // 人际
+  { dimension: 'interpersonal', positive: true,  text: '你擅长察言观色，组织聚会、撮合合作很自然', weight: 3 },
+  { dimension: 'interpersonal', positive: false, text: '社交让你疲惫，不太擅长察言观色', weight: 3 },
+  // 自省
+  { dimension: 'intrapersonal', positive: true,  text: '你喜欢独处思考，对自己想要什么很清晰', weight: 3 },
+  { dimension: 'intrapersonal', positive: false, text: '你不太喜欢独处，很少反思自己', weight: 3 },
+  // 自然
+  { dimension: 'naturalist', positive: true,  text: '你喜欢动植物，在户外感到放松充电', weight: 3 },
+  { dimension: 'naturalist', positive: false, text: '你对动植物没什么兴趣，户外活动觉得无聊', weight: 3 },
 ]
 
 // ===== 根据自测答案计算校准系数 =====
-export function calculateSelfTestCalibration(answers: Record<string, number>): SelfTestResult {
-  // answers: dimension -> 该维度总勾选数（0-5）
+// 每维度：正向题勾选=加分，负向题勾选=减分，都不勾选=0
+// 校准范围：-10 ~ +10
+export function calculateSelfTestCalibration(
+  answers: Record<string, boolean>  // key: "{dimension}-{positive/negative}-{idx}" -> checked
+): SelfTestResult {
+  const dimensions = ['linguistic','logical','spatial','bodily','musical','interpersonal','intrapersonal','naturalist']
   const calibration: Record<string, number> = {}
 
-  Object.entries(answers).forEach(([dim, count]) => {
-    // 0-5 映射到 -10 ~ +10
-    // 0=没中 → -8（八字可能高估了）
-    // 5=全中 → +8（八字可能低估了）
-    calibration[dim] = (count - 2.5) * 3.2
+  dimensions.forEach(dim => {
+    const posChecked = answers[`${dim}-pos-0`] ? 1 : 0
+    const negChecked = answers[`${dim}-neg-0`] ? 1 : 0
+
+    // 正向题+1分，负向题-1分，每题最大权重3
+    const rawScore = (posChecked - negChecked) * 3
+
+    // 映射到 -10 ~ +10
+    calibration[dim] = Math.max(-10, Math.min(10, rawScore * 3))
   })
 
-  // 确保所有维度都有默认值
   const result: SelfTestResult = {
     linguistic: calibration['linguistic'] || 0,
     logical: calibration['logical'] || 0,

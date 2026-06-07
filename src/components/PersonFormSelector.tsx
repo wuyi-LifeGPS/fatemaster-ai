@@ -4,6 +4,7 @@ import { getLunarMonthOptions, getSolarDaysInMonth, getLunarDaysInMonth } from '
 
 export interface PersonFormData {
   name: string
+  gender?: 'male' | 'female'
   birthYear: number
   birthMonth: number
   birthDay: number
@@ -28,9 +29,10 @@ function getDaysInMonth(form: PersonFormData): number {
 interface Props {
   form: PersonFormData
   setForm: (f: PersonFormData) => void
+  showGender?: boolean
 }
 
-export default function PersonFormSelector({ form, setForm }: Props) {
+export default function PersonFormSelector({ form, setForm, showGender = false }: Props) {
   const monthOptions = form.calendarType === 'lunar'
     ? getLunarMonthOptions(form.birthYear)
     : Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({ value: m, label: `${m}月`, isLeap: false }))
@@ -47,6 +49,33 @@ export default function PersonFormSelector({ form, setForm }: Props) {
           className="w-full px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400"
         />
       </div>
+      {showGender && (
+        <div>
+          <label className="block text-sm font-medium mb-1">性别 *</label>
+          <div className="flex gap-4">
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                value="male"
+                checked={form.gender === 'male'}
+                onChange={() => setForm({ ...form, gender: 'male' })}
+                className="mr-2"
+              />
+              男
+            </label>
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                value="female"
+                checked={form.gender === 'female'}
+                onChange={() => setForm({ ...form, gender: 'female' })}
+                className="mr-2"
+              />
+              女
+            </label>
+          </div>
+        </div>
+      )}
       <div>
         <label className="block text-sm font-medium mb-1">出生日期 *</label>
         <div className="flex gap-1 mb-1.5 bg-fate-100 rounded-lg p-1 w-fit">

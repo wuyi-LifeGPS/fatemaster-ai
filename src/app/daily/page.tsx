@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { calculateBazi, getTodayGanZhi } from '@/lib/bazi'
 import { analyzeDailyFortune } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
-import { lunarToSolar, getLunarMonthOptions } from '@/lib/lunar'
+import { lunarToSolar } from '@/lib/lunar'
+import PersonFormSelector from '@/components/PersonFormSelector'
 
 interface FortuneResult {
   today: {
@@ -67,14 +68,6 @@ export default function DailyPage() {
     setHistory(getHistoryByType('daily'))
   }, [])
 
-  const yearOptions = Array.from({ length: 131 }, (_, i) => 1900 + i)
-  const isLunar = formData.calendarType === 'lunar'
-  const monthOptions = isLunar
-    ? getLunarMonthOptions(formData.birthYear)
-    : Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({ value: m, label: `${m}月`, isLeap: false }))
-  const dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
-  const hourOptions = Array.from({ length: 24 }, (_, i) => i)
-  const minuteOptions = Array.from({ length: 12 }, (_, i) => i * 5)
   const pad = (n: number) => String(n).padStart(2, '0')
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -187,115 +180,8 @@ export default function DailyPage() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-bold mb-6 font-serif">输入生日，查看今日运势</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">出生日期</label>
-                <div className="flex gap-1 mb-2 bg-fate-100 rounded-lg p-1 w-fit">
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, calendarType: 'solar', lunarIsLeap: false })}
-                    className={`px-3 py-1 rounded-md text-sm transition-colors ${
-                      formData.calendarType === 'solar'
-                        ? 'bg-white text-ink-800 shadow-sm'
-                        : 'text-ink-500 hover:text-ink-700'
-                    }`}
-                  >
-                    公历
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, calendarType: 'lunar' })}
-                    className={`px-3 py-1 rounded-md text-sm transition-colors ${
-                      formData.calendarType === 'lunar'
-                        ? 'bg-white text-ink-800 shadow-sm'
-                        : 'text-ink-500 hover:text-ink-700'
-                    }`}
-                  >
-                    农历
-                  </button>
-                </div>
-                <div className="flex gap-2">
-                  <select
-                    value={formData.birthYear}
-                    onChange={(e) => setFormData({ ...formData, birthYear: Number(e.target.value) })}
-                    className="flex-1 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
-                  >
-                    {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
-                  </select>
-                  <select
-                    value={`${formData.lunarIsLeap ? 'leap-' : ''}${formData.birthMonth}`}
-                    onChange={(e) => {
-                      const val = e.target.value
-                      const isLeap = val.startsWith('leap-')
-                      const month = Number(isLeap ? val.replace('leap-', '') : val)
-                      setFormData({ ...formData, birthMonth: month, lunarIsLeap: isLeap })
-                    }}
-                    className="w-28 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
-                  >
-                    {monthOptions.map(m => (
-                      <option key={`${m.isLeap ? 'leap-' : ''}${m.value}`} value={`${m.isLeap ? 'leap-' : ''}${m.value}`}>
-                        {m.label}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={formData.birthDay}
-                    onChange={(e) => setFormData({ ...formData, birthDay: Number(e.target.value) })}
-                    className="w-20 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
-                  >
-                    {dayOptions.map(d => <option key={d} value={d}>{d}日</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">出生时辰（选填）</label>
-              <div className="flex gap-2 items-center">
-                <select
-                  value={formData.birthHour}
-                  onChange={(e) => setFormData({ ...formData, birthHour: Number(e.target.value) })}
-                  className="w-24 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
-                >
-                  {hourOptions.map(h => (
-                    <option key={h} value={h}>
-                      {pad(h)}:00 ({getHourZhiName(h)})
-                    </option>
-                  ))}
-                </select>
-                <span className="text-ink-400">:</span>
-                <select
-                  value={formData.birthMinute}
-                  onChange={(e) => setFormData({ ...formData, birthMinute: Number(e.target.value) })}
-                  className="w-24 px-3 py-2 border border-fate-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-fate-400"
-                >
-                  {minuteOptions.map(m => (
-                    <option key={m} value={m}>{pad(m)}</option>
-                  ))}
-                </select>
-              </div>
-              <p className="text-xs text-ink-400 mt-1">24小时制，不确定可默认 12:00</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">性别（选填）</label>
-                <div className="flex gap-3">
-                  {[
-                    { key: 'male', label: '男' },
-                    { key: 'female', label: '女' },
-                  ].map((opt) => (
-                    <button
-                      key={opt.key}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, gender: opt.key as 'male' | 'female' })}
-                      className={`flex-1 py-2 rounded-lg border transition-colors ${
-                        formData.gender === opt.key
-                          ? 'border-fate-600 bg-fate-50 text-fate-800'
-                          : 'border-fate-200 hover:border-fate-400'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
+              <div className="mb-4">
+                <PersonFormSelector form={formData} setForm={setFormData as any} showGender={true} />
               </div>
 
               <button

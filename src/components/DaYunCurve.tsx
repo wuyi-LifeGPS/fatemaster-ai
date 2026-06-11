@@ -115,7 +115,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           x={padding.left}
           y={18}
           textAnchor="start"
-          className="text-[11px] fill-ink-400 font-bold"
+          className="text-[11px] fill-gray-500 font-bold"
         >
           人生运势起伏图
         </text>
@@ -138,7 +138,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 x={padding.left - 8}
                 y={y + 4}
                 textAnchor="end"
-                className="text-[8px] fill-ink-300"
+                className="text-[8px] fill-gray-400"
               >
                 {v}
               </text>
@@ -269,7 +269,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 x={p.x}
                 y={cardY + 32}
                 textAnchor="middle"
-                className="text-[9px] fill-ink-400"
+                className="text-[9px] fill-gray-500"
               >
                 {p.dy.startYear}-{p.dy.endYear}
               </text>
@@ -277,7 +277,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 x={p.x}
                 y={cardY + 45}
                 textAnchor="middle"
-                className="text-[9px] fill-ink-300"
+                className="text-[9px] fill-gray-400"
               >
                 {p.dy.startAge}-{p.dy.endAge}岁
               </text>
@@ -291,7 +291,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 <tspan className="fill-amber-500">
                   {starText.replace(/☆/g, '')}
                 </tspan>
-                <tspan className="fill-ink-300">
+                <tspan className="fill-gray-400">
                   {'☆'.repeat((5 - (starText.match(/★/g)?.length || 0)))}
                 </tspan>
               </text>

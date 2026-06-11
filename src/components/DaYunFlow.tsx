@@ -84,7 +84,7 @@ export default function DaYunFlow({
       case '大凶':
         return 'text-gray-600 bg-gray-100 border-gray-300'
       default:
-        return 'text-ink-500 bg-fate-50 border-fate-200'
+        return 'text-gray-500 bg-fate-50 border-fate-200'
     }
   }
 
@@ -260,7 +260,7 @@ export default function DaYunFlow({
         />
 
         {/* 图例 */}
-        <div className="flex items-center gap-4 mt-3 text-xs text-ink-400">
+        <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 rounded-full bg-red-500" />
             <span>大吉</span>
@@ -293,7 +293,7 @@ export default function DaYunFlow({
               <span className="text-sm font-bold text-fate-700">
                 {selectedDaYun.ganZhi}运
               </span>
-              <span className="text-xs text-ink-400">
+              <span className="text-xs text-gray-400">
                 {selectedDaYun.startYear}-{selectedDaYun.endYear}
               </span>
             </div>
@@ -302,7 +302,7 @@ export default function DaYunFlow({
                 className={`text-xs px-3 py-1 rounded-full transition-all ${
                   viewMode === 'simple'
                     ? 'bg-white text-fate-700 shadow-sm font-bold'
-                    : 'text-ink-400 hover:text-ink-600'
+                    : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
                 👤 简易
@@ -312,7 +312,7 @@ export default function DaYunFlow({
                 className={`text-xs px-3 py-1 rounded-full transition-all ${
                   viewMode === 'pro'
                     ? 'bg-white text-fate-700 shadow-sm font-bold'
-                    : 'text-ink-400 hover:text-ink-600'
+                    : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
                 🔮 专业
@@ -330,11 +330,11 @@ export default function DaYunFlow({
                     ? `${getDaYunStageLabel(selectedDaYun.index, selectedDaYun.fortuneLevel)}`
                     : `${selectedDaYun.ganZhi}运`}
                 </h3>
-                <span className="text-sm text-ink-400">
+                <span className="text-sm text-gray-400">
                   {selectedDaYun.startYear}-{selectedDaYun.endYear}
                 </span>
               </div>
-              <p className="text-sm text-ink-500">
+              <p className="text-sm text-gray-500">
                 第{selectedDaYun.index}步大运 · {selectedDaYun.startAge}岁起运
                 {viewMode === 'simple' && (
                   <span className="ml-2 text-fate-600">
@@ -353,20 +353,20 @@ export default function DaYunFlow({
               </div>
               <div className="flex items-center gap-1">
                 <StarRating score={selectedDaYun.score} size="sm" showLabel={false} />
-                <span className="text-xs text-ink-400">运势评分</span>
+                <span className="text-xs text-gray-400">运势评分</span>
               </div>
             </div>
           </div>
 
           {/* 大运结论一句话 */}
           <div className="bg-fate-50 border border-fate-200 rounded-lg p-4 mb-4">
-            <p className="text-sm text-ink-700 font-medium">
+            <p className="text-sm text-gray-700 font-medium">
               {viewMode === 'simple'
                 ? getDaYunHumanSummary(selectedDaYun)
                 : `此运天干${selectedDaYun.gan}为日主${dayMaster}之${selectedDaYun.shiShen}，地支${selectedDaYun.zhi}藏${selectedDaYun.keywords.slice(0, 2).join('、')}，整体${selectedDaYun.fortuneLevel}。`}
             </p>
             {viewMode === 'simple' && (
-              <p className="text-xs text-ink-500 mt-2">
+              <p className="text-xs text-gray-500 mt-2">
                 {getDaYunOneLiner(selectedDaYun)}
               </p>
             )}
@@ -390,9 +390,9 @@ export default function DaYunFlow({
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-lg">{item.icon}</span>
-                      <span className="text-xs font-bold text-ink-500">{item.title}</span>
+                      <span className="text-xs font-bold text-gray-500">{item.title}</span>
                     </div>
-                    <div className="text-sm font-medium text-ink-700">
+                    <div className="text-sm font-medium text-gray-700">
                       {advice[item.key as 'career' | 'wealth' | 'love' | 'health']}
                     </div>
                   </div>
@@ -405,22 +405,22 @@ export default function DaYunFlow({
           {viewMode === 'pro' && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
               <div className="bg-white border border-fate-200 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs text-ink-400 mb-1">大运天干</div>
+                <div className="text-xs text-gray-400 mb-1">大运天干</div>
                 <div className="text-2xl font-bold text-fate-700">{selectedDaYun.gan}</div>
-                <div className="text-xs text-ink-400 mt-1">{selectedDaYun.yinYang} · {selectedDaYun.wuXing}</div>
+                <div className="text-xs text-gray-400 mt-1">{selectedDaYun.yinYang} · {selectedDaYun.wuXing}</div>
               </div>
               <div className="bg-white border border-fate-200 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs text-ink-400 mb-1">十神关系</div>
+                <div className="text-xs text-gray-400 mb-1">十神关系</div>
                 <div className="text-lg font-bold text-fate-700">{selectedDaYun.shiShen}</div>
-                <div className="text-xs text-ink-400 mt-1">对日主{dayMaster}</div>
+                <div className="text-xs text-gray-400 mt-1">对日主{dayMaster}</div>
               </div>
               <div className="bg-white border border-fate-200 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs text-ink-400 mb-1">地支</div>
+                <div className="text-xs text-gray-400 mb-1">地支</div>
                 <div className="text-2xl font-bold text-fate-700">{selectedDaYun.zhi}</div>
-                <div className="text-xs text-ink-400 mt-1">藏干待展开</div>
+                <div className="text-xs text-gray-400 mt-1">藏干待展开</div>
               </div>
               <div className="bg-white border border-fate-200 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs text-ink-400 mb-1">运势标签</div>
+                <div className="text-xs text-gray-400 mb-1">运势标签</div>
                 <div className="flex flex-wrap gap-1 justify-center mt-1">
                   {selectedDaYun.keywords.slice(0, 2).map((k, i) => (
                     <span
@@ -454,15 +454,15 @@ export default function DaYunFlow({
           {/* AI 解读结果 */}
           {daYunAiResult[selectedDaYun.index] && (
             <div className="bg-fate-50 rounded-lg p-4 mb-4">
-              <h4 className="font-bold text-ink-700 mb-2">AI 大运深度解读</h4>
-              <div className="prose max-w-none text-sm text-ink-700 whitespace-pre-line">
+              <h4 className="font-bold text-gray-700 mb-2">AI 大运深度解读</h4>
+              <div className="prose max-w-none text-sm text-gray-700 whitespace-pre-line">
                 {daYunAiResult[selectedDaYun.index]}
               </div>
             </div>
           )}
 
           {/* 流年：默认今年+明年，可展开 */}
-          <h4 className="font-bold text-ink-700 mb-3">此运流年</h4>
+          <h4 className="font-bold text-gray-700 mb-3">此运流年</h4>
 
           {/* 优先展示今年和明年 */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-3">
@@ -485,7 +485,7 @@ export default function DaYunFlow({
                       : 'border-fate-100 hover:border-fate-300'
                   }`}
                 >
-                  <div className="text-sm font-bold text-ink-700">
+                  <div className="text-sm font-bold text-gray-700">
                     {ln.year}
                   </div>
                   <div className="text-xs text-fate-600">
@@ -544,7 +544,7 @@ export default function DaYunFlow({
             </h3>
             <button
               onClick={() => setSelectedLiuNian(null)}
-              className="text-ink-400 hover:text-ink-600 text-xl"
+              className="text-gray-400 hover:text-gray-600 text-xl"
             >
               ✕
             </button>
@@ -553,10 +553,10 @@ export default function DaYunFlow({
           {/* 人话版一句话 */}
           {viewMode === 'simple' && (
             <div className="bg-fate-50 border border-fate-200 rounded-lg p-3 mb-4">
-              <p className="text-sm font-medium text-ink-700">
+              <p className="text-sm font-medium text-gray-700">
                 {getLiuNianHumanSummary(selectedLiuNian)}
               </p>
-              <p className="text-xs text-ink-500 mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 {getLiuNianOneLiner(selectedLiuNian)}
               </p>
             </div>
@@ -564,7 +564,7 @@ export default function DaYunFlow({
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <div className="bg-fate-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-ink-500">
+              <div className="text-xs text-gray-500">
                 {viewMode === 'simple' ? '年度主题' : '流年干支'}
               </div>
               <div className="text-2xl font-bold text-fate-700">
@@ -574,7 +574,7 @@ export default function DaYunFlow({
               </div>
             </div>
             <div className="bg-fate-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-ink-500">
+              <div className="text-xs text-gray-500">
                 {viewMode === 'simple' ? '运势提示' : '十神'}
               </div>
               <div className="text-lg font-bold text-fate-700">
@@ -592,7 +592,7 @@ export default function DaYunFlow({
               </div>
             </div>
             <div className="bg-fate-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-ink-500">
+              <div className="text-xs text-gray-500">
                 {viewMode === 'simple' ? '年龄' : '五行'}
               </div>
               <div className="text-lg font-bold text-fate-700">
@@ -602,7 +602,7 @@ export default function DaYunFlow({
               </div>
             </div>
             <div className="bg-fate-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-ink-500">运势等级</div>
+              <div className="text-xs text-gray-500">运势等级</div>
               <div
                 className={`text-lg font-bold ${
                   selectedLiuNian.fortuneLevel === '大吉'
@@ -628,8 +628,8 @@ export default function DaYunFlow({
           {/* 年度主题解读（专业版才显示详细十神描述） */}
           {viewMode === 'pro' && (
             <div className="bg-fate-50 rounded-lg p-4 mb-4">
-              <h4 className="font-bold text-ink-700 mb-2">年度主题</h4>
-              <p className="text-sm text-ink-600">
+              <h4 className="font-bold text-gray-700 mb-2">年度主题</h4>
+              <p className="text-sm text-gray-600">
                 {selectedLiuNian.shiShen === '正官' &&
                   '正官流年，事业心增强，适合争取晋升、承担责任。'}
                 {selectedLiuNian.shiShen === '七杀' &&
@@ -656,7 +656,7 @@ export default function DaYunFlow({
 
           {/* 关键月份提醒 */}
           <div className="mb-4">
-            <h4 className="font-bold text-ink-700 mb-3">关键月份提醒</h4>
+            <h4 className="font-bold text-gray-700 mb-3">关键月份提醒</h4>
             <div className="space-y-2">
               {selectedLiuNian.monthHighlights.map((mh, i) => (
                 <div
@@ -675,12 +675,12 @@ export default function DaYunFlow({
                         ? 'text-green-600'
                         : mh.level === '凶'
                         ? 'text-red-600'
-                        : 'text-ink-500'
+                        : 'text-gray-500'
                     }`}
                   >
                     {mh.level === '吉' ? '✓' : mh.level === '凶' ? '⚠' : '—'}
                   </span>
-                  <span className="text-sm text-ink-700">{mh.desc}</span>
+                  <span className="text-sm text-gray-700">{mh.desc}</span>
                 </div>
               ))}
             </div>
@@ -705,8 +705,8 @@ export default function DaYunFlow({
           {/* AI 解读结果 */}
           {liuNianAiResult[selectedLiuNian.year] && (
             <div className="bg-fate-50 rounded-lg p-4">
-              <h4 className="font-bold text-ink-700 mb-2">AI 流年深度解读</h4>
-              <div className="prose max-w-none text-sm text-ink-700 whitespace-pre-line">
+              <h4 className="font-bold text-gray-700 mb-2">AI 流年深度解读</h4>
+              <div className="prose max-w-none text-sm text-gray-700 whitespace-pre-line">
                 {liuNianAiResult[selectedLiuNian.year]}
               </div>
             </div>

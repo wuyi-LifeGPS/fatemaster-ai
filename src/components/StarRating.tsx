@@ -40,11 +40,11 @@ export function StarRating({ score, size = 'md', showLabel = true }: StarRatingP
           <span key={`full-${i}`} className={`${star} text-amber-500`}>★</span>
         ))}
         {Array.from({ length: emptyStars }).map((_, i) => (
-          <span key={`empty-${i}`} className={`${star} text-ink-200`}>★</span>
+          <span key={`empty-${i}`} className={`${star} text-gray-300`}>★</span>
         ))}
       </div>
       {showLabel && (
-        <span className={`text-xs text-ink-400 ml-1`}>{label}</span>
+        <span className={`text-xs text-gray-400 ml-1`}>{label}</span>
       )}
     </div>
   )

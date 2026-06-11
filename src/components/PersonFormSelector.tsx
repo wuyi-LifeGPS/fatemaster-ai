@@ -84,8 +84,8 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
             onClick={() => setForm({ ...form, calendarType: 'solar', lunarIsLeap: false })}
             className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
               form.calendarType === 'solar'
-                ? 'bg-white text-ink-800 shadow-sm'
-                : 'text-ink-500 hover:text-ink-700'
+                ? 'bg-white text-gray-800 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
             }`}
           >
             公历
@@ -95,8 +95,8 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
             onClick={() => setForm({ ...form, calendarType: 'lunar' })}
             className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
               form.calendarType === 'lunar'
-                ? 'bg-white text-ink-800 shadow-sm'
-                : 'text-ink-500 hover:text-ink-700'
+                ? 'bg-white text-gray-800 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
             }`}
           >
             农历
@@ -142,12 +142,12 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
           <select value={form.birthHour} onChange={(e) => setForm({ ...form, birthHour: Number(e.target.value) })} className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm">
             {hourOptions.map(h => <option key={h} value={h}>{pad(h)}</option>)}
           </select>
-          <span className="text-ink-400">:</span>
+          <span className="text-gray-400">:</span>
           <select value={form.birthMinute} onChange={(e) => setForm({ ...form, birthMinute: Number(e.target.value) })} className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm">
             {minuteOptions.map(m => <option key={m} value={m}>{pad(m)}</option>)}
           </select>
         </div>
-        <p className="text-xs text-ink-400 mt-1">24小时制，不确定可默认 12:00</p>
+        <p className="text-xs text-gray-400 mt-1">24小时制，不确定可默认 12:00</p>
       </div>
     </div>
   )

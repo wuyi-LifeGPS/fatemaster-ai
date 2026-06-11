@@ -50,9 +50,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0e27]">
+    <main className="min-h-screen">
       {/* Header */}
-      <header className="bg-[#121a35] text-white py-4 px-4">
+      <header className="bg-[#0a0e27]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">
             ← AI 命理大师
@@ -70,7 +70,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <h2 className="text-xl font-bold font-serif">分析偏好</h2>
-              <p className="text-xs text-white/40">自定义命盘展示内容和分析风格</p>
+              <p className="text-xs text-gray-400">自定义命盘展示内容和分析风格</p>
             </div>
           </div>
 
@@ -89,11 +89,11 @@ export default function SettingsPage() {
                     className={`p-3 rounded-lg border text-left transition-all ${
                       settings.analysisStyle === opt.key
                         ? 'border-fate-600 bg-white text-fate-800 ring-1 ring-fate-600'
-                        : 'border-gray-200 hover:border-fate-400 hover:bg-white/50'
+                        : 'border-gray-200 hover:border-fate-400 hover:bg-gray-50'
                     }`}
                   >
                     <div className="font-medium text-sm">{opt.label}</div>
-                    <div className="text-xs text-white/40 mt-1">{opt.desc}</div>
+                    <div className="text-xs text-gray-400 mt-1">{opt.desc}</div>
                   </button>
                 ))}
               </div>
@@ -109,13 +109,13 @@ export default function SettingsPage() {
                     <span className="text-lg">{item.icon}</span>
                     <div>
                       <div className="font-medium text-sm">{item.title}</div>
-                      <div className="text-xs text-white/40">{item.desc}</div>
+                      <div className="text-xs text-gray-400">{item.desc}</div>
                     </div>
                   </div>
                   <button
                     onClick={() => update(item.key, !settings[item.key])}
                     className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
-                      settings[item.key] ? 'bg-blue-600' : 'bg-ink-200'
+                      settings[item.key] ? 'bg-blue-600' : 'bg-gray-300'
                     }`}
                   >
                     <span
@@ -138,7 +138,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <h2 className="text-xl font-bold font-serif">AI 深度分析</h2>
-              <p className="text-xs text-white/40">智能解读已内置，无需配置</p>
+              <p className="text-xs text-gray-400">智能解读已内置，无需配置</p>
             </div>
           </div>
 
@@ -147,7 +147,7 @@ export default function SettingsPage() {
               <span>✓</span>
               <span>AI 深度分析服务已就绪，所有功能均可直接使用</span>
             </div>
-            <p className="text-xs text-white/40 leading-relaxed">
+            <p className="text-xs text-gray-400 leading-relaxed">
               系统已内置 Kimi AI 分析能力，八字分析、合婚分析、事业合作等模块均可自动调用 AI 进行深度解读。
             </p>
           </div>
@@ -161,14 +161,14 @@ export default function SettingsPage() {
             </div>
             <div>
               <h2 className="text-xl font-bold font-serif">数据管理</h2>
-              <p className="text-xs text-white/40">管理本地存储的数据</p>
+              <p className="text-xs text-gray-400">管理本地存储的数据</p>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-sm">清除分析历史</div>
-              <div className="text-xs text-white/40">删除保存在本地的所有命盘记录，不可恢复</div>
+              <div className="text-xs text-gray-400">删除保存在本地的所有命盘记录，不可恢复</div>
             </div>
             <button
               onClick={handleClearHistory}
@@ -193,13 +193,13 @@ export default function SettingsPage() {
               <h2 className="text-xl font-bold font-serif">关于</h2>
             </div>
           </div>
-          <div className="text-sm text-white/60 space-y-2">
+          <div className="text-sm text-gray-500 space-y-2">
             <div className="flex items-center gap-2">
               <span className="font-medium text-gray-700">LifeGPS</span>
-              <span className="text-white/40">·</span>
+              <span className="text-gray-400">·</span>
               <span>AI 命理分析系统 v0.2.0</span>
             </div>
-            <p className="text-xs text-white/40 leading-relaxed">
+            <p className="text-xs text-gray-400 leading-relaxed">
               融合现代 AI 技术与传统命理智慧，以理性态度传承东方文化。
               八字分析仅供参考，人生方向由自己掌握。
             </p>
@@ -213,7 +213,7 @@ export default function SettingsPage() {
 
         {/* 保存提示 */}
         {saved && (
-          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-ink-800 text-white px-6 py-3 rounded-lg shadow-lg text-sm animate-in slide-in-from-bottom-2">
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg text-sm animate-in slide-in-from-bottom-2">
             ✅ 设置已保存
           </div>
         )}

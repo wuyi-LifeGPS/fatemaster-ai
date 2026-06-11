@@ -52,8 +52,8 @@ export default function HistoryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0e27]">
-      <header className="bg-[#121a35] text-white py-4 px-4">
+    <main className="min-h-screen">
+      <header className="bg-[#0a0e27]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">
             ← AI 命理大师
@@ -71,8 +71,8 @@ export default function HistoryPage() {
               onClick={() => setFilter(t)}
               className={`rounded-xl p-3 text-center transition-all ${
                 filter === t
-                  ? 'bg-ink-800 text-white shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-white border border-gray-100'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-100'
               }`}
             >
               <div className="text-2xl font-bold">{typeCounts[t]}</div>
@@ -117,10 +117,10 @@ export default function HistoryPage() {
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getTypeColor(record.type)}`}>
                         {getTypeLabel(record.type)}
                       </span>
-                      <span className="text-xs text-white/30">{formatHistoryTime(record.timestamp)}</span>
+                      <span className="text-xs text-gray-400">{formatHistoryTime(record.timestamp)}</span>
                     </div>
                     <div className="font-medium text-gray-800 truncate">{record.title}</div>
-                    <div className="text-sm text-white/60 mt-0.5">{record.resultSummary}</div>
+                    <div className="text-sm text-gray-500 mt-0.5">{record.resultSummary}</div>
                   </div>
                   <div className="flex items-center gap-2 ml-3">
                     <Link
@@ -131,7 +131,7 @@ export default function HistoryPage() {
                     </Link>
                     <button
                       onClick={() => handleDelete(record.id)}
-                      className="text-xs text-white/30 hover:text-red-500 px-2 py-1.5 transition-colors"
+                      className="text-xs text-gray-400 hover:text-red-500 px-2 py-1.5 transition-colors"
                     >
                       ✕
                     </button>

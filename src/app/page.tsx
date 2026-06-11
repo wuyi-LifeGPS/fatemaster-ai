@@ -63,7 +63,7 @@ export default function Home() {
   ]
 
   return (
-    <main className="min-h-screen bg-[#0a0e27] text-white">
+    <main className="min-h-screen text-white">
       {/* Hero Section - 罗盘背景 + 标题浮层 */}
       <section className="relative min-h-[85vh] text-white pt-16 pb-8 px-4 overflow-hidden"
         style={{
@@ -331,10 +331,10 @@ export default function Home() {
       </section>
 
       {/* Core Concepts - 白色卡片 */}
-      <section className="py-16 px-4 bg-[#0a0e27]">
+      <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-4 font-serif text-white">核心理念</h2>
-          <p className="text-center text-white/50 mb-12">以理性态度传承东方智慧，用现代技术赋能命理分析</p>
+          <p className="text-center text-gray-400 mb-12">以理性态度传承东方智慧，用现代技术赋能命理分析</p>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { icon: '🧠', title: 'AI 智能，科学解析', desc: '融合现代 AI 技术与传统命理智慧，通过大数据分析和机器学习，提供客观的命理解读，让玄学不再玄' },
@@ -352,7 +352,7 @@ export default function Home() {
       </section>
 
       {/* Services - 白色卡片 */}
-      <section className="py-16 px-4 bg-[#0a0e27]">
+      <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-3xl font-bold font-serif text-white">分析系统</h2>
@@ -363,7 +363,7 @@ export default function Home() {
               📜 查询历史
             </Link>
           </div>
-          <p className="text-center text-white/50 mb-12">探索我们的智能解析服务</p>
+          <p className="text-center text-gray-400 mb-12">探索我们的智能解析服务</p>
           <div className="grid md:grid-cols-2 gap-6">
             {services.map((service) => (
               <Link

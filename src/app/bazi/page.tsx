@@ -128,9 +128,9 @@ export default function BaziPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0e27]">
+    <main className="min-h-screen">
       {/* Header */}
-      <header className="bg-[#121a35] text-white py-4 px-4">
+      <header className="bg-[#0a0e27]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">
             ← AI 命理大师
@@ -177,7 +177,7 @@ export default function BaziPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-white0 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
               >
                 {loading ? '正在分析...' : '开始八字分析'}
               </button>
@@ -200,14 +200,14 @@ export default function BaziPage() {
                       <div
                         key={record.id}
                         onClick={() => loadHistory(record)}
-                        className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-white cursor-pointer transition-colors"
+                        className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-gray-50 cursor-pointer transition-colors"
                       >
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="font-medium text-sm text-gray-800">{record.title}</div>
-                            <div className="text-xs text-white/40 mt-0.5">{record.resultSummary}</div>
+                            <div className="text-xs text-gray-400 mt-0.5">{record.resultSummary}</div>
                           </div>
-                          <div className="text-xs text-white/30 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                          <div className="text-xs text-gray-400 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
                       </div>
                     ))}
@@ -262,7 +262,7 @@ export default function BaziPage() {
                     const zhiColor = wxColor[zhiWx] || 'text-blue-700'
                     return (
                       <div key={pillar.name} className="border border-gray-100 rounded-lg p-3 sm:p-4">
-                        <div className="text-sm text-white/60 mb-2">{pillar.name}</div>
+                        <div className="text-sm text-gray-500 mb-2">{pillar.name}</div>
                         <div className="flex flex-col items-center">
                           {/* 天干地支大字 — 强制同一基线 */}
                           <div className="flex items-center justify-center gap-1">
@@ -273,16 +273,16 @@ export default function BaziPage() {
                           <div className="flex items-start justify-center gap-1 mt-1">
                             {/* 天干侧信息 */}
                             <div className="flex flex-col items-center min-w-[2.5rem]">
-                              <span className="text-[10px] text-white/40">{ganWx}</span>
+                              <span className="text-[10px] text-gray-400">{ganWx}</span>
                               {result.tenGods[pillar.gan] && (
-                                <span className="text-[10px] text-white/40">{result.tenGods[pillar.gan]}</span>
+                                <span className="text-[10px] text-gray-400">{result.tenGods[pillar.gan]}</span>
                               )}
                             </div>
                             {/* 地支侧信息 */}
                             <div className="flex flex-col items-center min-w-[2.5rem]">
-                              <span className="text-[10px] text-white/40">{zhiWx}</span>
+                              <span className="text-[10px] text-gray-400">{zhiWx}</span>
                               {result.tenGods[pillar.zhi] && (
-                                <span className="text-[10px] text-white/40">{result.tenGods[pillar.zhi]}</span>
+                                <span className="text-[10px] text-gray-400">{result.tenGods[pillar.zhi]}</span>
                               )}
                             </div>
                           </div>
@@ -301,11 +301,11 @@ export default function BaziPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {result.cangGanDetail.map((cg) => (
                     <div key={cg.name} className="border border-gray-100 rounded-lg p-4">
-                      <div className="text-sm text-white/60 mb-2 text-center">{cg.name} {cg.zhi}</div>
+                      <div className="text-sm text-gray-500 mb-2 text-center">{cg.name} {cg.zhi}</div>
                       <div className="space-y-1">
                         {cg.cangGan.map((item, idx) => (
                           <div key={idx} className={`text-sm px-2 py-1 rounded ${
-                            idx === 0 ? 'bg-blue-50 text-fate-800' : 'text-white/60'
+                            idx === 0 ? 'bg-blue-50 text-fate-800' : 'text-gray-500'
                           }`}>
                             {item.gan} <span className="text-xs">{item.qi}·{item.shiShen}</span>
                           </div>
@@ -314,29 +314,29 @@ export default function BaziPage() {
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-white/40 mt-3">本气（主气）为地支最主要能量，中气、余气为辅助能量</p>
+                <p className="text-xs text-gray-400 mt-3">本气（主气）为地支最主要能量，中气、余气为辅助能量</p>
               </div>
             )}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="text-xl font-bold mb-4 font-serif">日主与格局</h3>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div className="bg-white p-4 rounded-lg text-center">
-                  <div className="text-sm text-white/60">日主天干</div>
+                  <div className="text-sm text-gray-500">日主天干</div>
                   <div className="text-2xl font-bold text-blue-700">{result.dayMaster}</div>
-                  <div className="text-xs text-white/40">{result.yinYang}·{result.wuXing}</div>
+                  <div className="text-xs text-gray-400">{result.yinYang}·{result.wuXing}</div>
                 </div>
                 <div className="bg-white p-4 rounded-lg text-center">
-                  <div className="text-sm text-white/60">日主强弱</div>
+                  <div className="text-sm text-gray-500">日主强弱</div>
                   <div className="text-2xl font-bold text-blue-700">{result.bodyStrength?.strength || '-'}</div>
-                  <div className="text-xs text-white/40">评分 {result.bodyStrength?.score || '-'}/10</div>
+                  <div className="text-xs text-gray-400">评分 {result.bodyStrength?.score || '-'}/10</div>
                 </div>
                 <div className="bg-white p-4 rounded-lg text-center">
-                  <div className="text-sm text-white/60">格局</div>
+                  <div className="text-sm text-gray-500">格局</div>
                   <div className="text-lg font-bold text-blue-700 leading-tight">{result.pattern?.patternName || '-'}</div>
-                  <div className="text-xs text-white/40">{result.pattern?.patternType || ''}</div>
+                  <div className="text-xs text-gray-400">{result.pattern?.patternType || ''}</div>
                 </div>
                 <div className="bg-white p-4 rounded-lg text-center">
-                  <div className="text-sm text-white/60">喜用神</div>
+                  <div className="text-sm text-gray-500">喜用神</div>
                   <div className="text-sm font-bold text-blue-700 leading-tight mt-1">
                     {result.tiaoHou?.tiaoHouGod?.slice(0,2).map((g:string) => {
                       const wxMap:Record<string,string> = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
@@ -344,12 +344,12 @@ export default function BaziPage() {
                       return <div key={g} className="text-xs">{g}（{wxMap[g]}·{ssMap[g] || '调候'}）</div>;
                     })}
                     {result.bodyStrength?.strength === '偏弱' && (
-                      <div className="text-xs text-white/40 mt-1">辅：金（比劫助身）</div>
+                      <div className="text-xs text-gray-400 mt-1">辅：金（比劫助身）</div>
                     )}
                   </div>
                 </div>
                 <div className="bg-white p-4 rounded-lg text-center">
-                  <div className="text-sm text-white/60">忌神</div>
+                  <div className="text-sm text-gray-500">忌神</div>
                   <div className="text-sm font-bold text-blue-700 leading-tight mt-1">
                     {result.tiaoHou?.tiaoHouStatus !== 'adequate' && (
                       <div className="text-xs">
@@ -357,12 +357,12 @@ export default function BaziPage() {
                         {result.tiaoHou?.tiaoHouGod?.some((g:string) => ['甲','乙'].includes(g)) ? '金过旺（克木）' : ''}
                       </div>
                     )}
-                    <div className="text-xs text-white/40 mt-1">土过旺（埋金）</div>
+                    <div className="text-xs text-gray-400 mt-1">土过旺（埋金）</div>
                   </div>
                 </div>
               </div>
               {result.bodyStrength?.description && (
-                <p className="mt-4 text-sm text-gray-600 bg-white/50 p-3 rounded-lg">{result.bodyStrength.description}</p>
+                <p className="mt-4 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">{result.bodyStrength.description}</p>
               )}
             </div>
 
@@ -373,11 +373,11 @@ export default function BaziPage() {
                 <div className="bg-white rounded-lg p-4">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                     <div className="text-center">
-                      <div className="text-xs text-white/60">月令气候</div>
+                      <div className="text-xs text-gray-500">月令气候</div>
                       <div className="text-lg font-bold text-blue-700">{result.tiaoHou.climate}</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-xs text-white/60">所需调候</div>
+                      <div className="text-xs text-gray-500">所需调候</div>
                       <div className="text-lg font-bold text-blue-700">
                         {result.tiaoHou.tiaoHouGod?.map((g: string) => {
                           const wxMap: Record<string, string> = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
@@ -386,20 +386,20 @@ export default function BaziPage() {
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-xs text-white/60">透出情况</div>
+                      <div className="text-xs text-gray-500">透出情况</div>
                       <div className="text-lg font-bold text-blue-700">
                         {result.tiaoHou.presentTiaoHou.length > 0 ? result.tiaoHou.presentTiaoHou.join('、') : '无'}
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-xs text-white/60">调候状态</div>
+                      <div className="text-xs text-gray-500">调候状态</div>
                       <div className={`text-lg font-bold ${result.tiaoHou.tiaoHouStatus === 'adequate' ? 'text-green-600' : result.tiaoHou.tiaoHouStatus === 'buried' ? 'text-amber-600' : 'text-red-600'}`}>
                         {result.tiaoHou.tiaoHouStatus === 'adequate' ? '调和' : result.tiaoHou.tiaoHouStatus === 'buried' ? '暗藏' : '缺失'}
                       </div>
                     </div>
                   </div>
                   <p className="text-sm text-gray-600">{result.tiaoHou.tiaoHouReason}</p>
-                  <p className="text-sm text-white/60 mt-2">{result.tiaoHou.tiaoHouDesc}</p>
+                  <p className="text-sm text-gray-500 mt-2">{result.tiaoHou.tiaoHouDesc}</p>
                 </div>
               </div>
             )}
@@ -453,10 +453,10 @@ export default function BaziPage() {
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                           {sources.length === 0 ? (
-                            <span className="text-xs text-white/40">无</span>
+                            <span className="text-xs text-gray-400">无</span>
                           ) : sources.map((s, i) => (
                             <span key={i} className="text-xs bg-white px-2 py-1 rounded text-gray-600">
-                              <span className="text-white/40 mr-1">{s.type}:</span>{s.text}
+                              <span className="text-gray-400 mr-1">{s.type}:</span>{s.text}
                             </span>
                           ))}
                         </div>
@@ -465,7 +465,7 @@ export default function BaziPage() {
                   });
                 })()}
               </div>
-              <p className="text-xs text-white/40 mt-4">总计含天干 + 地支全部藏干（本气·中气·余气）。天干透出能量最强，藏干为潜在能量。</p>
+              <p className="text-xs text-gray-400 mt-4">总计含天干 + 地支全部藏干（本气·中气·余气）。天干透出能量最强，藏干为潜在能量。</p>
             </div>
 
             {/* 大运流年 */}
@@ -494,7 +494,7 @@ export default function BaziPage() {
             {/* 更多分析导航 */}
             <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl p-6 border border-gray-200">
               <h3 className="font-bold text-lg mb-4 font-serif">🔮 深入探索</h3>
-              <p className="text-sm text-white/60 mb-4">基于当前命盘，还可以进行以下深度分析：</p>
+              <p className="text-sm text-gray-500 mb-4">基于当前命盘，还可以进行以下深度分析：</p>
               <div className="grid sm:grid-cols-2 gap-3">
                 <a
                   href={`/match?mode=match&name=${encodeURIComponent(formData.name || '命主')}&gender=${formData.gender}&birthYear=${formData.birthYear}&birthMonth=${formData.birthMonth}&birthDay=${formData.birthDay}&birthHour=${formData.birthHour}&birthMinute=${formData.birthMinute}&calendarType=${formData.calendarType}`}
@@ -503,7 +503,7 @@ export default function BaziPage() {
                   <span className="text-2xl">💑</span>
                   <div>
                     <div className="font-bold text-gray-800">婚姻分析</div>
-                    <div className="text-xs text-white/60">合婚匹配 · 姻缘契合度</div>
+                    <div className="text-xs text-gray-500">合婚匹配 · 姻缘契合度</div>
                   </div>
                   <span className="ml-auto text-pink-400">→</span>
                 </a>
@@ -514,7 +514,7 @@ export default function BaziPage() {
                   <span className="text-2xl">🤝</span>
                   <div>
                     <div className="font-bold text-gray-800">事业合作</div>
-                    <div className="text-xs text-white/60">合伙人匹配 · 商业契合度</div>
+                    <div className="text-xs text-gray-500">合伙人匹配 · 商业契合度</div>
                   </div>
                   <span className="ml-auto text-blue-400">→</span>
                 </a>
@@ -525,7 +525,7 @@ export default function BaziPage() {
                   <span className="text-2xl">🧬</span>
                   <div>
                     <div className="font-bold text-gray-800">天赋分析</div>
-                    <div className="text-xs text-white/60">多元智能雷达 · 职业方向</div>
+                    <div className="text-xs text-gray-500">多元智能雷达 · 职业方向</div>
                   </div>
                   <span className="ml-auto text-teal-400">→</span>
                 </a>
@@ -536,7 +536,7 @@ export default function BaziPage() {
                   <span className="text-2xl">🌅</span>
                   <div>
                     <div className="font-bold text-gray-800">每日运势</div>
-                    <div className="text-xs text-white/60">今日吉凶 · 开运指南</div>
+                    <div className="text-xs text-gray-500">今日吉凶 · 开运指南</div>
                   </div>
                   <span className="ml-auto text-amber-400">→</span>
                 </a>

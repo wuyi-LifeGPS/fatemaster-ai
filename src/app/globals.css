@@ -11,7 +11,8 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
+  background: linear-gradient(180deg, #0a0e27 0%, #0c1430 20%, #0f1a3d 40%, #122045 60%, #162a5a 80%, #1a3a6e 100%);
+  min-height: 100vh;
 }
 
 .font-serif {

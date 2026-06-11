@@ -63,11 +63,11 @@ export default function Home() {
   ]
 
   return (
-    <main className="min-h-screen bg-[#0a0808] text-white/80">
+    <main className="min-h-screen bg-[#0a0e27] text-white">
       {/* Hero Section - 罗盘背景 + 标题浮层 */}
       <section className="relative min-h-[85vh] text-white pt-16 pb-8 px-4 overflow-hidden"
         style={{
-          background: 'radial-gradient(ellipse at 20% 50%, rgba(88, 60, 120, 0.6) 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(180, 120, 60, 0.4) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(60, 80, 140, 0.5) 0%, transparent 50%), #0c0a0a',
+          background: 'radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(96, 165, 250, 0.1) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 50%), #0a0e27',
         }}>
         {/* 背景粒子 */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -76,7 +76,7 @@ export default function Home() {
               key={i}
               className="absolute w-1 h-1 rounded-full opacity-30"
               style={{
-                background: i % 2 === 0 ? '#c9935a' : '#7c6fae',
+                background: i % 2 === 0 ? '#60a5fa' : '#3b82f6',
                 left: `${(i * 17 + 13) % 100}%`,
                 top: `${(i * 23 + 7) % 100}%`,
                 animation: `float ${8 + (i % 5) * 3}s ease-in-out infinite`,
@@ -116,7 +116,7 @@ export default function Home() {
                 }`}
               >
                 <span className="flex items-center gap-1">
-                  <span className="text-fate-400 font-serif text-xs">{item.num}</span>
+                  <span className="text-blue-400 font-serif text-xs">{item.num}</span>
                   <span className="font-serif">{item.label}</span>
                 </span>
                 <span className="text-[10px] text-white/40 opacity-0 group-hover:opacity-100 transition-opacity mt-0.5 leading-none">
@@ -138,19 +138,19 @@ export default function Home() {
               {/* === 固定底盘：十字线 + 指北箭头 === */}
               <g>
                 {/* 十字线 */}
-                <line x1="200" y1="8" x2="200" y2="392" stroke="rgba(201,147,90,0.12)" strokeWidth="1" />
-                <line x1="8" y1="200" x2="392" y2="200" stroke="rgba(201,147,90,0.12)" strokeWidth="1" />
+                <line x1="200" y1="8" x2="200" y2="392" stroke="rgba(59,130,246,0.2)" strokeWidth="1" />
+                <line x1="8" y1="200" x2="392" y2="200" stroke="rgba(59,130,246,0.2)" strokeWidth="1" />
                 {/* 指北箭头 */}
-                <polygon points="200,12 194,28 206,28" fill="#c9935a" opacity="0.7" />
-                <text x="200" y="42" textAnchor="middle" fill="#c9935a" fontSize="12" fontFamily="Georgia, serif" opacity="0.7">N</text>
+                <polygon points="200,12 194,28 206,28" fill="#3b82f6" opacity="0.7" />
+                <text x="200" y="42" textAnchor="middle" fill="#3b82f6" fontSize="12" fontFamily="Georgia, serif" opacity="0.7">N</text>
                 {/* 底盘同心圆 */}
-                <circle cx="200" cy="200" r="195" fill="none" stroke="rgba(201,147,90,0.08)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="195" fill="none" stroke="rgba(59,130,246,0.08)" strokeWidth="1" />
               </g>
 
               {/* === 外圈旋转：360度刻度 + 天干 === */}
               <g style={{ animation: 'spin 80s linear infinite', transformOrigin: '200px 200px' }}>
-                <circle cx="200" cy="200" r="188" fill="none" stroke="rgba(201,147,90,0.15)" strokeWidth="1" />
-                <circle cx="200" cy="200" r="178" fill="none" stroke="rgba(201,147,90,0.08)" strokeWidth="0.5" />
+                <circle cx="200" cy="200" r="188" fill="none" stroke="rgba(59,130,246,0.15)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="178" fill="none" stroke="rgba(59,130,246,0.08)" strokeWidth="0.5" />
                 {/* 360度刻度 */}
                 {[...Array(72)].map((_, i) => {
                   const angle = (i * 5 * Math.PI) / 180
@@ -166,7 +166,7 @@ export default function Home() {
                     <line
                       key={`tick-${i}`}
                       x1={x1} y1={y1} x2={x2} y2={y2}
-                      stroke={isMajor ? 'rgba(201,147,90,0.35)' : 'rgba(201,147,90,0.15)'}
+                      stroke={isMajor ? 'rgba(59,130,246,0.35)' : 'rgba(59,130,246,0.15)'}
                       strokeWidth={isMajor ? 1.5 : 0.5}
                     />
                   )
@@ -181,7 +181,7 @@ export default function Home() {
                       key={gan}
                       x={x} y={y}
                       textAnchor="middle"
-                      fill="rgba(201,147,90,0.55)"
+                      fill="rgba(59,130,246,0.55)"
                       fontSize="13"
                       fontFamily="Georgia, 'Times New Roman', serif"
                       dy="0.35em"
@@ -192,8 +192,8 @@ export default function Home() {
 
               {/* === 第二圈旋转：地支 === */}
               <g style={{ animation: 'spin-reverse 55s linear infinite', transformOrigin: '200px 200px' }}>
-                <circle cx="200" cy="200" r="158" fill="none" stroke="rgba(201,147,90,0.12)" strokeWidth="1" />
-                <circle cx="200" cy="200" r="148" fill="none" stroke="rgba(201,147,90,0.06)" strokeWidth="0.5" />
+                <circle cx="200" cy="200" r="158" fill="none" stroke="rgba(59,130,246,0.2)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="148" fill="none" stroke="rgba(59,130,246,0.06)" strokeWidth="0.5" />
                 {/* 地支 */}
                 {['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'].map((zhi, i) => {
                   const angle = ((i * 30 - 90) * Math.PI) / 180
@@ -204,7 +204,7 @@ export default function Home() {
                       key={zhi}
                       x={x} y={y}
                       textAnchor="middle"
-                      fill="rgba(201,147,90,0.5)"
+                      fill="rgba(59,130,246,0.5)"
                       fontSize="15"
                       fontFamily="Georgia, 'Times New Roman', serif"
                       dy="0.35em"
@@ -215,8 +215,8 @@ export default function Home() {
 
               {/* === 第三圈固定：方位 === */}
               <g>
-                <circle cx="200" cy="200" r="124" fill="none" stroke="rgba(124,111,174,0.1)" strokeWidth="1" />
-                <circle cx="200" cy="200" r="114" fill="none" stroke="rgba(124,111,174,0.06)" strokeWidth="0.5" />
+                <circle cx="200" cy="200" r="124" fill="none" stroke="rgba(96,165,250,0.1)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="114" fill="none" stroke="rgba(96,165,250,0.06)" strokeWidth="0.5" />
                 {/* 方位 */}
                 {[
                   { text: '北', sub: '' },
@@ -236,7 +236,7 @@ export default function Home() {
                       key={dir.text}
                       x={x} y={y}
                       textAnchor="middle"
-                      fill="rgba(124,111,174,0.4)"
+                      fill="rgba(96,165,250,0.4)"
                       fontSize="11"
                       fontFamily="Georgia, 'Times New Roman', serif"
                       dy="0.35em"
@@ -247,8 +247,8 @@ export default function Home() {
 
               {/* === 第四圈旋转：八卦 === */}
               <g style={{ animation: 'spin 40s linear infinite', transformOrigin: '200px 200px' }}>
-                <circle cx="200" cy="200" r="92" fill="none" stroke="rgba(124,111,174,0.15)" strokeWidth="1" />
-                <circle cx="200" cy="200" r="84" fill="none" stroke="rgba(124,111,174,0.08)" strokeWidth="0.5" />
+                <circle cx="200" cy="200" r="92" fill="none" stroke="rgba(96,165,250,0.15)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="84" fill="none" stroke="rgba(96,165,250,0.08)" strokeWidth="0.5" />
                 {/* 八卦 — 后天八卦方位：坎北起始，顺时针 */}
                 {['坎', '艮', '震', '巽', '离', '坤', '兑', '乾'].map((gua, i) => {
                   const angle = ((i * 45 - 90) * Math.PI) / 180
@@ -259,7 +259,7 @@ export default function Home() {
                       key={gua}
                       x={x} y={y}
                       textAnchor="middle"
-                      fill="rgba(124,111,174,0.5)"
+                      fill="rgba(96,165,250,0.5)"
                       fontSize="14"
                       fontFamily="Georgia, 'Times New Roman', serif"
                       dy="0.35em"
@@ -270,28 +270,28 @@ export default function Home() {
 
               {/* === 中心层：太极图 === */}
               <g style={{ animation: 'spin-reverse 30s linear infinite', transformOrigin: '200px 200px' }}>
-                <circle cx="200" cy="200" r="62" fill="none" stroke="rgba(201,147,90,0.1)" strokeWidth="1" />
-                <circle cx="200" cy="200" r="54" fill="none" stroke="rgba(201,147,90,0.06)" strokeWidth="0.5" />
+                <circle cx="200" cy="200" r="62" fill="none" stroke="rgba(59,130,246,0.1)" strokeWidth="1" />
+                <circle cx="200" cy="200" r="54" fill="none" stroke="rgba(59,130,246,0.06)" strokeWidth="0.5" />
                 {/* 太极阴阳鱼 */}
                 <path
                   d="M 200 146 A 54 54 0 0 1 200 254 A 27 27 0 0 0 200 200 A 27 27 0 0 1 200 146"
-                  fill="rgba(201,147,90,0.12)"
+                  fill="rgba(59,130,246,0.2)"
                 />
                 <path
                   d="M 200 146 A 54 54 0 0 0 200 254 A 27 27 0 0 1 200 200 A 27 27 0 0 0 200 146"
-                  fill="rgba(124,111,174,0.12)"
+                  fill="rgba(96,165,250,0.12)"
                 />
-                <circle cx="200" cy="173" r="5" fill="rgba(124,111,174,0.3)" />
+                <circle cx="200" cy="173" r="5" fill="rgba(96,165,250,0.3)" />
                 <circle cx="200" cy="227" r="5" fill="rgba(201,147,90,0.3)" />
               </g>
 
               {/* === 中心光点 === */}
               <g>
-                <circle cx="200" cy="200" r="5" fill="rgba(201,147,90,0.7)">
+                <circle cx="200" cy="200" r="5" fill="rgba(59,130,246,0.7)">
                   <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3s" repeatCount="indefinite" />
                   <animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" />
                 </circle>
-                <circle cx="200" cy="200" r="12" fill="none" stroke="rgba(201,147,90,0.15)" strokeWidth="1">
+                <circle cx="200" cy="200" r="12" fill="none" stroke="rgba(59,130,246,0.15)" strokeWidth="1">
                   <animate attributeName="r" values="10;18;10" dur="4s" repeatCount="indefinite" />
                   <animate attributeName="opacity" values="0.2;0;0.2" dur="4s" repeatCount="indefinite" />
                 </circle>
@@ -304,7 +304,7 @@ export default function Home() {
                 style={{ fontWeight: 400 }}
               >
                 <span className="text-white/90">知命改运</span>
-                <span className="text-fate-400 mx-1 sm:mx-2">·</span>
+                <span className="text-blue-400 mx-1 sm:mx-2">·</span>
                 <span>人生导航</span>
               </h1>
               <p className="text-base sm:text-lg text-white/60 mb-3 font-serif drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
@@ -318,7 +318,7 @@ export default function Home() {
 
               <Link
                 href="/bazi"
-                className="inline-block bg-fate-600 hover:bg-fate-500 text-white px-8 py-3 rounded-lg text-base transition-all shadow-lg shadow-fate-600/30 hover:shadow-xl hover:shadow-fate-500/40 hover:-translate-y-0.5"
+                className="inline-block bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 rounded-lg text-base transition-all shadow-lg shadow-white/10 hover:shadow-xl hover:shadow-white/20 hover:-translate-y-0.5"
               >
                 🔮 开始八字分析
               </Link>
@@ -327,11 +327,11 @@ export default function Home() {
         </div>
 
         {/* 底部渐变过渡到暗色 */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0808] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0e27] to-transparent" />
       </section>
 
-      {/* Core Concepts - 暗色主题 */}
-      <section className="py-16 px-4 bg-[#0a0808]">
+      {/* Core Concepts - 白色卡片 */}
+      <section className="py-16 px-4 bg-[#0a0e27]">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-4 font-serif text-white">核心理念</h2>
           <p className="text-center text-white/50 mb-12">以理性态度传承东方智慧，用现代技术赋能命理分析</p>
@@ -341,24 +341,24 @@ export default function Home() {
               { icon: '📜', title: '文化传承，理性态度', desc: '以开放理性的态度传承东方智慧，去芜存菁，不迷信、不神化，让千年命理文化以更健康的方式融入现代生活' },
               { icon: '🌟', title: '自主探索，独立思考', desc: '我们相信每个人都是自己命运的解读者。通过 AI 工具赋能，让每个人都能独立进行命理分析，自主思考人生方向' },
             ].map((item) => (
-              <div key={item.title} className="bg-white/[0.03] border border-white/10 p-6 rounded-lg hover:bg-white/[0.06] hover:border-white/20 transition-all">
+              <div key={item.title} className="bg-white rounded-xl p-6 hover:shadow-lg transition-all">
                 <div className="text-3xl mb-4">{item.icon}</div>
-                <h3 className="text-xl font-bold mb-3 font-serif text-white">{item.title}</h3>
-                <p className="text-white/60 leading-relaxed">{item.desc}</p>
+                <h3 className="text-xl font-bold mb-3 font-serif text-gray-900">{item.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Services - 暗色主题 */}
-      <section className="py-16 px-4 bg-[#0a0808]">
+      {/* Services - 白色卡片 */}
+      <section className="py-16 px-4 bg-[#0a0e27]">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-3xl font-bold font-serif text-white">分析系统</h2>
             <Link
               href="/history"
-              className="text-sm text-fate-400 hover:text-fate-300 flex items-center gap-1 px-3 py-1.5 rounded-md hover:bg-white/5 transition-colors"
+              className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 px-3 py-1.5 rounded-md hover:bg-white/5 transition-colors"
             >
               📜 查询历史
             </Link>
@@ -369,14 +369,14 @@ export default function Home() {
               <Link
                 key={service.title}
                 href={service.href}
-                className="group bg-white/[0.03] border border-white/10 p-6 rounded-xl hover:bg-white/[0.06] hover:border-white/20 hover:-translate-y-1 transition-all"
+                className="group bg-white rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all"
               >
                 <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br ${service.color} text-white text-xl mb-4 group-hover:scale-110 transition-transform`}>
                   {service.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-2 font-serif text-white">{service.title}</h3>
-                <p className="text-white/60">{service.desc}</p>
-                <span className="text-fate-400 mt-4 inline-block text-sm font-medium group-hover:translate-x-1 transition-transform">
+                <h3 className="text-xl font-bold mb-2 font-serif text-gray-900">{service.title}</h3>
+                <p className="text-gray-600">{service.desc}</p>
+                <span className="text-blue-600 mt-4 inline-block text-sm font-medium group-hover:translate-x-1 transition-transform">
                   进入分析 →
                 </span>
               </Link>
@@ -385,8 +385,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer - 暗色主题 */}
-      <footer className="bg-[#050505] text-white/40 py-12 px-4 text-center border-t border-white/5">
+      {/* Footer - 深蓝背景 */}
+      <footer className="bg-[#070b1f] text-white/40 py-12 px-4 text-center border-t border-white/5">
         <p className="text-lg font-serif mb-2 text-white/60">LifeGPS · AI 分析个人特质，洞察发展潜力</p>
         <p className="text-sm text-white/30 mb-6">无需注册，免费体验，深度洞察</p>
         <div className="flex justify-center gap-6 text-sm text-white/25">

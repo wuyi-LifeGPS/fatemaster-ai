@@ -133,9 +133,9 @@ export default function TalentPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0808] text-white/80">
+    <main className="min-h-screen bg-[#0a0e27] text-white">
       {/* Header */}
-      <header className="bg-[#0a0808]/90 backdrop-blur border-b border-white/5 py-4 px-4 sticky top-0 z-50">
+      <header className="bg-[#121a35] text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-lg font-bold font-serif text-white/90 hover:text-white transition-colors">
             ← AI 命理大师
@@ -163,7 +163,7 @@ export default function TalentPage() {
                   type="text"
                   value={formData.birthPlace}
                   onChange={(e) => setFormData({ ...formData, birthPlace: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-white/[0.05] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-400/50 text-white placeholder-white/30"
+                  className="w-full px-3 py-2.5 bg-white/[0.05] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 text-white placeholder-white/30"
                   placeholder="如：北京"
                 />
               </div>
@@ -173,7 +173,7 @@ export default function TalentPage() {
                 <textarea
                   value={formData.note}
                   onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-white/[0.05] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-400/50 text-white placeholder-white/30"
+                  className="w-full px-3 py-2.5 bg-white/[0.05] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 text-white placeholder-white/30"
                   placeholder="如有特殊需求或想了解的具体问题，可在此填写"
                   rows={3}
                 />
@@ -182,7 +182,7 @@ export default function TalentPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-fate-600 hover:bg-fate-500 text-white py-3 rounded-lg font-medium transition-all disabled:opacity-50 shadow-lg shadow-fate-600/20 hover:shadow-fate-500/30"
+                className="w-full bg-blue-600 hover:bg-white0 text-white py-3 rounded-lg font-medium transition-all disabled:opacity-50 shadow-lg shadow-fate-600/20 hover:shadow-blue-500/30"
               >
                 {loading ? '🔮 正在解码天赋基因...' : '🧬 开始天赋分析'}
               </button>
@@ -232,7 +232,7 @@ export default function TalentPage() {
                   setAiAnalysis('')
                   setBaziResult(null)
                 }}
-                className="text-fate-400 hover:text-fate-300 text-sm"
+                className="text-blue-400 hover:text-fate-300 text-sm"
               >
                 ← 重新分析
               </button>
@@ -349,7 +349,7 @@ export default function TalentPage() {
 
                     {/* 日常表现对照 */}
                     <div className="bg-white/[0.04] border border-white/[0.08] rounded-lg p-3 mb-3">
-                      <p className="text-xs text-fate-400/80 mb-1.5 font-medium">✨ 日常表现对照</p>
+                      <p className="text-xs text-blue-400/80 mb-1.5 font-medium">✨ 日常表现对照</p>
                       <div className="space-y-1">
                         {dim.dailySigns.map((s: string, idx: number) => (
                           <div key={idx} className="flex items-start gap-2 text-sm">
@@ -364,7 +364,7 @@ export default function TalentPage() {
                     <div className="space-y-1.5">
                       {dim.strengths.map((s, idx) => (
                         <div key={idx} className="flex items-start gap-2 text-sm">
-                          <span className="text-fate-400 mt-0.5">✓</span>
+                          <span className="text-blue-400 mt-0.5">✓</span>
                           <span className="text-white/70">{s}</span>
                         </div>
                       ))}
@@ -411,13 +411,13 @@ export default function TalentPage() {
                     key={career.field}
                     className="flex items-start gap-4 p-4 rounded-lg bg-white/[0.03] border border-white/5 hover:border-white/10 transition-colors"
                   >
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-fate-600/20 flex items-center justify-center text-lg font-bold text-fate-400">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center text-lg font-bold text-blue-400">
                       {i + 1}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-white">{career.field}</span>
-                        <span className="text-xs text-fate-400 bg-fate-400/10 px-2 py-0.5 rounded-full">
+                        <span className="text-xs text-blue-400 bg-fate-400/10 px-2 py-0.5 rounded-full">
                           匹配度 {Math.round(career.matchScore)}%
                         </span>
                       </div>
@@ -450,7 +450,7 @@ export default function TalentPage() {
                       const content = parts.slice(1).join('**：')
                       return (
                         <div key={i} className="mb-4 last:mb-0">
-                          <h4 className="text-fate-400 font-bold mb-1">{title}</h4>
+                          <h4 className="text-blue-400 font-bold mb-1">{title}</h4>
                           <p className="text-white/60 leading-relaxed">{content}</p>
                         </div>
                       )
@@ -477,7 +477,7 @@ export default function TalentPage() {
 
             {aiAnalysis && (
               <div className="bg-white/[0.03] border border-fate-400/20 rounded-xl p-6">
-                <h3 className="text-xl font-bold mb-4 font-serif text-fate-400">🤖 AI 深度解读</h3>
+                <h3 className="text-xl font-bold mb-4 font-serif text-blue-400">🤖 AI 深度解读</h3>
                 <div className="prose prose-invert prose-sm max-w-none whitespace-pre-line text-white/70 leading-relaxed">
                   {aiAnalysis}
                 </div>

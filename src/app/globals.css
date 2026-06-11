@@ -5,8 +5,8 @@
 @import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap');
 
 :root {
-  --foreground-rgb: 28, 25, 23;
-  --background-rgb: 253, 248, 240;
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 10, 14, 39;
 }
 
 body {
@@ -20,6 +20,58 @@ body {
 
 .font-brush {
   font-family: 'ZCOOL XiaoWei', 'STXingkai', 'KaiTi', cursive;
+}
+
+/* Kimi 风格背景 */
+.bg-kimi-gradient {
+  background: linear-gradient(135deg, #0a0e27 0%, #0f1a3d 50%, #0a0e27 100%);
+}
+
+/* 卡片样式 */
+.kimi-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* 文字颜色 */
+.text-kimi-primary { color: #ffffff; }
+.text-kimi-secondary { color: #cbd5e1; }
+.text-kimi-muted { color: #94a3b8; }
+
+/* 按钮样式 */
+.btn-kimi {
+  background: white;
+  color: #0a0e27;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.btn-kimi:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-kimi-accent {
+  background: #3b82f6;
+  color: white;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.btn-kimi-accent:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* 隐藏滚动条 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 @keyframes spin {
@@ -47,13 +99,4 @@ body {
 /* 阿里妈妈刀隶体 */
 .font-daoli {
   font-family: 'AlimamaDaoLiTi', 'LiSu', 'STLiti', serif;
-}
-
-/* 隐藏滚动条 */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
 }

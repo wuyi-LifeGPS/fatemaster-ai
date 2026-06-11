@@ -52,8 +52,8 @@ export default function HistoryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-fate-50">
-      <header className="bg-ink-900 text-fate-50 py-4 px-4">
+    <main className="min-h-screen bg-[#0a0e27]">
+      <header className="bg-[#121a35] text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">
             ← AI 命理大师
@@ -72,7 +72,7 @@ export default function HistoryPage() {
               className={`rounded-xl p-3 text-center transition-all ${
                 filter === t
                   ? 'bg-ink-800 text-white shadow-md'
-                  : 'bg-white text-ink-600 hover:bg-fate-50 border border-fate-100'
+                  : 'bg-white text-gray-600 hover:bg-white border border-gray-100'
               }`}
             >
               <div className="text-2xl font-bold">{typeCounts[t]}</div>
@@ -97,10 +97,10 @@ export default function HistoryPage() {
         {filtered.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-4xl mb-3">📭</div>
-            <p className="text-ink-400">
+            <p className="text-white/40">
               {filter === 'all' ? '暂无查询记录，去试试看吧～' : `暂无「${getTypeLabel(filter)}」的记录`}
             </p>
-            <Link href="/" className="text-fate-600 hover:underline text-sm mt-2 inline-block">
+            <Link href="/" className="text-blue-600 hover:underline text-sm mt-2 inline-block">
               返回首页 →
             </Link>
           </div>
@@ -109,7 +109,7 @@ export default function HistoryPage() {
             {filtered.map((record) => (
               <div
                 key={record.id}
-                className="bg-white rounded-xl shadow-sm border border-fate-100 p-4 hover:shadow-md transition-shadow"
+                className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
@@ -117,21 +117,21 @@ export default function HistoryPage() {
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getTypeColor(record.type)}`}>
                         {getTypeLabel(record.type)}
                       </span>
-                      <span className="text-xs text-ink-300">{formatHistoryTime(record.timestamp)}</span>
+                      <span className="text-xs text-white/30">{formatHistoryTime(record.timestamp)}</span>
                     </div>
-                    <div className="font-medium text-ink-800 truncate">{record.title}</div>
-                    <div className="text-sm text-ink-500 mt-0.5">{record.resultSummary}</div>
+                    <div className="font-medium text-gray-800 truncate">{record.title}</div>
+                    <div className="text-sm text-white/60 mt-0.5">{record.resultSummary}</div>
                   </div>
                   <div className="flex items-center gap-2 ml-3">
                     <Link
                       href={`/${record.type}`}
-                      className="text-xs bg-fate-100 text-fate-600 px-3 py-1.5 rounded-md hover:bg-fate-200 transition-colors"
+                      className="text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-md hover:bg-fate-200 transition-colors"
                     >
                       再次查询
                     </Link>
                     <button
                       onClick={() => handleDelete(record.id)}
-                      className="text-xs text-ink-300 hover:text-red-500 px-2 py-1.5 transition-colors"
+                      className="text-xs text-white/30 hover:text-red-500 px-2 py-1.5 transition-colors"
                     >
                       ✕
                     </button>
@@ -147,7 +147,7 @@ export default function HistoryPage() {
           <div className="mt-6 text-center">
             <button
               onClick={() => handleClearType(filter)}
-              className="text-sm text-ink-400 hover:text-red-500 transition-colors"
+              className="text-sm text-white/40 hover:text-red-500 transition-colors"
             >
               清空「{getTypeLabel(filter)}」的记录
             </button>

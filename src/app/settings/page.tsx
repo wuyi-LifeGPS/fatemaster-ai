@@ -50,9 +50,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-fate-50">
+    <main className="min-h-screen bg-[#0a0e27]">
       {/* Header */}
-      <header className="bg-ink-900 text-fate-50 py-4 px-4">
+      <header className="bg-[#121a35] text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">
             ← AI 命理大师
@@ -70,7 +70,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <h2 className="text-xl font-bold font-serif">分析偏好</h2>
-              <p className="text-xs text-ink-400">自定义命盘展示内容和分析风格</p>
+              <p className="text-xs text-white/40">自定义命盘展示内容和分析风格</p>
             </div>
           </div>
 
@@ -88,18 +88,18 @@ export default function SettingsPage() {
                     onClick={() => update('analysisStyle', opt.key)}
                     className={`p-3 rounded-lg border text-left transition-all ${
                       settings.analysisStyle === opt.key
-                        ? 'border-fate-600 bg-fate-50 text-fate-800 ring-1 ring-fate-600'
-                        : 'border-fate-200 hover:border-fate-400 hover:bg-fate-50/50'
+                        ? 'border-fate-600 bg-white text-fate-800 ring-1 ring-fate-600'
+                        : 'border-gray-200 hover:border-fate-400 hover:bg-white/50'
                     }`}
                   >
                     <div className="font-medium text-sm">{opt.label}</div>
-                    <div className="text-xs text-ink-400 mt-1">{opt.desc}</div>
+                    <div className="text-xs text-white/40 mt-1">{opt.desc}</div>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="border-t border-fate-100 pt-5 space-y-4">
+            <div className="border-t border-gray-100 pt-5 space-y-4">
               {[
                 { key: 'showTenGods' as const, title: '显示十神信息', desc: '在命盘中标注每个干支的十神关系', icon: '🏷️' },
                 { key: 'showNaYin' as const, title: '显示纳音五行', desc: '在四柱下方显示纳音属性（如「海中金」）', icon: '🔔' },
@@ -109,13 +109,13 @@ export default function SettingsPage() {
                     <span className="text-lg">{item.icon}</span>
                     <div>
                       <div className="font-medium text-sm">{item.title}</div>
-                      <div className="text-xs text-ink-400">{item.desc}</div>
+                      <div className="text-xs text-white/40">{item.desc}</div>
                     </div>
                   </div>
                   <button
                     onClick={() => update(item.key, !settings[item.key])}
                     className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
-                      settings[item.key] ? 'bg-fate-600' : 'bg-ink-200'
+                      settings[item.key] ? 'bg-blue-600' : 'bg-ink-200'
                     }`}
                   >
                     <span
@@ -138,7 +138,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <h2 className="text-xl font-bold font-serif">AI 深度分析</h2>
-              <p className="text-xs text-ink-400">智能解读已内置，无需配置</p>
+              <p className="text-xs text-white/40">智能解读已内置，无需配置</p>
             </div>
           </div>
 
@@ -147,7 +147,7 @@ export default function SettingsPage() {
               <span>✓</span>
               <span>AI 深度分析服务已就绪，所有功能均可直接使用</span>
             </div>
-            <p className="text-xs text-ink-400 leading-relaxed">
+            <p className="text-xs text-white/40 leading-relaxed">
               系统已内置 Kimi AI 分析能力，八字分析、合婚分析、事业合作等模块均可自动调用 AI 进行深度解读。
             </p>
           </div>
@@ -161,14 +161,14 @@ export default function SettingsPage() {
             </div>
             <div>
               <h2 className="text-xl font-bold font-serif">数据管理</h2>
-              <p className="text-xs text-ink-400">管理本地存储的数据</p>
+              <p className="text-xs text-white/40">管理本地存储的数据</p>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-sm">清除分析历史</div>
-              <div className="text-xs text-ink-400">删除保存在本地的所有命盘记录，不可恢复</div>
+              <div className="text-xs text-white/40">删除保存在本地的所有命盘记录，不可恢复</div>
             </div>
             <button
               onClick={handleClearHistory}
@@ -193,17 +193,17 @@ export default function SettingsPage() {
               <h2 className="text-xl font-bold font-serif">关于</h2>
             </div>
           </div>
-          <div className="text-sm text-ink-500 space-y-2">
+          <div className="text-sm text-white/60 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-ink-700">LifeGPS</span>
-              <span className="text-ink-400">·</span>
+              <span className="font-medium text-gray-700">LifeGPS</span>
+              <span className="text-white/40">·</span>
               <span>AI 命理分析系统 v0.2.0</span>
             </div>
-            <p className="text-xs text-ink-400 leading-relaxed">
+            <p className="text-xs text-white/40 leading-relaxed">
               融合现代 AI 技术与传统命理智慧，以理性态度传承东方文化。
               八字分析仅供参考，人生方向由自己掌握。
             </p>
-            <div className="flex gap-4 text-xs text-fate-600 pt-2">
+            <div className="flex gap-4 text-xs text-blue-600 pt-2">
               <span>调候用神 · 扶抑辅助</span>
               <span>·</span>
               <span>专业排盘 · AI 解读</span>

@@ -20,18 +20,16 @@ module.exports = {
           800: '#3e2e1a',
           900: '#1f170d',
         },
-        'ink': {
-          50: '#f5f5f4',
-          100: '#e7e5e4',
-          200: '#d6d3d1',
-          300: '#a8a29e',
-          400: '#78716c',
-          500: '#57534e',
-          600: '#44403c',
-          700: '#292524',
-          800: '#1c1917',
-          900: '#0c0a09',
-        }
+        'kimi': {
+          bg: '#0a0e27',
+          'bg-light': '#121a35',
+          'bg-card': '#ffffff',
+          'accent': '#3b82f6',
+          'accent-light': '#60a5fa',
+          'text': '#ffffff',
+          'text-muted': '#94a3b8',
+          'text-secondary': '#cbd5e1',
+        },
       },
       fontFamily: {
         'serif': ['Georgia', 'Cambria', 'serif'],

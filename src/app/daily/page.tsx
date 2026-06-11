@@ -160,7 +160,7 @@ export default function DailyPage() {
       <div className="max-w-2xl mx-auto py-8 px-4">
         {/* 今天日期 */}
         {todayGanZhi && (
-          <div className="bg-gradient-to-br from-ink-800 to-ink-900 text-white rounded-xl p-6 mb-6 text-center">
+          <div className="bg-gradient-to-br from-[#0a0e27] to-[#121a35] text-white rounded-xl p-6 mb-6 text-center">
             <div className="text-sm text-fate-300 mb-2">
               {todayGanZhi.dateStr} · 星期{todayGanZhi.weekday}
             </div>

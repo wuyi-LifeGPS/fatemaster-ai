@@ -97,7 +97,7 @@ export default function HistoryPage() {
         {filtered.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-4xl mb-3">📭</div>
-            <p className="text-white/40">
+            <p className="text-gray-400">
               {filter === 'all' ? '暂无查询记录，去试试看吧～' : `暂无「${getTypeLabel(filter)}」的记录`}
             </p>
             <Link href="/" className="text-blue-600 hover:underline text-sm mt-2 inline-block">
@@ -147,7 +147,7 @@ export default function HistoryPage() {
           <div className="mt-6 text-center">
             <button
               onClick={() => handleClearType(filter)}
-              className="text-sm text-white/40 hover:text-red-500 transition-colors"
+              className="text-sm text-gray-400 hover:text-red-500 transition-colors"
             >
               清空「{getTypeLabel(filter)}」的记录
             </button>

@@ -209,7 +209,7 @@ export default function CareerPage() {
               <div className="mt-6">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-white/60 hover:text-blue-600 mb-3"
+                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-3"
                 >
                   <span>📜</span>
                   <span>查询历史（{history.length} 条）</span>

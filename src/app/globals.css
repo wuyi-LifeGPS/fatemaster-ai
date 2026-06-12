@@ -12,7 +12,7 @@
 /* 全局背景渐变 - 从深海军蓝到明亮天蓝 */
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(180deg, #080c20 0%, #0a0e27 15%, #0f1a3d 30%, #162a5a 50%, #1e4a8a 70%, #2563eb 85%, #3b82f6 100%);
+  background: linear-gradient(180deg, #050818 0%, #0a0e27 20%, #0f1a3d 35%, #1a3a6e 55%, #2563eb 75%, #60a5fa 90%, #93c5fd 100%);
   min-height: 100vh;
 }
 

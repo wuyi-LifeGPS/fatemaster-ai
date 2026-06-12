@@ -65,10 +65,7 @@ export default function Home() {
   return (
     <main className="min-h-screen text-white">
       {/* Hero Section - 罗盘背景 + 标题浮层 */}
-      <section className="relative min-h-[85vh] text-white pt-16 pb-8 px-4 overflow-hidden"
-        style={{
-          background: 'radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(96, 165, 250, 0.1) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 50%), #0a0e27',
-        }}>
+      <section className="relative min-h-[85vh] text-white pt-16 pb-8 px-4 overflow-hidden">
         {/* 背景粒子 */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(20)].map((_, i) => (

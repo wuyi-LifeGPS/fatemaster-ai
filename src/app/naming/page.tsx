@@ -230,26 +230,26 @@ export default function NamingPage() {
           {/* 姓名输入 */}
           <div className="flex gap-4 mb-4">
             <div className="flex-1">
-              <label className="block text-sm font-medium mb-1">{mode === 'brand' ? '公司/品牌名' : '姓氏'}</label>
+              <label className="block text-sm font-medium mb-1 text-gray-900">{mode === 'brand' ? '公司/品牌名' : '姓氏'}</label>
               <input
                 type="text"
                 value={mode === 'brand' ? brandName : surname}
                 onChange={(e) => mode === 'brand' ? setBrandName(e.target.value) : setSurname(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-center text-lg"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-center text-lg text-gray-900"
                 placeholder={mode === 'brand' ? '如：华为' : '如：张'}
                 maxLength={mode === 'brand' ? 10 : 2}
               />
             </div>
             {mode !== 'brand' && (
             <div className="flex-[2]">
-              <label className="block text-sm font-medium mb-1">
+              <label className="block text-sm font-medium mb-1 text-gray-900">
                 {mode === 'analyze' ? '名字' : '期望用字（可选）'}
               </label>
               <input
                 type="text"
                 value={givenName}
                 onChange={(e) => setGivenName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-center text-lg"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 text-center text-lg text-gray-900"
                 placeholder={mode === 'analyze' ? '如：伟' : '可选填期望字'}
                 maxLength={4}
               />

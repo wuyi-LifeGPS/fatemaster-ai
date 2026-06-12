@@ -40,20 +40,20 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
   return (
     <div className="space-y-3">
       <div>
-        <label className="block text-sm font-medium mb-1">姓名（选填）</label>
+        <label className="block text-sm font-medium mb-1 text-gray-900">姓名（选填）</label>
         <input
           type="text"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           placeholder="姓名"
-          className="w-full px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400"
+          className="w-full px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 text-gray-900"
         />
       </div>
       {showGender && (
         <div>
-          <label className="block text-sm font-medium mb-1">性别 *</label>
+          <label className="block text-sm font-medium mb-1 text-gray-900">性别 *</label>
           <div className="flex gap-4">
-            <label className="flex items-center cursor-pointer">
+            <label className="flex items-center cursor-pointer text-gray-800">
               <input
                 type="radio"
                 value="male"
@@ -63,7 +63,7 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
               />
               男
             </label>
-            <label className="flex items-center cursor-pointer">
+            <label className="flex items-center cursor-pointer text-gray-800">
               <input
                 type="radio"
                 value="female"
@@ -77,7 +77,7 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
         </div>
       )}
       <div>
-        <label className="block text-sm font-medium mb-1">出生日期 *</label>
+        <label className="block text-sm font-medium mb-1 text-gray-900">出生日期 *</label>
         <div className="flex gap-1 mb-1.5 bg-fate-100 rounded-lg p-1 w-fit">
           <button
             type="button"
@@ -109,7 +109,7 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
               ? getLunarDaysInMonth(year, form.birthMonth, form.lunarIsLeap)
               : getSolarDaysInMonth(year, form.birthMonth)
             setForm({ ...form, birthYear: year, birthDay: Math.min(form.birthDay, maxDay) })
-          }} className="flex-1 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm">
+          }} className="flex-1 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm text-gray-900">
             {yearOptions.map(y => <option key={y} value={y}>{y}年</option>)}
           </select>
           <select
@@ -123,7 +123,7 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
                 : getSolarDaysInMonth(form.birthYear, month)
               setForm({ ...form, birthMonth: month, lunarIsLeap: isLeap, birthDay: Math.min(form.birthDay, maxDay) })
             }}
-            className="w-28 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm"
+            className="w-28 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm text-gray-900"
           >
             {monthOptions.map(m => (
               <option key={`${m.isLeap ? 'leap-' : ''}${m.value}`} value={`${m.isLeap ? 'leap-' : ''}${m.value}`}>
@@ -131,19 +131,19 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
               </option>
             ))}
           </select>
-          <select value={form.birthDay} onChange={(e) => setForm({ ...form, birthDay: Number(e.target.value) })} className="w-20 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm">
+          <select value={form.birthDay} onChange={(e) => setForm({ ...form, birthDay: Number(e.target.value) })} className="w-20 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm text-gray-900">
             {Array.from({ length: getDaysInMonth(form) }, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}日</option>)}
           </select>
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">出生时辰</label>
+        <label className="block text-sm font-medium mb-1 text-gray-900">出生时辰</label>
         <div className="flex gap-2 items-center">
-          <select value={form.birthHour} onChange={(e) => setForm({ ...form, birthHour: Number(e.target.value) })} className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm">
+          <select value={form.birthHour} onChange={(e) => setForm({ ...form, birthHour: Number(e.target.value) })} className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm text-gray-900">
             {hourOptions.map(h => <option key={h} value={h}>{pad(h)}</option>)}
           </select>
           <span className="text-gray-400">:</span>
-          <select value={form.birthMinute} onChange={(e) => setForm({ ...form, birthMinute: Number(e.target.value) })} className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm">
+          <select value={form.birthMinute} onChange={(e) => setForm({ ...form, birthMinute: Number(e.target.value) })} className="w-24 px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 bg-white text-sm text-gray-900">
             {minuteOptions.map(m => <option key={m} value={m}>{pad(m)}</option>)}
           </select>
         </div>

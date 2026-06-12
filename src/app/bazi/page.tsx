@@ -153,22 +153,22 @@ export default function BaziPage() {
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-1">出生地点（可选）</label>
+                <label className="block text-sm font-medium mb-1 text-gray-900">出生地点（可选）</label>
                 <input
                   type="text"
                   value={formData.birthPlace}
                   onChange={(e) => setFormData({ ...formData, birthPlace: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900"
                   placeholder="如：北京"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">备注（可选）</label>
+                <label className="block text-sm font-medium mb-1 text-gray-900">备注（可选）</label>
                 <textarea
                   value={formData.note}
                   onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900"
                   placeholder="如有特殊需求或想了解的具体问题，可在此填写"
                   rows={3}
                 />

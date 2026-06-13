@@ -64,8 +64,8 @@ export default function Home() {
 
   return (
     <main className="min-h-screen text-white">
-      {/* Hero Section - 深蓝渐变背景，内容用毛玻璃卡片承载 */}
-      <section className="relative min-h-[85vh] text-white pt-16 pb-8 px-4 overflow-hidden bg-gradient-to-b from-[#050818] via-[#0a0e27] to-[#0f1a3d]">
+      {/* Hero Section - 深蓝渐变到底部明亮，自然过渡到白色内容区 */}
+      <section className="relative min-h-[85vh] text-white pt-16 pb-24 px-4 overflow-hidden bg-gradient-to-b from-[#02040a] via-[#0a0e27] via-[#0f1a3d] to-[#1a3a6e]">
         {/* 背景粒子 */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(20)].map((_, i) => (
@@ -295,38 +295,35 @@ export default function Home() {
               </g>
             </svg>
 
-            {/* 标题层 - 毛玻璃卡片承载 */}
+            {/* 标题层 - 直接写在蓝色背景上 */}
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 md:p-10 border border-white/10 shadow-2xl max-w-lg mx-auto">
-                <h1 className="text-[28px] sm:text-4xl md:text-5xl mb-3 font-daoli text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] tracking-wide whitespace-nowrap"
-                  style={{ fontWeight: 400 }}
-                >
-                  <span className="text-white/90">知命改运</span>
-                  <span className="text-blue-400 mx-1 sm:mx-2">·</span>
-                  <span>人生导航</span>
-                </h1>
-                <p className="text-base sm:text-lg text-white/70 mb-3 font-serif">
-                  古老东方智慧解析系统
-                </p>
-                <blockquote className="text-white/50 italic text-sm max-w-md mx-auto mb-6 leading-relaxed"
-                >
-                  "除非你意识到你的潜意识，否则潜意识将主导你的人生，而你将其称为命运。"
-                  <span className="text-xs not-italic mt-1 block text-white/40">— 卡尔·荣格</span>
-                </blockquote>
+              <h1 className="text-[28px] sm:text-4xl md:text-5xl mb-3 font-daoli text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] tracking-wide whitespace-nowrap"
+                style={{ fontWeight: 400 }}
+              >
+                <span className="text-white/90">知命改运</span>
+                <span className="text-blue-400 mx-1 sm:mx-2">·</span>
+                <span>人生导航</span>
+              </h1>
+              <p className="text-base sm:text-lg text-white/70 mb-3 font-serif">
+                古老东方智慧解析系统
+              </p>
+              <blockquote className="text-white/50 italic text-sm max-w-md mx-auto mb-6 leading-relaxed">
+                "除非你意识到你的潜意识，否则潜意识将主导你的人生，而你将其称为命运。"
+                <span className="text-xs not-italic mt-1 block text-white/40">— 卡尔·荣格</span>
+              </blockquote>
 
-                <Link
-                  href="/bazi"
-                  className="inline-block bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 rounded-lg text-base transition-all shadow-lg shadow-white/10 hover:shadow-xl hover:shadow-white/20 hover:-translate-y-0.5"
-                >
-                  🔮 开始八字分析
-                </Link>
-              </div>
+              <Link
+                href="/bazi"
+                className="inline-block bg-white hover:bg-gray-50 text-gray-900 px-8 py-3 rounded-xl text-base transition-all shadow-lg shadow-black/20 hover:shadow-xl hover:-translate-y-0.5"
+              >
+                🔮 开始八字分析
+              </Link>
             </div>
           </div>
         </div>
 
-        {/* 底部渐变过渡到白色内容区 */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
+        {/* 底部柔和过渡到白色内容区 */}
+        <div className="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent" />
       </section>
 
       {/* Core Concepts - 白色背景区域 */}

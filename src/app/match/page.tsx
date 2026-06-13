@@ -183,9 +183,9 @@ export default function MatchPage() {
 
   const renderHeChong = (label: string, match: boolean, type: 'he' | 'chong' | 'hai') => {
     const colors = {
-      he: match ? 'bg-red-50 border-red-200 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-400',
-      chong: match ? 'bg-red-50 border-red-200 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-400',
-      hai: match ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-gray-50 border-gray-200 text-gray-400',
+      he: match ? 'bg-red-50 border-red-200 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-500',
+      chong: match ? 'bg-red-50 border-red-200 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-500',
+      hai: match ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-gray-50 border-gray-200 text-gray-500',
     }
     const icons = {
       he: match ? '💕' : '○',
@@ -201,8 +201,8 @@ export default function MatchPage() {
   }
 
   return (
-    <main className="min-h-screen">
-      <header className="bg-[#0a0e27]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
+    <main className="min-h-screen bg-[#f5f0e6]">
+      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">← AI 命理大师</Link>
           <h1 className="text-lg font-serif">合婚合作</h1>
@@ -217,7 +217,7 @@ export default function MatchPage() {
             onClick={() => setMode('match')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
               mode === 'match'
-                ? 'bg-pink-500 text-white shadow-sm'
+                ? 'bg-pink-500 text-gray-900 shadow-sm'
                 : 'text-gray-500 hover:bg-gray-50'
             }`}
           >
@@ -228,7 +228,7 @@ export default function MatchPage() {
             onClick={() => setMode('career')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
               mode === 'career'
-                ? 'bg-blue-500 text-white shadow-sm'
+                ? 'bg-[#8b1a1a] text-gray-900 shadow-sm'
                 : 'text-gray-500 hover:bg-gray-50'
             }`}
           >
@@ -239,8 +239,8 @@ export default function MatchPage() {
         {!result && (
           <div className={`rounded-xl p-6 mb-6 border ${
             mode === 'match'
-              ? 'bg-gradient-to-br from-pink-50 to-rose-50 border-pink-100'
-              : 'bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-100'
+              ? 'bg-stone-50 border border-stone-200 border-pink-100'
+              : 'bg-stone-50 border border-stone-200 border-stone-200'
           }`}>
             <h2 className="text-xl font-bold mb-2 font-serif">
               {mode === 'match' ? '八字合婚' : '事业合作八字分析'}
@@ -259,8 +259,8 @@ export default function MatchPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white rounded-xl shadow-sm p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      mode === 'match' ? 'bg-blue-500' : 'bg-blue-600'
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-gray-900 text-sm font-bold ${
+                      mode === 'match' ? 'bg-[#8b1a1a]' : 'bg-[#8b1a1a]'
                     }`}>{mTag}</div>
                     <h3 className="font-bold text-lg">{mLabel}信息</h3>
                   </div>
@@ -268,7 +268,7 @@ export default function MatchPage() {
                 </div>
                 <div className="bg-white rounded-xl shadow-sm p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-gray-900 text-sm font-bold ${
                       mode === 'match' ? 'bg-pink-500' : 'bg-emerald-500'
                     }`}>{fTag}</div>
                     <h3 className="font-bold text-lg">{fLabel}信息</h3>
@@ -279,7 +279,7 @@ export default function MatchPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold text-lg transition-all shadow-lg shadow-blue-500/30"
+                className="w-full bg-[#8b1a1a] hover:bg-[#6b1414] text-gray-900 py-3 rounded-lg font-bold text-lg transition-all shadow-lg "
               >
                 {loading ? '分析中...' : (mode === 'match' ? '💑 开始合婚分析' : '🤝 开始事业合作分析')}
               </button>
@@ -289,7 +289,7 @@ export default function MatchPage() {
               <div className="mt-6">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-3"
+                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#8b1a1a] mb-3"
                 >
                   <span>📜</span>
                   <span>{modeLabel}查询历史（{history.length} 条）</span>
@@ -306,9 +306,9 @@ export default function MatchPage() {
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="font-medium text-sm text-gray-800">{record.title}</div>
-                            <div className="text-xs text-gray-400 mt-0.5">{record.resultSummary}</div>
+                            <div className="text-xs text-gray-500 mt-0.5">{record.resultSummary}</div>
                           </div>
-                          <div className="text-xs text-gray-400 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                          <div className="text-xs text-gray-500 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
                       </div>
                     ))}
@@ -322,13 +322,13 @@ export default function MatchPage() {
         {result && (
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <button onClick={() => setResult(null)} className="text-blue-600 text-sm hover:underline">← 重新输入</button>
+              <button onClick={() => setResult(null)} className="text-[#8b1a1a] text-sm hover:underline">← 重新输入</button>
               <div className="flex-1" />
               <button
                 onClick={() => setMode(mode === 'match' ? 'career' : 'match')}
                 className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
                   mode === 'match'
-                    ? 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100'
+                    ? 'bg-stone-50 border-stone-200 text-[#8b1a1a] hover:bg-stone-100'
                     : 'bg-pink-50 border-pink-200 text-pink-600 hover:bg-pink-100'
                 }`}
               >
@@ -339,14 +339,14 @@ export default function MatchPage() {
             {/* 总评分 */}
             <div className={`rounded-2xl p-8 border text-center ${
               mode === 'match'
-                ? 'bg-gradient-to-br from-pink-50 to-rose-50 border-pink-100'
-                : 'bg-gradient-to-br from-blue-50 to-emerald-50 border-blue-100'
+                ? 'bg-stone-50 border border-stone-200 border-pink-100'
+                : 'bg-stone-50 border border-stone-200 border-stone-200'
             }`}>
               <div className="text-sm text-gray-500 mb-2">{mode === 'match' ? '婚配契合度' : '合作契合度'}</div>
               <div className={`text-6xl font-bold mb-2 ${result.levelColor}`}>{result.score}</div>
               <div className="flex justify-center gap-1 mb-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? (mode === 'match' ? 'text-pink-400' : 'text-blue-400') : 'text-gray-300'}`}>
+                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? (mode === 'match' ? 'text-pink-400' : 'text-[#8b1a1a]') : 'text-gray-300'}`}>
                     {mode === 'match' ? '♥' : '★'}
                   </span>
                 ))}
@@ -358,9 +358,9 @@ export default function MatchPage() {
             {/* 双方八字概览 */}
             <div className="grid md:grid-cols-2 gap-4">
               {mBazi && (
-                <div className={`rounded-xl p-4 border ${mode === 'match' ? 'bg-blue-50 border-blue-100' : 'bg-blue-50 border-blue-100'}`}>
+                <div className={`rounded-xl p-4 border ${mode === 'match' ? 'bg-stone-50 border-stone-200' : 'bg-stone-50 border-stone-200'}`}>
                   <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${mode === 'match' ? 'bg-blue-500' : 'bg-blue-600'}`}>{mTag}</div>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-gray-900 text-xs font-bold ${mode === 'match' ? 'bg-[#8b1a1a]' : 'bg-[#8b1a1a]'}`}>{mTag}</div>
                     <span className="font-bold">{mForm.name || mLabel}八字</span>
                   </div>
                   <div className="text-sm text-gray-700 space-y-1">
@@ -370,7 +370,7 @@ export default function MatchPage() {
                         <span className="font-medium">{p.gan}{p.zhi}</span>
                       </div>
                     ))}
-                    <div className={`pt-2 border-t mt-2 ${mode === 'match' ? 'border-blue-200' : 'border-blue-200'}`}>
+                    <div className={`pt-2 border-t mt-2 ${mode === 'match' ? 'border-stone-200' : 'border-stone-200'}`}>
                       <span className="text-gray-500">日主：</span>
                       <span className="font-bold">{mBazi.dayMaster}（{mBazi.yinYang}·{mBazi.wuXing}）</span>
                     </div>
@@ -380,7 +380,7 @@ export default function MatchPage() {
               {fBazi && (
                 <div className={`rounded-xl p-4 border ${mode === 'match' ? 'bg-pink-50 border-pink-100' : 'bg-emerald-50 border-emerald-100'}`}>
                   <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${mode === 'match' ? 'bg-pink-500' : 'bg-emerald-500'}`}>{fTag}</div>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-gray-900 text-xs font-bold ${mode === 'match' ? 'bg-pink-500' : 'bg-emerald-500'}`}>{fTag}</div>
                     <span className="font-bold">{fForm.name || fLabel}八字</span>
                   </div>
                   <div className="text-sm text-gray-700 space-y-1">
@@ -415,10 +415,10 @@ export default function MatchPage() {
                   </>
                 ) : (
                   <>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-gray-50 border-gray-200 text-gray-400'}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-stone-50 border-stone-200 text-[#8b1a1a]' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>
                       {result.ganHeMatch ? '🤝' : '○'} 天干相合{result.ganHeMatch ? ' ✓' : ' ✗'}
                     </span>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-gray-50 border-gray-200 text-gray-400'}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-stone-50 border-stone-200 text-[#8b1a1a]' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>
                       {result.zhiHeMatch ? '🤝' : '○'} 地支相合{result.zhiHeMatch ? ' ✓' : ' ✗'}
                     </span>
                   </>
@@ -452,8 +452,8 @@ export default function MatchPage() {
                 {mode === 'match' ? '十神互动' : '角色定位'}
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
-                <div className={`rounded-lg p-4 ${mode === 'match' ? 'bg-blue-50' : 'bg-blue-50'}`}>
-                  <div className={`text-sm font-medium mb-2 ${mode === 'match' ? 'text-blue-600' : 'text-blue-600'}`}>
+                <div className={`rounded-lg p-4 ${mode === 'match' ? 'bg-stone-50' : 'bg-stone-50'}`}>
+                  <div className={`text-sm font-medium mb-2 ${mode === 'match' ? 'text-[#8b1a1a]' : 'text-[#8b1a1a]'}`}>
                     {mLabel} → {fLabel}
                   </div>
                   <div className="text-lg font-bold text-gray-800">{result.mToF_SS}</div>
@@ -468,7 +468,7 @@ export default function MatchPage() {
                 </div>
               </div>
               {result.pairMatch && (
-                <div className="mt-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-4 border border-amber-100">
+                <div className="mt-4 bg-stone-50 border border-stone-200 rounded-lg p-4 border border-amber-100">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">✨</span>
                     <span className="font-bold text-amber-700">
@@ -524,7 +524,7 @@ export default function MatchPage() {
             </div>
 
             {/* 建议 */}
-            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-6 border border-amber-100">
+            <div className="bg-stone-50 border border-stone-200 rounded-xl p-6 border border-amber-100">
               <h3 className="font-bold text-lg mb-4 font-serif">
                 {mode === 'match' ? '💡 婚配建议' : '💡 合作建议'}
               </h3>
@@ -542,12 +542,12 @@ export default function MatchPage() {
             {(loadingAi || result.aiAnalysis) && (
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-fate-500 to-fate-600 rounded-lg flex items-center justify-center text-white text-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-fate-500 to-fate-600 rounded-lg flex items-center justify-center text-gray-900 text-sm">
                     🤖
                   </div>
                   <div>
                     <h3 className="font-bold text-lg font-serif">AI 深度分析</h3>
-                    <p className="text-xs text-gray-400">基于双方八字的专业级{mode === 'match' ? '婚配' : '合作'}解读</p>
+                    <p className="text-xs text-gray-500">基于双方八字的专业级{mode === 'match' ? '婚配' : '合作'}解读</p>
                   </div>
                 </div>
 

@@ -2,69 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=ZCOOL+XiaoWei&display=swap');
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-rgb: 10, 14, 39;
+  --foreground-rgb: 26, 26, 26;
+  --background-rgb: 245, 240, 230;
 }
 
-/* 全局背景渐变 - 从深海军蓝到明亮天蓝 */
+/* 全局背景 - 宣纸米黄 */
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(180deg, #050818 0%, #0a0e27 20%, #0f1a3d 35%, #1a3a6e 55%, #2563eb 75%, #60a5fa 90%, #93c5fd 100%);
+  background: #f5f0e6;
   min-height: 100vh;
+  font-family: 'Noto Serif SC', Georgia, Cambria, 'Times New Roman', serif;
 }
 
 .font-serif {
-  font-family: Georgia, Cambria, 'Times New Roman', serif;
+  font-family: 'Noto Serif SC', Georgia, Cambria, 'Times New Roman', serif;
 }
 
 .font-brush {
   font-family: 'ZCOOL XiaoWei', 'STXingkai', 'KaiTi', cursive;
 }
 
-/* Kimi 风格背景 */
-.bg-kimi-gradient {
-  background: linear-gradient(135deg, #0a0e27 0%, #0f1a3d 50%, #0a0e27 100%);
-}
-
-/* 卡片样式 */
-.kimi-card {
-  background: white;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+/* 东方美学卡片 */
+.oriental-card {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid #d6d0c4;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 /* 文字颜色 */
-.text-kimi-primary { color: #ffffff; }
-.text-kimi-secondary { color: #cbd5e1; }
-.text-kimi-muted { color: #94a3b8; }
+.text-oriental-primary { color: #1a1a1a; }
+.text-oriental-secondary { color: #444444; }
+.text-oriental-muted { color: #666666; }
 
 /* 按钮样式 */
-.btn-kimi {
+.btn-oriental {
   background: white;
-  color: #0a0e27;
+  color: #8b1a1a;
+  border: 1px solid #8b1a1a;
   border-radius: 0.75rem;
   font-weight: 500;
   transition: all 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-.btn-kimi:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.btn-oriental:hover {
+  background: #8b1a1a;
+  color: white;
 }
 
-.btn-kimi-accent {
-  background: #3b82f6;
+.btn-oriental-accent {
+  background: #8b1a1a;
   color: white;
   border-radius: 0.75rem;
   font-weight: 500;
   transition: all 0.2s;
 }
-.btn-kimi-accent:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
+.btn-oriental-accent:hover {
+  background: #6b1414;
 }
 
 /* 隐藏滚动条 */
@@ -84,18 +80,6 @@ body {
 @keyframes spin-reverse {
   from { transform: rotate(360deg); }
   to { transform: rotate(0deg); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.5); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px) translateX(0px); }
-  25% { transform: translateY(-20px) translateX(10px); }
-  50% { transform: translateY(-10px) translateX(-10px); }
-  75% { transform: translateY(-30px) translateX(5px); }
 }
 
 /* 阿里妈妈刀隶体 */

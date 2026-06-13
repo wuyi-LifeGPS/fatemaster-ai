@@ -158,8 +158,8 @@ export default function CareerPage() {
   }
 
   return (
-    <main className="min-h-screen">
-      <header className="bg-[#0a0e27]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
+    <main className="min-h-screen bg-[#f5f0e6]">
+      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">← AI 命理大师</Link>
           <h1 className="text-lg font-serif">事业合作分析</h1>
@@ -168,7 +168,7 @@ export default function CareerPage() {
 
       <div className="max-w-4xl mx-auto py-8 px-4">
         {!result && (
-          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 mb-6 border border-blue-100">
+          <div className="bg-stone-50 border border-stone-200 rounded-xl p-6 mb-6 border border-stone-200">
             <h2 className="text-xl font-bold mb-2 font-serif">事业合作八字分析</h2>
             <p className="text-gray-600 text-sm">
               通过双方八字的五行互补、十神互动、喜用神互济等维度，评估商业合作契合度。
@@ -183,14 +183,14 @@ export default function CareerPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white rounded-xl shadow-sm p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">甲</div>
+                    <div className="w-8 h-8 bg-[#8b1a1a] rounded-full flex items-center justify-center text-gray-900 text-sm font-bold">甲</div>
                     <h3 className="font-bold text-lg">甲方信息</h3>
                   </div>
                   <PersonFormSelector form={mForm} setForm={setMForm} />
                 </div>
                 <div className="bg-white rounded-xl shadow-sm p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white text-sm font-bold">乙</div>
+                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-gray-900 text-sm font-bold">乙</div>
                     <h3 className="font-bold text-lg">乙方信息</h3>
                   </div>
                   <PersonFormSelector form={fForm} setForm={setFForm} />
@@ -199,7 +199,7 @@ export default function CareerPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold text-lg transition-all shadow-lg shadow-blue-500/30"
+                className="w-full bg-[#8b1a1a] hover:bg-[#6b1414] text-gray-900 py-3 rounded-lg font-bold text-lg transition-all shadow-lg "
               >
                 {loading ? '分析中...' : '🤝 开始事业合作分析'}
               </button>
@@ -209,7 +209,7 @@ export default function CareerPage() {
               <div className="mt-6">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-3"
+                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#8b1a1a] mb-3"
                 >
                   <span>📜</span>
                   <span>查询历史（{history.length} 条）</span>
@@ -226,9 +226,9 @@ export default function CareerPage() {
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="font-medium text-sm text-gray-800">{record.title}</div>
-                            <div className="text-xs text-gray-400 mt-0.5">{record.resultSummary}</div>
+                            <div className="text-xs text-gray-500 mt-0.5">{record.resultSummary}</div>
                           </div>
-                          <div className="text-xs text-gray-400 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                          <div className="text-xs text-gray-500 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
                       </div>
                     ))}
@@ -241,13 +241,13 @@ export default function CareerPage() {
 
         {result && (
           <div className="space-y-6">
-            <button onClick={() => setResult(null)} className="text-blue-600 text-sm hover:underline">← 重新输入</button>
-            <div className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-2xl p-8 border border-blue-100 text-center">
+            <button onClick={() => setResult(null)} className="text-[#8b1a1a] text-sm hover:underline">← 重新输入</button>
+            <div className="bg-stone-50 border border-stone-200 rounded-2xl p-8 border border-stone-200 text-center">
               <div className="text-sm text-gray-500 mb-2">合作契合度</div>
               <div className={`text-6xl font-bold mb-2 ${result.levelColor}`}>{result.score}</div>
               <div className="flex justify-center gap-1 mb-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? 'text-blue-400' : 'text-gray-300'}`}>★</span>
+                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? 'text-[#8b1a1a]' : 'text-gray-300'}`}>★</span>
                 ))}
               </div>
               <div className={`text-xl font-bold ${result.levelColor}`}>{result.level}</div>
@@ -255,9 +255,9 @@ export default function CareerPage() {
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               {mBazi && (
-                <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">甲</div>
+                    <div className="w-6 h-6 bg-[#8b1a1a] rounded-full flex items-center justify-center text-gray-900 text-xs font-bold">甲</div>
                     <span className="font-bold">{mForm.name || '甲方'}八字</span>
                   </div>
                   <div className="text-sm text-gray-700 space-y-1">
@@ -267,7 +267,7 @@ export default function CareerPage() {
                         <span className="font-medium">{p.gan}{p.zhi}</span>
                       </div>
                     ))}
-                    <div className="pt-2 border-t border-blue-200 mt-2">
+                    <div className="pt-2 border-t border-stone-200 mt-2">
                       <span className="text-gray-500">日主：</span>
                       <span className="font-bold">{mBazi.dayMaster}（{mBazi.yinYang}·{mBazi.wuXing}）</span>
                     </div>
@@ -277,7 +277,7 @@ export default function CareerPage() {
               {fBazi && (
                 <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold">乙</div>
+                    <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-gray-900 text-xs font-bold">乙</div>
                     <span className="font-bold">{fForm.name || '乙方'}八字</span>
                   </div>
                   <div className="text-sm text-gray-700 space-y-1">
@@ -298,10 +298,10 @@ export default function CareerPage() {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">合作气场</h3>
               <div className="flex flex-wrap gap-2 mb-4">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-gray-50 border-gray-200 text-gray-400'}`}>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-stone-50 border-stone-200 text-[#8b1a1a]' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>
                   {result.ganHeMatch ? '🤝' : '○'} 天干相合{result.ganHeMatch ? ' ✓' : ' ✗'}
                 </span>
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-gray-50 border-gray-200 text-gray-400'}`}>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-stone-50 border-stone-200 text-[#8b1a1a]' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>
                   {result.zhiHeMatch ? '🤝' : '○'} 地支相合{result.zhiHeMatch ? ' ✓' : ' ✗'}
                 </span>
               </div>
@@ -314,8 +314,8 @@ export default function CareerPage() {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">角色定位</h3>
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-sm text-blue-600 font-medium mb-2">甲方 → 乙方</div>
+                <div className="bg-stone-50 rounded-lg p-4">
+                  <div className="text-sm text-[#8b1a1a] font-medium mb-2">甲方 → 乙方</div>
                   <div className="text-lg font-bold text-gray-800">{result.mToF_SS}</div>
                   <p className="text-sm text-gray-600 mt-2">{result.roles.mRole}</p>
                 </div>
@@ -326,7 +326,7 @@ export default function CareerPage() {
                 </div>
               </div>
               {result.pairMatch && (
-                <div className="mt-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-4 border border-amber-100">
+                <div className="mt-4 bg-stone-50 border border-stone-200 rounded-lg p-4 border border-amber-100">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">✨</span>
                     <span className="font-bold text-amber-700">理想合作组合：{result.pairMatch.desc}</span>
@@ -362,7 +362,7 @@ export default function CareerPage() {
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-6 border border-amber-100">
+            <div className="bg-stone-50 border border-stone-200 rounded-xl p-6 border border-amber-100">
               <h3 className="font-bold text-lg mb-4 font-serif">💡 合作建议</h3>
               <div className="space-y-3">
                 {result.suggestions.map((item, i) => (
@@ -378,12 +378,12 @@ export default function CareerPage() {
             {(aiLoading || result.aiAnalysis) && (
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white text-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#8b1a1a] to-[#a52a2a] rounded-lg flex items-center justify-center text-gray-900 text-sm">
                     🤖
                   </div>
                   <div>
                     <h3 className="font-bold text-lg font-serif">AI 深度分析</h3>
-                    <p className="text-xs text-gray-400">基于双方八字的专业级合作解读</p>
+                    <p className="text-xs text-gray-500">基于双方八字的专业级合作解读</p>
                   </div>
                 </div>
 

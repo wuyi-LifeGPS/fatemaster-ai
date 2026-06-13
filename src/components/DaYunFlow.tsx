@@ -78,7 +78,7 @@ export default function DaYunFlow({
       case '吉':
         return 'text-amber-600 bg-amber-50 border-amber-200'
       case '平':
-        return 'text-blue-600 bg-blue-50 border-blue-200'
+        return 'text-[#8b1a1a] bg-stone-50 border-stone-200'
       case '凶':
         return 'text-slate-600 bg-slate-100 border-slate-300'
       case '大凶':
@@ -270,7 +270,7 @@ export default function DaYunFlow({
             <span>吉</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-blue-500" />
+            <div className="w-3 h-3 rounded-full bg-[#8b1a1a]" />
             <span>平</span>
           </div>
           <div className="flex items-center gap-1">
@@ -378,7 +378,7 @@ export default function DaYunFlow({
               {(() => {
                 const advice = getDaYunAdvice(selectedDaYun)
                 const items = [
-                  { icon: '💼', title: '事业', key: 'career', color: 'border-l-4 border-l-blue-400' },
+                  { icon: '💼', title: '事业', key: 'career', color: 'border-l-4 border-l-[#8b1a1a]' },
                   { icon: '💰', title: '财运', key: 'wealth', color: 'border-l-4 border-l-amber-400' },
                   { icon: '❤️', title: '感情', key: 'love', color: 'border-l-4 border-l-red-400' },
                   { icon: '🏥', title: '健康', key: 'health', color: 'border-l-4 border-l-green-400' },
@@ -500,7 +500,7 @@ export default function DaYunFlow({
                         : ln.fortuneLevel === '吉'
                         ? 'text-amber-500'
                         : ln.fortuneLevel === '平'
-                        ? 'text-blue-500'
+                        ? 'text-[#8b1a1a]'
                         : ln.fortuneLevel === '凶'
                         ? 'text-slate-500'
                         : 'text-gray-500'
@@ -610,7 +610,7 @@ export default function DaYunFlow({
                     : selectedLiuNian.fortuneLevel === '吉'
                     ? 'text-amber-600'
                     : selectedLiuNian.fortuneLevel === '平'
-                    ? 'text-blue-600'
+                    ? 'text-[#8b1a1a]'
                     : selectedLiuNian.fortuneLevel === '凶'
                     ? 'text-slate-600'
                     : 'text-gray-600'

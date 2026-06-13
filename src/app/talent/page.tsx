@@ -127,20 +127,20 @@ export default function TalentPage() {
   const wxColor: Record<string, string> = {
     '金': 'text-amber-600',
     '木': 'text-green-600',
-    '水': 'text-blue-600',
+    '水': 'text-[#8b1a1a]',
     '火': 'text-red-600',
     '土': 'text-yellow-700',
   }
 
   return (
-    <main className="min-h-screen text-white">
+    <main className="min-h-screen text-gray-900">
       {/* Header */}
-      <header className="bg-[#0a0e27]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
+      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-lg font-bold font-serif text-white hover:text-white transition-colors">
+          <Link href="/" className="text-lg font-bold font-serif text-gray-900 hover:text-gray-900 transition-colors">
             ← AI 命理大师
           </Link>
-          <h1 className="text-base font-serif text-white">天赋分析</h1>
+          <h1 className="text-base font-serif text-gray-900">天赋分析</h1>
         </div>
       </header>
 
@@ -149,7 +149,7 @@ export default function TalentPage() {
           <>
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold font-serif mb-2 text-gray-900">🧬 天赋基因解码</h2>
-              <p className="text-gray-400">融合八字命理 × 加德纳多元智能理论，发现你的天赋密码</p>
+              <p className="text-gray-500">融合八字命理 × 加德纳多元智能理论，发现你的天赋密码</p>
             </div>
 
             <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-6 max-w-lg mx-auto">
@@ -163,7 +163,7 @@ export default function TalentPage() {
                   type="text"
                   value={formData.birthPlace}
                   onChange={(e) => setFormData({ ...formData, birthPlace: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 text-gray-900 placeholder-gray-400"
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b1a1a]/30/50 text-gray-900 placeholder-gray-400"
                   placeholder="如：北京"
                 />
               </div>
@@ -173,7 +173,7 @@ export default function TalentPage() {
                 <textarea
                   value={formData.note}
                   onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 text-gray-900 placeholder-gray-400"
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b1a1a]/30/50 text-gray-900 placeholder-gray-400"
                   placeholder="如有特殊需求或想了解的具体问题，可在此填写"
                   rows={3}
                 />
@@ -182,7 +182,7 @@ export default function TalentPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all disabled:opacity-50 shadow-lg shadow-blue-600/20 hover:shadow-blue-500/30"
+                className="w-full bg-[#8b1a1a] hover:bg-[#6b1414] text-gray-900 py-3 rounded-lg font-medium transition-all disabled:opacity-50 shadow-lg  hover:"
               >
                 {loading ? '🔮 正在解码天赋基因...' : '🧬 开始天赋分析'}
               </button>
@@ -193,7 +193,7 @@ export default function TalentPage() {
               <div className="mt-6 max-w-lg mx-auto">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 mb-3"
+                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-600 mb-3"
                 >
                   <span>📜</span>
                   <span>查询历史（{history.length} 条）</span>
@@ -210,9 +210,9 @@ export default function TalentPage() {
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="font-medium text-sm text-gray-800">{record.title}</div>
-                            <div className="text-xs text-gray-400 mt-0.5">{record.resultSummary}</div>
+                            <div className="text-xs text-gray-500 mt-0.5">{record.resultSummary}</div>
                           </div>
-                          <div className="text-xs text-gray-400 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                          <div className="text-xs text-gray-500 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
                       </div>
                     ))}
@@ -232,7 +232,7 @@ export default function TalentPage() {
                   setAiAnalysis('')
                   setBaziResult(null)
                 }}
-                className="text-blue-600 hover:text-blue-500 text-sm"
+                className="text-[#8b1a1a] hover:text-[#6b1414] text-sm"
               >
                 ← 重新分析
               </button>
@@ -242,7 +242,7 @@ export default function TalentPage() {
             <div className="bg-white border border-gray-200 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">{formData.name || '命主'}</span>
-                <span className="text-gray-400">·</span>
+                <span className="text-gray-500">·</span>
                 <span className="text-gray-500">
                   {baziResult?.dayMaster}日主 · {baziResult?.yinYang}性{baziResult?.wuXing}命
                 </span>
@@ -259,7 +259,7 @@ export default function TalentPage() {
                   }
                   return (
                   <div key={pillar.name} className="bg-white border border-gray-100 rounded-lg p-3 text-center">
-                    <div className="text-xs text-gray-400 mb-1">{pillar.name}</div>
+                    <div className="text-xs text-gray-500 mb-1">{pillar.name}</div>
                     <div className="flex items-center justify-center gap-1.5">
                       <span className={`text-xl font-bold ${wxColor[ganWx[pillar.gan]] || 'text-gray-600'}`}>{pillar.gan}</span>
                       <span className={`text-xl font-bold ${wxColor[zhiWx[pillar.zhi]] || 'text-gray-600'}`}>{pillar.zhi}</span>
@@ -273,9 +273,9 @@ export default function TalentPage() {
             {/* 雷达图 */}
             <div className="bg-white border border-gray-200 rounded-xl p-6">
               <h3 className="text-xl font-bold mb-2 font-serif text-gray-900">🎯 多元智能雷达图</h3>
-              <p className="text-sm text-gray-400 mb-6">基于八字五行能量与十神格局的天赋评估</p>
+              <p className="text-sm text-gray-500 mb-6">基于八字五行能量与十神格局的天赋评估</p>
               <TalentRadar data={radarData} size={360} />
-              <p className="text-center text-xs text-gray-400 mt-4">
+              <p className="text-center text-xs text-gray-500 mt-4">
                 分值 0-100 · 基于五行分布、十神透出、日主特质、格局类型综合计算
               </p>
             </div>
@@ -298,7 +298,7 @@ export default function TalentPage() {
                           ? 'bg-amber-500/15 text-amber-600 border border-amber-500/20'
                           : i === 1
                           ? 'bg-teal-500/15 text-teal-600 border border-teal-500/20'
-                          : 'bg-blue-500/15 text-blue-600 border border-blue-500/20'
+                          : 'bg-[#8b1a1a]/15 text-[#8b1a1a] border border-[#8b1a1a]/20'
                       }`}
                     >
                       <span>{dim.icon}</span>
@@ -345,15 +345,15 @@ export default function TalentPage() {
                       />
                     </div>
 
-                    <p className="text-sm text-gray-400 mb-3">{dim.description}</p>
+                    <p className="text-sm text-gray-500 mb-3">{dim.description}</p>
 
                     {/* 日常表现对照 */}
                     <div className="bg-gray-50 border border-gray-100 rounded-lg p-3 mb-3">
-                      <p className="text-xs text-blue-600/80 mb-1.5 font-medium">✨ 日常表现对照</p>
+                      <p className="text-xs text-[#8b1a1a]/80 mb-1.5 font-medium">✨ 日常表现对照</p>
                       <div className="space-y-1">
                         {dim.dailySigns.map((s: string, idx: number) => (
                           <div key={idx} className="flex items-start gap-2 text-sm">
-                            <span className="text-gray-400 mt-0.5 text-[10px]">○</span>
+                            <span className="text-gray-500 mt-0.5 text-[10px]">○</span>
                             <span className="text-gray-500 text-sm">{s}</span>
                           </div>
                         ))}
@@ -364,7 +364,7 @@ export default function TalentPage() {
                     <div className="space-y-1.5">
                       {dim.strengths.map((s, idx) => (
                         <div key={idx} className="flex items-start gap-2 text-sm">
-                          <span className="text-blue-600 mt-0.5">✓</span>
+                          <span className="text-[#8b1a1a] mt-0.5">✓</span>
                           <span className="text-gray-600">{s}</span>
                         </div>
                       ))}
@@ -390,12 +390,12 @@ export default function TalentPage() {
                     >
                       <div className="flex items-center gap-1.5 mb-1">
                         <span className="text-sm">{dim.icon}</span>
-                        <span className="text-xs text-gray-400">{dim.label}</span>
+                        <span className="text-xs text-gray-500">{dim.label}</span>
                       </div>
                       <div className="text-lg font-bold" style={{ color }}>
                         {dim.score}
                       </div>
-                      <div className="text-xs text-gray-400">{dim.level}</div>
+                      <div className="text-xs text-gray-500">{dim.level}</div>
                     </div>
                   )
                 })}
@@ -411,13 +411,13 @@ export default function TalentPage() {
                     key={career.field}
                     className="flex items-start gap-4 p-4 rounded-lg bg-white border border-gray-100 hover:border-gray-200 transition-colors"
                   >
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center text-lg font-bold text-blue-600">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#8b1a1a]/20 flex items-center justify-center text-lg font-bold text-[#8b1a1a]">
                       {i + 1}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-gray-900">{career.field}</span>
-                        <span className="text-xs text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+                        <span className="text-xs text-[#8b1a1a] bg-stone-100 px-2 py-0.5 rounded-full">
                           匹配度 {Math.round(career.matchScore)}%
                         </span>
                       </div>
@@ -425,13 +425,13 @@ export default function TalentPage() {
                         {career.roles.map((role) => (
                           <span
                             key={role}
-                            className="text-xs bg-gray-100 text-gray-400 px-2 py-0.5 rounded"
+                            className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded"
                           >
                             {role}
                           </span>
                         ))}
                       </div>
-                      <p className="text-sm text-gray-400">{career.reason}</p>
+                      <p className="text-sm text-gray-500">{career.reason}</p>
                     </div>
                   </div>
                 ))}
@@ -450,7 +450,7 @@ export default function TalentPage() {
                       const content = parts.slice(1).join('**：')
                       return (
                         <div key={i} className="mb-4 last:mb-0">
-                          <h4 className="text-blue-600 font-bold mb-1">{title}</h4>
+                          <h4 className="text-[#8b1a1a] font-bold mb-1">{title}</h4>
                           <p className="text-gray-500 leading-relaxed">{content}</p>
                         </div>
                       )
@@ -468,8 +468,8 @@ export default function TalentPage() {
             {/* AI 深度解读 */}
             {aiLoading && (
               <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-                <div className="inline-flex items-center gap-2 text-gray-400">
-                  <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+                <div className="inline-flex items-center gap-2 text-gray-500">
+                  <div className="w-4 h-4 border-2 border-gray-300 border-t-[#8b1a1a] rounded-full animate-spin" />
                   <span>AI 正在深度解读你的天赋基因...</span>
                 </div>
               </div>
@@ -477,7 +477,7 @@ export default function TalentPage() {
 
             {aiAnalysis && (
               <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h3 className="text-xl font-bold mb-4 font-serif text-blue-600">🤖 AI 深度解读</h3>
+                <h3 className="text-xl font-bold mb-4 font-serif text-[#8b1a1a]">🤖 AI 深度解读</h3>
                 <div className="prose prose-sm max-w-none whitespace-pre-line text-gray-600 leading-relaxed">
                   {aiAnalysis}
                 </div>
@@ -486,7 +486,7 @@ export default function TalentPage() {
 
             {!aiAnalysis && !aiLoading && (
               <div className="text-center py-4">
-                <p className="text-gray-400 text-sm">AI 深度解读已自动加载中...</p>
+                <p className="text-gray-500 text-sm">AI 深度解读已自动加载中...</p>
               </div>
             )}
           </div>

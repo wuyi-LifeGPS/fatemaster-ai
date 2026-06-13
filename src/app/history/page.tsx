@@ -52,8 +52,8 @@ export default function HistoryPage() {
   }
 
   return (
-    <main className="min-h-screen">
-      <header className="bg-[#0a0e27]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
+    <main className="min-h-screen bg-[#f5f0e6]">
+      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">
             ← AI 命理大师
@@ -71,7 +71,7 @@ export default function HistoryPage() {
               onClick={() => setFilter(t)}
               className={`rounded-xl p-3 text-center transition-all ${
                 filter === t
-                  ? 'bg-blue-600 text-white shadow-md'
+                  ? 'bg-[#8b1a1a] text-gray-900 shadow-md'
                   : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-100'
               }`}
             >
@@ -97,10 +97,10 @@ export default function HistoryPage() {
         {filtered.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-4xl mb-3">📭</div>
-            <p className="text-gray-400">
+            <p className="text-gray-500">
               {filter === 'all' ? '暂无查询记录，去试试看吧～' : `暂无「${getTypeLabel(filter)}」的记录`}
             </p>
-            <Link href="/" className="text-blue-600 hover:underline text-sm mt-2 inline-block">
+            <Link href="/" className="text-[#8b1a1a] hover:underline text-sm mt-2 inline-block">
               返回首页 →
             </Link>
           </div>
@@ -117,7 +117,7 @@ export default function HistoryPage() {
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getTypeColor(record.type)}`}>
                         {getTypeLabel(record.type)}
                       </span>
-                      <span className="text-xs text-gray-400">{formatHistoryTime(record.timestamp)}</span>
+                      <span className="text-xs text-gray-500">{formatHistoryTime(record.timestamp)}</span>
                     </div>
                     <div className="font-medium text-gray-800 truncate">{record.title}</div>
                     <div className="text-sm text-gray-500 mt-0.5">{record.resultSummary}</div>
@@ -125,13 +125,13 @@ export default function HistoryPage() {
                   <div className="flex items-center gap-2 ml-3">
                     <Link
                       href={`/${record.type}`}
-                      className="text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-md hover:bg-fate-200 transition-colors"
+                      className="text-xs bg-stone-50 text-[#8b1a1a] px-3 py-1.5 rounded-md hover:bg-fate-200 transition-colors"
                     >
                       再次查询
                     </Link>
                     <button
                       onClick={() => handleDelete(record.id)}
-                      className="text-xs text-gray-400 hover:text-red-500 px-2 py-1.5 transition-colors"
+                      className="text-xs text-gray-500 hover:text-red-500 px-2 py-1.5 transition-colors"
                     >
                       ✕
                     </button>
@@ -147,7 +147,7 @@ export default function HistoryPage() {
           <div className="mt-6 text-center">
             <button
               onClick={() => handleClearType(filter)}
-              className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+              className="text-sm text-gray-500 hover:text-red-500 transition-colors"
             >
               清空「{getTypeLabel(filter)}」的记录
             </button>

@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body className="min-h-screen text-white">
+      <body className="min-h-screen text-gray-900">
         <link
           rel="stylesheet"
           href="https://chinese-fonts-cdn.netlify.app/packages/ysfxt/dist/Slidefu-Regular/result.css"

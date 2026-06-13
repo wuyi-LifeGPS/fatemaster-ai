@@ -146,9 +146,9 @@ export default function DailyPage() {
   }
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[#f5f0e6]">
       {/* Header */}
-      <header className="bg-[#0a0e27]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
+      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">
             ← AI 命理大师
@@ -160,7 +160,7 @@ export default function DailyPage() {
       <div className="max-w-2xl mx-auto py-8 px-4">
         {/* 今天日期 */}
         {todayGanZhi && (
-          <div className="bg-gradient-to-br from-[#0a0e27] to-[#121a35] text-white rounded-xl p-6 mb-6 text-center">
+          <div className="bg-[#faf8f3] border border-stone-200 text-gray-900 rounded-xl p-6 mb-6 text-center">
             <div className="text-sm text-fate-300 mb-2">
               {todayGanZhi.dateStr} · 星期{todayGanZhi.weekday}
             </div>
@@ -169,7 +169,7 @@ export default function DailyPage() {
               {todayGanZhi.month.gan}{todayGanZhi.month.zhi}月
               {todayGanZhi.day.gan}{todayGanZhi.day.zhi}日
             </div>
-            <div className="text-sm text-blue-400">
+            <div className="text-sm text-[#8b1a1a]">
               今日日柱：{todayGanZhi.day.gan}{todayGanZhi.day.zhi}
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function DailyPage() {
               <button
                 type="submit"
                 disabled={loading || !todayGanZhi}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+                className="w-full bg-[#8b1a1a] hover:bg-[#6b1414] text-gray-900 py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
               >
                 {loading ? '分析中...' : '查看今日运势'}
               </button>
@@ -198,7 +198,7 @@ export default function DailyPage() {
               <div className="mt-6">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-3"
+                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#8b1a1a] mb-3"
                 >
                   <span>📜</span>
                   <span>查询历史（{history.length} 条）</span>
@@ -215,9 +215,9 @@ export default function DailyPage() {
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="font-medium text-sm text-gray-800">{record.title}</div>
-                            <div className="text-xs text-gray-400 mt-0.5">{record.resultSummary}</div>
+                            <div className="text-xs text-gray-500 mt-0.5">{record.resultSummary}</div>
                           </div>
-                          <div className="text-xs text-gray-400 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                          <div className="text-xs text-gray-500 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
                       </div>
                     ))}
@@ -234,13 +234,13 @@ export default function DailyPage() {
             {/* 重新输入按钮 */}
             <button
               onClick={() => setResult(null)}
-              className="text-blue-600 text-sm hover:underline"
+              className="text-[#8b1a1a] text-sm hover:underline"
             >
               ← 重新输入
             </button>
 
             {/* 综合评分 */}
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-100">
+            <div className="bg-stone-50 border border-stone-200 rounded-xl p-6 border border-amber-100">
               <div className="text-center">
                 <div className="text-sm text-gray-500 mb-2">综合运势</div>
                 <div className="text-5xl font-bold text-amber-700 mb-2">{result.scores.overall}</div>
@@ -276,10 +276,10 @@ export default function DailyPage() {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-3 font-serif">今日运势解读</h3>
               <p className="text-gray-600 leading-relaxed">{result.description}</p>
-              <div className="mt-4 text-sm text-gray-400">
-                今日日干十神：<span className="text-blue-700 font-medium">{result.dayShiShen.gan}</span>
+              <div className="mt-4 text-sm text-gray-500">
+                今日日干十神：<span className="text-[#8b1a1a] font-medium">{result.dayShiShen.gan}</span>
                 {' · '}
-                日支本气：<span className="text-blue-700 font-medium">{result.dayShiShen.zhiBenQi}</span>
+                日支本气：<span className="text-[#8b1a1a] font-medium">{result.dayShiShen.zhiBenQi}</span>
               </div>
             </div>
 
@@ -324,7 +324,7 @@ export default function DailyPage() {
                       <span key={i} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">
                         {h}
                       </span>
-                    )) : <span className="text-xs text-gray-400">今日无特别吉时</span>}
+                    )) : <span className="text-xs text-gray-500">今日无特别吉时</span>}
                   </div>
                 </div>
                 <div>
@@ -334,14 +334,14 @@ export default function DailyPage() {
                       <span key={i} className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded">
                         {h}
                       </span>
-                    )) : <span className="text-xs text-gray-400">今日无特别凶时</span>}
+                    )) : <span className="text-xs text-gray-500">今日无特别凶时</span>}
                   </div>
                 </div>
               </div>
             </div>
 
             {/* 开运建议 */}
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100">
+            <div className="bg-stone-50 border border-stone-200 rounded-xl p-6 border border-purple-100">
               <h3 className="font-bold text-lg mb-4 font-serif">开运指南</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-3">

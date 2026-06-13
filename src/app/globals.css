@@ -14,11 +14,12 @@ body {
   color: rgb(var(--foreground-rgb));
   background: #f5f0e6;
   min-height: 100vh;
-  font-family: 'Noto Serif SC', Georgia, Cambria, 'Times New Roman', serif;
+  font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', 'STSong', 'Georgia', 'Times New Roman', serif;
 }
 
+/* 宋体为主 */
 .font-serif {
-  font-family: 'Noto Serif SC', Georgia, Cambria, 'Times New Roman', serif;
+  font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', 'STSong', 'Georgia', 'Times New Roman', serif;
 }
 
 .font-brush {

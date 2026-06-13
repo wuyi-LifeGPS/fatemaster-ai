@@ -222,8 +222,8 @@ export default function Home() {
 
           {/* 标题区域 - 留白更多 */}
           <div className="text-center px-4">
-            <h1 className="text-[28px] sm:text-4xl md:text-5xl mb-4 font-daoli text-[#8b1a1a] tracking-wide whitespace-nowrap"
-              style={{ fontWeight: 400 }}
+            <h1 className="text-[28px] sm:text-4xl md:text-5xl mb-4 font-serif font-bold text-[#8b1a1a] tracking-wide whitespace-nowrap"
+              style={{ fontWeight: 700 }}
             >
               <span>知命改运</span>
               <span className="mx-1 sm:mx-2 text-[#1a1a1a]">·</span>

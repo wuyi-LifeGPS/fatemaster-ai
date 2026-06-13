@@ -32,7 +32,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        'serif': ['Noto Serif SC', 'Georgia', 'Cambria', 'serif'],
+        'serif': ['Noto Serif SC', 'Songti SC', 'SimSun', 'STSong', 'Georgia', 'Times New Roman', 'serif'],
         'slidefu': ['Slidefu', 'Georgia', 'serif'],
         'daoli': ['AlimamaDaoLiTi', 'LiSu', 'STLiti', 'serif'],
       }

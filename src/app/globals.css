@@ -38,18 +38,19 @@ body {
 
 /* 星空背景 */
 .moonly-bg {
-  background: linear-gradient(180deg, #1a1428 0%, #0f0b1a 50%, #0a0712 100%);
+  background: 
+    linear-gradient(180deg, #1a1428 0%, #0f0b1a 50%, #0a0712 100%);
   min-height: 100vh;
   position: relative;
 }
 
 .moonly-bg::before {
   content: '';
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  height: 100vh;
   background-image: url('/images/bg-starry.png');
   background-size: cover;
   background-position: center top;
@@ -61,17 +62,13 @@ body {
 
 /* 毛玻璃卡片 */
 .moonly-card {
-  background: var(--moonly-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(35, 30, 60, 0.75);
   border: 1px solid var(--moonly-card-border);
   border-radius: 16px;
 }
 
 .moonly-card-light {
   background: rgba(50, 42, 80, 0.5);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
 }
@@ -120,9 +117,7 @@ body {
 
 /* Tab 导航 */
 .tab-nav {
-  background: rgba(15, 11, 26, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(15, 11, 26, 0.92);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -134,7 +129,7 @@ body {
   color: var(--moonly-gold);
 }
 .tab-item.active .tab-icon {
-  filter: drop-shadow(0 0 8px rgba(201, 169, 110, 0.5));
+  filter: drop-shadow(0 0 6px rgba(201, 169, 110, 0.4));
 }
 
 /* 顶部导航滑动 */

@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 const DIVINATION_TOOLS = [
   {
-    icon: '☯',
+    icon: '六',
     label: '六爻卜卦',
     desc: '铜钱起卦，问事占断',
     href: '/bu/liuyao',
@@ -14,7 +14,7 @@ const DIVINATION_TOOLS = [
     border: 'border-amber-500/20',
   },
   {
-    icon: '❀',
+    icon: '梅',
     label: '梅花易数',
     desc: '象数起卦，随心而动',
     href: '/bu/meihua',
@@ -23,7 +23,7 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
-    icon: '✦',
+    icon: '紫',
     label: '紫微斗数',
     desc: '星曜排盘，命格详解',
     href: '/bu/ziwei',
@@ -32,7 +32,7 @@ const DIVINATION_TOOLS = [
     border: 'border-purple-500/20',
   },
   {
-    icon: '🌙',
+    icon: '梦',
     label: '周公解梦',
     desc: '梦境解析，吉凶预兆',
     href: '/bu/jiemeng',
@@ -41,7 +41,7 @@ const DIVINATION_TOOLS = [
     border: 'border-blue-500/20',
   },
   {
-    icon: '🔮',
+    icon: '塔',
     label: '塔罗占卜',
     desc: '西方塔罗，牌阵解读',
     href: '/bu/tarot',
@@ -50,7 +50,7 @@ const DIVINATION_TOOLS = [
     border: 'border-indigo-500/20',
   },
   {
-    icon: '🎴',
+    icon: '谕',
     label: '神谕卡',
     desc: '灵性指引，每日启示',
     href: '/bu/oracle',

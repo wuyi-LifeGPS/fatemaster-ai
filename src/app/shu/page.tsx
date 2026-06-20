@@ -11,7 +11,7 @@ const BOOKS = [
     tag: '道家',
     chapters: 81,
     readTime: '约 45 分钟',
-    icon: '☯',
+    icon: '道',
   },
   {
     title: '阴符经',
@@ -20,7 +20,7 @@ const BOOKS = [
     tag: '兵家',
     chapters: 3,
     readTime: '约 10 分钟',
-    icon: '⚔',
+    icon: '符',
   },
   {
     title: '心之力',
@@ -29,7 +29,7 @@ const BOOKS = [
     tag: '励志',
     chapters: 1,
     readTime: '约 15 分钟',
-    icon: '🔥',
+    icon: '心',
   },
   {
     title: '黄帝内经',
@@ -38,7 +38,7 @@ const BOOKS = [
     tag: '养生',
     chapters: 162,
     readTime: '精选 30 分钟',
-    icon: '🌿',
+    icon: '经',
   },
   {
     title: '周易',
@@ -47,7 +47,7 @@ const BOOKS = [
     tag: '易学',
     chapters: 64,
     readTime: '约 60 分钟',
-    icon: '☰',
+    icon: '易',
   },
   {
     title: '金刚经',
@@ -56,7 +56,7 @@ const BOOKS = [
     tag: '佛学',
     chapters: 32,
     readTime: '约 25 分钟',
-    icon: '🪷',
+    icon: '金',
   },
   {
     title: '心经',
@@ -65,7 +65,7 @@ const BOOKS = [
     tag: '佛学',
     chapters: 1,
     readTime: '约 5 分钟',
-    icon: '💎',
+    icon: '心',
   },
   {
     title: '清静经',
@@ -74,7 +74,7 @@ const BOOKS = [
     tag: '道家',
     chapters: 1,
     readTime: '约 8 分钟',
-    icon: '🌊',
+    icon: '清',
   },
 ]
 

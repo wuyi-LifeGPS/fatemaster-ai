@@ -7,6 +7,7 @@ import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } f
 import { lunarToSolar } from '@/lib/lunar'
 import PersonFormSelector from '@/components/PersonFormSelector'
 import DaYunFlow from '@/components/DaYunFlow'
+import { addProfile } from '@/lib/bazi-profiles'
 
 interface BaziResult {
   pillars: { name: string; gan: string; zhi: string }[]
@@ -490,6 +491,37 @@ export default function BaziPage() {
                 </div>
               </div>
             )}
+
+            {/* 保存到命盘 */}
+            {result && (
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <button
+                  onClick={() => {
+                    const hourZhiLabels = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+                    const hourZhiIdx = Math.floor(formData.birthHour / 2) % 12;
+                    const birthTimeLabel = hourZhiLabels[hourZhiIdx] + '时';
+                    addProfile({
+                      name: formData.name || '未命名',
+                      gender: formData.gender === 'male' ? '男' : '女',
+                      year: formData.birthYear,
+                      month: formData.birthMonth,
+                      day: formData.birthDay,
+                      hour: formData.birthHour,
+                      minute: formData.birthMinute,
+                      isLunar: formData.calendarType === 'lunar',
+                      birthTimeLabel,
+                    });
+                    alert('已保存到命盘！');
+                  }}
+                  className="w-full btn-gold py-3 text-sm font-semibold"
+                >
+                  💾 保存到我的命盘
+                </button>
+                <p className="text-center text-xs text-moonly-text-muted mt-2">
+                保存后可在「命」首页查看完整命盘
+              </p>
+            </div>
+          )}
 
             {/* 更多分析导航 */}
             <div className="bg-gradient-to-br from-stone-50 to-white rounded-xl p-6 border border-gray-200">

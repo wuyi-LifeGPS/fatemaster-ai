@@ -1,139 +1,137 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import Image from 'next/image'
+import { useState } from 'react'
 import Link from 'next/link'
 
-const SUGGESTIONS = [
-  '我该如何提升事业运？',
-  '今年感情运势如何？',
-  '适合在什么方向发展？',
-  '与健康有关的需要注意什么？',
+const DIVINATION_TOOLS = [
+  {
+    icon: '☯',
+    label: '六爻卜卦',
+    desc: '铜钱起卦，问事占断',
+    href: '/bu/liuyao',
+    status: 'coming',
+    color: 'from-amber-500/20 to-amber-600/10',
+    border: 'border-amber-500/20',
+  },
+  {
+    icon: '❀',
+    label: '梅花易数',
+    desc: '象数起卦，随心而动',
+    href: '/bu/meihua',
+    status: 'coming',
+    color: 'from-pink-500/20 to-pink-600/10',
+    border: 'border-pink-500/20',
+  },
+  {
+    icon: '✦',
+    label: '紫微斗数',
+    desc: '星曜排盘，命格详解',
+    href: '/bu/ziwei',
+    status: 'coming',
+    color: 'from-purple-500/20 to-purple-600/10',
+    border: 'border-purple-500/20',
+  },
+  {
+    icon: '🌙',
+    label: '周公解梦',
+    desc: '梦境解析，吉凶预兆',
+    href: '/bu/jiemeng',
+    status: 'coming',
+    color: 'from-blue-500/20 to-blue-600/10',
+    border: 'border-blue-500/20',
+  },
+  {
+    icon: '🔮',
+    label: '塔罗占卜',
+    desc: '西方塔罗，牌阵解读',
+    href: '/bu/tarot',
+    status: 'coming',
+    color: 'from-indigo-500/20 to-indigo-600/10',
+    border: 'border-indigo-500/20',
+  },
+  {
+    icon: '🎴',
+    label: '神谕卡',
+    desc: '灵性指引，每日启示',
+    href: '/bu/oracle',
+    status: 'coming',
+    color: 'from-teal-500/20 to-teal-600/10',
+    border: 'border-teal-500/20',
+  },
 ]
 
 export default function BuPage() {
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([
-    { role: 'ai', text: '你好，我是你的AI命理师。关于命盘、运势、合婚、事业等任何问题，都可以向我提问。' },
-  ])
-  const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const [activeCategory, setActiveCategory] = useState('全部')
+  const categories = ['全部', '东方', '西方', '日常']
 
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
-  }, [messages])
-
-  const handleSend = async () => {
-    if (!input.trim() || loading) return
-    const userText = input.trim()
-    setInput('')
-    setMessages(prev => [...prev, { role: 'user', text: userText }])
-    setLoading(true)
-
-    try {
-      const res = await fetch('/api/ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: `你是一位专业的AI命理师，精通八字、紫微斗数、风水等传统命理学。用户问：${userText}\n请用专业但易懂的语言回答，控制在300字以内。`,
-        }),
-      })
-      const data = await res.json()
-      setMessages(prev => [...prev, { role: 'ai', text: data.result || '思考中...' }])
-    } catch (e) {
-      setMessages(prev => [...prev, { role: 'ai', text: '抱歉，服务暂时不可用，请稍后重试。' }])
-    } finally {
-      setLoading(false)
-    }
-  }
+  const filtered = activeCategory === '全部'
+    ? DIVINATION_TOOLS
+    : activeCategory === '东方'
+    ? DIVINATION_TOOLS.slice(0, 3)
+    : activeCategory === '西方'
+    ? DIVINATION_TOOLS.slice(3, 5)
+    : DIVINATION_TOOLS.slice(4, 6)
 
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] animate-fade-in">
-      {/* 头部 */}
-      <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden border border-moonly-gold/20">
-            <Image src="/images/ai-avatar.png" alt="AI" width={40} height={40} className="object-cover" />
-          </div>
-          <div>
-            <div className="text-white font-medium text-sm">AI 命理师</div>
-            <div className="text-moonly-text-muted text-xs">内容由 AI 生成</div>
-          </div>
-        </div>
-        <div className="text-moonly-gold text-xs">0 次</div>
+    <div className="px-4 pt-4 pb-24 animate-fade-in">
+      <h1 className="text-gold-gradient text-xl font-bold mb-2">卜</h1>
+      <p className="text-moonly-text-secondary text-sm mb-6">选择占卜工具，探寻心中答案</p>
+
+      {/* 分类筛选 */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-6">
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition ${
+              activeCategory === cat
+                ? 'bg-moonly-gold text-moonly-bg font-semibold'
+                : 'bg-white/5 text-white hover:bg-white/10'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
 
-      {/* 消息列表 */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-8 h-8 rounded-full flex-shrink-0 overflow-hidden ${msg.role === 'user' ? 'bg-moonly-purple' : 'border border-moonly-gold/20'}`}>
-              {msg.role === 'ai' ? (
-                <Image src="/images/ai-avatar.png" alt="AI" width={32} height={32} className="object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-white text-xs font-bold">我</div>
-              )}
+      {/* 工具网格 */}
+      <div className="grid grid-cols-2 gap-3">
+        {filtered.map(tool => (
+          <div
+            key={tool.label}
+            className={`moonly-card p-4 flex flex-col items-center text-center gap-2 relative overflow-hidden ${tool.border}`}
+          >
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-2xl`}>
+              {tool.icon}
             </div>
-            <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-              msg.role === 'user'
-                ? 'bg-moonly-purple text-white'
-                : 'bg-white/5 text-white border border-white/8'
-            }`}>
-              {msg.text}
+            <div>
+              <div className="text-white font-medium text-sm">{tool.label}</div>
+              <div className="text-moonly-text-muted text-xs mt-0.5">{tool.desc}</div>
             </div>
+            {tool.status === 'coming' && (
+              <div className="absolute top-2 right-2 text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-moonly-text-muted">
+                开发中
+              </div>
+            )}
           </div>
         ))}
-        {loading && (
-          <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full border border-moonly-gold/20 flex-shrink-0">
-              <Image src="/images/ai-avatar.png" alt="AI" width={32} height={32} className="object-cover" />
-            </div>
-            <div className="bg-white/5 border border-white/8 rounded-2xl px-4 py-2.5">
-              <div className="flex gap-1">
-                <div className="w-2 h-2 rounded-full bg-moonly-gold animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 rounded-full bg-moonly-gold animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 rounded-full bg-moonly-gold animate-bounce" style={{ animationDelay: '300ms' }} />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* 建议问题 */}
-      {messages.length < 3 && (
-        <div className="px-4 pb-2 flex gap-2 overflow-x-auto scrollbar-hide">
-          {SUGGESTIONS.map(s => (
-            <button
-              key={s}
-              onClick={() => { setInput(s); }}
-              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-moonly-text-secondary hover:bg-white/10 transition"
-            >
-              {s}
-            </button>
-          ))}
+      {/* AI 命理师快捷入口 */}
+      <div className="mt-8 moonly-card p-4 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full overflow-hidden border border-moonly-gold/20 flex-shrink-0">
+          <img src="/images/ai-avatar.png" alt="AI" className="w-full h-full object-cover" />
         </div>
-      )}
-
-      {/* 输入区 */}
-      <div className="px-4 py-3 border-t border-white/5">
-        <div className="flex items-center gap-2">
-          <input
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSend()}
-            placeholder="请输入您的问题..."
-            className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2.5 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-moonly-gold/30"
-          />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || loading}
-            className="w-10 h-10 rounded-full bg-moonly-gold flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1428" strokeWidth="2.5">
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-            </svg>
-          </button>
+        <div className="flex-1">
+          <div className="text-white font-medium text-sm">AI 命理师</div>
+          <div className="text-moonly-text-muted text-xs">有任何命理问题，可以直接问 AI</div>
         </div>
+        <Link
+          href="/bu/chat"
+          className="px-3 py-1.5 rounded-full bg-moonly-gold/10 text-gold text-xs font-medium border border-moonly-gold/20 hover:bg-moonly-gold/20 transition"
+        >
+          咨询
+        </Link>
       </div>
     </div>
   )

@@ -4,23 +4,118 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 const BOOKS = [
-  { title: '道德经', author: '老子', desc: '道法自然，无为而治', tag: '道家' },
-  { title: '阴符经', author: '黄帝', desc: '天性人也，人心机也', tag: '兵家' },
-  { title: '心之力', author: '毛泽东', desc: '宇宙即我心，我心即宇宙', tag: '励志' },
-  { title: '黄帝内经', author: '佚名', desc: '上古之人，春秋皆度百岁', tag: '养生' },
-  { title: '周易', author: '伏羲/文王', desc: '穷理尽性以至于命', tag: '易学' },
-  { title: '金刚经', author: '释迦牟尼', desc: '凡所有相，皆是虚妄', tag: '佛学' },
+  {
+    title: '道德经',
+    author: '老子',
+    desc: '道法自然，无为而治。五千言智慧，影响东方哲学两千年。',
+    tag: '道家',
+    chapters: 81,
+    readTime: '约 45 分钟',
+    icon: '☯',
+  },
+  {
+    title: '阴符经',
+    author: '黄帝',
+    desc: '天性人也，人心机也。五贼在心，施行于天。',
+    tag: '兵家',
+    chapters: 3,
+    readTime: '约 10 分钟',
+    icon: '⚔',
+  },
+  {
+    title: '心之力',
+    author: '毛泽东',
+    desc: '宇宙即我心，我心即宇宙。解读精神力量与意志的无限可能。',
+    tag: '励志',
+    chapters: 1,
+    readTime: '约 15 分钟',
+    icon: '🔥',
+  },
+  {
+    title: '黄帝内经',
+    author: '佚名',
+    desc: '上古之人，春秋皆度百岁。中医养生智慧之源。',
+    tag: '养生',
+    chapters: 162,
+    readTime: '精选 30 分钟',
+    icon: '🌿',
+  },
+  {
+    title: '周易',
+    author: '伏羲/文王',
+    desc: '穷理尽性以至于命。六十四卦，洞察天地变化之道。',
+    tag: '易学',
+    chapters: 64,
+    readTime: '约 60 分钟',
+    icon: '☰',
+  },
+  {
+    title: '金刚经',
+    author: '释迦牟尼',
+    desc: '凡所有相，皆是虚妄。破执见空，直指本心。',
+    tag: '佛学',
+    chapters: 32,
+    readTime: '约 25 分钟',
+    icon: '🪷',
+  },
+  {
+    title: '心经',
+    author: '玄奘译',
+    desc: '色即是空，空即是色。二百六十字，般若智慧精华。',
+    tag: '佛学',
+    chapters: 1,
+    readTime: '约 5 分钟',
+    icon: '💎',
+  },
+  {
+    title: '清静经',
+    author: '太上老君',
+    desc: '大道无形，生育天地。清静无为，渐入真道。',
+    tag: '道家',
+    chapters: 1,
+    readTime: '约 8 分钟',
+    icon: '🌊',
+  },
 ]
+
+const TAG_COLORS: Record<string, string> = {
+  '道家': 'bg-teal-500/20 text-teal-300',
+  '兵家': 'bg-red-500/20 text-red-300',
+  '励志': 'bg-orange-500/20 text-orange-300',
+  '养生': 'bg-green-500/20 text-green-300',
+  '易学': 'bg-amber-500/20 text-amber-300',
+  '佛学': 'bg-purple-500/20 text-purple-300',
+}
 
 export default function ShuPage() {
   const [filter, setFilter] = useState('全部')
   const filters = ['全部', '道家', '易学', '佛学', '养生', '励志']
+  const [search, setSearch] = useState('')
 
-  const filtered = filter === '全部' ? BOOKS : BOOKS.filter(b => b.tag === filter)
+  const filtered = BOOKS.filter(book => {
+    const matchTag = filter === '全部' || book.tag === filter
+    const matchSearch = search === '' || book.title.includes(search) || book.author.includes(search)
+    return matchTag && matchSearch
+  })
 
   return (
     <div className="px-4 pt-4 pb-24 animate-fade-in">
-      <h1 className="text-gold-gradient text-xl font-bold mb-6">书</h1>
+      <h1 className="text-gold-gradient text-xl font-bold mb-2">书</h1>
+      <p className="text-moonly-text-secondary text-sm mb-6">经典智慧，修身养性</p>
+
+      {/* 搜索 */}
+      <div className="relative mb-4">
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="搜索书名或作者..."
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-moonly-gold/30"
+        />
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-moonly-text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+      </div>
 
       {/* 分类筛选 */}
       <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-6">
@@ -42,21 +137,35 @@ export default function ShuPage() {
       {/* 书籍列表 */}
       <div className="space-y-3">
         {filtered.map(book => (
-          <div key={book.title} className="moonly-card p-4 flex items-center gap-3">
-            <div className="w-14 h-18 rounded-lg bg-gradient-to-br from-moonly-gold/20 to-moonly-purple/10 border border-moonly-gold/10 flex items-center justify-center text-2xl flex-shrink-0">
-              📖
+          <div key={book.title} className="moonly-card p-4 flex items-start gap-3 group hover:bg-white/5 transition">
+            <div className="w-12 h-14 rounded-lg bg-gradient-to-br from-moonly-gold/10 to-moonly-purple/5 border border-moonly-gold/10 flex items-center justify-center text-2xl flex-shrink-0">
+              {book.icon}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-1">
                 <span className="text-white font-medium text-sm">{book.title}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-moonly-gold/10 text-moonly-gold">{book.tag}</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded ${TAG_COLORS[book.tag] || 'bg-white/10 text-moonly-text-muted'}`}>
+                  {book.tag}
+                </span>
               </div>
-              <div className="text-moonly-text-muted text-xs mt-0.5">{book.author}</div>
-              <div className="text-moonly-text-secondary text-xs mt-1">{book.desc}</div>
+              <div className="text-moonly-text-muted text-xs mb-1">{book.author} · {book.chapters}章 · {book.readTime}</div>
+              <div className="text-moonly-text-secondary text-xs leading-relaxed">{book.desc}</div>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-moonly-gold/10 transition flex-shrink-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-text-muted group-hover:text-moonly-gold">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
             </div>
           </div>
         ))}
       </div>
+
+      {filtered.length === 0 && (
+        <div className="text-center py-20">
+          <div className="text-4xl mb-3">📚</div>
+          <p className="text-moonly-text-secondary text-sm">未找到相关书籍</p>
+        </div>
+      )}
     </div>
   )
 }

@@ -261,8 +261,8 @@ export default function TalentPage() {
                   <div key={pillar.name} className="bg-white/5 border border-white/10 rounded-lg p-3 text-center">
                     <div className="text-xs text-moonly-text-muted mb-1">{pillar.name}</div>
                     <div className="flex items-center justify-center gap-1.5">
-                      <span className={`text-xl font-bold ${wxColor[ganWx[pillar.gan]] || 'text-gray-600'}`}>{pillar.gan}</span>
-                      <span className={`text-xl font-bold ${wxColor[zhiWx[pillar.zhi]] || 'text-gray-600'}`}>{pillar.zhi}</span>
+                      <span className={`text-xl font-bold ${wxColor[ganWx[pillar.gan]] || 'text-white/60'}`}>{pillar.gan}</span>
+                      <span className={`text-xl font-bold ${wxColor[zhiWx[pillar.zhi]] || 'text-white/60'}`}>{pillar.zhi}</span>
                     </div>
                   </div>
                   )
@@ -295,7 +295,7 @@ export default function TalentPage() {
                       key={key}
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${
                         i === 0
-                          ? 'bg-amber-500/15 text-amber-600 border border-amber-500/20'
+                          ? 'bg-amber-500/15 text-amber-300 border border-amber-500/20'
                           : i === 1
                           ? 'bg-teal-500/15 text-teal-600 border border-teal-500/20'
                           : 'bg-[#8b1a1a]/15 text-[#8b1a1a] border border-[#8b1a1a]/20'
@@ -349,7 +349,7 @@ export default function TalentPage() {
 
                     {/* 日常表现对照 */}
                     <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-3">
-                      <p className="text-xs text-gold mb-1.5 font-medium">✨ 日常表现对照</p>
+                      <p className="text-xs text-gold mb-1.5 font-medium">日常表现对照</p>
                       <div className="space-y-1">
                         {dim.dailySigns.map((s: string, idx: number) => (
                           <div key={idx} className="flex items-start gap-2 text-sm">

@@ -338,7 +338,7 @@ export default function MatchPage() {
               <div className={`text-6xl font-bold mb-2 ${result.levelColor}`}>{result.score}</div>
               <div className="flex justify-center gap-1 mb-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? (mode === 'match' ? 'text-pink-400' : 'text-[#8b1a1a]') : 'text-gray-300'}`}>
+                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? (mode === 'match' ? 'text-pink-400' : 'text-[#8b1a1a]') : 'text-white/20'}`}>
                     {mode === 'match' ? '❤' : '●'}
                   </span>
                 ))}
@@ -352,7 +352,7 @@ export default function MatchPage() {
               {mBazi && (
                 <div className={`rounded-xl p-4 border border-white/10 bg-white/5`}>
                   <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-gray-900 text-xs font-bold ${mode === 'match' ? 'bg-[#8b1a1a]' : 'bg-[#8b1a1a]'}`}>{mTag}</div>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${mode === 'match' ? 'bg-[#8b1a1a]' : 'bg-[#8b1a1a]'}`}>{mTag}</div>
                     <span className="font-bold text-white">{mForm.name || mLabel}八字</span>
                   </div>
                   <div className="text-sm text-moonly-text-secondary space-y-1">
@@ -372,7 +372,7 @@ export default function MatchPage() {
               {fBazi && (
                 <div className={`rounded-xl p-4 border ${mode === 'match' ? 'bg-pink-500/10 border-pink-500/20' : 'bg-emerald-500/10 border-emerald-500/20'}`}>
                   <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-gray-900 text-xs font-bold ${mode === 'match' ? 'bg-pink-500' : 'bg-emerald-500'}`}>{fTag}</div>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${mode === 'match' ? 'bg-pink-500' : 'bg-emerald-500'}`}>{fTag}</div>
                     <span className="font-bold text-white">{fForm.name || fLabel}八字</span>
                   </div>
                   <div className="text-sm text-moonly-text-secondary space-y-1">
@@ -444,14 +444,14 @@ export default function MatchPage() {
                 {mode === 'match' ? '十神互动' : '角色定位'}
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
-                <div className={`rounded-lg p-4 ${mode === 'match' ? 'bg-stone-50' : 'bg-stone-50'}`}>
+                <div className={`rounded-lg p-4 bg-white/5`}>
                   <div className={`text-sm font-medium mb-2 ${mode === 'match' ? 'text-[#8b1a1a]' : 'text-[#8b1a1a]'}`}>
                     {mLabel} → {fLabel}
                   </div>
                   <div className="text-lg font-bold text-white">{result.mToF_SS}</div>
                   <p className="text-sm text-moonly-text-secondary mt-2">{result.roles.mRole}</p>
                 </div>
-                <div className={`rounded-lg p-4 ${mode === 'match' ? 'bg-pink-50' : 'bg-emerald-50'}`}>
+                <div className={`rounded-lg p-4 ${mode === 'match' ? 'bg-pink-500/10 border border-pink-500/20' : 'bg-emerald-500/10 border border-emerald-500/20'}`}>
                   <div className={`text-sm font-medium mb-2 ${mode === 'match' ? 'text-pink-600' : 'text-emerald-600'}`}>
                     {fLabel} → {mLabel}
                   </div>

@@ -221,7 +221,7 @@ export default function MatchPage() {
                 : 'text-moonly-text-muted hover:bg-white/5'
             }`}
           >
-            💑 合婚分析
+            合婚分析
           </button>
           <button
             type="button"
@@ -232,7 +232,7 @@ export default function MatchPage() {
                 : 'text-moonly-text-muted hover:bg-white/5'
             }`}
           >
-            🤝 事业合作
+            事业合作
           </button>
         </div>
 
@@ -339,7 +339,7 @@ export default function MatchPage() {
               <div className="flex justify-center gap-1 mb-3">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? (mode === 'match' ? 'text-pink-400' : 'text-[#8b1a1a]') : 'text-gray-300'}`}>
-                    {mode === 'match' ? '♥' : '★'}
+                    {mode === 'match' ? '❤' : '●'}
                   </span>
                 ))}
               </div>
@@ -462,7 +462,7 @@ export default function MatchPage() {
               {result.pairMatch && (
                 <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl text-gold">✨</span>
+                    <span className="text-xl text-gold"></span>
                     <span className="font-bold text-amber-300">
                       {mode === 'match' ? '理想婚配组合' : '理想合作组合'}：{result.pairMatch.desc}
                     </span>
@@ -535,7 +535,7 @@ export default function MatchPage() {
               <div className="moonly-card p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-fate-500 to-fate-600 rounded-lg flex items-center justify-center text-white text-sm">
-                    🤖
+                    AI
                   </div>
                   <div>
                     <h3 className="font-bold text-lg font-serif text-white">AI 深度分析</h3>

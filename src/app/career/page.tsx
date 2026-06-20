@@ -158,8 +158,8 @@ export default function CareerPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f0e6]">
-      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
+    <main className="min-h-screen ">
+      <header className="bg-[#1a1630]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">← AI 命理大师</Link>
           <h1 className="text-lg font-serif">事业合作分析</h1>
@@ -168,9 +168,9 @@ export default function CareerPage() {
 
       <div className="max-w-4xl mx-auto py-8 px-4">
         {!result && (
-          <div className="bg-stone-50 border border-stone-200 rounded-xl p-6 mb-6 border border-stone-200">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6">
             <h2 className="text-xl font-bold mb-2 font-serif">事业合作八字分析</h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-moonly-text-secondary text-sm">
               通过双方八字的五行互补、十神互动、喜用神互济等维度，评估商业合作契合度。
               适合合伙创业、项目合作、投资伙伴等场景。
             </p>
@@ -181,16 +181,16 @@ export default function CareerPage() {
           <>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl shadow-sm p-6">
+                <div className="moonly-card rounded-xl shadow-sm p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-[#8b1a1a] rounded-full flex items-center justify-center text-gray-900 text-sm font-bold">甲</div>
+                    <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white text-sm font-bold">甲</div>
                     <h3 className="font-bold text-lg">甲方信息</h3>
                   </div>
                   <PersonFormSelector form={mForm} setForm={setMForm} />
                 </div>
-                <div className="bg-white rounded-xl shadow-sm p-6">
+                <div className="moonly-card rounded-xl shadow-sm p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-gray-900 text-sm font-bold">乙</div>
+                    <div className="w-8 h-8 bg-white/50 rounded-full flex items-center justify-center text-white text-sm font-bold">乙</div>
                     <h3 className="font-bold text-lg">乙方信息</h3>
                   </div>
                   <PersonFormSelector form={fForm} setForm={setFForm} />
@@ -199,9 +199,9 @@ export default function CareerPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#8b1a1a] hover:bg-[#6b1414] text-gray-900 py-3 rounded-lg font-bold text-lg transition-all shadow-lg "
+                className="w-full btn-gold py-3 rounded-lg font-bold text-lg transition-all shadow-lg "
               >
-                {loading ? '分析中...' : '🤝 开始事业合作分析'}
+                {loading ? '分析中...' : '开始事业合作分析'}
               </button>
             </form>
 
@@ -209,26 +209,25 @@ export default function CareerPage() {
               <div className="mt-6">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#8b1a1a] mb-3"
+                  className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-amber-300 mb-3"
                 >
-                  <span>📜</span>
                   <span>查询历史（{history.length} 条）</span>
                   <span>{showHistory ? '▲' : '▼'}</span>
                 </button>
                 {showHistory && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="moonly-card rounded-xl shadow-sm border border-white/10 overflow-hidden">
                     {history.map((record) => (
                       <div
                         key={record.id}
                         onClick={() => handleHistoryClick(record)}
-                        className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-gray-50 cursor-pointer transition-colors"
+                        className="px-4 py-3 border-b border-white/5 last:border-0 hover:bg-white/5 cursor-pointer transition-colors"
                       >
                         <div className="flex justify-between items-start">
                           <div>
-                            <div className="font-medium text-sm text-gray-800">{record.title}</div>
-                            <div className="text-xs text-gray-500 mt-0.5">{record.resultSummary}</div>
+                            <div className="font-medium text-sm text-white">{record.title}</div>
+                            <div className="text-xs text-moonly-text-muted mt-0.5">{record.resultSummary}</div>
                           </div>
-                          <div className="text-xs text-gray-500 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                          <div className="text-xs text-moonly-text-muted whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
                       </div>
                     ))}
@@ -241,133 +240,133 @@ export default function CareerPage() {
 
         {result && (
           <div className="space-y-6">
-            <button onClick={() => setResult(null)} className="text-[#8b1a1a] text-sm hover:underline">← 重新输入</button>
-            <div className="bg-stone-50 border border-stone-200 rounded-2xl p-8 border border-stone-200 text-center">
-              <div className="text-sm text-gray-500 mb-2">合作契合度</div>
+            <button onClick={() => setResult(null)} className="text-amber-300 text-sm hover:underline">← 重新输入</button>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-8 border border-white/10 text-center">
+              <div className="text-sm text-moonly-text-muted mb-2">合作契合度</div>
               <div className={`text-6xl font-bold mb-2 ${result.levelColor}`}>{result.score}</div>
               <div className="flex justify-center gap-1 mb-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? 'text-[#8b1a1a]' : 'text-gray-300'}`}>★</span>
+                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? 'text-amber-300' : 'text-gray-300'}`}>★</span>
                 ))}
               </div>
               <div className={`text-xl font-bold ${result.levelColor}`}>{result.level}</div>
-              <p className="text-gray-600 mt-2 max-w-md mx-auto">{result.levelDesc}</p>
+              <p className="text-moonly-text-secondary mt-2 max-w-md mx-auto">{result.levelDesc}</p>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               {mBazi && (
-                <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
+                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 bg-[#8b1a1a] rounded-full flex items-center justify-center text-gray-900 text-xs font-bold">甲</div>
+                    <div className="w-6 h-6 bg-[#8b1a1a] rounded-full flex items-center justify-center text-white text-xs font-bold">甲</div>
                     <span className="font-bold">{mForm.name || '甲方'}八字</span>
                   </div>
-                  <div className="text-sm text-gray-700 space-y-1">
+                  <div className="text-sm text-moonly-text-secondary space-y-1">
                     {mBazi.pillars.map((p: any) => (
                       <div key={p.name} className="flex justify-between">
-                        <span className="text-gray-500">{p.name}</span>
+                        <span className="text-moonly-text-muted">{p.name}</span>
                         <span className="font-medium">{p.gan}{p.zhi}</span>
                       </div>
                     ))}
-                    <div className="pt-2 border-t border-stone-200 mt-2">
-                      <span className="text-gray-500">日主：</span>
+                    <div className="pt-2 border-t border-white/10 mt-2">
+                      <span className="text-moonly-text-muted">日主：</span>
                       <span className="font-bold">{mBazi.dayMaster}（{mBazi.yinYang}·{mBazi.wuXing}）</span>
                     </div>
                   </div>
                 </div>
               )}
               {fBazi && (
-                <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-gray-900 text-xs font-bold">乙</div>
+                    <div className="w-6 h-6 bg-white/50 rounded-full flex items-center justify-center text-white text-xs font-bold">乙</div>
                     <span className="font-bold">{fForm.name || '乙方'}八字</span>
                   </div>
-                  <div className="text-sm text-gray-700 space-y-1">
+                  <div className="text-sm text-moonly-text-secondary space-y-1">
                     {fBazi.pillars.map((p: any) => (
                       <div key={p.name} className="flex justify-between">
-                        <span className="text-gray-500">{p.name}</span>
+                        <span className="text-moonly-text-muted">{p.name}</span>
                         <span className="font-medium">{p.gan}{p.zhi}</span>
                       </div>
                     ))}
-                    <div className="pt-2 border-t border-emerald-200 mt-2">
-                      <span className="text-gray-500">日主：</span>
+                    <div className="pt-2 border-t border-white/10 mt-2">
+                      <span className="text-moonly-text-muted">日主：</span>
                       <span className="font-bold">{fBazi.dayMaster}（{fBazi.yinYang}·{fBazi.wuXing}）</span>
                     </div>
                   </div>
                 </div>
               )}
             </div>
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">合作气场</h3>
               <div className="flex flex-wrap gap-2 mb-4">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-stone-50 border-stone-200 text-[#8b1a1a]' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>
-                  {result.ganHeMatch ? '🤝' : '○'} 天干相合{result.ganHeMatch ? ' ✓' : ' ✗'}
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-white/5 border-white/10 text-amber-300' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
+                  {result.ganHeMatch ? '合' : '○'} 天干相合{result.ganHeMatch ? ' ✓' : ' ✗'}
                 </span>
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-stone-50 border-stone-200 text-[#8b1a1a]' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>
-                  {result.zhiHeMatch ? '🤝' : '○'} 地支相合{result.zhiHeMatch ? ' ✓' : ' ✗'}
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-white/5 border-white/10 text-amber-300' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
+                  {result.zhiHeMatch ? '合' : '○'} 地支相合{result.zhiHeMatch ? ' ✓' : ' ✗'}
                 </span>
               </div>
-              <div className="text-sm text-gray-600 bg-white rounded-lg p-3">
-                {result.ganHeMatch && <p>🤝 天干相合，合作理念容易达成共识，沟通顺畅。</p>}
-                {result.zhiHeMatch && <p>🤝 地支相合，合作中步调一致，执行层面配合默契。</p>}
+              <div className="text-sm text-moonly-text-secondary moonly-card rounded-lg p-3">
+                {result.ganHeMatch && <p>天干相合，合作理念容易达成共识，沟通顺畅。</p>}
+                {result.zhiHeMatch && <p>地支相合，合作中步调一致，执行层面配合默契。</p>}
                 {!result.ganHeMatch && !result.zhiHeMatch && <p>双方八字无明显合象，合作需要后天磨合，建议先从小项目试水。</p>}
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">角色定位</h3>
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-stone-50 rounded-lg p-4">
-                  <div className="text-sm text-[#8b1a1a] font-medium mb-2">甲方 → 乙方</div>
-                  <div className="text-lg font-bold text-gray-800">{result.mToF_SS}</div>
-                  <p className="text-sm text-gray-600 mt-2">{result.roles.mRole}</p>
+                <div className="bg-white/5 rounded-lg p-4">
+                  <div className="text-sm text-amber-300 font-medium mb-2">甲方 → 乙方</div>
+                  <div className="text-lg font-bold text-white">{result.mToF_SS}</div>
+                  <p className="text-sm text-moonly-text-secondary mt-2">{result.roles.mRole}</p>
                 </div>
-                <div className="bg-emerald-50 rounded-lg p-4">
-                  <div className="text-sm text-emerald-600 font-medium mb-2">乙方 → 甲方</div>
-                  <div className="text-lg font-bold text-gray-800">{result.fToM_SS}</div>
-                  <p className="text-sm text-gray-600 mt-2">{result.roles.fRole}</p>
+                <div className="bg-white/5 rounded-lg p-4">
+                  <div className="text-sm text-emerald-300 font-medium mb-2">乙方 → 甲方</div>
+                  <div className="text-lg font-bold text-white">{result.fToM_SS}</div>
+                  <p className="text-sm text-moonly-text-secondary mt-2">{result.roles.fRole}</p>
                 </div>
               </div>
               {result.pairMatch && (
-                <div className="mt-4 bg-stone-50 border border-stone-200 rounded-lg p-4 border border-amber-100">
+                <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-4 border border-white/10">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">✨</span>
-                    <span className="font-bold text-amber-700">理想合作组合：{result.pairMatch.desc}</span>
+                    <span className="text-xl"></span>
+                    <span className="font-bold text-amber-300">理想合作组合：{result.pairMatch.desc}</span>
                   </div>
                 </div>
               )}
             </div>
             {result.complementDetails.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="moonly-card rounded-xl shadow-sm p-6">
                 <h3 className="font-bold text-lg mb-4 font-serif">资源互补</h3>
                 <div className="space-y-2">
                   {result.complementDetails.map((item, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
-                      <span className="text-green-500">✓</span>
-                      <span className="text-gray-700">{item}</span>
+                      <span className="text-green-400">✓</span>
+                      <span className="text-moonly-text-secondary">{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card rounded-xl shadow-sm p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">运势互济</h3>
               <div className="grid md:grid-cols-2 gap-4">
-                <div className={`rounded-lg p-4 ${result.mHelpF > 0 ? 'bg-green-50 border border-green-100' : 'bg-gray-50'}`}>
-                  <div className="text-sm text-gray-500 mb-1">甲方旺乙方</div>
-                  <div className="text-lg font-bold text-gray-800">{result.mHelpF > 0 ? '✓ 旺对方' : '○ 中性'}</div>
-                  {result.mHelpF > 0 && <p className="text-sm text-green-700 mt-1">甲方喜用神五行与乙方日主一致，合作对乙方运势有助益。</p>}
+                <div className={`rounded-lg p-4 ${result.mHelpF > 0 ? 'bg-white/5 border border-white/10' : 'bg-white/5'}`}>
+                  <div className="text-sm text-moonly-text-muted mb-1">甲方旺乙方</div>
+                  <div className="text-lg font-bold text-white">{result.mHelpF > 0 ? '✓ 旺对方' : '○ 中性'}</div>
+                  {result.mHelpF > 0 && <p className="text-sm text-green-300 mt-1">甲方喜用神五行与乙方日主一致，合作对乙方运势有助益。</p>}
                 </div>
-                <div className={`rounded-lg p-4 ${result.fHelpM > 0 ? 'bg-green-50 border border-green-100' : 'bg-gray-50'}`}>
-                  <div className="text-sm text-gray-500 mb-1">乙方旺甲方</div>
-                  <div className="text-lg font-bold text-gray-800">{result.fHelpM > 0 ? '✓ 旺对方' : '○ 中性'}</div>
-                  {result.fHelpM > 0 && <p className="text-sm text-green-700 mt-1">乙方喜用神五行与甲方日主一致，合作对甲方运势有助益。</p>}
+                <div className={`rounded-lg p-4 ${result.fHelpM > 0 ? 'bg-white/5 border border-white/10' : 'bg-white/5'}`}>
+                  <div className="text-sm text-moonly-text-muted mb-1">乙方旺甲方</div>
+                  <div className="text-lg font-bold text-white">{result.fHelpM > 0 ? '✓ 旺对方' : '○ 中性'}</div>
+                  {result.fHelpM > 0 && <p className="text-sm text-green-300 mt-1">乙方喜用神五行与甲方日主一致，合作对甲方运势有助益。</p>}
                 </div>
               </div>
             </div>
-            <div className="bg-stone-50 border border-stone-200 rounded-xl p-6 border border-amber-100">
-              <h3 className="font-bold text-lg mb-4 font-serif">💡 合作建议</h3>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-6 border border-white/10">
+              <h3 className="font-bold text-lg mb-4 font-serif"> 合作建议</h3>
               <div className="space-y-3">
                 {result.suggestions.map((item, i) => (
-                  <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-amber-500 mt-0.5">•</span>
+                  <div key={i} className="flex items-start gap-2 text-sm text-moonly-text-secondary">
+                    <span className="text-amber-400 mt-0.5">•</span>
                     <span>{item}</span>
                   </div>
                 ))}
@@ -376,24 +375,24 @@ export default function CareerPage() {
 
             {/* AI 深度分析 */}
             {(aiLoading || result.aiAnalysis) && (
-              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+              <div className="moonly-card rounded-xl shadow-sm p-6 border border-white/10">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-[#8b1a1a] to-[#a52a2a] rounded-lg flex items-center justify-center text-gray-900 text-sm">
-                    🤖
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#8b1a1a] to-[#a52a2a] rounded-lg flex items-center justify-center text-white text-sm">
+                    
                   </div>
                   <div>
                     <h3 className="font-bold text-lg font-serif">AI 深度分析</h3>
-                    <p className="text-xs text-gray-500">基于双方八字的专业级合作解读</p>
+                    <p className="text-xs text-moonly-text-muted">基于双方八字的专业级合作解读</p>
                   </div>
                 </div>
 
                 {aiLoading ? (
                   <div className="flex items-center gap-3 py-8">
                     <div className="w-5 h-5 border-2 border-fate-300 border-t-fate-600 rounded-full animate-spin" />
-                    <span className="text-sm text-gray-500">正在调用 Kimi AI 进行深度分析...</span>
+                    <span className="text-sm text-moonly-text-muted">正在调用 Kimi AI 进行深度分析...</span>
                   </div>
                 ) : result.aiAnalysis ? (
-                  <div className="prose max-w-none text-gray-700 whitespace-pre-line text-sm leading-relaxed">
+                  <div className="prose max-w-none text-moonly-text-secondary whitespace-pre-line text-sm leading-relaxed">
                     {result.aiAnalysis}
                   </div>
                 ) : null}

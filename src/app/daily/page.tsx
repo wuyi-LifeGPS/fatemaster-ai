@@ -137,7 +137,7 @@ export default function DailyPage() {
     return (
       <div className="flex gap-0.5 justify-center">
         {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i} className={`text-lg ${i < count ? 'text-amber-400' : 'text-gray-300'}`}>
+          <span key={i} className={`text-lg ${i < count ? 'text-moonly-goldmber-400' : 'text-moonly-text-muted'}`}>
             ★
           </span>
         ))}
@@ -146,9 +146,9 @@ export default function DailyPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f0e6]">
+    <main className="min-h-screen">
       {/* Header */}
-      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
+      <header className="bg-transparent border-b border-white/10 text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">
             ← AI 命理大师
@@ -160,7 +160,7 @@ export default function DailyPage() {
       <div className="max-w-2xl mx-auto py-8 px-4">
         {/* 今天日期 */}
         {todayGanZhi && (
-          <div className="bg-[#faf8f3] border border-stone-200 text-gray-900 rounded-xl p-6 mb-6 text-center">
+          <div className="bg-[#faf8f3] border border-white/10 text-white rounded-xl p-6 mb-6 text-center">
             <div className="text-sm text-fate-300 mb-2">
               {todayGanZhi.dateStr} · 星期{todayGanZhi.weekday}
             </div>
@@ -177,7 +177,7 @@ export default function DailyPage() {
 
         {/* 输入表单 */}
         {!result && (
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="moonly-card p-6">
             <h2 className="text-xl font-bold mb-6 font-serif">输入生日，查看今日运势</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="mb-4">
@@ -187,7 +187,7 @@ export default function DailyPage() {
               <button
                 type="submit"
                 disabled={loading || !todayGanZhi}
-                className="w-full bg-[#8b1a1a] hover:bg-[#6b1414] text-gray-900 py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+                className="w-full bg-[#8b1a1a] hover:bg-[#6b1414] text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
               >
                 {loading ? '分析中...' : '查看今日运势'}
               </button>
@@ -198,26 +198,26 @@ export default function DailyPage() {
               <div className="mt-6">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#8b1a1a] mb-3"
+                  className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-moonly-gold mb-3"
                 >
-                  <span>📜</span>
+                  <span>查询历史</span>
                   <span>查询历史（{history.length} 条）</span>
                   <span>{showHistory ? '▲' : '▼'}</span>
                 </button>
                 {showHistory && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="moonly-card border border-white/10 overflow-hidden">
                     {history.map((record) => (
                       <div
                         key={record.id}
                         onClick={() => loadHistory(record)}
-                        className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-gray-50 cursor-pointer transition-colors"
+                        className="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 cursor-pointer transition-colors"
                       >
                         <div className="flex justify-between items-start">
                           <div>
-                            <div className="font-medium text-sm text-gray-800">{record.title}</div>
-                            <div className="text-xs text-gray-500 mt-0.5">{record.resultSummary}</div>
+                            <div className="font-medium text-sm text-white">{record.title}</div>
+                            <div className="text-xs text-moonly-text-muted mt-0.5">{record.resultSummary}</div>
                           </div>
-                          <div className="text-xs text-gray-500 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                          <div className="text-xs text-moonly-text-muted whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
                       </div>
                     ))}
@@ -240,30 +240,30 @@ export default function DailyPage() {
             </button>
 
             {/* 综合评分 */}
-            <div className="bg-stone-50 border border-stone-200 rounded-xl p-6 border border-amber-100">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-6 border border-amber-500/20">
               <div className="text-center">
-                <div className="text-sm text-gray-500 mb-2">综合运势</div>
-                <div className="text-5xl font-bold text-amber-700 mb-2">{result.scores.overall}</div>
+                <div className="text-sm text-moonly-text-muted mb-2">综合运势</div>
+                <div className="text-5xl font-bold text-moonly-goldmber-300 mb-2">{result.scores.overall}</div>
                 {renderStars(result.scores.overall)}
-                <div className="text-lg font-medium text-gray-700 mt-3">{result.summary}</div>
+                <div className="text-lg font-medium text-white mt-3">{result.summary}</div>
               </div>
             </div>
 
             {/* 四项评分 */}
             <div className="grid grid-cols-2 gap-3">
               {[
-                { key: 'career', label: '事业', icon: '💼' },
-                { key: 'wealth', label: '财运', icon: '💰' },
-                { key: 'love', label: '感情', icon: '❤️' },
-                { key: 'health', label: '健康', icon: '🏃' },
+                { key: 'career', label: '事业', icon: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg> },
+                { key: 'wealth', label: '财运', icon: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+                { key: 'love', label: '感情', icon: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> },
+                { key: 'health', label: '健康', icon: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> },
               ].map((item) => (
-                <div key={item.key} className="bg-white rounded-lg p-4 shadow-sm">
+                <div key={item.key} className="moonly-card p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <span>{item.icon}</span>
-                    <span className="text-sm text-gray-500">{item.label}</span>
+                    <span className="text-sm text-moonly-text-muted">{item.label}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-gray-800">
+                    <span className="text-xl font-bold text-white">
                       {(result.scores as any)[item.key]}
                     </span>
                     {renderStars((result.scores as any)[item.key])}
@@ -273,10 +273,10 @@ export default function DailyPage() {
             </div>
 
             {/* 运势描述 */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card p-6">
               <h3 className="font-bold text-lg mb-3 font-serif">今日运势解读</h3>
-              <p className="text-gray-600 leading-relaxed">{result.description}</p>
-              <div className="mt-4 text-sm text-gray-500">
+              <p className="text-moonly-text-secondary leading-relaxed">{result.description}</p>
+              <div className="mt-4 text-sm text-moonly-text-muted">
                 今日日干十神：<span className="text-[#8b1a1a] font-medium">{result.dayShiShen.gan}</span>
                 {' · '}
                 日支本气：<span className="text-[#8b1a1a] font-medium">{result.dayShiShen.zhiBenQi}</span>
@@ -285,27 +285,27 @@ export default function DailyPage() {
 
             {/* 宜忌 */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+              <div className="border-green-500/20 bg-green-500/10 rounded-xl p-4 border border-green-500/20">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">✅</span>
-                  <span className="font-bold text-green-800">宜</span>
+                  <span className="text-xl">宜</span>
+                  <span className="font-bold text-green-300">宜</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {result.suitable.map((item, i) => (
-                    <span key={i} className="text-sm bg-green-100 text-green-700 px-2 py-1 rounded">
+                    <span key={i} className="text-sm bg-green-100 text-green-300 px-2 py-1 rounded">
                       {item}
                     </span>
                   ))}
                 </div>
               </div>
-              <div className="bg-red-50 rounded-xl p-4 border border-red-100">
+              <div className="border-red-500/20 bg-red-500/10 rounded-xl p-4 border border-red-500/20">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">❌</span>
-                  <span className="font-bold text-red-800">忌</span>
+                  <span className="text-xl">忌</span>
+                  <span className="font-bold text-red-300">忌</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {result.unsuitable.map((item, i) => (
-                    <span key={i} className="text-sm bg-red-100 text-red-700 px-2 py-1 rounded">
+                    <span key={i} className="text-sm bg-red-100 text-red-300 px-2 py-1 rounded">
                       {item}
                     </span>
                   ))}
@@ -314,52 +314,52 @@ export default function DailyPage() {
             </div>
 
             {/* 吉时/凶时 */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">时辰吉凶</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-sm text-green-600 font-medium mb-2">🍀 吉时</div>
+                  <div className="text-sm text-green-300 font-medium mb-2">吉时</div>
                   <div className="flex flex-wrap gap-1.5">
                     {result.luckyHours.length > 0 ? result.luckyHours.map((h, i) => (
-                      <span key={i} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">
+                      <span key={i} className="text-xs border-green-500/20 bg-green-500/10 text-green-300 px-2 py-1 rounded">
                         {h}
                       </span>
-                    )) : <span className="text-xs text-gray-500">今日无特别吉时</span>}
+                    )) : <span className="text-xs text-moonly-text-muted">今日无特别吉时</span>}
                   </div>
                 </div>
                 <div>
-                  <div className="text-sm text-red-600 font-medium mb-2">⚠️ 凶时</div>
+                  <div className="text-sm text-red-300 font-medium mb-2">凶时</div>
                   <div className="flex flex-wrap gap-1.5">
                     {result.unluckyHours.length > 0 ? result.unluckyHours.map((h, i) => (
-                      <span key={i} className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded">
+                      <span key={i} className="text-xs border-red-500/20 bg-red-500/10 text-red-300 px-2 py-1 rounded">
                         {h}
                       </span>
-                    )) : <span className="text-xs text-gray-500">今日无特别凶时</span>}
+                    )) : <span className="text-xs text-moonly-text-muted">今日无特别凶时</span>}
                   </div>
                 </div>
               </div>
             </div>
 
             {/* 开运建议 */}
-            <div className="bg-stone-50 border border-stone-200 rounded-xl p-6 border border-purple-100">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-6 border border-purple-500/20">
               <h3 className="font-bold text-lg mb-4 font-serif">开运指南</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl shadow-sm">
-                    🎨
+                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-xl shadow-sm">
+                    色
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">开运颜色</div>
-                    <div className="font-medium text-gray-700">{result.luckyColor}</div>
+                    <div className="text-sm text-moonly-text-muted">开运颜色</div>
+                    <div className="font-medium text-white">{result.luckyColor}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl shadow-sm">
-                    🧭
+                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-xl shadow-sm">
+                    向
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">开运方位</div>
-                    <div className="font-medium text-gray-700">{result.luckyDirection}</div>
+                    <div className="text-sm text-moonly-text-muted">开运方位</div>
+                    <div className="font-medium text-white">{result.luckyDirection}</div>
                   </div>
                 </div>
               </div>

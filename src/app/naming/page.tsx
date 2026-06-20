@@ -160,23 +160,23 @@ export default function NamingPage() {
   }
 
   const getLevelColor = (level: string) => {
-    if (level === '吉') return 'text-green-600 bg-green-50'
-    if (level === '凶') return 'text-red-600 bg-red-50'
-    return 'text-yellow-600 bg-yellow-50'
+    if (level === '吉') return 'text-green-300 border-green-500/20 bg-green-500/10'
+    if (level === '凶') return 'text-red-300 border-red-500/20 bg-red-500/10'
+    return 'text-yellow-300 border-yellow-500/20 bg-yellow-500/10'
   }
 
   const getWuxingColor = (wx: string) => {
-    if (wx === '金') return 'text-amber-600'
-    if (wx === '木') return 'text-green-600'
-    if (wx === '水') return 'text-[#8b1a1a]'
-    if (wx === '火') return 'text-red-600'
-    return 'text-yellow-700'
+    if (wx === '金') return 'text-amber-300'
+    if (wx === '木') return 'text-green-300'
+    if (wx === '水') return 'text-moonly-gold'
+    if (wx === '火') return 'text-red-300'
+    return 'text-yellow-300'
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f0e6]">
+    <main className="min-h-screen">
       {/* Header */}
-      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
+      <header className="bg-transparent border-b border-white/10 text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif">
             ← AI 命理大师
@@ -187,11 +187,11 @@ export default function NamingPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* 模式切换 */}
-        <div className="bg-white rounded-xl shadow-sm p-1 mb-6 flex">
+        <div className="moonly-card p-1 mb-6 flex">
           <button
             onClick={() => { setMode('analyze'); setAnalysis(null); setBrandResult(null) }}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-              mode === 'analyze' ? 'bg-stone-50 text-fate-800' : 'text-gray-500 hover:text-gray-600'
+              mode === 'analyze' ? 'bg-moonly-gold text-moonly-bg' : 'text-moonly-text-secondary hover:text-white'
             }`}
           >
             名字分析
@@ -199,7 +199,7 @@ export default function NamingPage() {
           <button
             onClick={() => { setMode('generate'); setAnalysis(null); setBrandResult(null) }}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-              mode === 'generate' ? 'bg-stone-50 text-fate-800' : 'text-gray-500 hover:text-gray-600'
+              mode === 'generate' ? 'bg-moonly-gold text-moonly-bg' : 'text-moonly-text-secondary hover:text-white'
             }`}
           >
             AI起名
@@ -207,7 +207,7 @@ export default function NamingPage() {
           <button
             onClick={() => { setMode('brand'); setAnalysis(null); setBrandResult(null) }}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-              mode === 'brand' ? 'bg-stone-50 text-fate-800' : 'text-gray-500 hover:text-gray-600'
+              mode === 'brand' ? 'bg-moonly-gold text-moonly-bg' : 'text-moonly-text-secondary hover:text-white'
             }`}
           >
             品牌分析
@@ -215,12 +215,12 @@ export default function NamingPage() {
         </div>
 
         {/* 输入区 */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+        <div className="moonly-card p-6 mb-6">
           {/* 出生信息（可选） */}
-          <div className="mb-6 p-4 bg-white rounded-lg">
+          <div className="mb-6 p-4 moonly-card">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-bold text-sm text-gray-700">
-                📅 出生信息（可选，填写后结合八字喜用神分析更精准）
+              <h3 className="font-bold text-sm text-white">
+                🗓 出生信息（可选，填写后结合八字喜用神分析更精准）
               </h3>
             </div>
             
@@ -230,26 +230,26 @@ export default function NamingPage() {
           {/* 姓名输入 */}
           <div className="flex gap-4 mb-4">
             <div className="flex-1">
-              <label className="block text-sm font-medium mb-1 text-gray-900">{mode === 'brand' ? '公司/品牌名' : '姓氏'}</label>
+              <label className="block text-sm font-medium mb-1 text-white">{mode === 'brand' ? '公司/品牌名' : '姓氏'}</label>
               <input
                 type="text"
                 value={mode === 'brand' ? brandName : surname}
                 onChange={(e) => mode === 'brand' ? setBrandName(e.target.value) : setSurname(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b1a1a]/30 text-center text-lg text-gray-900"
+                className="w-full px-3 py-2 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-moonly-gold/30 text-center text-lg text-white"
                 placeholder={mode === 'brand' ? '如：华为' : '如：张'}
                 maxLength={mode === 'brand' ? 10 : 2}
               />
             </div>
             {mode !== 'brand' && (
             <div className="flex-[2]">
-              <label className="block text-sm font-medium mb-1 text-gray-900">
+              <label className="block text-sm font-medium mb-1 text-white">
                 {mode === 'analyze' ? '名字' : '期望用字（可选）'}
               </label>
               <input
                 type="text"
                 value={givenName}
                 onChange={(e) => setGivenName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b1a1a]/30 text-center text-lg text-gray-900"
+                className="w-full px-3 py-2 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-moonly-gold/30 text-center text-lg text-white"
                 placeholder={mode === 'analyze' ? '如：伟' : '可选填期望字'}
                 maxLength={4}
               />
@@ -263,7 +263,7 @@ export default function NamingPage() {
               (mode !== 'brand' && (!surname || (mode === 'analyze' && !givenName))) ||
               loading
             }
-            className="w-full bg-[#8b1a1a] hover:bg-[#6b1414] text-gray-900 py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+            className="w-full btn-gold py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
           >
             {loading ? '分析中...' : mode === 'analyze' ? '分析名字' : mode === 'brand' ? '分析品牌名' : 'AI智能起名'}
           </button>
@@ -274,26 +274,26 @@ export default function NamingPage() {
           <div className="mb-6">
             <button
               onClick={() => setShowHistory(!showHistory)}
-              className="flex items-center gap-2 text-sm text-gray-900/60 hover:text-[#8b1a1a] mb-3"
+              className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-moonly-gold mb-3"
             >
-              <span>📜</span>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               <span>查询历史（{history.length} 条）</span>
               <span>{showHistory ? '▲' : '▼'}</span>
             </button>
             {showHistory && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="moonly-card border border-white/10 overflow-hidden">
                 {history.map((record) => (
                   <div
                     key={record.id}
                     onClick={() => handleHistoryClick(record)}
-                    className="px-4 py-3 border-b border-fate-50 last:border-0 hover:bg-gray-50 cursor-pointer transition-colors"
+                    className="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 cursor-pointer transition-colors"
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="font-medium text-sm text-gray-800">{record.title}</div>
-                        <div className="text-xs text-gray-500 mt-0.5">{record.resultSummary}</div>
+                        <div className="font-medium text-sm text-white">{record.title}</div>
+                        <div className="text-xs text-moonly-text-muted mt-0.5">{record.resultSummary}</div>
                       </div>
-                      <div className="text-xs text-gray-500 whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                      <div className="text-xs text-moonly-text-muted whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                     </div>
                   </div>
                 ))}
@@ -307,10 +307,10 @@ export default function NamingPage() {
           <div className="space-y-6">
             {/* 八字概览（如果有） */}
             {baziInfo && combinedGod && (
-              <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="moonly-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-bold font-serif">八字命盘概览</h2>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-moonly-text-muted">
                     {baziInfo.dayMaster}日主 · {baziInfo.yinYang}性{baziInfo.wuXing}命
                   </div>
                 </div>
@@ -318,8 +318,8 @@ export default function NamingPage() {
                 {/* 四柱 */}
                 <div className="grid grid-cols-4 gap-2 mb-4">
                   {baziInfo.pillars.map((p: any) => (
-                    <div key={p.name} className="text-center p-2 bg-white rounded">
-                      <div className="text-xs text-gray-500 mb-1">{p.name}</div>
+                    <div key={p.name} className="text-center p-2 bg-white/5 rounded">
+                      <div className="text-xs text-moonly-text-muted mb-1">{p.name}</div>
                       <div className="text-lg font-bold">
                         <span className={getWuxingColor(baziInfo.tenGods[p.gan] ? '未知' : baziInfo.wuXing)}>
                           {p.gan}
@@ -331,30 +331,33 @@ export default function NamingPage() {
                 </div>
 
                 {/* 喜用神 */}
-                <div className="bg-white rounded-lg p-4">
+                <div className="moonly-card p-4">
                   <div className="flex items-center gap-4 mb-2">
                     <div>
-                      <span className="text-sm text-gray-500">喜用神：</span>
-                      <span className="font-bold text-green-600">
+                      <span className="text-sm text-moonly-text-muted">喜用神：</span>
+                      <span className="font-bold text-green-300">
                         {combinedGod.xi?.join('、') || '无'}
                       </span>
                     </div>
                     <div>
-                      <span className="text-sm text-gray-500">忌神：</span>
-                      <span className="font-bold text-red-600">
+                      <span className="text-sm text-moonly-text-muted">忌神：</span>
+                      <span className="font-bold text-red-300">
                         {combinedGod.ji?.join('、') || '无'}
                       </span>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500">{combinedGod.tiaoHouDesc}</p>
+                  <p className="text-xs text-moonly-text-muted">{combinedGod.tiaoHouDesc}</p>
                 </div>
 
                 {/* 五行补益评分 */}
                 {wuxingMatch && (
-                  <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-100">
+                  <div className="mt-4 p-4 border-green-500/20 bg-green-500/10 rounded-lg border border-green-100">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-bold text-green-800">🌿 五行补益评分</span>
-                      <span className="text-2xl font-bold text-green-700">
+                      <span className="font-bold text-green-300">
+                        <svg className="inline-block w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                        五行补益评分
+                      </span>
+                      <span className="text-2xl font-bold text-green-300">
                         {wuxingMatch.score}分
                       </span>
                     </div>
@@ -364,17 +367,17 @@ export default function NamingPage() {
                           key={d.char}
                           className={`px-2 py-1 rounded text-xs ${
                             d.status === '喜用'
-                              ? 'bg-green-100 text-green-700'
+                              ? 'bg-green-500/20 text-green-300'
                               : d.status === '忌神'
-                              ? 'bg-red-100 text-red-700'
-                              : 'bg-gray-100 text-gray-600'
+                              ? 'bg-red-500/20 text-red-300'
+                              : 'bg-white/10 text-moonly-text-secondary'
                           }`}
                         >
                           {d.char}·{d.wuxing}·{d.status}
                         </span>
                       ))}
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-moonly-text-muted mt-2">
                       名字中带有喜用神五行得+20分/字，带有忌神五行-15分/字
                     </p>
                   </div>
@@ -383,29 +386,29 @@ export default function NamingPage() {
             )}
 
             {/* 综合评分 */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold font-serif">名字分析结果</h2>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-[#8b1a1a]">{analysis.overallScore}分</div>
-                  <div className="text-sm text-gray-500">综合评分</div>
+                  <div className="text-3xl font-bold text-moonly-gold">{analysis.overallScore}分</div>
+                  <div className="text-sm text-moonly-text-muted">综合评分</div>
                 </div>
               </div>
 
               {/* 三才配置 */}
-              <div className="bg-white rounded-lg p-4 mb-4">
+              <div className="moonly-card p-4 mb-4">
                 <h3 className="font-bold mb-2">三才配置</h3>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-2 py-1 bg-white rounded text-sm">天才：{analysis.sanCai.tian}</span>
+                  <span className="px-2 py-1 bg-white/5 rounded text-sm">天才：{analysis.sanCai.tian}</span>
                   <span>→</span>
-                  <span className="px-2 py-1 bg-white rounded text-sm">人才：{analysis.sanCai.ren}</span>
+                  <span className="px-2 py-1 bg-white/5 rounded text-sm">人才：{analysis.sanCai.ren}</span>
                   <span>→</span>
-                  <span className="px-2 py-1 bg-white rounded text-sm">地才：{analysis.sanCai.di}</span>
+                  <span className="px-2 py-1 bg-white/5 rounded text-sm">地才：{analysis.sanCai.di}</span>
                 </div>
                 <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getLevelColor(analysis.sanCaiLuck.level)}`}>
                   {analysis.sanCaiLuck.level}
                 </div>
-                <p className="text-sm text-gray-600 mt-2">{analysis.sanCaiLuck.desc}</p>
+                <p className="text-sm text-moonly-text-secondary mt-2">{analysis.sanCaiLuck.desc}</p>
               </div>
 
               {/* 五格剖象 */}
@@ -419,14 +422,14 @@ export default function NamingPage() {
                 ].map((item) => {
                   const grid = analysis.gridMeanings[item.key as keyof typeof analysis.gridMeanings]
                   return (
-                    <div key={item.key} className="border border-gray-100 rounded-lg p-3 text-center">
-                      <div className="text-xs text-gray-500 mb-1">{item.name}·{item.desc}</div>
-                      <div className="text-2xl font-bold text-[#8b1a1a]">{grid.num}</div>
-                      <div className="text-xs text-gray-500 mt-1">{grid.wuxing}</div>
+                    <div key={item.key} className="border border-white/10 rounded-lg p-3 text-center">
+                      <div className="text-xs text-moonly-text-muted mb-1">{item.name}·{item.desc}</div>
+                      <div className="text-2xl font-bold text-moonly-gold">{grid.num}</div>
+                      <div className="text-xs text-moonly-text-muted mt-1">{grid.wuxing}</div>
                       <div className={`inline-block px-2 py-0.5 rounded text-xs font-medium mt-2 ${getLevelColor(grid.luck.level)}`}>
                         {grid.luck.level}
                       </div>
-                      <p className="text-[10px] text-gray-500 mt-1 leading-tight">{grid.luck.desc.slice(0, 20)}...</p>
+                      <p className="text-[10px] text-moonly-text-muted mt-1 leading-tight">{grid.luck.desc.slice(0, 20)}...</p>
                     </div>
                   )
                 })}
@@ -434,7 +437,7 @@ export default function NamingPage() {
             </div>
 
             {/* 详细解析 */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card p-6">
               <h3 className="text-xl font-bold font-serif mb-4">五格详解</h3>
               <div className="space-y-3">
                 {[
@@ -444,20 +447,20 @@ export default function NamingPage() {
                   { name: '外格', num: analysis.fiveGrid.waiGe, meaning: analysis.gridMeanings.waiGe, desc: '代表副运，影响人际关系、外部环境。' },
                   { name: '总格', num: analysis.fiveGrid.zongGe, meaning: analysis.gridMeanings.zongGe, desc: '代表后运（36岁后），影响中年晚年运势。' },
                 ].map((item) => (
-                  <div key={item.name} className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                  <div key={item.name} className="flex items-start gap-3 p-3 moonly-card">
                     <div className="text-center min-w-[3rem]">
                       <div className="font-bold">{item.name}</div>
-                      <div className="text-lg font-bold text-[#8b1a1a]">{item.num}</div>
+                      <div className="text-lg font-bold text-moonly-gold">{item.num}</div>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className={`px-2 py-0.5 rounded text-xs font-medium ${getLevelColor(item.meaning.luck.level)}`}>
                           {item.meaning.luck.level}
                         </span>
-                        <span className="text-xs text-gray-500">{item.meaning.wuxing}</span>
+                        <span className="text-xs text-moonly-text-muted">{item.meaning.wuxing}</span>
                       </div>
-                      <p className="text-sm text-gray-600">{item.meaning.luck.desc}</p>
-                      <p className="text-xs text-gray-500 mt-1">{item.desc}</p>
+                      <p className="text-sm text-moonly-text-secondary">{item.meaning.luck.desc}</p>
+                      <p className="text-xs text-moonly-text-muted mt-1">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -468,9 +471,9 @@ export default function NamingPage() {
 
         {/* AI起名结果占位 */}
         {mode === 'generate' && analysis && (
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="moonly-card p-6">
             <h2 className="text-xl font-bold font-serif mb-4">AI起名推荐</h2>
-            <p className="text-gray-500 text-center py-8">
+            <p className="text-moonly-text-muted text-center py-8">
               AI起名功能开发中，敬请期待...
             </p>
           </div>
@@ -480,81 +483,81 @@ export default function NamingPage() {
         {brandResult && mode === 'brand' && (
           <div className="space-y-6">
             {/* 综合评分 */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold font-serif">品牌名分析结果</h2>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-[#8b1a1a]">{brandResult.brandScore}分</div>
-                  <div className="text-sm text-gray-500">品牌综合评分</div>
+                  <div className="text-3xl font-bold text-moonly-gold">{brandResult.brandScore}分</div>
+                  <div className="text-sm text-moonly-text-muted">品牌综合评分</div>
                 </div>
               </div>
 
               {/* 总格信息 */}
-              <div className="bg-white rounded-lg p-4 mb-4">
+              <div className="moonly-card p-4 mb-4">
                 <div className="flex items-center gap-4 mb-2">
-                  <span className="text-sm text-gray-500">总格数理：</span>
-                  <span className="font-bold text-[#8b1a1a] text-lg">{brandResult.totalStrokes}</span>
+                  <span className="text-sm text-moonly-text-muted">总格数理：</span>
+                  <span className="font-bold text-moonly-gold text-lg">{brandResult.totalStrokes}</span>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    brandResult.totalLuck.level === '吉' ? 'text-green-600 bg-green-50' :
-                    brandResult.totalLuck.level === '凶' ? 'text-red-600 bg-red-50' :
-                    'text-yellow-600 bg-yellow-50'
+                    brandResult.totalLuck.level === '吉' ? 'text-green-300 border-green-500/20 bg-green-500/10' :
+                    brandResult.totalLuck.level === '凶' ? 'text-red-300 border-red-500/20 bg-red-500/10' :
+                    'text-yellow-300 border-yellow-500/20 bg-yellow-500/10'
                   }`}>
                     {brandResult.totalLuck.level}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600">{brandResult.totalLuck.desc}</p>
+                <p className="text-sm text-moonly-text-secondary">{brandResult.totalLuck.desc}</p>
               </div>
 
               {/* 单字拆解 */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                 {brandResult.charDetails.map((c: any) => (
-                  <div key={c.char} className="border border-gray-100 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-[#8b1a1a]">{c.char}</div>
-                    <div className="text-xs text-gray-500 mt-1">{c.strokes}画 · {c.wuxing}</div>
+                  <div key={c.char} className="border border-white/10 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-moonly-gold">{c.char}</div>
+                    <div className="text-xs text-moonly-text-muted mt-1">{c.strokes}画 · {c.wuxing}</div>
                   </div>
                 ))}
               </div>
 
               {/* 五行分布 */}
-              <div className="bg-white rounded-lg p-4 mb-4">
+              <div className="moonly-card p-4 mb-4">
                 <h3 className="font-bold mb-2">五行分布</h3>
                 <div className="flex gap-3 flex-wrap">
                   {(Object.entries(brandResult.wuxingDistribution) as [string, number][])
                     .filter(([_, count]) => count > 0)
                     .map(([wx, count]) => (
                       <span key={wx} className={`px-3 py-1 rounded-full text-sm ${
-                        wx === '金' ? 'bg-amber-50 text-amber-700' :
-                        wx === '木' ? 'bg-green-50 text-green-700' :
-                        wx === '水' ? 'bg-stone-50 text-[#8b1a1a]' :
-                        wx === '火' ? 'bg-red-50 text-red-700' :
-                        'bg-yellow-50 text-yellow-700'
+                        wx === '金' ? 'bg-amber-500/20 text-amber-300' :
+                        wx === '木' ? 'border-green-500/20 bg-green-500/10 text-green-300' :
+                        wx === '水' ? 'bg-white/5 text-moonly-gold' :
+                        wx === '火' ? 'border-red-500/20 bg-red-500/10 text-red-300' :
+                        'border-yellow-500/20 bg-yellow-500/10 text-yellow-300'
                       }`}>
                         {wx} {count}个
                       </span>
                     ))}
                 </div>
-                <p className="text-xs text-gray-500 mt-2">主导五行：<span className="font-bold text-[#8b1a1a]">{brandResult.dominantWuxing}</span></p>
+                <p className="text-xs text-moonly-text-muted mt-2">主导五行：<span className="font-bold text-moonly-gold">{brandResult.dominantWuxing}</span></p>
               </div>
             </div>
 
             {/* 商业维度分析 */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card p-6">
               <h3 className="text-lg font-bold font-serif mb-4">商业维度评估</h3>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { key: 'brand', title: '品牌传播', icon: '📢' },
-                  { key: 'wealth', title: '财运聚集', icon: '💰' },
-                  { key: 'industry', title: '行业适配', icon: '🏭' },
-                  { key: 'growth', title: '发展前景', icon: '📈' },
+                  { key: 'brand', title: '品牌传播', icon: <svg className="inline-block w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg> },
+                  { key: 'wealth', title: '财运聚集', icon: <svg className="inline-block w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+                  { key: 'industry', title: '行业适配', icon: <svg className="inline-block w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg> },
+                  { key: 'growth', title: '发展前景', icon: <svg className="inline-block w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg> },
                 ].map((item) => {
                   const aspect = brandResult.businessAspects[item.key]
                   return (
-                    <div key={item.key} className="bg-white rounded-lg p-3">
+                    <div key={item.key} className="moonly-card p-3">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-medium">{item.icon} {item.title}</span>
-                        <span className="text-lg font-bold text-[#8b1a1a]">{aspect.score}分</span>
+                        <span className="text-lg font-bold text-moonly-gold">{aspect.score}分</span>
                       </div>
-                      <p className="text-xs text-gray-500">{aspect.desc}</p>
+                      <p className="text-xs text-moonly-text-muted">{aspect.desc}</p>
                     </div>
                   )
                 })}
@@ -562,13 +565,13 @@ export default function NamingPage() {
             </div>
 
             {/* 建议 */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="moonly-card p-6">
               <h3 className="text-lg font-bold font-serif mb-3">命名建议</h3>
               <div className="space-y-2">
                 {brandResult.recommendations.map((rec: string, i: number) => (
-                  <div key={i} className="flex items-start gap-2 p-3 bg-white rounded-lg">
-                    <span className="text-[#8b1a1a] font-bold">{i + 1}.</span>
-                    <span className="text-sm text-gray-600">{rec}</span>
+                  <div key={i} className="flex items-start gap-2 p-3 moonly-card">
+                    <span className="text-moonly-gold font-bold">{i + 1}.</span>
+                    <span className="text-sm text-moonly-text-secondary">{rec}</span>
                   </div>
                 ))}
               </div>

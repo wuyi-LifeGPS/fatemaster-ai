@@ -216,14 +216,14 @@ export default function TalentRadar({ data, size = 320 }: TalentRadarProps) {
 
 function getIconForLabel(label: string): string {
   const icons: Record<string, string> = {
-    '语言': '🗣️',
-    '逻辑数学': '🧮',
-    '空间': '🎯',
-    '身体动觉': '⚡',
-    '音乐': '🎵',
-    '人际': '🤝',
-    '自省': '🧘',
-    '自然': '🌿',
+    '语言': '文',
+    '逻辑数学': '数',
+    '空间': '空',
+    '身体动觉': '体',
+    '音乐': '音',
+    '人际': '人',
+    '自省': '省',
+    '自然': '自',
   }
   return icons[label] || '●'
 }

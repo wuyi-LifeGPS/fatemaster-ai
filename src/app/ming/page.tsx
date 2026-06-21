@@ -509,11 +509,8 @@ function DiZhiCangGan({ cangGanDetail }: { cangGanDetail: any[] }) {
 function RiZhuGeJu({ bodyStrength, pattern, tiaoHou }: { bodyStrength: any; pattern: any; tiaoHou: any }) {
   return (
     <div className="moonly-card p-4">
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3">
         <h3 className="text-gold text-sm font-semibold">日主与格局</h3>
-        <div className="w-10 h-10 rounded-full overflow-hidden border border-moonly-gold/20">
-          <Image src="/images/ai-avatar.png" alt="AI" width={40} height={40} className="object-cover" />
-        </div>
       </div>
       <div className="grid grid-cols-3 gap-2">
         <div className="pillar-cell p-3 text-center flex flex-col justify-center">
@@ -666,19 +663,17 @@ function DayunTab({ daYunList, profile, dayMaster }: { daYunList: DaYunInfo[]; p
 
       {/* 大运时间线 */}
       <div className="moonly-card p-4">
-        <div className="flex items-center justify-between mb-3">
+        <div className="mb-3">
           <h3 className="text-gold text-sm font-semibold">大运走势</h3>
-          <div className="w-8 h-8 rounded-full overflow-hidden border border-moonly-gold/20">
-            <Image src="/images/ai-avatar.png" alt="AI" width={32} height={32} className="object-cover" />
-          </div>
         </div>
 
-        {/* 折线图 */}
-        <DayunChart daYunList={daYunList} currentIndex={currentIndex >= 0 ? currentIndex : 0} />
+        {/* 可横向滚动的图表+列表 */}
+        <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
+          <div style={{ minWidth: `${Math.max(340, daYunList.length * 72)}px` }}>
+            <DayunChart daYunList={daYunList} currentIndex={currentIndex >= 0 ? currentIndex : 0} />
 
-        {/* 节点列表 */}
-        <div className="flex gap-2 mt-4 overflow-x-auto scrollbar-hide pb-2">
-          {daYunList.map((d, i) => (
+            <div className="flex gap-2 mt-2 pb-2">
+              {daYunList.map((d, i) => (
             <div
               key={i}
               className={`shrink-0 w-16 text-center p-2 rounded-lg border ${
@@ -706,15 +701,17 @@ function DayunTab({ daYunList, profile, dayMaster }: { daYunList: DaYunInfo[]; p
         </div>
       </div>
     </div>
+  </div>
+</div>
   )
 }
 
 // ===== 大运走势图 =====
 
 function DayunChart({ daYunList, currentIndex }: { daYunList: DaYunInfo[]; currentIndex: number }) {
-  const width = 600
-  const height = 140
-  const padding = { top: 15, right: 15, bottom: 30, left: 30 }
+  const width = Math.max(600, daYunList.length * 72)
+  const height = 180
+  const padding = { top: 20, right: 20, bottom: 35, left: 35 }
   const chartWidth = width - padding.left - padding.right
   const chartHeight = height - padding.top - padding.bottom
 

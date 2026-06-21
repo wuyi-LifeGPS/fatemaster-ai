@@ -350,7 +350,7 @@ export default function BaziPage() {
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
             placeholder="请输入姓名"
-            className="w-full px-4 py-3.5 rounded-xl bg-white/[0.08] border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-moonly-gold/50 focus:ring-1 focus:ring-moonly-gold/30 transition-all"
+            className="w-full px-4 py-3.5 rounded-xl bg-black/15 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-moonly-gold/50 focus:ring-1 focus:ring-moonly-gold/30 transition-all"
           />
         </div>
 
@@ -363,7 +363,7 @@ export default function BaziPage() {
             value={formData.birthPlace}
             onChange={(e) => setFormData(prev => ({ ...prev, birthPlace: e.target.value }))}
             placeholder="请选择出生地点"
-            className="w-full px-4 py-3.5 rounded-xl bg-white/[0.08] border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-moonly-gold/50 focus:ring-1 focus:ring-moonly-gold/30 transition-all"
+            className="w-full px-4 py-3.5 rounded-xl bg-black/15 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-moonly-gold/50 focus:ring-1 focus:ring-moonly-gold/30 transition-all"
           />
         </div>
 
@@ -374,8 +374,8 @@ export default function BaziPage() {
             onClick={() => setFormData(prev => ({ ...prev, calendarType: 'solar', lunarIsLeap: false }))}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               formData.calendarType === 'solar'
-                ? 'bg-white/15 text-white'
-                : 'text-white/40 hover:text-white/60'
+                ? 'bg-black/30 text-white'
+                : 'bg-black/15 text-white/40 hover:text-white/60'
             }`}
           >
             公历
@@ -384,8 +384,8 @@ export default function BaziPage() {
             onClick={() => setFormData(prev => ({ ...prev, calendarType: 'lunar' }))}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               formData.calendarType === 'lunar'
-                ? 'bg-white/15 text-white'
-                : 'text-white/40 hover:text-white/60'
+                ? 'bg-black/30 text-white'
+                : 'bg-black/15 text-white/40 hover:text-white/60'
             }`}
           >
             农历
@@ -397,14 +397,14 @@ export default function BaziPage() {
         >
           <button
             onClick={openDatePicker}
-            className="py-4 px-4 rounded-xl bg-white/[0.08] border border-white/10 text-left hover:border-white/20 transition-all"
+            className="py-4 px-4 rounded-xl bg-black/15 border border-white/10 text-left hover:border-white/20 transition-all"
           >
             <div className="text-xs text-moonly-text-muted mb-1">出生日期</div>
             <div className="text-white font-medium text-sm">{dateStr}</div>
           </button>
           <button
             onClick={openTimePicker}
-            className="py-4 px-4 rounded-xl bg-white/[0.08] border border-white/10 text-left hover:border-white/20 transition-all"
+            className="py-4 px-4 rounded-xl bg-black/15 border border-white/10 text-left hover:border-white/20 transition-all"
           >
             <div className="text-xs text-moonly-text-muted mb-1">出生时间</div>
             <div className="text-white font-medium text-sm">{timeStr}</div>

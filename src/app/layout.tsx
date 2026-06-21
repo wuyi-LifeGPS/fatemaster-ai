@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import AIFloatingButton from '@/components/AIFloatingButton'
-import BottomNav from '@/components/BottomNav'
+import ClientLayout from '@/components/ClientLayout'
 
 export const metadata: Metadata = {
   title: 'LifeGPS · 人生导航',
@@ -18,10 +17,8 @@ export default function RootLayout({
       <body className="min-h-screen">
         <div className="moonly-bg">
           <div className="moonly-content relative max-w-md mx-auto min-h-screen pb-20">
-            {children}
+            <ClientLayout>{children}</ClientLayout>
           </div>
-          <AIFloatingButton />
-          <BottomNav />
         </div>
       </body>
     </html>

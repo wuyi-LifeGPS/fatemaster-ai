@@ -202,8 +202,7 @@ function ProfileCard({ display, onSelect }: { display: BaziDisplay; onSelect: ()
   return (
     <button
       onClick={onSelect}
-      className="w-full text-left rounded-2xl p-4 transition-all hover:scale-[1.01] active:scale-[0.99]"
-      style={{ background: '#faf6f0' }}
+      className="w-full text-left rounded-2xl p-4 transition-all hover:scale-[1.01] active:scale-[0.99] info-card-black"
     >
       <div className="flex items-start gap-3">
         {/* 生肖头像 */}
@@ -219,15 +218,15 @@ function ProfileCard({ display, onSelect }: { display: BaziDisplay; onSelect: ()
         <div className="flex-1 min-w-0">
           {/* 第一行：名字 + 年龄 + 性别 */}
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-semibold text-gray-900 text-sm">{profile.name}</span>
-            <span className="text-gray-500 text-xs">· {age}岁</span>
+            <span className="font-semibold text-white text-sm">{profile.name}</span>
+            <span className="text-white/50 text-xs">· {age}岁</span>
             <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${genderColor}`}>
               {profile.gender}
             </span>
           </div>
 
           {/* 第二行：出生日期 + 时辰 */}
-          <div className="text-xs text-gray-500 mb-2">
+          <div className="text-xs text-white/50 mb-2">
             {dateType}{profile.year}年{profile.month}月{profile.day}日 {hourLabel}时 {hourRange}
           </div>
 
@@ -248,7 +247,7 @@ function ProfileCard({ display, onSelect }: { display: BaziDisplay; onSelect: ()
                   )
                 })}
               </div>
-              <div className="w-px h-4 bg-gray-200" />
+              <div className="w-px h-4 bg-white/20" />
               {/* 地支行 */}
               <div className="flex gap-1">
                 {pillars.map((p) => {
@@ -269,7 +268,7 @@ function ProfileCard({ display, onSelect }: { display: BaziDisplay; onSelect: ()
 
         {/* 右侧箭头 */}
         <div className="flex items-center self-center">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6" />
           </svg>
         </div>

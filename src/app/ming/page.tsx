@@ -200,7 +200,7 @@ export default function MingPage() {
   return (
     <div className="animate-fade-in relative z-10">
       {/* 顶部资料胶囊 */}
-      <ProfileCapsule profile={currentProfile} profiles={profiles} onSwitch={setCurrentId} />
+      <ProfileCapsule profile={currentProfile} />
 
       {/* 二级 Tab */}
       <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
@@ -269,82 +269,45 @@ function LoadingTab() {
 
 // ===== 顶部资料胶囊 =====
 
-function ProfileCapsule({ profile, profiles, onSwitch }: {
+function ProfileCapsule({ profile }: {
   profile: BaziProfile
-  profiles: BaziProfile[]
-  onSwitch: (id: string) => void
 }) {
-  const [showMenu, setShowMenu] = useState(false)
   const age = getAge(profile.year)
   const zodiac = getZodiacIcon(profile.year)
 
   return (
     <div className="px-4 pt-4 pb-2">
-      <div className="moonly-card p-3 flex items-center gap-3">
+      <div className="flex items-center gap-3 px-3 py-2.5 rounded-full bg-black/15 border border-white/5">
         {/* 返回按钮 */}
-        <Link href="/ming/records" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition shrink-0">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/70">
+        <Link href="/ming/records" className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/70">
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </Link>
 
         {/* 生肖头像 */}
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-moonly-gold/30 to-moonly-gold/5 border border-moonly-gold/30 flex items-center justify-center text-lg font-bold text-gold shrink-0">
+        <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-base font-bold shrink-0"
+          style={{ color: '#c9a96e' }}
+        >
           {zodiac}
         </div>
 
         {/* 信息 */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <span className="font-semibold text-white text-sm truncate">{profile.name}</span>
-            <span className="text-moonly-gold text-xs">· {age}岁</span>
+            <span className="text-white/50 text-xs">· {age}岁</span>
           </div>
-          <p className="text-moonly-text-muted text-xs truncate">{formatDate(profile)}</p>
+          <p className="text-white/40 text-xs truncate">{formatDate(profile)}</p>
         </div>
 
-        {/* 切换按钮（有多人时） */}
-        {profiles.length > 1 && (
-          <div className="relative">
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M6 9l6 6 6-6" />
-              </svg>
-            </button>
-            {showMenu && (
-              <div className="absolute right-0 top-10 w-48 moonly-card-light z-50 py-1">
-                {profiles.map(p => (
-                  <button
-                    key={p.id}
-                    onClick={() => { onSwitch(p.id); setShowMenu(false) }}
-                    className={`w-full text-left px-3 py-2 text-sm hover:bg-white/5 transition ${p.id === profile.id ? 'text-gold' : 'text-white'}`}
-                  >
-                    <div className="font-medium">{p.name}</div>
-                    <div className="text-xs text-moonly-text-muted">{formatDate(p)}</div>
-                  </button>
-                ))}
-                <Link
-                  href="/bazi"
-                  className="block px-3 py-2 text-sm text-gold hover:bg-white/5 transition border-t border-white/5"
-                >
-                  + 添加新八字
-                </Link>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* 编辑按钮（单档案时） */}
-        {profiles.length <= 1 && (
-          <Link href="/bazi" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition shrink-0">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/70">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-            </svg>
-          </Link>
-        )}
+        {/* 编辑按钮 */}
+        <Link href="/bazi" className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition shrink-0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/60">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+        </Link>
       </div>
     </div>
   )
@@ -384,71 +347,49 @@ function MingPanTab({ data, profile }: { data: any; profile: BaziProfile }) {
 
 function SiZhuTable({ pillars, dayMaster, gender }: { pillars: any[]; dayMaster: string; gender: '男' | '女' }) {
   const labels = ['年柱', '月柱', '日柱', '时柱']
+  const rowLabels = ['主星', '天干', '地支']
 
   return (
-    <div className="moonly-card p-4">
-      <div className="overflow-x-auto">
-        <table className="w-full text-center">
-          <thead>
-            <tr>
-              <th className="text-moonly-text-muted text-xs font-normal py-2 w-12"></th>
-              {labels.map((label, i) => (
-                <th key={i} className="text-moonly-text-muted text-xs font-normal py-2">
-                  {label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="space-y-1">
-            {/* 主星行 */}
-            <tr>
-              <td className="text-moonly-text-muted text-xs py-2">主星</td>
-              {pillars.map((p: any, i: number) => {
-                const isDayPillar = i === 2
-                const shishen = isDayPillar
-                  ? (gender === '男' ? '元男' : '元女')
-                  : getShiShen(dayMaster, p.gan)
-                return (
-                  <td key={i} className="py-2">
-                    <span className="text-moonly-text-muted text-xs">{shishen}</span>
-                  </td>
-                )
-              })}
-            </tr>
-            {/* 天干行 */}
-            <tr>
-              <td className="text-moonly-text-muted text-xs py-2">天干</td>
-              {pillars.map((p: any, i: number) => {
-                const wx = getWuXing(p.gan)
-                return (
-                  <td key={i} className="py-2">
-                    <div className={`inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-b ${WUXING_GRADIENT[wx] || 'from-white/5 to-transparent'} border border-white/5`}>
-                      <span className={`text-xl font-bold`} style={{ color: WUXING_COLOR[wx] || '#fff' }}>
-                        {p.gan}
-                      </span>
-                    </div>
-                  </td>
-                )
-              })}
-            </tr>
-            {/* 地支行 */}
-            <tr>
-              <td className="text-moonly-text-muted text-xs py-2">地支</td>
-              {pillars.map((p: any, i: number) => {
-                const wx = getWuXing(p.zhi)
-                return (
-                  <td key={i} className="py-2">
-                    <div className={`inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-b ${WUXING_GRADIENT[wx] || 'from-white/5 to-transparent'} border border-white/5`}>
-                      <span className={`text-xl font-bold`} style={{ color: WUXING_COLOR[wx] || '#fff' }}>
-                        {p.zhi}
-                      </span>
-                    </div>
-                  </td>
-                )
-              })}
-            </tr>
-          </tbody>
-        </table>
+    <div className="p-4">
+      <div className="flex gap-1.5">
+        {/* 左侧行标签列 */}
+        <div className="flex flex-col justify-center gap-6 pt-7">
+          {rowLabels.map(label => (
+            <div key={label} className="text-white/50 text-xs text-right h-8 flex items-center justify-end">
+              {label}
+            </div>
+          ))}
+        </div>
+
+        {/* 四柱卡片 */}
+        {pillars.map((p: any, i: number) => {
+          const isDayPillar = i === 2
+          const shishen = isDayPillar
+            ? (gender === '男' ? '元男' : '元女')
+            : getShiShen(dayMaster, p.gan)
+          const ganWx = getWuXing(p.gan)
+          const zhiWx = getWuXing(p.zhi)
+
+          return (
+            <div key={i} className="flex-1 flex flex-col items-center gap-1">
+              {/* 柱标题 */}
+              <div className="text-white/60 text-xs mb-1">{labels[i]}</div>
+              {/* 白色卡片 */}
+              <div className="w-full rounded-xl bg-[#faf6f0] p-2.5 flex flex-col items-center gap-2">
+                {/* 主星 */}
+                <span className="text-gray-500 text-xs">{shishen}</span>
+                {/* 天干 */}
+                <span className="text-xl font-bold" style={{ color: WUXING_COLOR[ganWx] || '#333' }}>
+                  {p.gan}
+                </span>
+                {/* 地支 */}
+                <span className="text-xl font-bold" style={{ color: WUXING_COLOR[zhiWx] || '#333' }}>
+                  {p.zhi}
+                </span>
+              </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -460,44 +401,43 @@ function DiZhiCangGan({ cangGanDetail }: { cangGanDetail: any[] }) {
   const qiLabels = ['本气', '中气', '余气']
 
   return (
-    <div className="moonly-card p-4">
+    <div className="p-4">
       <h3 className="text-gold text-sm font-semibold mb-3 text-center">地支藏干</h3>
-      <div className="overflow-x-auto">
-        <table className="w-full text-center">
-          <thead>
-            <tr>
-              <th className="text-moonly-text-muted text-xs font-normal py-2 w-12"></th>
-              {cangGanDetail.map((col: any) => (
-                <th key={col.name} className="text-moonly-text-muted text-xs font-normal py-2">{col.name}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {qiLabels.map((qiLabel, qiIdx) => (
-              <tr key={qiLabel}>
-                <td className="text-moonly-text-muted text-xs py-2">{qiLabel}</td>
-                {cangGanDetail.map((col: any, colIdx: number) => {
-                  const cg = col.cangGan[qiIdx]
-                  if (!cg) {
-                    return <td key={colIdx} className="py-2"><span className="text-white/10">—</span></td>
-                  }
-                  return (
-                    <td key={colIdx} className="py-2">
-                      <div className="inline-flex flex-col items-center gap-0.5">
-                        <span className="text-sm font-medium" style={{ color: WUXING_COLOR[cg.wuXing] || '#fff' }}>
-                          {cg.gan}
-                        </span>
-                        <span className="text-[9px] text-moonly-text-muted">{cg.shiShen}</span>
-                      </div>
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="flex gap-1.5">
+        {/* 左侧行标签列 */}
+        <div className="flex flex-col justify-center gap-5 pt-6">
+          {qiLabels.map(label => (
+            <div key={label} className="text-white/50 text-xs text-right h-10 flex items-center justify-end">
+              {label}
+            </div>
+          ))}
+        </div>
+
+        {/* 四柱藏干卡片 */}
+        {cangGanDetail.map((col: any, colIdx: number) => (
+          <div key={col.name} className="flex-1 flex flex-col items-center gap-1">
+            {/* 柱标题 */}
+            <div className="text-white/60 text-xs mb-1">{col.name}</div>
+            {/* 白色卡片 */}
+            <div className="w-full rounded-xl bg-[#faf6f0] p-2.5 flex flex-col items-center gap-3">
+              {qiLabels.map((_, qiIdx) => {
+                const cg = col.cangGan[qiIdx]
+                if (!cg) {
+                  return <div key={qiIdx} className="h-10 flex items-center justify-center"><span className="text-gray-300">—</span></div>
+                }
+                return (
+                  <div key={qiIdx} className="flex flex-col items-center gap-0.5">
+                    <span className="text-sm font-medium" style={{ color: WUXING_COLOR[cg.wuXing] || '#333' }}>
+                      {cg.gan}·{cg.shiShen}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        ))}
       </div>
-      <p className="text-[10px] text-moonly-text-muted mt-3 text-center">
+      <p className="text-[10px] text-white/40 mt-3 text-center">
         本气（主气）为地支最主要能量，中气、余气为辅助能量
       </p>
     </div>

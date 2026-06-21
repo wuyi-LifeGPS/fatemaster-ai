@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="zh-CN">
       <body className="min-h-screen">
         <div className="moonly-bg">
-          <div className="relative z-10 max-w-md mx-auto min-h-screen pb-20">
+          <div className="moonly-content relative max-w-md mx-auto min-h-screen pb-20">
             {children}
           </div>
           <AIFloatingButton />

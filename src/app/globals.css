@@ -7,14 +7,14 @@
 :root {
   --moonly-bg: #1a1428;
   --moonly-bg-dark: #0f0b1a;
-  --moonly-card: rgba(35, 30, 60, 0.75);
+  --moonly-card: rgba(35, 30, 60, 0.6);
   --moonly-card-border: rgba(255, 255, 255, 0.08);
   --moonly-gold: #c9a96e;
   --moonly-gold-light: #e0c896;
   --moonly-gold-dim: rgba(201, 169, 110, 0.3);
   --moonly-text: #ffffff;
-  --moonly-text-secondary: rgba(255, 255, 255, 0.6);
-  --moonly-text-muted: rgba(255, 255, 255, 0.35);
+  --moonly-text-secondary: rgba(255, 255, 255, 0.7);
+  --moonly-text-muted: rgba(255, 255, 255, 0.45);
   --moonly-purple: #6b5b95;
   --moonly-purple-light: rgba(107, 91, 149, 0.4);
 }
@@ -36,9 +36,9 @@ body {
 
 /* ========== Moonly 风格工具类 ========== */
 
-/* 星空背景 */
+/* 星空背景 - 固定不动 */
 .moonly-bg {
-  background: 
+  background:
     linear-gradient(180deg, #1a1428 0%, #0f0b1a 50%, #0a0712 100%);
   min-height: 100vh;
   position: relative;
@@ -46,23 +46,30 @@ body {
 
 .moonly-bg::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 100vh;
-  background-image: url('/images/bg-starry.png');
+  bottom: 0;
+  background-image: url('/images/bg-starry-new.png');
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
-  opacity: 0.4;
+  background-attachment: fixed;
+  opacity: 0.5;
   pointer-events: none;
   z-index: 0;
 }
 
+/* 内容容器 */
+.moonly-content {
+  position: relative;
+  z-index: 1;
+}
+
 /* 毛玻璃卡片 */
 .moonly-card {
-  background: rgba(35, 30, 60, 0.75);
+  background: rgba(35, 30, 60, 0.6);
   border: 1px solid var(--moonly-card-border);
   border-radius: 16px;
 }
@@ -191,16 +198,16 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6b5b95 0%, #4a3f6b 100%);
-  border: 2px solid rgba(201, 169, 110, 0.4);
-  box-shadow: 0 4px 24px rgba(107, 91, 149, 0.5), 0 0 20px rgba(201, 169, 110, 0.2);
+  background: linear-gradient(135deg, #2a1f3d 0%, #1a1428 100%);
+  border: 2px solid rgba(201, 169, 110, 0.3);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(201, 169, 110, 0.15);
   z-index: 50;
   transition: all 0.3s ease;
   overflow: hidden;
 }
 .ai-float-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 32px rgba(107, 91, 149, 0.6), 0 0 30px rgba(201, 169, 110, 0.3);
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5), 0 0 30px rgba(201, 169, 110, 0.25);
 }
 
 /* 动画 */
@@ -223,4 +230,10 @@ body {
 @keyframes twinkle {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 1; }
+}
+
+/* 亮色AI对话背景 */
+.ai-chat-bg {
+  background: #f5f5f7;
+  min-height: 100vh;
 }

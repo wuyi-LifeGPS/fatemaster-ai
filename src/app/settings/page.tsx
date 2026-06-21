@@ -50,174 +50,174 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f0e6]">
+    <div className="px-4 pt-4 pb-24 animate-fade-in">
       {/* Header */}
-      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold font-serif">
-            ← AI 命理大师
-          </Link>
-          <h1 className="text-lg font-serif">设置</h1>
-        </div>
-      </header>
+      <div className="flex items-center justify-between mb-6">
+        <Link href="/wo" className="text-moonly-text-secondary hover:text-white transition text-sm flex items-center gap-1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+          返回
+        </Link>
+        <h1 className="text-gold-gradient text-xl font-bold">设置</h1>
+        <div className="w-10" />
+      </div>
 
-      <div className="max-w-2xl mx-auto py-8 px-4 space-y-6">
-        {/* 分析偏好 */}
-        <section className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center text-gray-900 text-lg">
-              ⚙️
-            </div>
-            <div>
-              <h2 className="text-xl font-bold font-serif">分析偏好</h2>
-              <p className="text-xs text-gray-500">自定义命盘展示内容和分析风格</p>
-            </div>
+      {/* 分析偏好 */}
+      <section className="moonly-card p-5 mb-4">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-moonly-gold/30 to-moonly-purple/20 flex items-center justify-center text-lg">
+            ⚙️
           </div>
+          <div>
+            <h2 className="text-white font-bold text-base">分析偏好</h2>
+            <p className="text-moonly-text-muted text-xs">自定义命盘展示内容和分析风格</p>
+          </div>
+        </div>
 
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium mb-3">分析风格</label>
-              <div className="grid grid-cols-3 gap-3">
-                {([
-                  { key: 'detailed', label: '详细版', desc: '全面解读' },
-                  { key: 'concise', label: '简洁版', desc: '快速核心' },
-                  { key: 'professional', label: '专业版', desc: '术语完整' },
-                ] as const).map((opt) => (
-                  <button
-                    key={opt.key}
-                    onClick={() => update('analysisStyle', opt.key)}
-                    className={`p-3 rounded-lg border text-left transition-all ${
-                      settings.analysisStyle === opt.key
-                        ? 'border-fate-600 bg-white text-fate-800 ring-1 ring-[#8b1a1a]'
-                        : 'border-gray-200 hover:border-fate-400 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="font-medium text-sm">{opt.label}</div>
-                    <div className="text-xs text-gray-500 mt-1">{opt.desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="border-t border-gray-100 pt-5 space-y-4">
-              {[
-                { key: 'showTenGods' as const, title: '显示十神信息', desc: '在命盘中标注每个干支的十神关系', icon: '🏷️' },
-                { key: 'showNaYin' as const, title: '显示纳音五行', desc: '在四柱下方显示纳音属性（如「海中金」）', icon: '🔔' },
-              ].map((item) => (
-                <div key={item.key} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">{item.icon}</span>
-                    <div>
-                      <div className="font-medium text-sm">{item.title}</div>
-                      <div className="text-xs text-gray-500">{item.desc}</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => update(item.key, !settings[item.key])}
-                    className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
-                      settings[item.key] ? 'bg-[#8b1a1a]' : 'bg-gray-300'
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform shadow-sm ${
-                        settings[item.key] ? 'left-7' : 'left-1'
-                      }`}
-                    />
-                  </button>
-                </div>
+        <div className="space-y-5">
+          <div>
+            <label className="block text-sm text-white mb-3">分析风格</label>
+            <div className="grid grid-cols-3 gap-3">
+              {([
+                { key: 'detailed', label: '详细版', desc: '全面解读' },
+                { key: 'concise', label: '简洁版', desc: '快速核心' },
+                { key: 'professional', label: '专业版', desc: '术语完整' },
+              ] as const).map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => update('analysisStyle', opt.key)}
+                  className={`p-3 rounded-xl text-left transition-all border ${
+                    settings.analysisStyle === opt.key
+                      ? 'border-moonly-gold bg-moonly-gold/10 text-white'
+                      : 'border-white/10 hover:border-white/20 text-white'
+                  }`}
+                >
+                  <div className="font-medium text-sm">{opt.label}</div>
+                  <div className="text-xs text-moonly-text-muted mt-1">{opt.desc}</div>
+                </button>
               ))}
             </div>
           </div>
-        </section>
 
-        {/* AI 服务 */}
-        <section className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#8b1a1a] to-[#a52a2a] rounded-lg flex items-center justify-center text-gray-900 text-lg">
-              🤖
-            </div>
-            <div>
-              <h2 className="text-xl font-bold font-serif">AI 深度分析</h2>
-              <p className="text-xs text-gray-500">智能解读已内置，无需配置</p>
-            </div>
+          <div className="border-t border-white/10 pt-4 space-y-4">
+            {[
+              { key: 'showTenGods' as const, title: '显示十神信息', desc: '在命盘中标注每个干支的十神关系', icon: '🏷️' },
+              { key: 'showNaYin' as const, title: '显示纳音五行', desc: '在四柱下方显示纳音属性（如「海中金」）', icon: '🔔' },
+            ].map((item) => (
+              <div key={item.key} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">{item.icon}</span>
+                  <div>
+                    <div className="text-white text-sm font-medium">{item.title}</div>
+                    <div className="text-moonly-text-muted text-xs">{item.desc}</div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => update(item.key, !settings[item.key])}
+                  className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
+                    settings[item.key] ? 'bg-moonly-gold' : 'bg-white/20'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform shadow-sm ${
+                      settings[item.key] ? 'left-7' : 'left-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">
-              <span>✓</span>
-              <span>AI 深度分析服务已就绪，所有功能均可直接使用</span>
-            </div>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              系统已内置 Kimi AI 分析能力，八字分析、合婚分析、事业合作等模块均可自动调用 AI 进行深度解读。
-            </p>
+      {/* AI 服务 */}
+      <section className="moonly-card p-5 mb-4">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-moonly-purple/30 to-moonly-gold/20 flex items-center justify-center text-lg">
+            🤖
           </div>
-        </section>
+          <div>
+            <h2 className="text-white font-bold text-base">AI 深度分析</h2>
+            <p className="text-moonly-text-muted text-xs">智能解读已内置，无需配置</p>
+          </div>
+        </div>
 
-        {/* 数据管理 */}
-        <section className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg flex items-center justify-center text-gray-900 text-lg">
-              🗑️
-            </div>
-            <div>
-              <h2 className="text-xl font-bold font-serif">数据管理</h2>
-              <p className="text-xs text-gray-500">管理本地存储的数据</p>
-            </div>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm text-green-400 bg-green-400/10 rounded-lg px-3 py-2">
+            <span>✓</span>
+            <span>AI 深度分析服务已就绪，所有功能均可直接使用</span>
           </div>
+          <p className="text-xs text-moonly-text-muted leading-relaxed">
+            系统已内置 Kimi AI 分析能力，八字分析、合婚分析、事业合作等模块均可自动调用 AI 进行深度解读。
+          </p>
+        </div>
+      </section>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-medium text-sm">清除分析历史</div>
-              <div className="text-xs text-gray-500">删除保存在本地的所有命盘记录，不可恢复</div>
-            </div>
-            <button
-              onClick={handleClearHistory}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                clearHistory
-                  ? 'bg-green-50 text-green-600 border border-green-200'
-                  : 'border border-red-300 text-red-600 hover:bg-red-50'
-              }`}
-            >
-              {clearHistory ? '✓ 已清除' : '清除'}
-            </button>
+      {/* 数据管理 */}
+      <section className="moonly-card p-5 mb-4">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500/30 to-rose-500/20 flex items-center justify-center text-lg">
+            🗑️
           </div>
-        </section>
+          <div>
+            <h2 className="text-white font-bold text-base">数据管理</h2>
+            <p className="text-moonly-text-muted text-xs">管理本地存储的数据</p>
+          </div>
+        </div>
 
-        {/* 关于 */}
-        <section className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#8b1a1a] to-[#a52a2a] rounded-lg flex items-center justify-center text-gray-900 text-lg">
-              ℹ️
-            </div>
-            <div>
-              <h2 className="text-xl font-bold font-serif">关于</h2>
-            </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-white text-sm font-medium">清除分析历史</div>
+            <div className="text-moonly-text-muted text-xs">删除保存在本地的所有命盘记录，不可恢复</div>
           </div>
-          <div className="text-sm text-gray-500 space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="font-medium text-gray-700">LifeGPS</span>
-              <span className="text-gray-500">·</span>
-              <span>AI 命理分析系统 v0.2.0</span>
-            </div>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              融合现代 AI 技术与传统命理智慧，以理性态度传承东方文化。
-              八字分析仅供参考，人生方向由自己掌握。
-            </p>
-            <div className="flex gap-4 text-xs text-[#8b1a1a] pt-2">
-              <span>调候用神 · 扶抑辅助</span>
-              <span>·</span>
-              <span>专业排盘 · AI 解读</span>
-            </div>
-          </div>
-        </section>
+          <button
+            onClick={handleClearHistory}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              clearHistory
+                ? 'bg-green-400/10 text-green-400 border border-green-400/30'
+                : 'border border-red-400/40 text-red-400 hover:bg-red-400/10'
+            }`}
+          >
+            {clearHistory ? '✓ 已清除' : '清除'}
+          </button>
+        </div>
+      </section>
 
-        {/* 保存提示 */}
-        {saved && (
-          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#8b1a1a] text-gray-900 px-6 py-3 rounded-lg shadow-lg text-sm animate-in slide-in-from-bottom-2">
-            ✅ 设置已保存
+      {/* 关于 */}
+      <section className="moonly-card p-5">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-moonly-gold/30 to-moonly-gold/10 flex items-center justify-center text-lg">
+            ℹ️
           </div>
-        )}
-      </div>
-    </main>
+          <div>
+            <h2 className="text-white font-bold text-base">关于</h2>
+          </div>
+        </div>
+        <div className="text-sm text-moonly-text-secondary space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-white">LifeGPS</span>
+            <span className="text-moonly-text-muted">·</span>
+            <span>AI 命理分析系统 v0.2.0</span>
+          </div>
+          <p className="text-xs text-moonly-text-muted leading-relaxed">
+            融合现代 AI 技术与传统命理智慧，以理性态度传承东方文化。
+            八字分析仅供参考，人生方向由自己掌握。
+          </p>
+          <div className="flex gap-4 text-xs text-moonly-gold pt-2">
+            <span>调候用神 · 扶抑辅助</span>
+            <span>·</span>
+            <span>专业排盘 · AI 解读</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 保存提示 */}
+      {saved && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-moonly-gold text-moonly-bg px-6 py-3 rounded-lg shadow-lg text-sm font-medium">
+          ✅ 设置已保存
+        </div>
+      )}
+    </div>
   )
 }

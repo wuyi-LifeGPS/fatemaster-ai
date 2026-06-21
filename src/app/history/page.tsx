@@ -52,108 +52,109 @@ export default function HistoryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f0e6]">
-      <header className="bg-[#f5f0e6]/80 backdrop-blur-sm border-b border-stone-200 text-gray-900 py-4 px-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold font-serif">
-            ← AI 命理大师
+    <div className="px-4 pt-4 pb-24 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <Link href="/wo" className="text-moonly-text-secondary hover:text-white transition text-sm flex items-center gap-1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+          返回
+        </Link>
+        <h1 className="text-gold-gradient text-xl font-bold">查询历史</h1>
+        <div className="w-10" />
+      </div>
+
+      {/* 统计卡片 */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+        {(['all', 'bazi', 'match', 'career', 'daily'] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setFilter(t)}
+            className={`moonly-card p-3 text-center transition-all ${
+              filter === t
+                ? 'border-moonly-gold/40 bg-moonly-gold/10'
+                : ''
+            }`}
+          >
+            <div className="text-xl font-bold text-white">{typeCounts[t]}</div>
+            <div className="text-xs text-moonly-text-muted mt-0.5">{t === 'all' ? '全部' : getTypeLabel(t as QueryType)}</div>
+          </button>
+        ))}
+      </div>
+
+      {/* 操作栏 */}
+      {history.length > 0 && (
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={handleClearAll}
+            className="text-sm text-red-400 hover:text-red-300 px-3 py-1.5 rounded-md hover:bg-red-400/10 transition-colors"
+          >
+            清空全部记录
+          </button>
+        </div>
+      )}
+
+      {/* 记录列表 */}
+      {filtered.length === 0 ? (
+        <div className="text-center py-16">
+          <div className="text-4xl mb-3 text-moonly-text-muted">📭</div>
+          <p className="text-moonly-text-secondary">
+            {filter === 'all' ? '暂无查询记录，去试试看吧～' : `暂无「${getTypeLabel(filter)}」的记录`}
+          </p>
+          <Link href="/" className="text-moonly-gold hover:underline text-sm mt-2 inline-block">
+            返回首页 →
           </Link>
-          <h1 className="text-lg font-serif">查询历史</h1>
         </div>
-      </header>
-
-      <div className="max-w-4xl mx-auto py-8 px-4">
-        {/* 统计卡片 */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-          {(['all', 'bazi', 'match', 'career', 'daily'] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setFilter(t)}
-              className={`rounded-xl p-3 text-center transition-all ${
-                filter === t
-                  ? 'bg-[#8b1a1a] text-gray-900 shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-100'
-              }`}
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((record) => (
+            <div
+              key={record.id}
+              className="moonly-card p-4 hover:bg-white/5 transition-colors"
             >
-              <div className="text-2xl font-bold">{typeCounts[t]}</div>
-              <div className="text-xs mt-0.5">{t === 'all' ? '全部' : getTypeLabel(t as QueryType)}</div>
-            </button>
-          ))}
-        </div>
-
-        {/* 操作栏 */}
-        {history.length > 0 && (
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={handleClearAll}
-              className="text-sm text-red-500 hover:text-red-600 px-3 py-1.5 rounded-md hover:bg-red-50 transition-colors"
-            >
-              清空全部记录
-            </button>
-          </div>
-        )}
-
-        {/* 记录列表 */}
-        {filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-4xl mb-3">📭</div>
-            <p className="text-gray-500">
-              {filter === 'all' ? '暂无查询记录，去试试看吧～' : `暂无「${getTypeLabel(filter)}」的记录`}
-            </p>
-            <Link href="/" className="text-[#8b1a1a] hover:underline text-sm mt-2 inline-block">
-              返回首页 →
-            </Link>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {filtered.map((record) => (
-              <div
-                key={record.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getTypeColor(record.type)}`}>
-                        {getTypeLabel(record.type)}
-                      </span>
-                      <span className="text-xs text-gray-500">{formatHistoryTime(record.timestamp)}</span>
-                    </div>
-                    <div className="font-medium text-gray-800 truncate">{record.title}</div>
-                    <div className="text-sm text-gray-500 mt-0.5">{record.resultSummary}</div>
+              <div className="flex items-start justify-between">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getTypeColor(record.type)}`}>
+                      {getTypeLabel(record.type)}
+                    </span>
+                    <span className="text-xs text-moonly-text-muted">{formatHistoryTime(record.timestamp)}</span>
                   </div>
-                  <div className="flex items-center gap-2 ml-3">
-                    <Link
-                      href={`/${record.type}`}
-                      className="text-xs bg-stone-50 text-[#8b1a1a] px-3 py-1.5 rounded-md hover:bg-fate-200 transition-colors"
-                    >
-                      再次查询
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(record.id)}
-                      className="text-xs text-gray-500 hover:text-red-500 px-2 py-1.5 transition-colors"
-                    >
-                      ✕
-                    </button>
-                  </div>
+                  <div className="font-medium text-white text-sm truncate">{record.title}</div>
+                  <div className="text-sm text-moonly-text-secondary mt-0.5">{record.resultSummary}</div>
+                </div>
+                <div className="flex items-center gap-2 ml-3">
+                  <Link
+                    href={`/${record.type}`}
+                    className="text-xs bg-moonly-gold/10 text-moonly-gold px-3 py-1.5 rounded-md hover:bg-moonly-gold/20 transition-colors"
+                  >
+                    再次查询
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(record.id)}
+                    className="text-xs text-moonly-text-muted hover:text-red-400 px-2 py-1.5 transition-colors"
+                  >
+                    ✕
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
+      )}
 
-        {/* 按类型清空 */}
-        {history.length > 0 && filter !== 'all' && typeCounts[filter] > 0 && (
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => handleClearType(filter)}
-              className="text-sm text-gray-500 hover:text-red-500 transition-colors"
-            >
-              清空「{getTypeLabel(filter)}」的记录
-            </button>
-          </div>
-        )}
-      </div>
-    </main>
+      {/* 按类型清空 */}
+      {history.length > 0 && filter !== 'all' && typeCounts[filter] > 0 && (
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => handleClearType(filter)}
+            className="text-sm text-moonly-text-muted hover:text-red-400 transition-colors"
+          >
+            清空「{getTypeLabel(filter)}」的记录
+          </button>
+        </div>
+      )}
+    </div>
   )
 }

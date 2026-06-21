@@ -120,7 +120,7 @@ export default function BuPage() {
       {/* AI 命理师快捷入口 */}
       <div className="mt-8 moonly-card p-4 flex items-center gap-3">
         <div className="w-10 h-10 rounded-full overflow-hidden border border-moonly-gold/20 flex-shrink-0">
-          <img src="/images/ai-avatar.png" alt="AI" className="w-full h-full object-cover" />
+          <img src="/images/ai-avatar-new.png" alt="AI" className="w-full h-full object-cover" />
         </div>
         <div className="flex-1">
           <div className="text-white font-medium text-sm">AI 命理师</div>

@@ -2,9 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { getProfiles, getDefaultProfile, BaziProfile } from '@/lib/bazi-profiles'
-import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, DaYunInfo } from '@/lib/bazi'
+import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, getYinYang, getZhiShiShen, SHI_SHEN_MAP, DaYunInfo } from '@/lib/bazi'
 
 // ===== 常量 =====
 
@@ -24,23 +23,36 @@ const WUXING_CLASS: Record<string, string> = {
   '水': 'wuxing-water',
 }
 
-const WUXING_GRADIENT: Record<string, string> = {
-  '木': 'from-emerald-400/20 to-emerald-600/10',
-  '火': 'from-red-400/20 to-red-600/10',
-  '土': 'from-amber-400/20 to-amber-600/10',
-  '金': 'from-slate-300/20 to-slate-400/10',
-  '水': 'from-blue-400/20 to-blue-600/10',
-}
-
 const TABS = [
   { key: 'mingpan', label: '命盘' },
   { key: 'dayun', label: '大运' },
-  { key: 'liunian', label: '流年' },
-  { key: 'liuyue', label: '流月' },
-  { key: 'liuri', label: '流日' },
+  { key: 'liunian', label: '年运' },
+  { key: 'liuyue', label: '月运' },
+  { key: 'liuri', label: '日运' },
 ] as const
 
 type TabKey = typeof TABS[number]['key']
+
+// 生肖emoji
+const ZODIAC_EMOJI: Record<string, string> = {
+  '鼠': '🐭', '牛': '🐮', '虎': '🐯', '兔': '🐰',
+  '龙': '🐲', '蛇': '🐍', '马': '🐴', '羊': '🐑',
+  '猴': '🐵', '鸡': '🐔', '狗': '🐶', '猪': '🐷',
+}
+
+// 十神emoji
+const SHISHEN_EMOJI: Record<string, string> = {
+  '正印': '👩‍🦰',
+  '偏印': '🤓',
+  '正官': '👨‍💼',
+  '七杀': '⚔️',
+  '正财': '💰',
+  '偏财': '🎰',
+  '比肩': '🤝',
+  '劫财': '🏴‍☠️',
+  '食神': '😋',
+  '伤官': '😤',
+}
 
 // ===== 工具函数 =====
 
@@ -49,13 +61,174 @@ function getAge(birthYear: number): number {
 }
 
 function formatDate(profile: BaziProfile): string {
-  const type = profile.isLunar ? '农历' : '阳历'
-  return `${type} ${profile.year}年${profile.month}月${profile.day}日 ${profile.birthTimeLabel}`
+  const type = profile.isLunar ? '农历' : '公历'
+  return `${type}${profile.year}年${profile.month}月${profile.day}日 ${profile.birthTimeLabel}出生`
 }
 
-function getZodiacIcon(year: number): string {
+function getZodiac(year: number): string {
   const animals = ['猴', '鸡', '狗', '猪', '鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊']
   return animals[year % 12]
+}
+
+function getZodiacEmoji(year: number): string {
+  return ZODIAC_EMOJI[getZodiac(year)] || '🐷'
+}
+
+// 星座计算
+function getConstellation(month: number, day: number): string {
+  const dates = [20, 19, 21, 20, 21, 22, 23, 23, 23, 24, 23, 22]
+  const signs = ['摩羯座', '水瓶座', '双鱼座', '白羊座', '金牛座', '双子座', '巨蟹座', '狮子座', '处女座', '天秤座', '天蝎座', '射手座']
+  const idx = month - 1
+  if (day < dates[idx]) {
+    return signs[idx]
+  }
+  return signs[(idx + 1) % 12]
+}
+
+// 获取五行文字表示（用于八字下方）
+function getWuXingText(gan: string, zhi: string): string {
+  const ganWx = getWuXing(gan)
+  const zhiWx = getWuXing(zhi)
+  return ganWx + zhiWx
+}
+
+// 计算十神出现次数
+function countShiShen(pillars: any[], dayMaster: string): Record<string, number> {
+  const counts: Record<string, number> = {
+    '正印': 0, '偏印': 0, '正官': 0, '七杀': 0,
+    '正财': 0, '偏财': 0, '比肩': 0, '劫财': 0,
+    '食神': 0, '伤官': 0,
+  }
+
+  // 天干
+  pillars.forEach((p, i) => {
+    if (i === 2) return // 跳过日干（日主本身）
+    const ss = getShiShen(dayMaster, p.gan)
+    if (counts[ss] !== undefined) counts[ss]++
+  })
+
+  // 地支藏干（本气、中气、余气）
+  pillars.forEach(p => {
+    const cangGan = getCangGan(p.zhi)
+    cangGan.forEach(gan => {
+      const ss = SHI_SHEN_MAP[dayMaster]?.[gan]
+      if (ss && counts[ss] !== undefined) counts[ss]++
+    })
+  })
+
+  return counts
+}
+
+// 生成人生总评
+function generateLifeSummary(data: any, profile: BaziProfile): string {
+  const { dayMaster, bodyStrength, pattern, tiaoHou, pillars } = data
+  const wx = getWuXing(dayMaster)
+  const yy = getYinYang(dayMaster)
+
+  let summary = `此命日主为${dayMaster}${wx}，${yy}性，属"${pattern?.patternName || '普通'}"之格局。`
+
+  if (bodyStrength?.strength === '强') {
+    summary += '早年主顺遂，才华横溢，能担财官显贵。'
+  } else if (bodyStrength?.strength === '偏弱') {
+    summary += '早年主磨砺，需借助印星、比劫之力方能成事。'
+  } else {
+    summary += '早年主平稳，能屈能伸，进退有度。'
+  }
+
+  const age = getAge(profile.year)
+  summary += `中年（${Math.max(30, age + 5)}岁后）大运转入${wx === '金' || wx === '水' ? '火土' : '金水'}之地，事业渐入佳境。`
+  summary += `晚年主安宁，${tiaoHou?.tiaoHouGod?.join('、') || '贵人'}为用神，福禄双全。`
+
+  return summary
+}
+
+// 生成事业方向
+function getCareerDirection(data: any): string[] {
+  const { tiaoHou, pattern } = data
+  const gods = tiaoHou?.tiaoHouGod || []
+  const directions: string[] = []
+
+  gods.forEach((g: string) => {
+    const wx = getWuXing(g)
+    if (wx && !directions.includes(wx)) directions.push(wx)
+  })
+
+  if (directions.length === 0) {
+    if (pattern?.patternType === '食神' || pattern?.patternType === '伤官') directions.push('火', '土')
+    else directions.push('木', '火')
+  }
+
+  return directions.slice(0, 2)
+}
+
+// 生成财运走势描述
+function getWealthTrend(data: any, profile: BaziProfile): { label: string; description: string } {
+  const { pattern, bodyStrength } = data
+  const age = getAge(profile.year)
+
+  if (pattern?.patternType === '正财' || pattern?.patternType === '偏财') {
+    return { label: '中晚年发迹', description: '财星当令，中年后财源广进' }
+  }
+  if (bodyStrength?.strength === '强') {
+    return { label: '稳扎稳打', description: '身强能担财，财运平稳上升' }
+  }
+  return { label: '厚积薄发', description: '先积后扬，中年后转运' }
+}
+
+// 生成感情评分
+function getLoveScore(data: any, profile: BaziProfile): number {
+  const { pillars, dayMaster } = data
+  let score = 50
+
+  // 男命看财星，女命看官杀
+  if (profile.gender === '男') {
+    const hasCai = pillars.some((p: any) => {
+      const ss = getShiShen(dayMaster, p.gan)
+      return ss === '正财' || ss === '偏财'
+    })
+    if (hasCai) score += 15
+  } else {
+    const hasGuan = pillars.some((p: any) => {
+      const ss = getShiShen(dayMaster, p.gan)
+      return ss === '正官' || ss === '七杀'
+    })
+    if (hasGuan) score += 15
+  }
+
+  // 日支（夫妻宫）是否有刑冲
+  const dayZhi = pillars[2]?.zhi
+  if (dayZhi) {
+    const monthZhi = pillars[1]?.zhi
+    if (monthZhi && isChong(dayZhi, monthZhi)) score -= 10
+  }
+
+  return Math.min(100, Math.max(20, score))
+}
+
+// 生成健康评分
+function getHealthScore(data: any): number {
+  const { bodyStrength, wuXingFullCount } = data
+  let score = 60
+
+  if (bodyStrength?.strength === '中和') score += 15
+  if (bodyStrength?.strength === '强') score += 10
+
+  // 五行是否平衡
+  const counts = Object.values(wuXingFullCount || {}) as number[]
+  const max = Math.max(...counts)
+  const min = Math.min(...counts)
+  if (max - min <= 2) score += 10
+
+  return Math.min(100, Math.max(30, score))
+}
+
+function isChong(zhi1: string, zhi2: string): boolean {
+  const chong: Record<string, string> = {
+    '子': '午', '午': '子', '丑': '未', '未': '丑',
+    '寅': '申', '申': '寅', '卯': '酉', '酉': '卯',
+    '辰': '戌', '戌': '辰', '巳': '亥', '亥': '巳',
+  }
+  return chong[zhi1] === zhi2
 }
 
 function getDimensionStars(daYun: DaYunInfo, gender: '男' | '女'): { career: number; love: number; wealth: number; health: number } {
@@ -107,11 +280,7 @@ function getDayunDescription(daYun: DaYunInfo, dayMaster: string): string {
 
 function getFortuneLabel(level: string): string {
   const map: Record<string, string> = {
-    '大吉': '大吉',
-    '吉': '吉',
-    '平': '平',
-    '凶': '凶',
-    '大凶': '大凶',
+    '大吉': '大吉', '吉': '吉', '平': '平', '凶': '凶', '大凶': '大凶',
   }
   return map[level] || '平'
 }
@@ -163,7 +332,6 @@ export default function MingPage() {
     }
   }, [currentId, profiles])
 
-  // 计算大运数据
   useEffect(() => {
     if (!baziData || !currentId) return
     const profile = profiles.find(p => p.id === currentId)
@@ -190,7 +358,6 @@ export default function MingPage() {
 
   const currentProfile = useMemo(() => profiles.find(p => p.id === currentId), [profiles, currentId])
 
-  // 无档案：引导添加
   if (!loading && profiles.length === 0) {
     return <EmptyState />
   }
@@ -199,8 +366,8 @@ export default function MingPage() {
 
   return (
     <div className="animate-fade-in relative z-10">
-      {/* 顶部资料胶囊 */}
-      <ProfileCapsule profile={currentProfile} />
+      {/* 顶部资料区域 */}
+      <ProfileHeader profile={currentProfile} baziData={baziData} />
 
       {/* 二级 Tab */}
       <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
@@ -216,7 +383,7 @@ export default function MingPage() {
       </div>
 
       {/* 内容区域 */}
-      <div className="px-4 py-4 pb-24">
+      <div className="px-4 py-4 pb-24 space-y-4">
         {activeTab === 'mingpan' && baziData && <MingPanTab data={baziData} profile={currentProfile} />}
         {activeTab === 'dayun' && daYunData && <DayunTab daYunList={daYunData} profile={currentProfile} dayMaster={baziData?.dayMaster} />}
         {activeTab === 'dayun' && !daYunData && <LoadingTab />}
@@ -243,10 +410,7 @@ function EmptyState() {
       <p className="text-moonly-text-secondary text-sm mb-8 max-w-xs">
         添加您的出生信息，解锁八字命盘、大运流年、流月流日等完整命理分析
       </p>
-      <Link
-        href="/bazi"
-        className="btn-gold px-8 py-3 text-sm font-semibold"
-      >
+      <Link href="/bazi" className="btn-gold px-8 py-3 text-sm font-semibold">
         添加我的八字
       </Link>
       <p className="text-moonly-text-muted text-xs mt-4">
@@ -267,46 +431,73 @@ function LoadingTab() {
   )
 }
 
-// ===== 顶部资料胶囊 =====
+// ===== 顶部资料区域 =====
 
-function ProfileCapsule({ profile }: {
-  profile: BaziProfile
-}) {
+function ProfileHeader({ profile, baziData }: { profile: BaziProfile; baziData: any }) {
   const age = getAge(profile.year)
-  const zodiac = getZodiacIcon(profile.year)
+  const zodiacEmoji = getZodiacEmoji(profile.year)
+  const zodiac = getZodiac(profile.year)
+  const constellation = getConstellation(profile.month, profile.day)
+
+  const wuxingText = baziData?.pillars?.map((p: any) => getWuXingText(p.gan, p.zhi)).join(' ') || ''
+  const baziStr = baziData?.pillars?.map((p: any) => p.gan + p.zhi).join(' ') || ''
 
   return (
-    <div className="px-4 pt-4 pb-2">
-      <div className="flex items-center gap-3 px-3 py-2.5 rounded-full bg-black/15 border border-white/5">
-        {/* 返回按钮 */}
-        <Link href="/ming/records" className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition shrink-0">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/70">
+    <div className="px-4 pt-3 pb-2">
+      {/* 返回 + 姓名 */}
+      <div className="flex items-center justify-between mb-4">
+        <Link href="/ming/records" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/70">
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </Link>
 
-        {/* 生肖头像 */}
-        <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-base font-bold shrink-0"
-          style={{ color: '#c9a96e' }}
-        >
-          {zodiac}
-        </div>
-
-        {/* 信息 */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5">
-            <span className="font-semibold text-white text-sm truncate">{profile.name}</span>
-            <span className="text-white/50 text-xs">· {age}岁</span>
-          </div>
-          <p className="text-white/40 text-xs truncate">{formatDate(profile)}</p>
-        </div>
-
-        {/* 编辑按钮 */}
-        <Link href="/bazi" className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition shrink-0">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/60">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+        <div className="flex items-center gap-1">
+          <span className="text-white font-medium text-sm">{profile.name}</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2">
+            <polyline points="6 9 12 15 18 9" />
           </svg>
+        </div>
+
+        <div className="w-8" /> {/* 占位 */}
+      </div>
+
+      {/* 头像 + 信息 */}
+      <div className="flex flex-col items-center">
+        {/* 大emoji头像 */}
+        <div className="w-16 h-16 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-3xl mb-3">
+          {zodiacEmoji}
+        </div>
+
+        {/* 姓名·年龄·性别 */}
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="text-white font-semibold text-base">{profile.name}</span>
+          <span className="text-white/40 text-sm">·</span>
+          <span className="text-white/60 text-sm">{age}岁</span>
+          <span className="text-white/40 text-sm">·</span>
+          <span className="text-white/60 text-sm">{profile.gender}</span>
+        </div>
+
+        {/* 详细信息 */}
+        <div className="text-center space-y-0.5 mb-3">
+          <p className="text-white/40 text-xs">{formatDate(profile)}</p>
+          <p className="text-white/30 text-[10px]">
+            生肖：{zodiac}{zodiacEmoji} · 星座：{constellation}
+          </p>
+          <p className="text-white/30 text-[10px]">
+            八字：{baziStr}
+          </p>
+          <p className="text-white/30 text-[10px]">
+            五行：{wuxingText}
+          </p>
+        </div>
+
+        {/* 修改档案按钮 */}
+        <Link
+          href="/ming/bazi"
+          className="px-5 py-1.5 rounded-full border border-white/15 text-white/50 text-xs hover:bg-white/5 transition"
+        >
+          修改档案
         </Link>
       </div>
     </div>
@@ -318,50 +509,150 @@ function ProfileCapsule({ profile }: {
 function MingPanTab({ data, profile }: { data: any; profile: BaziProfile }) {
   const { pillars, dayMaster, cangGanDetail, bodyStrength, pattern, tiaoHou, wuXingFullCount } = data
 
+  const shishenCount = useMemo(() => countShiShen(pillars, dayMaster), [pillars, dayMaster])
+  const lifeSummary = useMemo(() => generateLifeSummary(data, profile), [data, profile])
+  const careerDirs = useMemo(() => getCareerDirection(data), [data])
+  const wealthTrend = useMemo(() => getWealthTrend(data, profile), [data, profile])
+  const loveScore = useMemo(() => getLoveScore(data, profile), [data, profile])
+  const healthScore = useMemo(() => getHealthScore(data), [data])
+
   return (
     <div className="space-y-4">
-      {/* 命盘标题 */}
-      <div className="text-center py-2">
-        <h2 className="text-gold-gradient text-2xl font-bold">命盘</h2>
+      {/* 八字排盘 */}
+      <SiZhuTable pillars={pillars} dayMaster={dayMaster} gender={profile.gender} cangGanDetail={cangGanDetail} />
+
+      {/* 人生总评 */}
+      <InfoCard title="人生总评">
+        <p className="text-white/70 text-xs leading-relaxed">{lifeSummary}</p>
+      </InfoCard>
+
+      {/* 五行能量 */}
+      <WuXingBarChart count={wuXingFullCount} />
+
+      {/* 日主 & 格局 */}
+      <div className="grid grid-cols-2 gap-3">
+        <InfoCard title="日主">
+          <div className="text-center py-1">
+            <span className="text-2xl font-bold" style={{ color: WUXING_COLOR[getWuXing(dayMaster)] }}>
+              {dayMaster}{getWuXing(dayMaster)}
+            </span>
+          </div>
+          <p className="text-white/50 text-[10px] leading-relaxed mt-1">
+            {getYinYang(dayMaster)}性之金，主刚毅果断、重义气。生于{pillars[1].zhi}月，{getWuXing(pillars[1].zhi)}旺金相，宜火炼方能成器。
+          </p>
+        </InfoCard>
+        <InfoCard title="格局">
+          <div className="text-center py-1">
+            <span className="text-2xl font-bold text-gold">{pattern?.patternName?.split('/')[0]?.trim() || '——'}</span>
+          </div>
+          <p className="text-white/50 text-[10px] leading-relaxed mt-1">
+            {pattern?.patternDesc || '格局分析加载中...'}
+          </p>
+        </InfoCard>
       </div>
 
-      {/* 四柱表格 */}
-      <SiZhuTable pillars={pillars} dayMaster={dayMaster} gender={profile.gender} />
+      {/* 身强身弱 */}
+      <InfoCard title="身强身弱">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-white font-semibold text-sm">{bodyStrength?.strength || '——'}</span>
+          <span className="text-white/40 text-xs">{Math.round((bodyStrength?.score || 0) * 10)}/10</span>
+        </div>
+        <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-gold/60 to-gold"
+            style={{ width: `${Math.min(100, ((bodyStrength?.score || 0) / 5) * 100)}%` }}
+          />
+        </div>
+        <p className="text-white/40 text-[10px] mt-2">{bodyStrength?.description || ''}</p>
+      </InfoCard>
 
-      {/* 地支藏干 */}
-      <DiZhiCangGan cangGanDetail={cangGanDetail} />
+      {/* 喜用神 */}
+      <InfoCard title="喜用神">
+        <div className="flex items-center gap-3 py-1">
+          {tiaoHou?.tiaoHouGod?.map((god: string, i: number) => (
+            <span key={i} className="text-2xl font-bold" style={{ color: WUXING_COLOR[getWuXing(god)] }}>
+              {getWuXing(god)}
+            </span>
+          ))}
+        </div>
+        <p className="text-white/40 text-[10px] mt-1">{tiaoHou?.tiaoHouReason || ''}</p>
+      </InfoCard>
 
-      {/* 日主与格局 */}
-      <RiZhuGeJu bodyStrength={bodyStrength} pattern={pattern} tiaoHou={tiaoHou} />
+      {/* 十神 */}
+      <ShiShenGrid count={shishenCount} />
 
-      {/* 五行分布 */}
-      <WuXingChart count={wuXingFullCount} />
+      {/* 事业方向 & 财运走势 */}
+      <div className="grid grid-cols-2 gap-3">
+        <InfoCard title="事业方向">
+          <div className="flex items-center gap-2 py-1">
+            {careerDirs.map((dir, i) => (
+              <span key={i} className="text-lg font-bold" style={{ color: WUXING_COLOR[dir] }}>
+                {dir}
+              </span>
+            ))}
+          </div>
+          <p className="text-white/40 text-[10px]">五行属{careerDirs.join('、')}的行业有利</p>
+        </InfoCard>
+        <InfoCard title="财运走势">
+          <div className="text-gold font-semibold text-sm py-0.5">{wealthTrend.label}</div>
+          <p className="text-white/40 text-[10px]">{wealthTrend.description}</p>
+          {/* 简单曲线 */}
+          <svg viewBox="0 0 100 30" className="w-full h-6 mt-1">
+            <path d="M0 25 Q25 20 50 15 T100 5" fill="none" stroke="#c9a96e" strokeWidth="1.5" />
+            <circle cx="100" cy="5" r="2" fill="#c9a96e" />
+          </svg>
+        </InfoCard>
+      </div>
 
-      {/* 快捷入口 */}
-      <QuickLinks />
+      {/* 感情 & 健康 */}
+      <div className="grid grid-cols-2 gap-3">
+        <InfoCard title="感情">
+          <div className="flex items-baseline gap-1 py-1">
+            <span className="text-2xl font-bold text-gold">{loveScore}</span>
+            <span className="text-white/40 text-xs">分</span>
+          </div>
+          <p className="text-white/40 text-[10px]">
+            {loveScore >= 70 ? '感情顺遂，桃花旺盛' : loveScore >= 50 ? '感情平稳，需主动经营' : '感情多磨，宜晚婚'}
+          </p>
+        </InfoCard>
+        <InfoCard title="健康">
+          <div className="flex items-baseline gap-1 py-1">
+            <span className="text-2xl font-bold text-green-400">{healthScore}</span>
+            <span className="text-white/40 text-xs">分</span>
+          </div>
+          <p className="text-white/40 text-[10px]">
+            {healthScore >= 70 ? '体质较好，注意保养' : healthScore >= 50 ? '体质一般，需加强锻炼' : '体质偏弱，注意调养'}
+          </p>
+        </InfoCard>
+      </div>
+    </div>
+  )
+}
+
+// ===== 通用信息卡片 =====
+
+function InfoCard({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="info-card-black p-4">
+      <h3 className="text-gold text-xs font-semibold mb-2">{title}</h3>
+      {children}
     </div>
   )
 }
 
 // ===== 四柱表格 =====
 
-function SiZhuTable({ pillars, dayMaster, gender }: { pillars: any[]; dayMaster: string; gender: '男' | '女' }) {
+function SiZhuTable({ pillars, dayMaster, gender, cangGanDetail }: {
+  pillars: any[]; dayMaster: string; gender: '男' | '女'; cangGanDetail: any[]
+}) {
   const labels = ['年柱', '月柱', '日柱', '时柱']
-  const rowLabels = ['主星', '天干', '地支']
 
   return (
-    <div className="p-4">
-      <div className="flex gap-1.5">
-        {/* 左侧行标签列 */}
-        <div className="flex flex-col justify-center gap-6 pt-7">
-          {rowLabels.map(label => (
-            <div key={label} className="text-white/50 text-xs text-right h-8 flex items-center justify-end">
-              {label}
-            </div>
-          ))}
-        </div>
+    <div className="info-card-black p-4">
+      <h3 className="text-gold text-xs font-semibold mb-3">八字排盘</h3>
 
-        {/* 四柱卡片 */}
+      {/* 四列卡片 */}
+      <div className="flex gap-2">
         {pillars.map((p: any, i: number) => {
           const isDayPillar = i === 2
           const shishen = isDayPillar
@@ -369,175 +660,120 @@ function SiZhuTable({ pillars, dayMaster, gender }: { pillars: any[]; dayMaster:
             : getShiShen(dayMaster, p.gan)
           const ganWx = getWuXing(p.gan)
           const zhiWx = getWuXing(p.zhi)
+          const cg = cangGanDetail[i]?.cangGan?.[0]
 
           return (
-            <div key={i} className="flex-1 flex flex-col items-center gap-1">
+            <div key={i} className="flex-1 flex flex-col items-center">
               {/* 柱标题 */}
-              <div className="text-white/60 text-xs mb-1">{labels[i]}</div>
-              {/* 白色卡片 */}
-              <div className="w-full rounded-xl bg-[#faf6f0] p-2.5 flex flex-col items-center gap-2">
-                {/* 主星 */}
-                <span className="text-gray-500 text-xs">{shishen}</span>
+              <span className="text-white/50 text-[10px] mb-1.5">{labels[i]}</span>
+              {/* 深色卡片 */}
+              <div className="w-full rounded-xl bg-black/20 border border-white/5 p-2.5 flex flex-col items-center gap-1.5">
                 {/* 天干 */}
-                <span className="text-xl font-bold" style={{ color: WUXING_COLOR[ganWx] || '#333' }}>
+                <span className="text-lg font-bold" style={{ color: WUXING_COLOR[ganWx] || '#fff' }}>
                   {p.gan}
                 </span>
                 {/* 地支 */}
-                <span className="text-xl font-bold" style={{ color: WUXING_COLOR[zhiWx] || '#333' }}>
+                <span className="text-lg font-bold" style={{ color: WUXING_COLOR[zhiWx] || '#fff' }}>
                   {p.zhi}
                 </span>
+                {/* 藏干 */}
+                {cg && (
+                  <span className="text-[10px] text-white/40">
+                    {cg.gan}·{cg.shiShen}
+                  </span>
+                )}
               </div>
+              {/* 十神标签 */}
+              <span className="text-white/30 text-[9px] mt-1">{shishen}</span>
             </div>
           )
         })}
+      </div>
+
+      {/* 下方八字字符串 */}
+      <div className="flex justify-center gap-3 mt-3 pt-3 border-t border-white/5">
+        {pillars.map((p: any, i: number) => (
+          <span key={i} className="text-white/50 text-xs">
+            {p.gan}{p.zhi}{i === 0 ? '年' : i === 1 ? '月' : i === 2 ? '日' : '时'}
+          </span>
+        ))}
       </div>
     </div>
   )
 }
 
-// ===== 地支藏干 =====
+// ===== 五行能量（横向柱状图） =====
 
-function DiZhiCangGan({ cangGanDetail }: { cangGanDetail: any[] }) {
-  const qiLabels = ['本气', '中气', '余气']
+function WuXingBarChart({ count }: { count: Record<string, number> }) {
+  const items = [
+    { label: '金', color: '#e2e8f0', key: '金', icon: '⚪' },
+    { label: '木', color: '#4ade80', key: '木', icon: '🌿' },
+    { label: '水', color: '#60a5fa', key: '水', icon: '💧' },
+    { label: '火', color: '#f87171', key: '火', icon: '🔥' },
+    { label: '土', color: '#fbbf24', key: '土', icon: '🟤' },
+  ]
+
+  const max = Math.max(...Object.values(count), 1)
 
   return (
-    <div className="p-4">
-      <h3 className="text-gold text-sm font-semibold mb-3 text-center">地支藏干</h3>
-      <div className="flex gap-1.5">
-        {/* 左侧行标签列 */}
-        <div className="flex flex-col justify-center gap-5 pt-6">
-          {qiLabels.map(label => (
-            <div key={label} className="text-white/50 text-xs text-right h-10 flex items-center justify-end">
-              {label}
+    <div className="info-card-black p-4">
+      <h3 className="text-gold text-xs font-semibold mb-3">五行能量</h3>
+      <div className="space-y-2.5">
+        {items.map(item => {
+          const val = count[item.key] || 0
+          const pct = (val / max) * 100
+          return (
+            <div key={item.key} className="flex items-center gap-2">
+              <span className="text-white/50 text-xs w-4">{val}</span>
+              <div className="flex-1 h-5 bg-white/5 rounded-full overflow-hidden relative">
+                <div
+                  className="h-full rounded-full opacity-80"
+                  style={{ width: `${Math.max(pct, 8)}%`, backgroundColor: item.color }}
+                />
+              </div>
+              <span className="text-xs w-4 text-center" style={{ color: item.color }}>{item.label}</span>
             </div>
-          ))}
-        </div>
-
-        {/* 四柱藏干卡片 */}
-        {cangGanDetail.map((col: any, colIdx: number) => (
-          <div key={col.name} className="flex-1 flex flex-col items-center gap-1">
-            {/* 柱标题 */}
-            <div className="text-white/60 text-xs mb-1">{col.name}</div>
-            {/* 白色卡片 */}
-            <div className="w-full rounded-xl bg-[#faf6f0] p-2.5 flex flex-col items-center gap-3">
-              {qiLabels.map((_, qiIdx) => {
-                const cg = col.cangGan[qiIdx]
-                if (!cg) {
-                  return <div key={qiIdx} className="h-10 flex items-center justify-center"><span className="text-gray-300">—</span></div>
-                }
-                return (
-                  <div key={qiIdx} className="flex flex-col items-center gap-0.5">
-                    <span className="text-sm font-medium" style={{ color: WUXING_COLOR[cg.wuXing] || '#333' }}>
-                      {cg.gan}·{cg.shiShen}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
-      <p className="text-[10px] text-white/40 mt-3 text-center">
-        本气（主气）为地支最主要能量，中气、余气为辅助能量
+      <p className="text-white/30 text-[10px] mt-3 leading-relaxed">
+        【五行能量说明】五行平衡为理想状态，若某行过旺或过弱，则相应五行对应的脏腑或运势可能偏弱，需结合大运流年综合判断。
       </p>
     </div>
   )
 }
 
-// ===== 日主与格局 =====
+// ===== 十神网格 =====
 
-function RiZhuGeJu({ bodyStrength, pattern, tiaoHou }: { bodyStrength: any; pattern: any; tiaoHou: any }) {
-  return (
-    <div className="moonly-card p-4">
-      <div className="mb-3">
-        <h3 className="text-gold text-sm font-semibold">日主与格局</h3>
-      </div>
-      <div className="grid grid-cols-3 gap-2">
-        <div className="pillar-cell p-3 text-center flex flex-col justify-center">
-          <div className="text-moonly-text-muted text-xs mb-1">身强身弱</div>
-          <div className="text-white font-semibold text-sm">{bodyStrength?.strength || '——'}</div>
-          {bodyStrength?.score != null && (
-            <div className="text-moonly-text-muted text-[10px] mt-1">得分 {bodyStrength.score}</div>
-          )}
-        </div>
-        <div className="pillar-cell p-3 text-center flex flex-col justify-center">
-          <div className="text-moonly-text-muted text-xs mb-1">格局</div>
-          <div className="text-white font-semibold text-sm leading-tight">{pattern?.patternName || '——'}</div>
-        </div>
-        <div className="pillar-cell p-3 text-center flex flex-col justify-center">
-          <div className="text-moonly-text-muted text-xs mb-1">喜用神</div>
-          <div className="text-gold font-semibold text-sm">
-            {tiaoHou?.tiaoHouGod?.join('、') || '——'}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ===== 五行分布 =====
-
-function WuXingChart({ count }: { count: Record<string, number> }) {
-  const max = Math.max(...Object.values(count), 1)
-
+function ShiShenGrid({ count }: { count: Record<string, number> }) {
   const items = [
-    { label: '金', color: 'bg-gradient-to-t from-slate-300 to-slate-400', key: '金' },
-    { label: '木', color: 'bg-gradient-to-t from-emerald-400 to-emerald-500', key: '木' },
-    { label: '水', color: 'bg-gradient-to-t from-blue-400 to-blue-500', key: '水' },
-    { label: '火', color: 'bg-gradient-to-t from-red-400 to-red-500', key: '火' },
-    { label: '土', color: 'bg-gradient-to-t from-amber-400 to-amber-500', key: '土' },
+    { key: '正印', label: '正印' },
+    { key: '正官', label: '正官' },
+    { key: '正财', label: '正财' },
+    { key: '比肩', label: '比肩' },
+    { key: '食神', label: '食神' },
+    { key: '偏印', label: '偏印' },
+    { key: '七杀', label: '七杀' },
+    { key: '偏财', label: '偏财' },
+    { key: '劫财', label: '劫财' },
+    { key: '伤官', label: '伤官' },
   ]
 
   return (
-    <div className="moonly-card p-4">
-      <h3 className="text-gold text-sm font-semibold mb-4">五行分布</h3>
-      <div className="flex items-end justify-around gap-3 h-28">
-        {items.map(item => {
-          const val = count[item.key] || 0
-          const pct = Math.max((val / max) * 100, 8)
-          return (
-            <div key={item.key} className="flex flex-col items-center gap-1.5 flex-1">
-              <span className="text-white text-xs font-medium">{val}</span>
-              <div className="w-full flex justify-center items-end" style={{ height: '80px' }}>
-                <div
-                  className={`w-6 rounded-t-md ${item.color} opacity-80`}
-                  style={{ height: `${pct}%` }}
-                />
-              </div>
-              <span className={`text-xs ${WUXING_CLASS[item.key]}`}>{item.label}</span>
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-// ===== 快捷入口 =====
-
-function QuickLinks() {
-  const links = [
-    { href: '/match', icon: '💞', label: '合婚分析', desc: '匹配姻缘' },
-    { href: '/career', icon: '💼', label: '事业合作', desc: '合作运势' },
-    { href: '/talent', icon: '🌟', label: '天赋分析', desc: '多元智能' },
-    { href: '/naming', icon: '✨', label: '姓名学', desc: '起名改名' },
-  ]
-
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      {links.map(link => (
-        <Link
-          key={link.href}
-          href={link.href}
-          className="moonly-card p-3 flex items-center gap-3 hover:bg-white/5 transition"
-        >
-          <span className="text-xl">{link.icon}</span>
-          <div className="flex-1 min-w-0">
-            <div className="text-white font-medium text-sm">{link.label}</div>
-            <div className="text-moonly-text-muted text-xs">{link.desc}</div>
+    <div className="info-card-black p-4">
+      <h3 className="text-gold text-xs font-semibold mb-3">十神</h3>
+      <div className="grid grid-cols-5 gap-2">
+        {items.map(item => (
+          <div key={item.key} className="flex flex-col items-center gap-0.5">
+            <span className="text-white/50 text-[9px]">{item.label}</span>
+            <span className="text-lg">{SHISHEN_EMOJI[item.key]}</span>
+            <span className="text-white/30 text-[9px]">{count[item.key] || 0}个</span>
           </div>
-        </Link>
-      ))}
+        ))}
+      </div>
+      <p className="text-white/30 text-[10px] mt-3 leading-relaxed">
+        命局最旺{Object.entries(count).sort((a, b) => (b[1] as number) - (a[1] as number))[0]?.[0] || '食神'}，{Object.entries(count).sort((a, b) => (b[1] as number) - (a[1] as number))[1]?.[0] || '伤官'}次之，整体十神{Object.values(count).filter(v => v > 0).length >= 8 ? '分布均衡' : '略有偏颇'}，人生方向明确。
+      </p>
     </div>
   )
 }
@@ -554,25 +790,21 @@ function DayunTab({ daYunList, profile, dayMaster }: { daYunList: DaYunInfo[]; p
       {/* 大运总览 */}
       <div className="moonly-card p-4">
         <div className="flex items-center gap-4 mb-4">
-          {/* 巨大评分 */}
           <div className="flex items-baseline gap-2">
             <span className="text-5xl font-bold text-gold">{currentDayun.score}</span>
             <span className="text-lg text-moonly-gold-light">{getFortuneLabel(currentDayun.fortuneLevel)}</span>
           </div>
         </div>
 
-        {/* 大运名称 + 年份 */}
         <div className="mb-2">
           <span className="text-white font-semibold text-lg">{currentDayun.ganZhi}运</span>
           <span className="text-moonly-text-secondary text-sm ml-2">· {currentDayun.startYear}-{currentDayun.endYear}</span>
         </div>
 
-        {/* 步数 + 起运年龄 */}
         <div className="text-moonly-text-muted text-xs mb-4">
           第{currentDayun.index}步大运 · {currentDayun.startAge}岁起运
         </div>
 
-        {/* 四维度星级 */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-moonly-text-secondary text-sm">事业</span>
@@ -607,42 +839,41 @@ function DayunTab({ daYunList, profile, dayMaster }: { daYunList: DaYunInfo[]; p
           <h3 className="text-gold text-sm font-semibold">大运走势</h3>
         </div>
 
-        {/* 可横向滚动的图表+列表 */}
         <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
           <div style={{ minWidth: `${Math.max(340, daYunList.length * 72)}px` }}>
             <DayunChart daYunList={daYunList} currentIndex={currentIndex >= 0 ? currentIndex : 0} />
 
             <div className="flex gap-2 mt-2 pb-2">
               {daYunList.map((d, i) => (
-            <div
-              key={i}
-              className={`shrink-0 w-16 text-center p-2 rounded-lg border ${
-                d.isCurrent
-                  ? 'border-moonly-gold/40 bg-moonly-gold/10'
-                  : 'border-white/5 bg-white/5'
-              }`}
-            >
-              <div className={`text-xs font-semibold ${d.isCurrent ? 'text-gold' : 'text-white'}`}>
-                {d.ganZhi}
-              </div>
-              <div className="text-[10px] text-moonly-text-muted mt-0.5">
-                {d.startYear}-{d.endYear}
-              </div>
-              <div className="text-[10px] text-moonly-text-muted">
-                {Math.floor(d.startAge)}-{Math.floor(d.endAge)}岁
-              </div>
-              <div className={`text-[10px] mt-0.5 font-medium ${
-                d.score >= 65 ? 'text-green-400' : d.score >= 45 ? 'text-slate-400' : 'text-red-400'
-              }`}>
-                {d.score} · {getFortuneLabel(d.fortuneLevel)}
-              </div>
+                <div
+                  key={i}
+                  className={`shrink-0 w-16 text-center p-2 rounded-lg border ${
+                    d.isCurrent
+                      ? 'border-moonly-gold/40 bg-moonly-gold/10'
+                      : 'border-white/5 bg-white/5'
+                  }`}
+                >
+                  <div className={`text-xs font-semibold ${d.isCurrent ? 'text-gold' : 'text-white'}`}>
+                    {d.ganZhi}
+                  </div>
+                  <div className="text-[10px] text-moonly-text-muted mt-0.5">
+                    {d.startYear}-{d.endYear}
+                  </div>
+                  <div className="text-[10px] text-moonly-text-muted">
+                    {Math.floor(d.startAge)}-{Math.floor(d.endAge)}岁
+                  </div>
+                  <div className={`text-[10px] mt-0.5 font-medium ${
+                    d.score >= 65 ? 'text-green-400' : d.score >= 45 ? 'text-slate-400' : 'text-red-400'
+                  }`}>
+                    {d.score} · {getFortuneLabel(d.fortuneLevel)}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
   )
 }
 
@@ -661,8 +892,6 @@ function DayunChart({ daYunList, currentIndex }: { daYunList: DaYunInfo[]; curre
   }))
 
   const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
-
-  // 填充区域
   const fillPath = `${pathD} L ${points[points.length - 1].x} ${padding.top + chartHeight} L ${points[0].x} ${padding.top + chartHeight} Z`
 
   return (
@@ -674,7 +903,6 @@ function DayunChart({ daYunList, currentIndex }: { daYunList: DaYunInfo[]; curre
         </linearGradient>
       </defs>
 
-      {/* 网格线 */}
       {[25, 50, 75].map(y => (
         <line
           key={y}
@@ -687,7 +915,6 @@ function DayunChart({ daYunList, currentIndex }: { daYunList: DaYunInfo[]; curre
         />
       ))}
 
-      {/* Y轴标签 */}
       {[0, 50, 100].map(y => (
         <text
           key={y}
@@ -701,13 +928,9 @@ function DayunChart({ daYunList, currentIndex }: { daYunList: DaYunInfo[]; curre
         </text>
       ))}
 
-      {/* 填充区域 */}
       <path d={fillPath} fill="url(#dayunFill)" />
-
-      {/* 折线 */}
       <path d={pathD} fill="none" stroke="#c9a96e" strokeWidth="2" />
 
-      {/* 数据点 */}
       {points.map((p, i) => (
         <g key={i}>
           <circle
@@ -718,7 +941,6 @@ function DayunChart({ daYunList, currentIndex }: { daYunList: DaYunInfo[]; curre
             stroke={i === currentIndex ? '#fff' : 'none'}
             strokeWidth={i === currentIndex ? 2 : 0}
           />
-          {/* 分数标签 */}
           <text
             x={p.x}
             y={p.y - (i === currentIndex ? 10 : 8)}
@@ -732,7 +954,6 @@ function DayunChart({ daYunList, currentIndex }: { daYunList: DaYunInfo[]; curre
         </g>
       ))}
 
-      {/* X轴标签 */}
       {daYunList.map((d, i) => (
         <text
           key={i}

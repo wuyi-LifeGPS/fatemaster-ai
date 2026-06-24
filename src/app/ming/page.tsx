@@ -56,189 +56,293 @@ function countShiShen(pillars: any[], dayMaster: string) {
   return counts
 }
 
+// ===== 弹窗辅助组件 =====
+function ModalBigNumber({ value, unit, label }: { value: string; unit?: string; label?: string }) {
+  return (
+    <div className="py-3">
+      <div className="flex items-baseline gap-1">
+        <span className="text-5xl font-bold text-white">{value}</span>
+        {unit && <span className="text-xl text-white/50">{unit}</span>}
+      </div>
+      {label && <p className="text-white/40 text-sm mt-1">{label}</p>}
+    </div>
+  )
+}
+
+function ModalStatGrid({ items }: { items: { value: string; label: string; sub?: string }[] }) {
+  return (
+    <div className="grid grid-cols-4 gap-2 mt-4">
+      {items.map((item, i) => (
+        <div key={i} className="text-center p-2 rounded-xl bg-white/5">
+          <div className="text-white font-semibold text-sm">{item.value}</div>
+          <div className="text-white/50 text-[10px] mt-0.5">{item.label}</div>
+          {item.sub && <div className="text-white/30 text-[9px]">{item.sub}</div>}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ModalCard({ title, children }: { title?: string; children: React.ReactNode }) {
+  return (
+    <div className="p-3 rounded-xl bg-white/5 mt-3">
+      {title && <div className="text-gold text-xs font-semibold mb-2">{title}</div>}
+      {children}
+    </div>
+  )
+}
+
 // ===== 详细内容生成 =====
-function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { title: string; content: React.ReactNode } {
-  const { pillars, dayMaster, cangGanDetail, bodyStrength, pattern, tiaoHou, wuXingFullCount } = data
+function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { title: string; subtitle?: string; content: React.ReactNode } {
+  const { pillars, dayMaster, bodyStrength, pattern, tiaoHou, wuXingFullCount } = data
 
   switch (moduleId) {
-    case 'bazi':
+    case 'bazi': {
+      const baziStr = pillars.map((p: any) => p.gan + p.zhi).join(' ')
       return {
-        title: '八字排盘详解',
+        title: '八字排盘',
+        subtitle: baziStr,
         content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <p>八字由年柱、月柱、日柱、时柱四柱组成，每柱含一个天干和一个地支，共八个字，故称"八字"。</p>
+          <div className="space-y-3">
+            <ModalBigNumber value="8" unit="字" label={`${profile.name}的八字命盘`} />
             <div className="space-y-2">
               {pillars.map((p: any, i: number) => {
                 const labels = ['年柱（祖上根基）', '月柱（父母兄弟）', '日柱（夫妻宫）', '时柱（子女晚年）']
                 return (
-                  <div key={i} className="p-3 rounded-lg bg-white/5">
-                    <div className="text-gold text-xs mb-1">{labels[i]}</div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-bold" style={{ color: WUXING_COLOR[getWuXing(p.gan)] }}>{p.gan}</span>
-                      <span className="text-lg font-bold" style={{ color: WUXING_COLOR[getWuXing(p.zhi)] }}>{p.zhi}</span>
+                  <ModalCard key={i} title={labels[i]}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold" style={{ background: `${WUXING_COLOR[getWuXing(p.gan)]}20`, color: WUXING_COLOR[getWuXing(p.gan)] }}>{p.gan}</div>
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold" style={{ background: `${WUXING_COLOR[getWuXing(p.zhi)]}20`, color: WUXING_COLOR[getWuXing(p.zhi)] }}>{p.zhi}</div>
+                      <div className="text-white/50 text-xs">
+                        <div>天干{getWuXing(p.gan)} · 地支{getWuXing(p.zhi)}</div>
+                        <div className="text-white/30">藏干：{getCangGan(p.zhi).join('、')}</div>
+                      </div>
                     </div>
-                    <p className="text-white/40 text-xs mt-1">天干{getWuXing(p.gan)} · 地支藏干：{getCangGan(p.zhi).join('、')}</p>
-                  </div>
+                  </ModalCard>
                 )
               })}
             </div>
-            <p className="text-white/40 text-xs">年柱代表祖上根基，月柱代表父母兄弟与青年运，日柱（日干为日主）代表自身与配偶，时柱代表子女与晚年运势。</p>
-          </div>
-        )
-      }
-    case 'summary':
-      return {
-        title: '人生总评',
-        content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <p>此命日主为<span className="text-gold font-semibold">{dayMaster}{getWuXing(dayMaster)}</span>，{getYinYang(dayMaster)}性，属"{pattern?.patternName || '普通'}"之格局。</p>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">早年运势</div>
-              <p>{bodyStrength?.strength === '强' ? '早年主顺遂，才华横溢，能担财官显贵。' : bodyStrength?.strength === '偏弱' ? '早年主磨砺，需借助印星、比劫之力方能成事。' : '早年主平稳，能屈能伸，进退有度。'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">中年运势</div>
-              <p>中年（{Math.max(30, getAge(profile.year) + 5)}岁后）大运转入{getWuXing(dayMaster) === '金' || getWuXing(dayMaster) === '水' ? '火土' : '金水'}之地，事业渐入佳境。</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">晚年运势</div>
-              <p>晚年主安宁，{tiaoHou?.tiaoHouGod?.join('、') || '贵人'}为用神，福禄双全。</p>
-            </div>
-          </div>
-        )
-      }
-    case 'wuxing': {
-      const wxItems = [
-        { label: '金', color: '#e2e8f0', key: '金', organ: '肺、大肠', nature: '肃杀、收敛' },
-        { label: '木', color: '#4ade80', key: '木', organ: '肝、胆', nature: '生发、条达' },
-        { label: '水', color: '#60a5fa', key: '水', organ: '肾、膀胱', nature: '滋润、下行' },
-        { label: '火', color: '#f87171', key: '火', organ: '心、小肠', nature: '温热、上升' },
-        { label: '土', color: '#fbbf24', key: '土', organ: '脾、胃', nature: '生化、承载' },
-      ]
-      return {
-        title: '五行能量详解',
-        content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <p>五行能量的平衡与否，直接影响命主的身心健康与运势走向。</p>
-            {wxItems.map(item => {
-              const val = wuXingFullCount?.[item.key] || 0
-              return (
-                <div key={item.key} className="p-3 rounded-lg bg-white/5">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-bold" style={{ color: item.color }}>{item.label}</span>
-                    <span className="text-white/40 text-xs">能量值：{val}</span>
-                  </div>
-                  <p className="text-white/50 text-xs">对应脏腑：{item.organ} · 性质：{item.nature}</p>
-                  <p className="text-white/40 text-xs mt-1">{val > 3 ? `${item.label}偏旺，需注意${item.organ.split('、')[0]}系统健康。` : val === 0 ? `${item.label}缺失，建议在生活中多补充${item.label}属性元素。` : `${item.label}平衡，状态良好。`}</p>
-                </div>
-              )
-            })}
+            <ModalCard title="四柱含义">
+              <p className="text-white/60 text-sm leading-relaxed">
+                年柱代表祖上根基与早年运势；月柱代表父母兄弟与青年运；日柱（日干为日主）代表自身与配偶；时柱代表子女与晚年运势。
+                四柱合参，方能全面论断命主一生吉凶祸福。
+              </p>
+            </ModalCard>
           </div>
         )
       }
     }
-    case 'rizhu':
+    case 'summary': {
+      const wx = getWuXing(dayMaster)
+      const midAge = Math.max(30, getAge(profile.year) + 5)
       return {
-        title: '日主详解',
+        title: '人生总评',
+        subtitle: `${dayMaster}${wx}命 · ${bodyStrength?.strength || '——'}`,
         content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <div className="text-center py-4">
-              <span className="text-4xl font-bold" style={{ color: WUXING_COLOR[getWuXing(dayMaster)] }}>{dayMaster}{getWuXing(dayMaster)}</span>
-              <p className="text-white/40 text-xs mt-2">{getYinYang(dayMaster)}性日主</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">性格特征</div>
-              <p>{getWuXing(dayMaster) === '金' ? '刚毅果断、重义气、讲原则，有领导力，但易固执。' : getWuXing(dayMaster) === '木' ? '仁慈正直、有上进心、善于规划，但易优柔寡断。' : getWuXing(dayMaster) === '水' ? '聪明机智、善于变通、有谋略，但易多疑。' : getWuXing(dayMaster) === '火' ? '热情开朗、积极向上、有感染力，但易冲动。' : '稳重踏实、诚信可靠、有耐心，但易保守。'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">生于{pillars[1].zhi}月</div>
-              <p>月令{pillars[1].zhi}，五行属{getWuXing(pillars[1].zhi)}，{getWuXing(pillars[1].zhi) === getWuXing(dayMaster) ? '与日主同气，得月令生扶。' : getWuXing(pillars[1].zhi) === '土' && getWuXing(dayMaster) === '金' ? '土生金，得月令相生。' : '月令与日主关系需结合全局分析。'}</p>
-            </div>
+          <div className="space-y-3">
+            <ModalCard title="命格概述">
+              <p className="text-white/70 text-sm leading-relaxed">
+                此命日主为<span className="text-gold font-semibold">{dayMaster}{wx}</span>，{getYinYang(dayMaster)}性，
+                属"{pattern?.patternName || '普通'}"之格局。{bodyStrength?.strength === '强' ? '早年主顺遂，才华横溢，能担财官显贵。' : bodyStrength?.strength === '偏弱' ? '早年主磨砺，需借助印星、比劫之力方能成事。' : '早年主平稳，能屈能伸，进退有度。'}
+              </p>
+            </ModalCard>
+            <ModalStatGrid items={[
+              { value: `${getAge(profile.year)}`, label: '当前年龄', sub: '岁' },
+              { value: `${midAge}`, label: '中年转运', sub: '岁后' },
+              { value: pattern?.patternName?.split('/')[0]?.trim() || '——', label: '命格' },
+              { value: bodyStrength?.strength || '——', label: '身强身弱' },
+            ]} />
+            <ModalCard title="运势周期">
+              <div className="space-y-2 text-sm text-white/60">
+                <p><span className="text-gold">早年（1-30岁）</span>：{bodyStrength?.strength === '强' ? '学业顺利，才华初显' : bodyStrength?.strength === '偏弱' ? '积累磨砺，厚积薄发' : '平稳发展，循序渐进'}</p>
+                <p><span className="text-gold">中年（{midAge}-60岁）</span>：事业渐入佳境，大运转入{wx === '金' || wx === '水' ? '火土' : '金水'}之地。</p>
+                <p><span className="text-gold">晚年（60岁后）</span>：{tiaoHou?.tiaoHouGod?.join('、') || '贵人'}为用神，福禄双全，安享天伦。</p>
+              </div>
+            </ModalCard>
           </div>
         )
       }
+    }
+    case 'wuxing': {
+      const wxItems = [
+        { label: '金', color: '#e2e8f0', key: '金', organ: '肺、大肠', nature: '肃杀、收敛', dir: '西方', season: '秋季' },
+        { label: '木', color: '#4ade80', key: '木', organ: '肝、胆', nature: '生发、条达', dir: '东方', season: '春季' },
+        { label: '水', color: '#60a5fa', key: '水', organ: '肾、膀胱', nature: '滋润、下行', dir: '北方', season: '冬季' },
+        { label: '火', color: '#f87171', key: '火', organ: '心、小肠', nature: '温热、上升', dir: '南方', season: '夏季' },
+        { label: '土', color: '#fbbf24', key: '土', organ: '脾、胃', nature: '生化、承载', dir: '中央', season: '四季' },
+      ]
+      const total = Object.values(wuXingFullCount || {}).reduce((a: number, b: unknown) => a + ((b as number) || 0), 0) || 1
+      const maxItem = wxItems.reduce((max, item) => (wuXingFullCount?.[item.key] || 0) > (wuXingFullCount?.[max.key] || 0) ? item : max, wxItems[0])
+      const minItem = wxItems.reduce((min, item) => (wuXingFullCount?.[item.key] || 0) < (wuXingFullCount?.[min.key] || 0) ? item : min, wxItems[0])
+      return {
+        title: '五行能量',
+        subtitle: `${maxItem.label}最旺 · ${minItem.label}偏弱`,
+        content: (
+          <div className="space-y-3">
+            <ModalStatGrid items={wxItems.map(item => ({
+              value: `${wuXingFullCount?.[item.key] || 0}`,
+              label: item.label,
+              sub: `${Math.round(((wuXingFullCount?.[item.key] || 0) / total) * 100)}%`
+            }))} />
+            <ModalCard title="五行分布">
+              <div className="space-y-3">
+                {wxItems.map(item => {
+                  const val = wuXingFullCount?.[item.key] || 0
+                  const pct = Math.round((val / total) * 100)
+                  return (
+                    <div key={item.key}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-semibold" style={{ color: item.color }}>{item.label}</span>
+                        <span className="text-white/40 text-xs">{val} · {pct}%</span>
+                      </div>
+                      <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${Math.max(pct, 5)}%`, backgroundColor: item.color }} />
+                      </div>
+                      <div className="flex gap-3 mt-1">
+                        <span className="text-white/30 text-[10px]">脏腑：{item.organ}</span>
+                        <span className="text-white/30 text-[10px]">方位：{item.dir}</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </ModalCard>
+            <ModalCard title="健康建议">
+              <p className="text-white/60 text-sm leading-relaxed">
+                {maxItem.label}偏旺，需注意{maxItem.organ.split('、')[0]}系统健康；
+                {minItem.label}偏弱，建议在生活中多补充{minItem.label}属性元素，如多接触{minItem.dir}方、{minItem.season}相关的颜色与环境。
+              </p>
+            </ModalCard>
+          </div>
+        )
+      }
+    }
+    case 'rizhu': {
+      const wx = getWuXing(dayMaster)
+      const personality = wx === '金' ? '刚毅果断、重义气、讲原则，有领导力，但易固执。' : wx === '木' ? '仁慈正直、有上进心、善于规划，但易优柔寡断。' : wx === '水' ? '聪明机智、善于变通、有谋略，但易多疑。' : wx === '火' ? '热情开朗、积极向上、有感染力，但易冲动。' : '稳重踏实、诚信可靠、有耐心，但易保守。'
+      return {
+        title: '日主详解',
+        subtitle: `${dayMaster}${wx} · ${getYinYang(dayMaster)}性`,
+        content: (
+          <div className="space-y-3">
+            <div className="text-center py-2">
+              <span className="text-6xl font-bold" style={{ color: WUXING_COLOR[wx] }}>{dayMaster}</span>
+              <p className="text-gold text-lg mt-1">{wx} · {getYinYang(dayMaster)}性</p>
+            </div>
+            <ModalStatGrid items={[
+              { value: dayMaster, label: '日干' },
+              { value: wx, label: '五行' },
+              { value: getYinYang(dayMaster), label: '阴阳' },
+              { value: pillars[1].zhi, label: '月令' },
+            ]} />
+            <ModalCard title="性格特征">
+              <p className="text-white/70 text-sm leading-relaxed">{personality}</p>
+            </ModalCard>
+            <ModalCard title="生于{pillars[1].zhi}月">
+              <p className="text-white/60 text-sm leading-relaxed">
+                月令{pillars[1].zhi}，五行属{getWuXing(pillars[1].zhi)}，
+                {getWuXing(pillars[1].zhi) === wx ? '与日主同气，得月令生扶，日主有力。' : getWuXing(pillars[1].zhi) === '土' && wx === '金' ? '土生金，得月令相生，日主得助。' : `月令五行${getWuXing(pillars[1].zhi)}与日主${wx}关系需结合全局分析。`}
+              </p>
+            </ModalCard>
+          </div>
+        )
+      }
+    }
     case 'geju':
       return {
         title: '格局详解',
+        subtitle: pattern?.patternName || '——',
         content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <div className="text-center py-4">
-              <span className="text-3xl font-bold text-gold">{pattern?.patternName?.split('/')[0]?.trim() || '——'}</span>
+          <div className="space-y-3">
+            <div className="text-center py-2">
+              <span className="text-4xl font-bold text-gold">{pattern?.patternName?.split('/')[0]?.trim() || '——'}</span>
             </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">格局说明</div>
-              <p>{pattern?.patternDesc || '格局分析加载中...'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">喜用神</div>
-              <p>喜：{pattern?.usefulGod?.join('、') || '根据具体组合分析'}</p>
-              <p className="mt-1">忌：{pattern?.avoidGod?.join('、') || '根据具体组合分析'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">月令本气</div>
-              <p>月令{pillars[1].zhi}藏干本气为{pattern?.monthBenQi || '——'}，对应十神为{pattern?.monthBenQiShiShen || '——'}，故定此格局。</p>
-            </div>
-          </div>
-        )
-      }
-    case 'shenruo':
-      return {
-        title: '身强身弱详解',
-        content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
-              <span className="text-gold font-semibold">{bodyStrength?.strength || '——'}</span>
-              <span className="text-white/40 text-xs">得分 {bodyStrength?.score || 0}/10</span>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">判断依据</div>
-              <div className="space-y-1 text-xs text-white/50">
-                <p>月令得分：{bodyStrength?.monthScore || 0}（月令对日主强弱影响最大）</p>
-                <p>地支根气：{bodyStrength?.rootScore || 0}（年、日、时支藏干对日主的生扶）</p>
-                <p>天干得分：{bodyStrength?.ganScore || 0}（年、月、时干对日主的生扶）</p>
+            <ModalStatGrid items={[
+              { value: pattern?.monthBenQi || '——', label: '月令本气' },
+              { value: pattern?.monthBenQiShiShen || '——', label: '对应十神' },
+              { value: pattern?.patternType || '——', label: '格局类型' },
+              { value: bodyStrength?.strength || '——', label: '身强身弱' },
+            ]} />
+            <ModalCard title="格局说明">
+              <p className="text-white/70 text-sm leading-relaxed">{pattern?.patternDesc || '格局分析加载中...'}</p>
+            </ModalCard>
+            <ModalCard title="喜忌分析">
+              <div className="space-y-2 text-sm text-white/60">
+                <p><span className="text-gold">喜神</span>：{pattern?.usefulGod?.join('、') || '根据具体组合分析'}</p>
+                <p><span className="text-white/40">忌神</span>：{pattern?.avoidGod?.join('、') || '根据具体组合分析'}</p>
               </div>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">帮身之神</div>
-              <p>{bodyStrength?.helperGan?.length ? bodyStrength.helperGan.join('、') : '无明显帮身之神'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">克泄耗神</div>
-              <p>{bodyStrength?.restrictGan?.length ? bodyStrength.restrictGan.join('、') : '无明显克泄耗之神'}</p>
-            </div>
+            </ModalCard>
           </div>
         )
       }
-    case 'xiyongshen':
+    case 'shenruo': {
+      const score = bodyStrength?.score || 0
+      const maxScore = 10
+      const pct = Math.round((score / maxScore) * 100)
       return {
-        title: '喜用神详解',
+        title: '身强身弱',
+        subtitle: `${bodyStrength?.strength || '——'} · 得分 ${score}/${maxScore}`,
         content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <div className="flex items-center gap-3 py-2">
-              {tiaoHou?.tiaoHouGod?.map((god: string, i: number) => (
-                <span key={i} className="text-3xl font-bold" style={{ color: WUXING_COLOR[getWuXing(god)] }}>{getWuXing(god)}</span>
+          <div className="space-y-3">
+            <ModalBigNumber value={`${score}`} unit={`/${maxScore}`} label={bodyStrength?.strength || ''} />
+            <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-gold/60 to-gold" style={{ width: `${pct}%` }} />
+            </div>
+            <ModalStatGrid items={[
+              { value: `${bodyStrength?.monthScore || 0}`, label: '月令得分', sub: '权重最大' },
+              { value: `${bodyStrength?.rootScore || 0}`, label: '地支根气' },
+              { value: `${bodyStrength?.ganScore || 0}`, label: '天干得分' },
+              { value: `${bodyStrength?.helperGan?.length || 0}`, label: '帮身之神' },
+            ]} />
+            <ModalCard title="判断依据">
+              <p className="text-white/60 text-sm leading-relaxed">
+                身强身弱主要看三方面：月令对日主的生扶（得分{bodyStrength?.monthScore || 0}）、
+                地支藏干的根气（得分{bodyStrength?.rootScore || 0}）、
+                天干对日主的生扶（得分{bodyStrength?.ganScore || 0}）。
+                总分{score}分，{score >= 7 ? '身强，能担财官，宜克泄耗。' : score <= 3 ? '身弱，需印比帮身，宜生扶。' : '中和，宜顺势而行。'}
+              </p>
+            </ModalCard>
+            <ModalCard title="调候建议">
+              <p className="text-white/60 text-sm leading-relaxed">{bodyStrength?.description || ''}</p>
+            </ModalCard>
+          </div>
+        )
+      }
+    }
+    case 'xiyongshen': {
+      const gods = tiaoHou?.tiaoHouGod || []
+      return {
+        title: '喜用神',
+        subtitle: gods.join('、') || '——',
+        content: (
+          <div className="space-y-3">
+            <div className="flex items-center justify-center gap-4 py-3">
+              {gods.map((god: string, i: number) => (
+                <div key={i} className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold" style={{ background: `${WUXING_COLOR[getWuXing(god)]}20`, color: WUXING_COLOR[getWuXing(god)] }}>
+                  {getWuXing(god)}
+                </div>
               ))}
             </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">调候用神</div>
-              <p>{tiaoHou?.tiaoHouGod?.join('、') || '——'}</p>
-              <p className="text-white/40 text-xs mt-1">{tiaoHou?.tiaoHouReason || ''}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">命局气候</div>
-              <p>{tiaoHou?.climate || '未知'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">调候状态</div>
-              <p>{tiaoHou?.tiaoHouDesc || '调候分析加载中...'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">用神建议</div>
-              <p>生活中可多接触{tiaoHou?.tiaoHouGod?.map((g: string) => getWuXing(g)).join('、')}属性的颜色、方位、行业，有助于提升运势。</p>
-            </div>
+            <ModalStatGrid items={[
+              { value: tiaoHou?.climate || '——', label: '命局气候' },
+              { value: gods[0] || '——', label: '首选用神' },
+              { value: gods[1] || '——', label: '次选用神' },
+              { value: pattern?.avoidGod?.[0] || '——', label: '主要忌神' },
+            ]} />
+            <ModalCard title="调候说明">
+              <p className="text-white/60 text-sm leading-relaxed">{tiaoHou?.tiaoHouReason || ''}</p>
+            </ModalCard>
+            <ModalCard title="用神建议">
+              <div className="space-y-2 text-sm text-white/60">
+                <p>生活中可多接触{gods.map((g: string) => getWuXing(g)).join('、')}属性的元素：</p>
+                <p className="text-white/40">· 颜色：{gods.map((g: string) => getWuXing(g) === '金' ? '白色、金色' : getWuXing(g) === '木' ? '绿色、青色' : getWuXing(g) === '水' ? '黑色、蓝色' : getWuXing(g) === '火' ? '红色、紫色' : '黄色、棕色').join('、')}</p>
+                <p className="text-white/40">· 方位：{gods.map((g: string) => getWuXing(g) === '金' ? '西方' : getWuXing(g) === '木' ? '东方' : getWuXing(g) === '水' ? '北方' : getWuXing(g) === '火' ? '南方' : '中央').join('、')}</p>
+              </div>
+            </ModalCard>
           </div>
         )
       }
+    }
     case 'shishen': {
       const counts = countShiShen(pillars, dayMaster)
       const shishenDesc: Record<string, string> = {
@@ -253,20 +357,34 @@ function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { t
         '食神': '代表子女、才华、福气，主温和、聪慧、有口福。',
         '伤官': '代表创造力、表现力，主聪明、好胜，但易傲慢。',
       }
+      const sorted = Object.entries(counts).sort((a, b) => (b[1] as number) - (a[1] as number))
+      const top3 = sorted.slice(0, 3)
       return {
         title: '十神详解',
+        subtitle: `最旺${top3[0]?.[0] || '——'} · 次旺${top3[1]?.[0] || '——'}`,
         content: (
-          <div className="space-y-3 text-sm text-white/70">
-            <p>十神以日主为中心，根据五行生克关系推演而来，反映命主各方面的特质。</p>
-            {Object.entries(counts).sort((a, b) => (b[1] as number) - (a[1] as number)).map(([name, count]) => (
-              <div key={name} className="p-3 rounded-lg bg-white/5">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{SHISHEN_EMOJI[name]}</span>
-                  <span className="text-gold text-xs font-semibold">{name}</span>
-                  <span className="text-white/30 text-xs">{count}个</span>
+          <div className="space-y-3">
+            <div className="grid grid-cols-5 gap-2">
+              {Object.entries(counts).map(([name, count]) => (
+                <div key={name} className="flex flex-col items-center gap-0.5 p-2 rounded-xl bg-white/5">
+                  <span className="text-xl">{SHISHEN_EMOJI[name]}</span>
+                  <span className="text-white/50 text-[10px]">{name}</span>
+                  <span className="text-gold text-sm font-semibold">{count}个</span>
                 </div>
-                <p className="text-white/50 text-xs">{shishenDesc[name]}</p>
-              </div>
+              ))}
+            </div>
+            <ModalCard title="十神分布分析">
+              <p className="text-white/60 text-sm leading-relaxed">
+                命局最旺<span className="text-gold">{top3[0]?.[0]}</span>（{top3[0]?.[1]}个），
+                次旺<span className="text-gold">{top3[1]?.[0]}</span>（{top3[1]?.[1]}个），
+                {top3[2]?.[0]}（{top3[2]?.[1]}个）。
+                整体十神{Object.values(counts).filter(v => v > 0).length >= 8 ? '分布均衡' : '略有偏颇'}，人生方向明确。
+              </p>
+            </ModalCard>
+            {top3.map(([name, count], i) => (
+              <ModalCard key={name} title={`${i + 1}. ${name} ${SHISHEN_EMOJI[name]} (${count}个)`}>
+                <p className="text-white/60 text-sm leading-relaxed">{shishenDesc[name]}</p>
+              </ModalCard>
             ))}
           </div>
         )
@@ -274,53 +392,81 @@ function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { t
     }
     case 'career': {
       const dirs = getCareerDirection(data)
-      const careerMap: Record<string, string> = {
-        '金': '金融、法律、机械、珠宝、军警、外科医生',
-        '木': '教育、文化、出版、园林、中医、宗教',
-        '水': '物流、旅游、贸易、演艺、侦探、心理咨询',
-        '火': '餐饮、能源、光学、美容、传媒、电子',
-        '土': '房地产、建筑、农业、矿产、仓储、古董',
+      const careerMap: Record<string, { industries: string; traits: string }> = {
+        '金': { industries: '金融、法律、机械、珠宝、军警、外科医生', traits: '果断、严谨、重规则' },
+        '木': { industries: '教育、文化、出版、园林、中医、宗教', traits: '仁慈、有规划、善沟通' },
+        '水': { industries: '物流、旅游、贸易、演艺、侦探、心理咨询', traits: '机智、善变、有谋略' },
+        '火': { industries: '餐饮、能源、光学、美容、传媒、电子', traits: '热情、积极、有感染力' },
+        '土': { industries: '房地产、建筑、农业、矿产、仓储、古董', traits: '稳重、诚信、有耐心' },
       }
       return {
-        title: '事业方向详解',
+        title: '事业方向',
+        subtitle: `五行属${dirs.join('、')}的行业有利`,
         content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <p>根据您的八字喜用神与格局特点，以下事业方向较为有利：</p>
-            {dirs.map((dir, i) => (
-              <div key={i} className="p-3 rounded-lg bg-white/5">
-                <div className="text-lg font-bold mb-1" style={{ color: WUXING_COLOR[dir] }}>五行属{dir}</div>
-                <p className="text-white/50 text-xs">推荐行业：{careerMap[dir]}</p>
-              </div>
-            ))}
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">事业建议</div>
-              <p>选择与自己五行相生的行业，能够事半功倍。同时，结合自身兴趣与专业能力，方能长远发展。</p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-center gap-4 py-2">
+              {dirs.map((dir, i) => (
+                <div key={i} className="text-center">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold" style={{ background: `${WUXING_COLOR[dir]}20`, color: WUXING_COLOR[dir] }}>{dir}</div>
+                  <p className="text-white/40 text-xs mt-1">{careerMap[dir]?.traits}</p>
+                </div>
+              ))}
             </div>
+            <ModalCard title="推荐行业">
+              <div className="space-y-2">
+                {dirs.map((dir, i) => (
+                  <div key={i} className="p-2 rounded-lg bg-white/5">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-sm" style={{ color: WUXING_COLOR[dir] }}>五行属{dir}</span>
+                    </div>
+                    <p className="text-white/50 text-xs">{careerMap[dir]?.industries}</p>
+                  </div>
+                ))}
+              </div>
+            </ModalCard>
+            <ModalCard title="事业建议">
+              <p className="text-white/60 text-sm leading-relaxed">
+                选择与自己五行相生的行业，能够事半功倍。同时，结合自身兴趣与专业能力，方能长远发展。
+                {dirs.includes(getWuXing(dayMaster)) ? `日主属${getWuXing(dayMaster)}，从事同类五行行业可得天时地利。` : `日主属${getWuXing(dayMaster)}，从事${dirs.join('、')}属性行业可得生扶之力。`}
+              </p>
+            </ModalCard>
           </div>
         )
       }
     }
     case 'wealth': {
       const trend = getWealthTrend(data, profile)
+      const wealthLevel = trend.label === '中晚年发迹' ? 85 : trend.label === '稳扎稳打' ? 70 : 55
       return {
-        title: '财运走势详解',
+        title: '财运走势',
+        subtitle: trend.label,
         content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <div className="text-center py-2">
-              <span className="text-2xl font-bold text-gold">{trend.label}</span>
+          <div className="space-y-3">
+            <ModalBigNumber value={`${wealthLevel}`} unit="%" label={trend.description} />
+            <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-gold/60 to-gold" style={{ width: `${wealthLevel}%` }} />
             </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">财运特征</div>
-              <p>{trend.description}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">理财建议</div>
-              <p>{pattern?.patternType === '正财' || pattern?.patternType === '偏财' ? '财星旺相，适合投资理财，但需注意风险控制。' : '财运平稳，建议稳健理财，量入为出。'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">发财时机</div>
-              <p>大运流年遇财星透出，或行至财旺之地，为求财最佳时机。</p>
-            </div>
+            <ModalStatGrid items={[
+              { value: trend.label, label: '整体趋势' },
+              { value: pattern?.patternType === '正财' || pattern?.patternType === '偏财' ? '偏旺' : '平稳', label: '财星状态' },
+              { value: bodyStrength?.strength === '强' ? '能担' : '需谨慎', label: '担财能力' },
+              { value: '中晚年', label: '最佳时期' },
+            ]} />
+            <ModalCard title="财运分析">
+              <p className="text-white/60 text-sm leading-relaxed">
+                {pattern?.patternType === '正财' || pattern?.patternType === '偏财'
+                  ? '财星旺相，适合投资理财，但需注意风险控制，不宜贪多冒进。'
+                  : '财运平稳，建议稳健理财，量入为出，积少成多。'}
+                大运流年遇财星透出，或行至财旺之地，为求财最佳时机。
+              </p>
+            </ModalCard>
+            <ModalCard title="理财建议">
+              <div className="space-y-2 text-sm text-white/60">
+                <p>· {bodyStrength?.strength === '强' ? '身强能担财，可适当进取投资' : '身弱需谨慎，以稳健储蓄为主'}</p>
+                <p>· 财星为{pattern?.patternType || '正财'}，正财主稳定收入，偏财主意外之财</p>
+                <p>· 避免在忌神年份进行大额投资</p>
+              </div>
+            </ModalCard>
           </div>
         )
       }
@@ -329,58 +475,78 @@ function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { t
       const score = getLoveScore(data, profile)
       return {
         title: '感情分析',
+        subtitle: `${score}分 · ${score >= 70 ? '桃花旺盛' : score >= 50 ? '平稳' : '多磨'}`,
         content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <div className="flex items-center justify-center gap-2 py-2">
-              <span className="text-3xl font-bold text-gold">{score}</span>
-              <span className="text-white/40 text-xs">分</span>
+          <div className="space-y-3">
+            <ModalBigNumber value={`${score}`} unit="分" label={score >= 70 ? '感情顺遂，异性缘佳' : score >= 50 ? '感情平稳，需主动经营' : '感情多磨，宜晚婚'} />
+            <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-pink-500/60 to-pink-400" style={{ width: `${score}%` }} />
             </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">感情特征</div>
-              <p>{score >= 70 ? '命局中配偶星得力，感情顺遂，异性缘佳。' : score >= 50 ? '感情运势平稳，需主动经营，不宜被动等待。' : '感情之路较为坎坷，建议晚婚，先立业后成家。'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">配偶特征</div>
-              <p>{profile.gender === '男' ? '正财为妻，偏财为情人，财星旺则妻子贤淑。' : '正官为夫，七杀为偏夫，官星旺则丈夫有能力。'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">婚姻建议</div>
-              <p>日支{pillars[2]?.zhi}为夫妻宫，{isChong(pillars[2]?.zhi, pillars[1]?.zhi) ? '夫妻宫与月令相冲，婚姻中需注意沟通。' : '夫妻宫安稳，婚姻较为和谐。'}</p>
-            </div>
+            <ModalStatGrid items={[
+              { value: profile.gender === '男' ? '正财/偏财' : '正官/七杀', label: '配偶星' },
+              { value: pillars[2]?.zhi || '——', label: '夫妻宫' },
+              { value: isChong(pillars[2]?.zhi, pillars[1]?.zhi) ? '有冲' : '安稳', label: '婚姻宫' },
+              { value: score >= 70 ? '顺遂' : score >= 50 ? '平稳' : '多磨', label: '感情运势' },
+            ]} />
+            <ModalCard title="感情特征">
+              <p className="text-white/60 text-sm leading-relaxed">
+                {profile.gender === '男'
+                  ? `正财为妻星，偏财为情人星。${score >= 70 ? '财星得力，妻子贤淑，感情美满。' : '财星状态一般，需用心经营感情。'}`
+                  : `正官为夫星，七杀为偏夫星。${score >= 70 ? '官星得力，丈夫有能力，婚姻和谐。' : '官星状态一般，择偶需谨慎。'}`}
+              </p>
+            </ModalCard>
+            <ModalCard title="婚姻建议">
+              <p className="text-white/60 text-sm leading-relaxed">
+                日支{pillars[2]?.zhi}为夫妻宫，{isChong(pillars[2]?.zhi, pillars[1]?.zhi) ? '夫妻宫与月令相冲，婚姻中需注意沟通与包容。' : '夫妻宫安稳，婚姻较为和谐，但仍需用心经营。'}
+                {score < 50 ? '建议晚婚，先立业后成家，待运势好转后再考虑婚姻大事。' : '适婚年龄可主动寻觅良缘，把握正缘时机。'}
+              </p>
+            </ModalCard>
           </div>
         )
       }
     }
     case 'health': {
       const score = getHealthScore(data)
-      const wxHealth: Record<string, string> = {
-        '金': '肺、大肠、呼吸系统',
-        '木': '肝、胆、眼睛、筋络',
-        '水': '肾、膀胱、生殖系统',
-        '火': '心、小肠、血液循环',
-        '土': '脾、胃、消化系统',
+      const wxHealth: Record<string, { organ: string; advice: string; color: string }> = {
+        '金': { organ: '肺、大肠、呼吸系统', advice: '多吃白色食物，如银耳、百合、白萝卜', color: '#e2e8f0' },
+        '木': { organ: '肝、胆、眼睛、筋络', advice: '多吃绿色食物，如菠菜、芹菜、绿豆', color: '#4ade80' },
+        '水': { organ: '肾、膀胱、生殖系统', advice: '多吃黑色食物，如黑豆、黑芝麻、海带', color: '#60a5fa' },
+        '火': { organ: '心、小肠、血液循环', advice: '多吃红色食物，如红枣、西红柿、红豆', color: '#f87171' },
+        '土': { organ: '脾、胃、消化系统', advice: '多吃黄色食物，如南瓜、玉米、黄豆', color: '#fbbf24' },
       }
-      const weakWx = Object.entries(wuXingFullCount || {}).sort((a, b) => (a[1] as number) - (b[1] as number))[0]?.[0] || '土'
+      const counts = Object.entries(wuXingFullCount || {}).sort((a, b) => (a[1] as number) - (b[1] as number))
+      const weakWx = counts[0]?.[0] || '土'
+      const strongWx = counts[counts.length - 1]?.[0] || '火'
       return {
         title: '健康分析',
+        subtitle: `${score}分 · ${score >= 70 ? '体质良好' : score >= 50 ? '一般' : '偏弱'}`,
         content: (
-          <div className="space-y-4 text-sm text-white/70">
-            <div className="flex items-center justify-center gap-2 py-2">
-              <span className="text-3xl font-bold text-green-400">{score}</span>
-              <span className="text-white/40 text-xs">分</span>
+          <div className="space-y-3">
+            <ModalBigNumber value={`${score}`} unit="分" label={score >= 70 ? '体质较好，注意保养' : score >= 50 ? '体质一般，需加强锻炼' : '体质偏弱，注意调养'} />
+            <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-green-500/60 to-green-400" style={{ width: `${score}%` }} />
             </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">体质特点</div>
-              <p>{score >= 70 ? '五行较为平衡，体质较好，注意日常保养即可。' : score >= 50 ? '体质一般，需注意作息规律，加强锻炼。' : '体质偏弱，建议定期体检，注意调养。'}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">需注意的脏腑</div>
-              <p>五行<span style={{ color: WUXING_COLOR[weakWx] }}>{weakWx}</span>偏弱，需注意{wxHealth[weakWx]}方面的健康。</p>
-            </div>
-            <div className="p-3 rounded-lg bg-white/5">
-              <div className="text-gold text-xs mb-2">养生建议</div>
-              <p>多吃{weakWx === '木' ? '绿色蔬菜' : weakWx === '火' ? '红色食物' : weakWx === '土' ? '黄色食物' : weakWx === '金' ? '白色食物' : '黑色食物'}，有助于补充{weakWx}气。</p>
-            </div>
+            <ModalStatGrid items={[
+              { value: wxHealth[weakWx].organ.split('、')[0], label: '需注意', sub: weakWx },
+              { value: wxHealth[strongWx].organ.split('、')[0], label: '较强', sub: strongWx },
+              { value: bodyStrength?.strength || '——', label: '体质' },
+              { value: score >= 70 ? '良好' : score >= 50 ? '一般' : '偏弱', label: '健康指数' },
+            ]} />
+            <ModalCard title="体质分析">
+              <p className="text-white/60 text-sm leading-relaxed">
+                五行<span style={{ color: WUXING_COLOR[weakWx] }}>{weakWx}</span>偏弱，
+                需注意{wxHealth[weakWx].organ}方面的健康。
+                五行<span style={{ color: WUXING_COLOR[strongWx] }}>{strongWx}</span>偏旺，
+                {strongWx === '火' ? '心火易旺，需注意情绪管理。' : strongWx === '水' ? '肾气充足，但易寒凉。' : strongWx === '木' ? '肝气旺盛，易急躁。' : strongWx === '金' ? '肺气充足，但易干燥。' : '脾胃功能较强，但易湿热。'}
+              </p>
+            </ModalCard>
+            <ModalCard title="养生建议">
+              <p className="text-white/60 text-sm leading-relaxed">
+                {wxHealth[weakWx].advice}，有助于补充{weakWx}气。
+                同时注意作息规律，避免熬夜，适当运动，保持心情愉悦。
+                建议定期进行{wxHealth[weakWx].organ.split('、')[0]}方面的体检。
+              </p>
+            </ModalCard>
           </div>
         )
       }
@@ -470,15 +636,18 @@ function StarRating({ count, max = 5 }: { count: number; max?: number }) {
 }
 
 // ===== 底部弹窗组件 =====
-function BottomSheet({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
+function BottomSheet({ title, subtitle, children, onClose }: { title: string; subtitle?: string; children: React.ReactNode; onClose: () => void }) {
   return (
     <>
       <div className="bottom-sheet-overlay" onClick={onClose} />
       <div className="bottom-sheet">
         <div className="bottom-sheet-handle" />
-        <div className="bottom-sheet-header flex items-center justify-between">
-          <span className="text-white font-semibold text-sm">{title}</span>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:bg-white/10 transition">
+        <div className="bottom-sheet-header flex items-center justify-center relative py-2">
+          <div className="text-center">
+            <span className="text-gold font-semibold text-base">{title}</span>
+            {subtitle && <p className="text-white/40 text-xs mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:bg-white/10 transition">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>
           </button>
         </div>
@@ -557,7 +726,7 @@ export default function MingPage() {
       </div>
 
       {modalContent && (
-        <BottomSheet title={modalContent.title} onClose={() => setModalModule(null)}>
+        <BottomSheet title={modalContent.title} subtitle={modalContent.subtitle} onClose={() => setModalModule(null)}>
           {modalContent.content}
         </BottomSheet>
       )}

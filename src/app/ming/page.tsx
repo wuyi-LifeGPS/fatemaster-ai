@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { getProfiles, BaziProfile } from '@/lib/bazi-profiles'
 import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, getYinYang, SHI_SHEN_MAP, DaYunInfo } from '@/lib/bazi'
@@ -74,9 +74,9 @@ function ModalStatGrid({ items }: { items: { value: string; label: string; sub?:
     <div className="grid grid-cols-4 gap-2 mt-4">
       {items.map((item, i) => (
         <div key={i} className="text-center p-2 rounded-xl bg-white/5">
-          <div className="text-white font-semibold text-sm">{item.value}</div>
-          <div className="text-white/50 text-[10px] mt-0.5">{item.label}</div>
-          {item.sub && <div className="text-white/30 text-[9px]">{item.sub}</div>}
+          <div className="text-white font-semibold text-base">{item.value}</div>
+          <div className="text-white/50 text-xs mt-0.5">{item.label}</div>
+          {item.sub && <div className="text-white/30 text-xs">{item.sub}</div>}
         </div>
       ))}
     </div>
@@ -86,7 +86,7 @@ function ModalStatGrid({ items }: { items: { value: string; label: string; sub?:
 function ModalCard({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
     <div className="p-3 rounded-xl bg-white/5 mt-3">
-      {title && <div className="text-gold text-xs font-semibold mb-2">{title}</div>}
+      {title && <div className="text-gold text-sm font-semibold mb-2">{title}</div>}
       {children}
     </div>
   )
@@ -113,7 +113,7 @@ function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { t
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold" style={{ background: `${WUXING_COLOR[getWuXing(p.gan)]}20`, color: WUXING_COLOR[getWuXing(p.gan)] }}>{p.gan}</div>
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold" style={{ background: `${WUXING_COLOR[getWuXing(p.zhi)]}20`, color: WUXING_COLOR[getWuXing(p.zhi)] }}>{p.zhi}</div>
-                      <div className="text-white/50 text-xs">
+                      <div className="text-white/50 text-sm">
                         <div>天干{getWuXing(p.gan)} · 地支{getWuXing(p.zhi)}</div>
                         <div className="text-white/30">藏干：{getCangGan(p.zhi).join('、')}</div>
                       </div>
@@ -193,14 +193,14 @@ function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { t
                     <div key={item.key}>
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-semibold" style={{ color: item.color }}>{item.label}</span>
-                        <span className="text-white/40 text-xs">{val} · {pct}%</span>
+                        <span className="text-white/40 text-sm">{val} · {pct}%</span>
                       </div>
                       <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                         <div className="h-full rounded-full" style={{ width: `${Math.max(pct, 5)}%`, backgroundColor: item.color }} />
                       </div>
                       <div className="flex gap-3 mt-1">
-                        <span className="text-white/30 text-[10px]">脏腑：{item.organ}</span>
-                        <span className="text-white/30 text-[10px]">方位：{item.dir}</span>
+                        <span className="text-white/30 text-xs">脏腑：{item.organ}</span>
+                        <span className="text-white/30 text-xs">方位：{item.dir}</span>
                       </div>
                     </div>
                   )
@@ -368,7 +368,7 @@ function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { t
               {Object.entries(counts).map(([name, count]) => (
                 <div key={name} className="flex flex-col items-center gap-0.5 p-2 rounded-xl bg-white/5">
                   <span className="text-xl">{SHISHEN_EMOJI[name]}</span>
-                  <span className="text-white/50 text-[10px]">{name}</span>
+                  <span className="text-white/50 text-xs">{name}</span>
                   <span className="text-gold text-sm font-semibold">{count}个</span>
                 </div>
               ))}
@@ -408,7 +408,7 @@ function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { t
               {dirs.map((dir, i) => (
                 <div key={i} className="text-center">
                   <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold" style={{ background: `${WUXING_COLOR[dir]}20`, color: WUXING_COLOR[dir] }}>{dir}</div>
-                  <p className="text-white/40 text-xs mt-1">{careerMap[dir]?.traits}</p>
+                  <p className="text-white/40 text-sm mt-1">{careerMap[dir]?.traits}</p>
                 </div>
               ))}
             </div>
@@ -419,7 +419,7 @@ function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { t
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-semibold text-sm" style={{ color: WUXING_COLOR[dir] }}>五行属{dir}</span>
                     </div>
-                    <p className="text-white/50 text-xs">{careerMap[dir]?.industries}</p>
+                    <p className="text-white/50 text-sm">{careerMap[dir]?.industries}</p>
                   </div>
                 ))}
               </div>
@@ -637,15 +637,65 @@ function StarRating({ count, max = 5 }: { count: number; max?: number }) {
 
 // ===== 底部弹窗组件 =====
 function BottomSheet({ title, subtitle, children, onClose }: { title: string; subtitle?: string; children: React.ReactNode; onClose: () => void }) {
+  const [dragY, setDragY] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const startYRef = useRef(0)
+  const sheetRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setDragY(0)
+  }, [title])
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    const sheet = sheetRef.current
+    if (!sheet) return
+    // 只有当触摸在顶部区域（handle 或 header）或者在内容顶部滚动位置为0时才允许拖动
+    const rect = sheet.getBoundingClientRect()
+    const scrollTop = sheet.querySelector('.bottom-sheet-body')?.scrollTop || 0
+    if (touch.clientY - rect.top < 80 || scrollTop <= 0) {
+      setIsDragging(true)
+      startYRef.current = touch.clientY
+    }
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return
+    const deltaY = e.touches[0].clientY - startYRef.current
+    if (deltaY > 0) {
+      setDragY(deltaY)
+    }
+  }
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return
+    setIsDragging(false)
+    if (dragY > 120) {
+      onClose()
+    } else {
+      setDragY(0)
+    }
+  }
+
   return (
     <>
       <div className="bottom-sheet-overlay" onClick={onClose} />
-      <div className="bottom-sheet">
+      <div
+        ref={sheetRef}
+        className="bottom-sheet"
+        style={{
+          transform: `translateY(${dragY}px)`,
+          transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         <div className="bottom-sheet-handle" />
         <div className="bottom-sheet-header flex items-center justify-center relative py-2">
           <div className="text-center">
             <span className="text-gold font-semibold text-base">{title}</span>
-            {subtitle && <p className="text-white/40 text-xs mt-0.5">{subtitle}</p>}
+            {subtitle && <p className="text-white/40 text-sm mt-0.5">{subtitle}</p>}
           </div>
           <button onClick={onClose} className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:bg-white/10 transition">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>
@@ -745,7 +795,7 @@ function EmptyState() {
       <h2 className="text-xl font-bold text-white mb-2">探索您的命盘</h2>
       <p className="text-moonly-text-secondary text-sm mb-8 max-w-xs">添加您的出生信息，解锁八字命盘、大运流年、流月流日等完整命理分析</p>
       <Link href="/bazi" className="btn-gold px-8 py-3 text-sm font-semibold">添加我的八字</Link>
-      <p className="text-moonly-text-muted text-xs mt-4">支持保存多个档案：自己、家人、朋友</p>
+      <p className="text-moonly-text-muted text-sm mt-4">支持保存多个档案：自己、家人、朋友</p>
     </div>
   )
 }
@@ -774,7 +824,7 @@ function ProfileHeader({ profile, baziData }: { profile: BaziProfile; baziData: 
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/70"><path d="M15 18l-6-6 6-6" /></svg>
         </Link>
         <div className="flex items-center gap-1">
-          <span className="text-white font-medium text-sm">{profile.name}</span>
+          <span className="text-white font-medium text-base">{profile.name}</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2"><polyline points="6 9 12 15 18 9" /></svg>
         </div>
         <div className="w-8" />
@@ -785,17 +835,17 @@ function ProfileHeader({ profile, baziData }: { profile: BaziProfile; baziData: 
         <div className="flex items-center gap-1.5 mb-2">
           <span className="text-white font-semibold text-base">{profile.name}</span>
           <span className="text-white/40 text-sm">·</span>
-          <span className="text-white/60 text-sm">{age}岁</span>
+          <span className="text-white/60 text-base">{age}岁</span>
           <span className="text-white/40 text-sm">·</span>
-          <span className="text-white/60 text-sm">{profile.gender}</span>
+          <span className="text-white/60 text-base">{profile.gender}</span>
         </div>
         <div className="text-center space-y-0.5 mb-3">
-          <p className="text-white/40 text-xs">{formatDate(profile)}</p>
-          <p className="text-white/30 text-[10px]">生肖：{zodiac}{zodiacEmoji} · 星座：{constellation}</p>
-          <p className="text-white/30 text-[10px]">八字：{baziStr}</p>
-          <p className="text-white/30 text-[10px]">五行：{wuxingText}</p>
+          <p className="text-white/40 text-sm">{formatDate(profile)}</p>
+          <p className="text-white/30 text-xs">生肖：{zodiac}{zodiacEmoji} · 星座：{constellation}</p>
+          <p className="text-white/30 text-xs">八字：{baziStr}</p>
+          <p className="text-white/30 text-xs">五行：{wuxingText}</p>
         </div>
-        <Link href="/ming/bazi" className="px-5 py-1.5 rounded-full border border-white/15 text-white/50 text-xs hover:bg-white/5 transition">修改档案</Link>
+        <Link href="/ming/bazi" className="px-5 py-1.5 rounded-full border border-white/15 text-white/50 text-sm hover:bg-white/5 transition">修改档案</Link>
       </div>
     </div>
   )
@@ -823,7 +873,7 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
   return (
     <div className="space-y-4">
       <div onClick={() => onOpenModal('bazi')} className="info-card-black clickable p-4">
-        <h3 className="text-gold text-xs font-semibold mb-3">八字排盘</h3>
+        <h3 className="text-gold text-sm font-semibold mb-3">八字排盘</h3>
         <div className="flex gap-2">
           {pillars.map((p: any, i: number) => {
             const labels = ['年柱', '月柱', '日柱', '时柱']
@@ -832,85 +882,85 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
             const cg = cangGanDetail[i]?.cangGan?.[0]
             return (
               <div key={i} className="flex-1 flex flex-col items-center">
-                <span className="text-white/50 text-[10px] mb-1.5">{labels[i]}</span>
+                <span className="text-white/50 text-xs mb-1.5">{labels[i]}</span>
                 <div className="w-full rounded-xl bg-black/20 border border-white/5 p-2.5 flex flex-col items-center gap-1.5">
-                  <span className="text-lg font-bold" style={{ color: WUXING_COLOR[getWuXing(p.gan)] || '#fff' }}>{p.gan}</span>
-                  <span className="text-lg font-bold" style={{ color: WUXING_COLOR[getWuXing(p.zhi)] || '#fff' }}>{p.zhi}</span>
-                  {cg && <span className="text-[10px] text-white/40">{cg.gan}·{cg.shiShen}</span>}
+                  <span className="text-xl font-bold" style={{ color: WUXING_COLOR[getWuXing(p.gan)] || '#fff' }}>{p.gan}</span>
+                  <span className="text-xl font-bold" style={{ color: WUXING_COLOR[getWuXing(p.zhi)] || '#fff' }}>{p.zhi}</span>
+                  {cg && <span className="text-xs text-white/40">{cg.gan}·{cg.shiShen}</span>}
                 </div>
-                <span className="text-white/30 text-[9px] mt-1">{ss}</span>
+                <span className="text-white/30 text-xs mt-1">{ss}</span>
               </div>
             )
           })}
         </div>
         <div className="flex justify-center gap-3 mt-3 pt-3 border-t border-white/5">
-          {pillars.map((p: any, i: number) => <span key={i} className="text-white/50 text-xs">{p.gan}{p.zhi}{['年','月','日','时'][i]}</span>)}
+          {pillars.map((p: any, i: number) => <span key={i} className="text-white/50 text-sm">{p.gan}{p.zhi}{['年','月','日','时'][i]}</span>)}
         </div>
       </div>
 
       <div onClick={() => onOpenModal('summary')} className="info-card-black clickable p-4">
-        <h3 className="text-gold text-xs font-semibold mb-2">人生总评</h3>
-        <p className="text-white/70 text-xs leading-relaxed">{lifeSummary}</p>
+        <h3 className="text-gold text-sm font-semibold mb-2">人生总评</h3>
+        <p className="text-white/70 text-sm leading-relaxed">{lifeSummary}</p>
       </div>
 
       <WuXingBarChart count={wuXingFullCount} onClick={() => onOpenModal('wuxing')} />
 
       <div className="grid grid-cols-2 gap-3">
         <div onClick={() => onOpenModal('rizhu')} className="info-card-black clickable p-4">
-          <h3 className="text-gold text-xs font-semibold mb-2">日主</h3>
+          <h3 className="text-gold text-sm font-semibold mb-2">日主</h3>
           <div className="text-center py-1"><span className="text-2xl font-bold" style={{ color: WUXING_COLOR[getWuXing(dayMaster)] }}>{dayMaster}{getWuXing(dayMaster)}</span></div>
-          <p className="text-white/50 text-[10px] leading-relaxed mt-1">{getYinYang(dayMaster)}性之金，主刚毅果断、重义气。</p>
+          <p className="text-white/50 text-xs leading-relaxed mt-1">{getYinYang(dayMaster)}性之金，主刚毅果断、重义气。</p>
         </div>
         <div onClick={() => onOpenModal('geju')} className="info-card-black clickable p-4">
-          <h3 className="text-gold text-xs font-semibold mb-2">格局</h3>
-          <div className="text-center py-1"><span className="text-2xl font-bold text-gold">{pattern?.patternName?.split('/')[0]?.trim() || '——'}</span></div>
-          <p className="text-white/50 text-[10px] leading-relaxed mt-1">{pattern?.patternDesc || '格局分析加载中...'}</p>
+          <h3 className="text-gold text-sm font-semibold mb-2">格局</h3>
+          <div className="text-center py-1"><span className="text-3xl font-bold text-gold">{pattern?.patternName?.split('/')[0]?.trim() || '——'}</span></div>
+          <p className="text-white/50 text-xs leading-relaxed mt-1">{pattern?.patternDesc || '格局分析加载中...'}</p>
         </div>
       </div>
 
       <div onClick={() => onOpenModal('shenruo')} className="info-card-black clickable p-4">
-        <h3 className="text-gold text-xs font-semibold mb-2">身强身弱</h3>
-        <div className="flex items-center justify-between mb-2"><span className="text-white font-semibold text-sm">{bodyStrength?.strength || '——'}</span><span className="text-white/40 text-xs">{Math.round((bodyStrength?.score || 0) * 10)}/10</span></div>
+        <h3 className="text-gold text-sm font-semibold mb-2">身强身弱</h3>
+        <div className="flex items-center justify-between mb-2"><span className="text-white font-semibold text-base">{bodyStrength?.strength || '——'}</span><span className="text-white/40 text-sm">{Math.round((bodyStrength?.score || 0) * 10)}/10</span></div>
         <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-gold/60 to-gold" style={{ width: `${Math.min(100, ((bodyStrength?.score || 0) / 5) * 100)}%` }} /></div>
-        <p className="text-white/40 text-[10px] mt-2">{bodyStrength?.description || ''}</p>
+        <p className="text-white/40 text-xs mt-2">{bodyStrength?.description || ''}</p>
       </div>
 
       <div onClick={() => onOpenModal('xiyongshen')} className="info-card-black clickable p-4">
-        <h3 className="text-gold text-xs font-semibold mb-2">喜用神</h3>
+        <h3 className="text-gold text-sm font-semibold mb-2">喜用神</h3>
         <div className="flex items-center gap-3 py-1">
           {tiaoHou?.tiaoHouGod?.map((god: string, i: number) => (
             <span key={i} className="text-2xl font-bold" style={{ color: WUXING_COLOR[getWuXing(god)] }}>{getWuXing(god)}</span>
           ))}
         </div>
-        <p className="text-white/40 text-[10px] mt-1">{tiaoHou?.tiaoHouReason || ''}</p>
+        <p className="text-white/40 text-xs mt-1">{tiaoHou?.tiaoHouReason || ''}</p>
       </div>
 
       <ShiShenGrid count={shishenCount} onClick={() => onOpenModal('shishen')} />
 
       <div className="grid grid-cols-2 gap-3">
         <div onClick={() => onOpenModal('career')} className="info-card-black clickable p-4">
-          <h3 className="text-gold text-xs font-semibold mb-2">事业方向</h3>
-          <div className="flex items-center gap-2 py-1">{careerDirs.map((dir, i) => <span key={i} className="text-lg font-bold" style={{ color: WUXING_COLOR[dir] }}>{dir}</span>)}</div>
-          <p className="text-white/40 text-[10px]">五行属{careerDirs.join('、')}的行业有利</p>
+          <h3 className="text-gold text-sm font-semibold mb-2">事业方向</h3>
+          <div className="flex items-center gap-2 py-1">{careerDirs.map((dir, i) => <span key={i} className="text-xl font-bold" style={{ color: WUXING_COLOR[dir] }}>{dir}</span>)}</div>
+          <p className="text-white/40 text-sm">五行属{careerDirs.join('、')}的行业有利</p>
         </div>
         <div onClick={() => onOpenModal('wealth')} className="info-card-black clickable p-4">
-          <h3 className="text-gold text-xs font-semibold mb-2">财运走势</h3>
+          <h3 className="text-gold text-sm font-semibold mb-2">财运走势</h3>
           <div className="text-gold font-semibold text-sm py-0.5">{wealthTrend.label}</div>
-          <p className="text-white/40 text-[10px]">{wealthTrend.description}</p>
+          <p className="text-white/40 text-sm">{wealthTrend.description}</p>
           <svg viewBox="0 0 100 30" className="w-full h-6 mt-1"><path d="M0 25 Q25 20 50 15 T100 5" fill="none" stroke="#c9a96e" strokeWidth="1.5" /><circle cx="100" cy="5" r="2" fill="#c9a96e" /></svg>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div onClick={() => onOpenModal('love')} className="info-card-black clickable p-4">
-          <h3 className="text-gold text-xs font-semibold mb-2">感情</h3>
-          <div className="flex items-baseline gap-1 py-1"><span className="text-2xl font-bold text-gold">{loveScore}</span><span className="text-white/40 text-xs">分</span></div>
-          <p className="text-white/40 text-[10px]">{loveScore >= 70 ? '感情顺遂，桃花旺盛' : loveScore >= 50 ? '感情平稳，需主动经营' : '感情多磨，宜晚婚'}</p>
+          <h3 className="text-gold text-sm font-semibold mb-2">感情</h3>
+          <div className="flex items-baseline gap-1 py-1"><span className="text-3xl font-bold text-gold">{loveScore}</span><span className="text-white/40 text-sm">分</span></div>
+          <p className="text-white/40 text-sm">{loveScore >= 70 ? '感情顺遂，桃花旺盛' : loveScore >= 50 ? '感情平稳，需主动经营' : '感情多磨，宜晚婚'}</p>
         </div>
         <div onClick={() => onOpenModal('health')} className="info-card-black clickable p-4">
-          <h3 className="text-gold text-xs font-semibold mb-2">健康</h3>
-          <div className="flex items-baseline gap-1 py-1"><span className="text-2xl font-bold text-green-400">{healthScore}</span><span className="text-white/40 text-xs">分</span></div>
-          <p className="text-white/40 text-[10px]">{healthScore >= 70 ? '体质较好，注意保养' : healthScore >= 50 ? '体质一般，需加强锻炼' : '体质偏弱，注意调养'}</p>
+          <h3 className="text-gold text-sm font-semibold mb-2">健康</h3>
+          <div className="flex items-baseline gap-1 py-1"><span className="text-3xl font-bold text-green-400">{healthScore}</span><span className="text-white/40 text-sm">分</span></div>
+          <p className="text-white/40 text-sm">{healthScore >= 70 ? '体质较好，注意保养' : healthScore >= 50 ? '体质一般，需加强锻炼' : '体质偏弱，注意调养'}</p>
         </div>
       </div>
     </div>
@@ -926,21 +976,21 @@ function WuXingBarChart({ count, onClick }: { count: Record<string, number>; onC
   const max = Math.max(...Object.values(count), 1)
   return (
     <div onClick={onClick} className="info-card-black clickable p-4">
-      <h3 className="text-gold text-xs font-semibold mb-3">五行能量</h3>
+      <h3 className="text-gold text-sm font-semibold mb-3">五行能量</h3>
       <div className="space-y-2.5">
         {items.map(item => {
           const val = count[item.key] || 0
           const pct = (val / max) * 100
           return (
             <div key={item.key} className="flex items-center gap-2">
-              <span className="text-white/50 text-xs w-4">{val}</span>
+              <span className="text-white/50 text-sm w-4">{val}</span>
               <div className="flex-1 h-5 bg-white/5 rounded-full overflow-hidden relative"><div className="h-full rounded-full opacity-80" style={{ width: `${Math.max(pct, 8)}%`, backgroundColor: item.color }} /></div>
               <span className="text-xs w-4 text-center" style={{ color: item.color }}>{item.label}</span>
             </div>
           )
         })}
       </div>
-      <p className="text-white/30 text-[10px] mt-3 leading-relaxed">【五行能量说明】五行平衡为理想状态，若某行过旺或过弱，则相应五行对应的脏腑或运势可能偏弱。</p>
+      <p className="text-white/30 text-xs mt-3 leading-relaxed">【五行能量说明】五行平衡为理想状态，若某行过旺或过弱，则相应五行对应的脏腑或运势可能偏弱。</p>
     </div>
   )
 }
@@ -955,17 +1005,17 @@ function ShiShenGrid({ count, onClick }: { count: Record<string, number>; onClic
   const sorted = Object.entries(count).sort((a, b) => (b[1] as number) - (a[1] as number))
   return (
     <div onClick={onClick} className="info-card-black clickable p-4">
-      <h3 className="text-gold text-xs font-semibold mb-3">十神</h3>
+      <h3 className="text-gold text-sm font-semibold mb-3">十神</h3>
       <div className="grid grid-cols-5 gap-2">
         {items.map(item => (
           <div key={item.key} className="flex flex-col items-center gap-0.5">
-            <span className="text-white/50 text-[9px]">{item.label}</span>
-            <span className="text-lg">{SHISHEN_EMOJI[item.key]}</span>
-            <span className="text-white/30 text-[9px]">{count[item.key] || 0}个</span>
+            <span className="text-white/50 text-xs">{item.label}</span>
+            <span className="text-xl">{SHISHEN_EMOJI[item.key]}</span>
+            <span className="text-white/30 text-xs">{count[item.key] || 0}个</span>
           </div>
         ))}
       </div>
-      <p className="text-white/30 text-[10px] mt-3 leading-relaxed">
+      <p className="text-white/30 text-xs mt-3 leading-relaxed">
         命局最旺{sorted[0]?.[0] || '食神'}，{sorted[1]?.[0] || '伤官'}次之，整体十神{Object.values(count).filter(v => v > 0).length >= 8 ? '分布均衡' : '略有偏颇'}，人生方向明确。
       </p>
     </div>
@@ -984,7 +1034,7 @@ function DayunTab({ daYunList, profile, dayMaster }: { daYunList: DaYunInfo[]; p
           <span className="text-lg text-moonly-gold-light">{getFortuneLabel(currentDayun.fortuneLevel)}</span>
         </div>
         <div className="mb-2"><span className="text-white font-semibold text-lg">{currentDayun.ganZhi}运</span><span className="text-moonly-text-secondary text-sm ml-2">· {currentDayun.startYear}-{currentDayun.endYear}</span></div>
-        <div className="text-moonly-text-muted text-xs mb-4">第{currentDayun.index}步大运 · {currentDayun.startAge}岁起运</div>
+        <div className="text-moonly-text-muted text-sm mb-4">第{currentDayun.index}步大运 · {currentDayun.startAge}岁起运</div>
         <div className="space-y-2">
           {(['事业','爱情','财运','健康'] as const).map((label, i) => <div key={label} className="flex items-center justify-between"><span className="text-moonly-text-secondary text-sm">{label}</span><StarRating count={[stars.career, stars.love, stars.wealth, stars.health][i]} /></div>)}
         </div>
@@ -1036,6 +1086,6 @@ function DayunChart({ daYunList, currentIndex }: { daYunList: DaYunInfo[]; curre
   )
 }
 
-function LiunianPlaceholder() { return <div className="flex flex-col items-center justify-center py-20 text-center"><div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg></div><p className="text-moonly-text-secondary text-sm">流年分析模块开发中...</p><p className="text-moonly-text-muted text-xs mt-1">将展示年度运势与关键事件预测</p></div> }
-function LiuyuePlaceholder() { return <div className="flex flex-col items-center justify-center py-20 text-center"><div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><path d="M1 4v6h6M23 20v-6h-6" /><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" /></svg></div><p className="text-moonly-text-secondary text-sm">流月分析模块开发中...</p><p className="text-moonly-text-muted text-xs mt-1">将展示月度运势与能量波动</p></div> }
-function LiuriPlaceholder() { return <div className="flex flex-col items-center justify-center py-20 text-center"><div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg></div><p className="text-moonly-text-secondary text-sm">流日分析模块开发中...</p><p className="text-moonly-text-muted text-xs mt-1">将展示每日运势与行动建议</p></div> }
+function LiunianPlaceholder() { return <div className="flex flex-col items-center justify-center py-20 text-center"><div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg></div><p className="text-moonly-text-secondary text-sm">流年分析模块开发中...</p><p className="text-moonly-text-muted text-sm mt-1">将展示年度运势与关键事件预测</p></div> }
+function LiuyuePlaceholder() { return <div className="flex flex-col items-center justify-center py-20 text-center"><div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><path d="M1 4v6h6M23 20v-6h-6" /><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" /></svg></div><p className="text-moonly-text-secondary text-sm">流月分析模块开发中...</p><p className="text-moonly-text-muted text-sm mt-1">将展示月度运势与能量波动</p></div> }
+function LiuriPlaceholder() { return <div className="flex flex-col items-center justify-center py-20 text-center"><div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg></div><p className="text-moonly-text-secondary text-sm">流日分析模块开发中...</p><p className="text-moonly-text-muted text-sm mt-1">将展示每日运势与行动建议</p></div> }

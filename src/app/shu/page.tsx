@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 const BOOKS = [
@@ -114,6 +114,18 @@ export default function ShuPage() {
   const [filter, setFilter] = useState('全部')
   const filters = ['全部', '道家', '易学', '佛学', '养生', '励志']
   const [search, setSearch] = useState('')
+  const [readingProgress, setReadingProgress] = useState<Record<string, number>>({})
+
+  useEffect(() => {
+    const saved = localStorage.getItem('book_reading_progress')
+    if (saved) setReadingProgress(JSON.parse(saved))
+  }, [])
+
+  const updateProgress = (title: string, progress: number) => {
+    const next = { ...readingProgress, [title]: progress }
+    setReadingProgress(next)
+    localStorage.setItem('book_reading_progress', JSON.stringify(next))
+  }
   const [dailyQuote, setDailyQuote] = useState(() => {
     const day = new Date().getDate()
     return DAILY_QUOTES[day % DAILY_QUOTES.length]
@@ -192,6 +204,17 @@ export default function ShuPage() {
               </div>
               <div className="text-moonly-text-muted text-xs mb-1">{book.author} · {book.chapters}章 · {book.readTime}</div>
               <div className="text-moonly-text-secondary text-xs leading-relaxed">{book.desc}</div>
+              {readingProgress[book.title] !== undefined && (
+                <div className="mt-2">
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="text-moonly-gold">阅读进度</span>
+                    <span className="text-moonly-text-muted">{readingProgress[book.title]}%</span>
+                  </div>
+                  <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-moonly-gold rounded-full" style={{ width: `${readingProgress[book.title]}%` }} />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-moonly-gold/10 transition flex-shrink-0">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-text-muted group-hover:text-moonly-gold">

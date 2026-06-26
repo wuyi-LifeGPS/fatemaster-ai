@@ -14,6 +14,15 @@ const DIVINATION_TOOLS = [
     border: 'border-amber-500/20',
   },
   {
+    icon: '钱',
+    label: '金钱卦',
+    desc: '三枚铜钱，六爻成卦',
+    href: '/bu/coin',
+    status: 'ready',
+    color: 'from-yellow-500/20 to-yellow-600/10',
+    border: 'border-yellow-500/20',
+  },
+  {
     icon: '梅',
     label: '梅花易数',
     desc: '象数起卦，随心而动',

@@ -9,6 +9,10 @@ interface Settings {
   showTenGods: boolean
   showNaYin: boolean
   language: 'zh' | 'zh-TW'
+  theme: 'dark' | 'light' | 'auto'
+  enableNotifications: boolean
+  dailyFortuneReminder: boolean
+  reminderTime: string
 }
 
 const defaultSettings: Settings = {
@@ -17,6 +21,10 @@ const defaultSettings: Settings = {
   showTenGods: true,
   showNaYin: false,
   language: 'zh',
+  theme: 'dark',
+  enableNotifications: true,
+  dailyFortuneReminder: false,
+  reminderTime: '08:00',
 }
 
 export default function SettingsPage() {
@@ -101,6 +109,111 @@ export default function SettingsPage() {
         <h1 className="text-gold-gradient text-xl font-bold">设置</h1>
         <div className="w-10" />
       </div>
+
+      {/* 主题设置 */}
+      <section className="moonly-card p-5 mb-4">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/30 to-purple-500/20 flex items-center justify-center text-lg">
+            🎨
+          </div>
+          <div>
+            <h2 className="text-white font-bold text-base">外观</h2>
+            <p className="text-moonly-text-muted text-xs">自定义界面主题</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          {([
+            { key: 'dark', label: '深色', icon: '🌙' },
+            { key: 'light', label: '浅色', icon: '☀️' },
+            { key: 'auto', label: '自动', icon: '🔄' },
+          ] as const).map((opt) => (
+            <button
+              key={opt.key}
+              onClick={() => update('theme', opt.key)}
+              className={`p-3 rounded-xl text-center transition-all border ${
+                settings.theme === opt.key
+                  ? 'border-moonly-gold bg-moonly-gold/10 text-white'
+                  : 'border-white/10 hover:border-white/20 text-white'
+              }`}
+            >
+              <div className="text-2xl mb-1">{opt.icon}</div>
+              <div className="font-medium text-sm">{opt.label}</div>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* 通知设置 */}
+      <section className="moonly-card p-5 mb-4">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500/30 to-teal-500/20 flex items-center justify-center text-lg">
+            🔔
+          </div>
+          <div>
+            <h2 className="text-white font-bold text-base">通知</h2>
+            <p className="text-moonly-text-muted text-xs">管理每日提醒和推送</p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-lg">📱</span>
+              <div>
+                <div className="text-white text-sm font-medium">启用通知</div>
+                <div className="text-moonly-text-muted text-xs">接收每日运势推送</div>
+              </div>
+            </div>
+            <button
+              onClick={() => update('enableNotifications', !settings.enableNotifications)}
+              className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
+                settings.enableNotifications ? 'bg-moonly-gold' : 'bg-white/20'
+              }`}
+            >
+              <span
+                className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform shadow-sm ${
+                  settings.enableNotifications ? 'left-7' : 'left-1'
+                }`}
+              />
+            </button>
+          </div>
+
+          <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-lg">🌅</span>
+              <div>
+                <div className="text-white text-sm font-medium">每日运势提醒</div>
+                <div className="text-moonly-text-muted text-xs">每天早上推送今日运势</div>
+              </div>
+            </div>
+            <button
+              onClick={() => update('dailyFortuneReminder', !settings.dailyFortuneReminder)}
+              className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
+                settings.dailyFortuneReminder ? 'bg-moonly-gold' : 'bg-white/20'
+              }`}
+            >
+              <span
+                className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform shadow-sm ${
+                  settings.dailyFortuneReminder ? 'left-7' : 'left-1'
+                }`}
+              />
+            </button>
+          </div>
+
+          {settings.dailyFortuneReminder && (
+            <div className="border-t border-white/10 pt-4">
+              <label className="block text-sm text-white mb-2">提醒时间</label>
+              <input
+                type="time"
+                value={settings.reminderTime}
+                onChange={(e) => update('reminderTime', e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-moonly-gold/30"
+              />
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* 分析偏好 */}
       <section className="moonly-card p-5 mb-4">
@@ -244,6 +357,25 @@ export default function SettingsPage() {
               }`}
             >
               {clearHistory ? '✓ 已清除' : '清除'}
+            </button>
+          </div>
+
+          <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+            <div>
+              <div className="text-white text-sm font-medium">清除所有数据</div>
+              <div className="text-moonly-text-muted text-xs">删除所有本地数据，包括档案、历史记录、设置等</div>
+            </div>
+            <button
+              onClick={() => {
+                if (confirm('确定要清除所有数据吗？此操作不可恢复！')) {
+                  localStorage.clear()
+                  alert('所有数据已清除')
+                  window.location.reload()
+                }
+              }}
+              className="px-4 py-2 rounded-lg text-sm font-medium border border-red-400/40 text-red-400 hover:bg-red-400/10 transition-colors"
+            >
+              全部清除
             </button>
           </div>
         </div>

@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '投',
+    label: '投资运势',
+    desc: '财运亨通，投资有道',
+    href: '/bu/invest-fortune',
+    status: 'ready',
+    color: 'from-emerald-500/20 to-emerald-600/10',
+    border: 'border-emerald-500/20',
+  },
+  {
     icon: '恋',
     label: '恋爱运势',
     desc: '桃花运来，缘分天定',

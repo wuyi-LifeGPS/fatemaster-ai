@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '业',
+    label: '开业运势',
+    desc: '开业大吉，财源广进',
+    href: '/bu/business-fortune',
+    status: 'ready',
+    color: 'from-amber-500/20 to-amber-600/10',
+    border: 'border-amber-500/20',
+  },
+  {
     icon: '搬',
     label: '搬家运势',
     desc: '乔迁新居，择日而行',

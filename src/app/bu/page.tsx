@@ -32,6 +32,15 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
+    icon: '相',
+    label: '面相分析',
+    desc: '五官相学，洞察运势',
+    href: '/bu/face',
+    status: 'ready',
+    color: 'from-rose-500/20 to-rose-600/10',
+    border: 'border-rose-500/20',
+  },
+  {
     icon: '紫',
     label: '紫微斗数',
     desc: '星曜排盘，命格详解',

@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '康',
+    label: '健康运势',
+    desc: '身体为本，健康第一',
+    href: '/bu/health-fortune',
+    status: 'ready',
+    color: 'from-teal-500/20 to-teal-600/10',
+    border: 'border-teal-500/20',
+  },
+  {
     icon: '投',
     label: '投资运势',
     desc: '财运亨通，投资有道',

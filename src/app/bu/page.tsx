@@ -32,6 +32,15 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
+    icon: '痣',
+    label: '痣相分析',
+    desc: '痣的位置，揭示命运',
+    href: '/bu/mole',
+    status: 'ready',
+    color: 'from-brown-500/20 to-brown-600/10',
+    border: 'border-brown-500/20',
+  },
+  {
     icon: '卦',
     label: '每日一卦',
     desc: '周易六十四卦，今日指引',

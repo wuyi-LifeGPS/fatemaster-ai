@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '搬',
+    label: '搬家运势',
+    desc: '乔迁新居，择日而行',
+    href: '/bu/move-fortune',
+    status: 'ready',
+    color: 'from-brown-500/20 to-brown-600/10',
+    border: 'border-brown-500/20',
+  },
+  {
     icon: '康',
     label: '健康运势',
     desc: '身体为本，健康第一',

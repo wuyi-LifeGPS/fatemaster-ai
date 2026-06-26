@@ -32,6 +32,15 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
+    icon: '手',
+    label: '手相分析',
+    desc: '掌纹解析，命运在手',
+    href: '/bu/palm',
+    status: 'ready',
+    color: 'from-teal-500/20 to-teal-600/10',
+    border: 'border-teal-500/20',
+  },
+  {
     icon: '相',
     label: '面相分析',
     desc: '五官相学，洞察运势',

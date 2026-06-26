@@ -20,6 +20,7 @@ export default function WoPage() {
   const [historyCount, setHistoryCount] = useState(0)
   const [profileCount, setProfileCount] = useState(0)
   const [meditationMinutes, setMeditationMinutes] = useState(0)
+  const [booksRead, setBooksRead] = useState(0)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -27,6 +28,11 @@ export default function WoPage() {
       setProfileCount(getProfiles().length)
       const med = localStorage.getItem('meditation_total_minutes')
       setMeditationMinutes(med ? parseInt(med, 10) : 0)
+      const progress = localStorage.getItem('book_reading_progress')
+      if (progress) {
+        const data = JSON.parse(progress)
+        setBooksRead(Object.values(data).filter((v: any) => v >= 100).length)
+      }
     }
   }, [])
 
@@ -91,7 +97,7 @@ export default function WoPage() {
       )}
 
       {/* 统计卡片 */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-2 gap-3 mb-6">
         <div className="moonly-card p-3 text-center">
           <div className="text-xl font-bold text-gold">{profileCount}</div>
           <div className="text-moonly-text-muted text-xs">八字档案</div>
@@ -103,6 +109,10 @@ export default function WoPage() {
         <div className="moonly-card p-3 text-center">
           <div className="text-xl font-bold text-gold">{meditationMinutes}</div>
           <div className="text-moonly-text-muted text-xs">冥想分钟</div>
+        </div>
+        <div className="moonly-card p-3 text-center">
+          <div className="text-xl font-bold text-gold">{booksRead}</div>
+          <div className="text-moonly-text-muted text-xs">已读书籍</div>
         </div>
       </div>
 

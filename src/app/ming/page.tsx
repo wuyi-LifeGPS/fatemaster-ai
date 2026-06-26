@@ -920,28 +920,39 @@ function ProfileHeader({ profile, baziData, profiles, currentId, onSwitchProfile
             </div>
           )}
         </div>
-        <button
-          onClick={() => {
-            const shareData = {
-              title: `${profile.name}的八字命盘`,
-              text: `姓名：${profile.name}\n出生：${profile.year}年${profile.month}月${profile.day}日 ${profile.birthTimeLabel}\n八字：${baziStr}\n五行：${wuxingText}`,
-              url: window.location.href,
-            }
-            if (navigator.share) {
-              navigator.share(shareData)
-            } else {
-              navigator.clipboard.writeText(shareData.text + '\n' + shareData.url)
-              alert('已复制到剪贴板')
-            }
-          }}
-          className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/70">
-            <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
-            <polyline points="16 6 12 2 8 6" />
-            <line x1="12" y1="2" x2="12" y2="15" />
-          </svg>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/bu/bazi-match"
+            className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"
+            title="八字合婚"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/70">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </Link>
+          <button
+            onClick={() => {
+              const shareData = {
+                title: `${profile.name}的八字命盘`,
+                text: `姓名：${profile.name}\n出生：${profile.year}年${profile.month}月${profile.day}日 ${profile.birthTimeLabel}\n八字：${baziStr}\n五行：${wuxingText}`,
+                url: window.location.href,
+              }
+              if (navigator.share) {
+                navigator.share(shareData)
+              } else {
+                navigator.clipboard.writeText(shareData.text + '\n' + shareData.url)
+                alert('已复制到剪贴板')
+              }
+            }}
+            className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/70">
+              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col items-center">

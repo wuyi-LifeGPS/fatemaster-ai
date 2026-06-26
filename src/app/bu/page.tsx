@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '恋',
+    label: '恋爱运势',
+    desc: '桃花运来，缘分天定',
+    href: '/bu/love-fortune',
+    status: 'ready',
+    color: 'from-rose-500/20 to-rose-600/10',
+    border: 'border-rose-500/20',
+  },
+  {
     icon: '考',
     label: '考试运势',
     desc: '逢考必过，金榜题名',

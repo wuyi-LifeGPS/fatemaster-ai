@@ -49,6 +49,45 @@ export default function SettingsPage() {
     setTimeout(() => setClearHistory(false), 2000)
   }
 
+  const handleExportData = () => {
+    const data = {
+      profiles: localStorage.getItem('bazi_profiles'),
+      history: localStorage.getItem('lifegps-history'),
+      settings: localStorage.getItem('lifegps_settings'),
+      favorites: localStorage.getItem('meditation_favorites'),
+      exportTime: new Date().toISOString(),
+      version: '1.0',
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `lifegps-backup-${new Date().toISOString().split('T')[0]}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleImportData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      try {
+        const data = JSON.parse(event.target?.result as string)
+        if (data.profiles) localStorage.setItem('bazi_profiles', data.profiles)
+        if (data.history) localStorage.setItem('lifegps-history', data.history)
+        if (data.settings) localStorage.setItem('lifegps_settings', data.settings)
+        if (data.favorites) localStorage.setItem('meditation_favorites', data.favorites)
+        alert('数据导入成功！')
+        window.location.reload()
+      } catch {
+        alert('文件格式错误，请导入正确的备份文件')
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
+
   return (
     <div className="px-4 pt-4 pb-24 animate-fade-in">
       {/* Header */}
@@ -166,21 +205,47 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-white text-sm font-medium">清除分析历史</div>
-            <div className="text-moonly-text-muted text-xs">删除保存在本地的所有命盘记录，不可恢复</div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-white text-sm font-medium">导出数据</div>
+              <div className="text-moonly-text-muted text-xs">将所有数据导出为 JSON 文件备份</div>
+            </div>
+            <button
+              onClick={handleExportData}
+              className="px-4 py-2 rounded-lg text-sm font-medium border border-moonly-gold/40 text-moonly-gold hover:bg-moonly-gold/10 transition-colors"
+            >
+              导出
+            </button>
           </div>
-          <button
-            onClick={handleClearHistory}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              clearHistory
-                ? 'bg-green-400/10 text-green-400 border border-green-400/30'
-                : 'border border-red-400/40 text-red-400 hover:bg-red-400/10'
-            }`}
-          >
-            {clearHistory ? '✓ 已清除' : '清除'}
-          </button>
+
+          <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+            <div>
+              <div className="text-white text-sm font-medium">导入数据</div>
+              <div className="text-moonly-text-muted text-xs">从 JSON 备份文件恢复数据</div>
+            </div>
+            <label className="px-4 py-2 rounded-lg text-sm font-medium border border-white/20 text-white hover:bg-white/5 transition-colors cursor-pointer">
+              导入
+              <input type="file" accept=".json" onChange={handleImportData} className="hidden" />
+            </label>
+          </div>
+
+          <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+            <div>
+              <div className="text-white text-sm font-medium">清除分析历史</div>
+              <div className="text-moonly-text-muted text-xs">删除保存在本地的所有命盘记录，不可恢复</div>
+            </div>
+            <button
+              onClick={handleClearHistory}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                clearHistory
+                  ? 'bg-green-400/10 text-green-400 border border-green-400/30'
+                  : 'border border-red-400/40 text-red-400 hover:bg-red-400/10'
+              }`}
+            >
+              {clearHistory ? '✓ 已清除' : '清除'}
+            </button>
+          </div>
         </div>
       </section>
 

@@ -72,6 +72,23 @@ function evaluateDay(dayMaster: string, dayGan: string, dayZhi: string): { score
   return { score, fortuneLevel, advice }
 }
 
+const SHI_CHEN_LUCK: Record<string, string[]> = {
+  '子': ['凶', '吉', '凶', '吉', '吉', '凶', '吉', '凶', '吉', '吉', '凶', '吉'],
+  '丑': ['吉', '凶', '吉', '凶', '吉', '吉', '凶', '吉', '凶', '吉', '吉', '凶'],
+  '寅': ['吉', '吉', '凶', '吉', '凶', '吉', '吉', '凶', '吉', '凶', '吉', '吉'],
+  '卯': ['凶', '吉', '吉', '凶', '吉', '凶', '吉', '吉', '凶', '吉', '凶', '吉'],
+  '辰': ['凶', '凶', '吉', '吉', '凶', '吉', '凶', '吉', '吉', '凶', '吉', '凶'],
+  '巳': ['吉', '凶', '凶', '吉', '吉', '凶', '吉', '凶', '吉', '吉', '凶', '吉'],
+  '午': ['吉', '吉', '凶', '凶', '吉', '吉', '凶', '吉', '凶', '吉', '吉', '凶'],
+  '未': ['凶', '吉', '吉', '凶', '凶', '吉', '吉', '凶', '吉', '凶', '吉', '吉'],
+  '申': ['吉', '凶', '吉', '吉', '凶', '凶', '吉', '吉', '凶', '吉', '凶', '吉'],
+  '酉': ['凶', '吉', '凶', '吉', '吉', '凶', '凶', '吉', '吉', '凶', '吉', '凶'],
+  '戌': ['吉', '凶', '吉', '凶', '吉', '吉', '凶', '凶', '吉', '吉', '凶', '吉'],
+  '亥': ['凶', '吉', '凶', '吉', '凶', '吉', '吉', '凶', '凶', '吉', '吉', '凶'],
+}
+
+const SHI_CHEN_NAMES = ['子时', '丑时', '寅时', '卯时', '辰时', '巳时', '午时', '未时', '申时', '酉时', '戌时', '亥时']
+
 const DAY_ADVICE: Record<string, string[]> = {
   '吉': ['宜主动出击，把握机会', '适合重要决策和签约', '人际关系融洽，多社交'],
   '大吉': ['诸事顺遂，大胆推进', '适合启动新项目', '贵人运极旺，主动联络'],
@@ -228,6 +245,34 @@ export default function LiuriTab({ dayMaster }: { dayMaster?: string }) {
               </>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* 时辰吉凶 */}
+      <div className="moonly-card p-4">
+        <h3 className="text-gold text-sm font-semibold mb-3">十二时辰吉凶</h3>
+        <div className="grid grid-cols-2 gap-2">
+          {(() => {
+            const luckArr = SHI_CHEN_LUCK[today.day.zhi] || []
+            const currentHour = new Date().getHours()
+            const currentIdx = Math.floor(((currentHour + 1) % 24) / 2)
+            return SHI_CHEN_NAMES.map((name, i) => {
+              const luck = luckArr[i] || '平'
+              const isCurrent = i === currentIdx
+              const luckColor = luck === '吉' ? 'text-green-400 bg-green-500/10 border-green-500/20' : luck === '凶' ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-moonly-text-muted bg-white/5 border-white/10'
+              return (
+                <div
+                  key={name}
+                  className={`p-2 rounded-lg border text-xs ${luckColor} ${isCurrent ? 'ring-1 ring-moonly-gold/50' : ''}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">{name}</span>
+                    <span>{luck === '吉' ? '✓' : luck === '凶' ? '✗' : '○'}</span>
+                  </div>
+                </div>
+              )
+            })
+          })()}
         </div>
       </div>
     </div>

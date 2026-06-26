@@ -32,6 +32,15 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
+    icon: '配',
+    label: '生肖配对',
+    desc: '十二生肖，缘分天定',
+    href: '/bu/zodiac-match',
+    status: 'ready',
+    color: 'from-pink-500/20 to-pink-600/10',
+    border: 'border-pink-500/20',
+  },
+  {
     icon: '名',
     label: '姓名分析',
     desc: '笔画五行，解读姓名',

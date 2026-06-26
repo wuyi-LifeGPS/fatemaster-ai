@@ -32,6 +32,15 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
+    icon: '八',
+    label: '生辰八字',
+    desc: '八字排盘，详细分析',
+    href: '/bu/birth-chart',
+    status: 'ready',
+    color: 'from-amber-500/20 to-amber-600/10',
+    border: 'border-amber-500/20',
+  },
+  {
     icon: '痣',
     label: '痣相分析',
     desc: '痣的位置，揭示命运',

@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '职',
+    label: '求职运势',
+    desc: '求职顺利，前程似锦',
+    href: '/bu/job-fortune',
+    status: 'ready',
+    color: 'from-indigo-500/20 to-indigo-600/10',
+    border: 'border-indigo-500/20',
+  },
+  {
     icon: '业',
     label: '开业运势',
     desc: '开业大吉，财源广进',

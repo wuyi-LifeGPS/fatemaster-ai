@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '旅',
+    label: '旅行运势',
+    desc: '出行吉时，平安顺遂',
+    href: '/bu/travel-fortune',
+    status: 'ready',
+    color: 'from-sky-500/20 to-sky-600/10',
+    border: 'border-sky-500/20',
+  },
+  {
     icon: '植',
     label: '植物运势',
     desc: '看看你家绿植今日状态',

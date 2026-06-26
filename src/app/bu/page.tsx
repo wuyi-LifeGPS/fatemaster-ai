@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '考',
+    label: '考试运势',
+    desc: '逢考必过，金榜题名',
+    href: '/bu/exam-fortune',
+    status: 'ready',
+    color: 'from-violet-500/20 to-violet-600/10',
+    border: 'border-violet-500/20',
+  },
+  {
     icon: '旅',
     label: '旅行运势',
     desc: '出行吉时，平安顺遂',

@@ -1,4 +1,17 @@
 'use client'
+const DAILY_ZEN = [
+  { text: '心若止水，万象皆空。', source: '禅宗' },
+  { text: '本来无一物，何处惹尘埃。', source: '六祖坛经' },
+  { text: '行到水穷处，坐看云起时。', source: '王维' },
+  { text: '若无闲事挂心头，便是人间好时节。', source: '无门关' },
+  { text: '一花一世界，一叶一菩提。', source: '华严经' },
+  { text: '万法归一，一归何处。', source: '禅宗公案' },
+  { text: '平常心是道。', source: '马祖道一' },
+  { text: '放下屠刀，立地成佛。', source: '六祖坛经' },
+  { text: '春有百花秋有月，夏有凉风冬有雪。', source: '无门关' },
+  { text: '不识庐山真面目，只缘身在此山中。', source: '苏轼' },
+]
+
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
@@ -97,8 +110,13 @@ function formatTime(seconds: number): string {
 
 export default function XiuPage() {
   const [activeCategory, setActiveCategory] = useState('all')
-  const [activeTab, setActiveTab] = useState<'meditation' | 'sound'>('meditation')
+  const [dailyZen] = useState(() => {
+    const day = new Date().getDate()
+    return DAILY_ZEN[day % DAILY_ZEN.length]
+  })
+
   const [favorites, setFavorites] = useState<string[]>([])
+  const [activeTab, setActiveTab] = useState<'meditation' | 'sound'>('meditation')
 
   // 冥想播放器状态
   const [playingId, setPlayingId] = useState<string | null>(null)
@@ -166,7 +184,18 @@ export default function XiuPage() {
   return (
     <div className="px-4 pt-4 pb-24 animate-fade-in relative">
       <h1 className="text-gold-gradient text-xl font-bold mb-2">修</h1>
-      <p className="text-moonly-text-secondary text-sm mb-6">正念冥想，回归内心</p>
+      <p className="text-moonly-text-secondary text-sm mb-4">正念冥想，回归内心</p>
+
+      {/* 每日一禅 */}
+      <div className="moonly-card p-4 mb-6 border border-moonly-gold/20">
+        <div className="text-[10px] text-moonly-gold mb-2 tracking-wider">每日一禅</div>
+        <div className="text-white text-base leading-relaxed mb-2">
+          「{dailyZen.text}」
+        </div>
+        <div className="text-moonly-text-muted text-xs text-right">
+          — {dailyZen.source}
+        </div>
+      </div>
 
       {/* 顶部 Tab */}
       <div className="flex gap-1 mb-6 bg-white/5 rounded-full p-1">

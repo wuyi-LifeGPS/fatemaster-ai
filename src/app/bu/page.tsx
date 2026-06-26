@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '植',
+    label: '植物运势',
+    desc: '看看你家绿植今日状态',
+    href: '/bu/plant-fortune',
+    status: 'ready',
+    color: 'from-green-500/20 to-green-600/10',
+    border: 'border-green-500/20',
+  },
+  {
     icon: '宠',
     label: '宠物运势',
     desc: '看看你家毛孩子今日运势',

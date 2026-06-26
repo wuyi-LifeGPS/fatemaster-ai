@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '方',
+    label: '每日吉方',
+    desc: '今日吉利方向指引',
+    href: '/bu/lucky-direction',
+    status: 'ready',
+    color: 'from-lime-500/20 to-lime-600/10',
+    border: 'border-lime-500/20',
+  },
+  {
     icon: '婚',
     label: '八字合婚',
     desc: '八字配对，缘分天定',

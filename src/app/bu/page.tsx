@@ -41,6 +41,15 @@ const DIVINATION_TOOLS = [
     border: 'border-red-500/20',
   },
   {
+    icon: '宠',
+    label: '宠物运势',
+    desc: '看看你家毛孩子今日运势',
+    href: '/bu/pet-fortune',
+    status: 'ready',
+    color: 'from-orange-500/20 to-orange-600/10',
+    border: 'border-orange-500/20',
+  },
+  {
     icon: '色',
     label: '幸运颜色',
     desc: '每日幸运颜色，穿衣搭配',

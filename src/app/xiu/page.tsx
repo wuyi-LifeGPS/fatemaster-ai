@@ -245,6 +245,37 @@ export default function XiuPage() {
             </div>
           </div>
 
+          {/* 自定义计时器 */}
+          <div className="moonly-card p-4 mb-6">
+            <div className="text-white text-sm font-medium mb-3">⏱️ 自定义冥想</div>
+            <div className="flex items-center gap-3">
+              <input
+                type="number"
+                min="1"
+                max="120"
+                placeholder="分钟"
+                className="w-20 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-moonly-gold/30"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const val = parseInt((e.target as HTMLInputElement).value, 10)
+                    if (val > 0) startMeditation('custom', val)
+                  }
+                }}
+              />
+              <span className="text-moonly-text-muted text-sm">分钟</span>
+              <button
+                onClick={() => {
+                  const input = document.querySelector('input[type="number"]') as HTMLInputElement
+                  const val = parseInt(input.value, 10)
+                  if (val > 0) startMeditation('custom', val)
+                }}
+                className="px-4 py-2 bg-moonly-gold/10 text-moonly-gold rounded-lg text-sm hover:bg-moonly-gold/20 transition"
+              >
+                开始
+              </button>
+            </div>
+          </div>
+
           {/* 分类筛选 */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-6">
             {MEDITATION_CATEGORIES.map(cat => (

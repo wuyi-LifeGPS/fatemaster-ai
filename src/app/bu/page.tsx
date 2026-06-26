@@ -32,6 +32,15 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
+    icon: '名',
+    label: '姓名分析',
+    desc: '笔画五行，解读姓名',
+    href: '/bu/name',
+    status: 'ready',
+    color: 'from-indigo-500/20 to-indigo-600/10',
+    border: 'border-indigo-500/20',
+  },
+  {
     icon: '风',
     label: '风水罗盘',
     desc: '方位吉凶，趋吉避凶',

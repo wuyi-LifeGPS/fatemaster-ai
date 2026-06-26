@@ -897,7 +897,7 @@ function ProfileHeader({ profile, baziData, profiles, currentId, onSwitchProfile
                     </div>
                     <div className="flex-1 text-left">
                       <div className="text-white text-sm font-medium">{p.name}</div>
-                      <div className="text-white/40 text-xs">{p.gender} · {getAge(p.year)}岁 · {p.birthTimeLabel}</div>
+                      <div className="text-white/40 text-sm">{p.gender} · {getAge(p.year)}岁 · {p.birthTimeLabel}</div>
                     </div>
                     {p.id === currentId && (
                       <div className="w-4 h-4 rounded-full bg-moonly-gold flex items-center justify-center">
@@ -933,10 +933,10 @@ function ProfileHeader({ profile, baziData, profiles, currentId, onSwitchProfile
           <span className="text-white/60 text-base">{profile.gender}</span>
         </div>
         <div className="text-center space-y-0.5 mb-3">
-          <p className="text-white/40 text-sm">{formatDate(profile)}</p>
-          <p className="text-white/30 text-xs">生肖：{zodiac}{zodiacEmoji} · 星座：{constellation}</p>
-          <p className="text-white/30 text-xs">八字：{baziStr}</p>
-          <p className="text-white/30 text-xs">五行：{wuxingText}</p>
+          <p className="text-white/40 text-base">{formatDate(profile)}</p>
+          <p className="text-white/30 text-sm">生肖：{zodiac}{zodiacEmoji} · 星座：{constellation}</p>
+          <p className="text-white/30 text-sm">八字：{baziStr}</p>
+          <p className="text-white/30 text-sm">五行：{wuxingText}</p>
         </div>
         <Link href={`/ming/edit?id=${profile.id}`} className="px-5 py-1.5 rounded-full border border-white/15 text-white/50 text-sm hover:bg-white/5 transition">修改档案</Link>
       </div>
@@ -975,13 +975,13 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
             const cg = cangGanDetail[i]?.cangGan?.[0]
             return (
               <div key={i} className="flex-1 flex flex-col items-center">
-                <span className="text-white/50 text-xs mb-1.5">{labels[i]}</span>
+                <span className="text-white/50 text-sm mb-1.5">{labels[i]}</span>
                 <div className="w-full rounded-xl bg-black/20 border border-white/5 p-2.5 flex flex-col items-center gap-1.5">
                   <span className="text-xl font-bold" style={{ color: WUXING_COLOR[getWuXing(p.gan)] || '#fff' }}>{p.gan}</span>
                   <span className="text-xl font-bold" style={{ color: WUXING_COLOR[getWuXing(p.zhi)] || '#fff' }}>{p.zhi}</span>
-                  {cg && <span className="text-xs text-white/40">{cg.gan}·{cg.shiShen}</span>}
+                  {cg && <span className="text-sm text-white/40">{cg.gan}·{cg.shiShen}</span>}
                 </div>
-                <span className="text-white/30 text-xs mt-1">{ss}</span>
+                <span className="text-white/30 text-sm mt-1">{ss}</span>
               </div>
             )
           })}

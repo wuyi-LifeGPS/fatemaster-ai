@@ -39,6 +39,7 @@ export default function WoPage() {
     { icon: '🔮', label: '八字记录', href: '/ming/records', badge: profileCount },
     { icon: '🎋', label: '每日签', href: '/wo/daily-fortune' },
     { icon: '👔', label: '五行穿衣', href: '/wo/dress-guide' },
+    { icon: '⚖️', label: '八字对比', href: '/wo/compare' },
     { icon: '☯️', label: '今日运势', href: '/ming?tab=liuri' },
     { icon: '⚙️', label: '设置', href: '/settings' },
   ]

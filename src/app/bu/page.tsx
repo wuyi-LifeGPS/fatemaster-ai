@@ -32,6 +32,15 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
+    icon: '数',
+    label: '数字命理',
+    desc: '生命灵数，数字能量',
+    href: '/bu/numerology',
+    status: 'ready',
+    color: 'from-violet-500/20 to-violet-600/10',
+    border: 'border-violet-500/20',
+  },
+  {
     icon: '配',
     label: '生肖配对',
     desc: '十二生肖，缘分天定',

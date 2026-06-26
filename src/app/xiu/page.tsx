@@ -119,11 +119,90 @@ export default function XiuPage() {
   const [activeTab, setActiveTab] = useState<'meditation' | 'sound'>('meditation')
 
   // 冥想播放器状态
-  const [playingId, setPlayingId] = useState<string | null>(null)
+const [playingId, setPlayingId] = useState<string | null>(null)
   const [remainingSeconds, setRemainingSeconds] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const audioRef = useRef<AudioContext | null>(null)
+  const oscillatorRef = useRef<OscillatorNode | null>(null)
+  const gainRef = useRef<GainNode | null>(null)
   const activeMeditation = MEDITATIONS.find(m => m.id === playingId)
+
+  // 初始化音频上下文
+  const initAudio = () => {
+    if (!audioRef.current) {
+      audioRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+    }
+  }
+
+  // 播放颂钵声
+  const playBowlSound = () => {
+    initAudio()
+    const ctx = audioRef.current!
+    
+    // 创建主增益节点
+    const masterGain = ctx.createGain()
+    masterGain.gain.value = 0.3
+    masterGain.connect(ctx.destination)
+    gainRef.current = masterGain
+
+    // 创建多个振荡器模拟颂钵和声
+    const frequencies = [180, 220, 280, 360]
+    frequencies.forEach((freq, i) => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      
+      osc.type = i === 0 ? 'sine' : 'sine'
+      osc.frequency.value = freq
+      
+      gain.gain.value = 0.15 / (i + 1)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 3 + i * 0.5)
+      
+      osc.connect(gain)
+      gain.connect(masterGain)
+      
+      osc.start(ctx.currentTime)
+      osc.stop(ctx.currentTime + 4 + i * 0.5)
+    })
+  }
+
+  // 播放持续的冥想音
+  const playMeditationTone = () => {
+    initAudio()
+    const ctx = audioRef.current!
+    
+    if (oscillatorRef.current) {
+      oscillatorRef.current.stop()
+    }
+
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    
+    osc.type = 'sine'
+    osc.frequency.value = 432 // 432Hz 宇宙频率
+    
+    gain.gain.value = 0.08
+    
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    
+    osc.start()
+    
+    oscillatorRef.current = osc
+    gainRef.current = gain
+  }
+
+  const stopAudio = () => {
+    if (oscillatorRef.current) {
+      try {
+        oscillatorRef.current.stop()
+      } catch {}
+      oscillatorRef.current = null
+    }
+    if (gainRef.current) {
+      gainRef.current = null
+    }
+  }
 
   useEffect(() => {
     const saved = localStorage.getItem('meditation_favorites')
@@ -143,14 +222,32 @@ export default function XiuPage() {
     setPlayingId(id)
     setRemainingSeconds(durationMinutes * 60)
     setIsPaused(false)
+    // 播放开始提示音
+    playBowlSound()
+    // 延迟后播放持续音
+    setTimeout(() => {
+      if (audioRef.current) {
+        playMeditationTone()
+      }
+    }, 3500)
   }
 
   const togglePause = () => {
-    setIsPaused(prev => !prev)
+    setIsPaused(prev => {
+      if (!prev) {
+        // 暂停
+        stopAudio()
+      } else {
+        // 继续
+        playMeditationTone()
+      }
+      return !prev
+    })
   }
 
   const stopMeditation = () => {
     if (timerRef.current) clearInterval(timerRef.current)
+    stopAudio()
     setPlayingId(null)
     setRemainingSeconds(0)
     setIsPaused(false)

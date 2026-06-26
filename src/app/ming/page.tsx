@@ -117,7 +117,7 @@ function getModuleDetail(moduleId: string, data: any, profile: BaziProfile): { t
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold" style={{ background: `${WUXING_COLOR[getWuXing(p.gan)]}20`, color: WUXING_COLOR[getWuXing(p.gan)] }}>{p.gan}</div>
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold" style={{ background: `${WUXING_COLOR[getWuXing(p.zhi)]}20`, color: WUXING_COLOR[getWuXing(p.zhi)] }}>{p.zhi}</div>
-                      <div className="text-white/50 text-sm">
+                      <div className="text-white/50 text-base">
                         <div>天干{getWuXing(p.gan)} · 地支{getWuXing(p.zhi)}</div>
                         <div className="text-white/30">藏干：{getCangGan(p.zhi).join('、')}</div>
                       </div>

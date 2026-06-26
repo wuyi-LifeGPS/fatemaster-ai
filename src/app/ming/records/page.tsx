@@ -9,6 +9,8 @@ import { lunarToSolar } from '@/lib/lunar'
 
 // ===== 工具函数 =====
 
+import { getAllHistoryRecords, HistoryRecord } from '@/lib/history'
+
 const WUXING_COLOR: Record<string, string> = {
   '木': 'text-emerald-400',
   '火': 'text-red-400',
@@ -65,11 +67,14 @@ export default function RecordsPage() {
   const router = useRouter()
   const [profiles, setProfiles] = useState<BaziProfile[]>([])
   const [baziDisplays, setBaziDisplays] = useState<BaziDisplay[]>([])
+  const [historyRecords, setHistoryRecords] = useState<HistoryRecord[]>([])
+  const [activeTab, setActiveTab] = useState<'profiles' | 'history'>('profiles')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const list = getProfiles()
     setProfiles(list)
+    setHistoryRecords(getAllHistoryRecords())
 
     // 计算每个档案的八字
     const displays: BaziDisplay[] = list.map((profile) => {
@@ -118,6 +123,42 @@ export default function RecordsPage() {
     router.push('/ming')
   }
 
+  const handleHistoryItemClick = (record: HistoryRecord) => {
+    if (record.type === 'bazi') {
+      router.push('/ming')
+    } else if (record.type === 'talent') {
+      router.push('/talent')
+    } else if (record.type === 'match') {
+      router.push('/match')
+    } else if (record.type === 'career') {
+      router.push('/career')
+    } else if (record.type === 'naming') {
+      router.push('/naming')
+    }
+  }
+
+  const getHistoryTypeLabel = (type: string) => {
+    const map: Record<string, string> = {
+      bazi: '八字分析',
+      talent: '天赋分析',
+      match: '合婚分析',
+      career: '事业分析',
+      naming: '起名分析',
+    }
+    return map[type] || type
+  }
+
+  const getHistoryTypeIcon = (type: string) => {
+    const map: Record<string, string> = {
+      bazi: '🔮',
+      talent: '🎯',
+      match: '💕',
+      career: '💼',
+      naming: '✍️',
+    }
+    return map[type] || '📝'
+  }
+
   return (
     <div className="min-h-screen moonly-bg">
       {/* 顶部导航 */}
@@ -134,22 +175,88 @@ export default function RecordsPage() {
 
       {/* 内容 */}
       <div className="moonly-content px-4 py-4 pb-28">
+        {/* 标签切换 */}
+        <div className="flex gap-1 mb-4 bg-white/5 rounded-full p-1">
+          <button
+            onClick={() => setActiveTab('profiles')}
+            className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
+              activeTab === 'profiles'
+                ? 'bg-moonly-gold text-moonly-bg font-semibold'
+                : 'text-moonly-text-secondary hover:text-white'
+            }`}
+          >
+            八字档案 ({profiles.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('history')}
+            className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
+              activeTab === 'history'
+                ? 'bg-moonly-gold text-moonly-bg font-semibold'
+                : 'text-moonly-text-secondary hover:text-white'
+            }`}
+          >
+            查询记录 ({historyRecords.length})
+          </button>
+        </div>
+
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 border-2 border-moonly-gold/30 border-t-moonly-gold rounded-full animate-spin" />
           </div>
-        ) : baziDisplays.length === 0 ? (
-          <EmptyState />
+        ) : activeTab === 'profiles' ? (
+          baziDisplays.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="space-y-3">
+              {baziDisplays.map((display) => (
+                <ProfileCard
+                  key={display.profile.id}
+                  display={display}
+                  onSelect={() => handleSelectProfile(display.profile.id)}
+                />
+              ))}
+            </div>
+          )
         ) : (
-          <div className="space-y-3">
-            {baziDisplays.map((display) => (
-              <ProfileCard
-                key={display.profile.id}
-                display={display}
-                onSelect={() => handleSelectProfile(display.profile.id)}
-              />
-            ))}
-          </div>
+          historyRecords.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="text-4xl mb-3">📝</div>
+              <p className="text-moonly-text-secondary text-sm">暂无查询记录</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {historyRecords.map((record) => (
+                <button
+                  key={record.id}
+                  onClick={() => handleHistoryItemClick(record)}
+                  className="w-full text-left rounded-2xl p-4 transition-all hover:scale-[1.01] active:scale-[0.99] info-card-black"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-lg">
+                      {getHistoryTypeIcon(record.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-medium text-sm">{getHistoryTypeLabel(record.type)}</span>
+                        <span className="text-moonly-text-muted text-xs">{record.dateStr}</span>
+                      </div>
+                      <div className="text-moonly-text-secondary text-sm mt-0.5 truncate">
+                        {record.title || '未命名'}
+                      </div>
+                      {record.resultSummary && (
+                        <div className="text-moonly-text-muted text-xs mt-1 truncate">
+                          {record.resultSummary}
+                        </div>
+                      )}
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )
         )}
       </div>
 

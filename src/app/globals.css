@@ -5,16 +5,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap');
 
 :root {
-  --moonly-bg: #1a1428;
-  --moonly-bg-dark: #0f0b1a;
-  --moonly-card: rgba(35, 30, 60, 0.6);
+  --moonly-bg: #2a2845;
+  --moonly-bg-dark: #1e1c35;
+  --moonly-card: rgba(45, 42, 75, 0.6);
   --moonly-card-border: rgba(255, 255, 255, 0.08);
   --moonly-gold: #c9a96e;
   --moonly-gold-light: #e0c896;
   --moonly-gold-dim: rgba(201, 169, 110, 0.3);
   --moonly-text: #ffffff;
-  --moonly-text-secondary: rgba(255, 255, 255, 0.7);
-  --moonly-text-muted: rgba(255, 255, 255, 0.45);
+  --moonly-text-secondary: rgba(255, 255, 255, 0.75);
+  --moonly-text-muted: rgba(255, 255, 255, 0.5);
   --moonly-purple: #6b5b95;
   --moonly-purple-light: rgba(107, 91, 149, 0.4);
 }
@@ -32,6 +32,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  font-size: 16px;
 }
 
 /* ========== Moonly 风格工具类 ========== */
@@ -39,7 +40,7 @@ body {
 /* 星空背景 - 固定不动 */
 .moonly-bg {
   background:
-    linear-gradient(180deg, #1a1428 0%, #0f0b1a 50%, #0a0712 100%);
+    linear-gradient(180deg, #2a2845 0%, #1e1c35 50%, #15122b 100%);
   min-height: 100vh;
   position: relative;
 }
@@ -208,7 +209,7 @@ body {
   background: linear-gradient(135deg, #2a1f3d 0%, #1a1428 100%);
   border: 2px solid rgba(201, 169, 110, 0.3);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(201, 169, 110, 0.15);
-  z-index: 50;
+  z-index: 30;
   transition: all 0.3s ease;
   overflow: hidden;
 }
@@ -252,7 +253,7 @@ body {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
-  z-index: 9999;
+  z-index: 99999;
   animation: fadeInOverlay 0.3s ease;
 }
 .bottom-sheet {
@@ -263,11 +264,11 @@ body {
   max-width: 448px;
   margin: 0 auto;
   height: 67vh;
-  background: linear-gradient(180deg, #1e1830 0%, #0f0b1a 100%);
+  background: linear-gradient(180deg, #2e2a50 0%, #1e1c35 100%);
   border-radius: 24px 24px 0 0;
   border: 1px solid rgba(255,255,255,0.08);
   border-bottom: none;
-  z-index: 10000;
+  z-index: 100000;
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;

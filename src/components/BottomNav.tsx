@@ -63,7 +63,7 @@ export default function BottomNav() {
   if (hideNavPaths.some(p => pathname.startsWith(p))) return null
 
   return (
-    <nav className="tab-nav fixed bottom-0 left-0 right-0 z-40 pb-safe">
+    <nav className="tab-nav fixed bottom-0 left-0 right-0 z-30 pb-safe">
       <div className="max-w-md mx-auto flex items-center justify-around py-2 px-4">
         {tabs.map((tab) => {
           const isActive = pathname === tab.path || pathname.startsWith(tab.path + '/')

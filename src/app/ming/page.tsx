@@ -920,7 +920,28 @@ function ProfileHeader({ profile, baziData, profiles, currentId, onSwitchProfile
             </div>
           )}
         </div>
-        <div className="w-8" />
+        <button
+          onClick={() => {
+            const shareData = {
+              title: `${profile.name}的八字命盘`,
+              text: `姓名：${profile.name}\n出生：${profile.year}年${profile.month}月${profile.day}日 ${profile.birthTimeLabel}\n八字：${baziStr}\n五行：${wuxingText}`,
+              url: window.location.href,
+            }
+            if (navigator.share) {
+              navigator.share(shareData)
+            } else {
+              navigator.clipboard.writeText(shareData.text + '\n' + shareData.url)
+              alert('已复制到剪贴板')
+            }
+          }}
+          className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/70">
+            <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+            <polyline points="16 6 12 2 8 6" />
+            <line x1="12" y1="2" x2="12" y2="15" />
+          </svg>
+        </button>
       </div>
 
       <div className="flex flex-col items-center">

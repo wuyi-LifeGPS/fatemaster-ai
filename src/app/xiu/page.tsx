@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 
 const MEDITATION_CATEGORIES = [
@@ -17,7 +17,7 @@ const MEDITATIONS = [
     title: '睡前放松',
     tag: '助眠',
     duration: 15,
-    icon: '月',
+    icon: '🌙',
     desc: '释放一天的疲惫，进入深度睡眠',
     plays: 12840,
   },
@@ -26,7 +26,7 @@ const MEDITATIONS = [
     title: '呼吸专注',
     tag: '专注',
     duration: 10,
-    icon: '息',
+    icon: '🌬️',
     desc: '觉察呼吸，回归当下',
     plays: 8932,
   },
@@ -35,7 +35,7 @@ const MEDITATIONS = [
     title: '身体扫描',
     tag: '疗愈',
     duration: 20,
-    icon: '体',
+    icon: '✨',
     desc: '从头到脚，感受身体的每一个信号',
     plays: 6541,
   },
@@ -44,7 +44,7 @@ const MEDITATIONS = [
     title: '七脉轮净化',
     tag: '能量',
     duration: 25,
-    icon: '轮',
+    icon: '🌀',
     desc: '激活七轮能量，平衡身心',
     plays: 4320,
   },
@@ -53,7 +53,7 @@ const MEDITATIONS = [
     title: '与高我连接',
     tag: '疗愈',
     duration: 27,
-    icon: '我',
+    icon: '🔮',
     desc: '向内探索，连接内在智慧',
     plays: 3890,
   },
@@ -62,7 +62,7 @@ const MEDITATIONS = [
     title: '晨间唤醒',
     tag: '能量',
     duration: 8,
-    icon: '晨',
+    icon: '☀️',
     desc: '开启充满活力的一天',
     plays: 7650,
   },
@@ -72,27 +72,40 @@ const SOUND_THERAPY = [
   {
     title: '432Hz 自然音疗',
     duration: 30,
-    icon: '频',
+    icon: '🎵',
     desc: '宇宙频率，深层放松',
   },
   {
     title: '颂钵疗愈',
     duration: 20,
-    icon: '钵',
+    icon: '🥣',
     desc: '古老颂钵，振动身心',
   },
   {
     title: '雨声白噪音',
     duration: 60,
-    icon: '雨',
+    icon: '🌧️',
     desc: '自然雨声，助眠专注',
   },
 ]
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+}
 
 export default function XiuPage() {
   const [activeCategory, setActiveCategory] = useState('all')
   const [activeTab, setActiveTab] = useState<'meditation' | 'sound'>('meditation')
   const [favorites, setFavorites] = useState<string[]>([])
+
+  // 冥想播放器状态
+  const [playingId, setPlayingId] = useState<string | null>(null)
+  const [remainingSeconds, setRemainingSeconds] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const activeMeditation = MEDITATIONS.find(m => m.id === playingId)
 
   useEffect(() => {
     const saved = localStorage.getItem('meditation_favorites')
@@ -107,12 +120,51 @@ export default function XiuPage() {
     localStorage.setItem('meditation_favorites', JSON.stringify(next))
   }
 
+  const startMeditation = (id: string, durationMinutes: number) => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    setPlayingId(id)
+    setRemainingSeconds(durationMinutes * 60)
+    setIsPaused(false)
+  }
+
+  const togglePause = () => {
+    setIsPaused(prev => !prev)
+  }
+
+  const stopMeditation = () => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    setPlayingId(null)
+    setRemainingSeconds(0)
+    setIsPaused(false)
+  }
+
+  useEffect(() => {
+    if (playingId && !isPaused && remainingSeconds > 0) {
+      timerRef.current = setInterval(() => {
+        setRemainingSeconds(prev => {
+          if (prev <= 1) {
+            // 冥想结束
+            if (timerRef.current) clearInterval(timerRef.current)
+            setPlayingId(null)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [playingId, isPaused, remainingSeconds])
+
   const filtered = activeCategory === 'all'
     ? MEDITATIONS
     : MEDITATIONS.filter(m => m.tag === MEDITATION_CATEGORIES.find(c => c.key === activeCategory)?.label)
 
   return (
-    <div className="px-4 pt-4 pb-24 animate-fade-in">
+    <div className="px-4 pt-4 pb-24 animate-fade-in relative">
       <h1 className="text-gold-gradient text-xl font-bold mb-2">修</h1>
       <p className="text-moonly-text-secondary text-sm mb-6">正念冥想，回归内心</p>
 
@@ -142,6 +194,28 @@ export default function XiuPage() {
 
       {activeTab === 'meditation' ? (
         <>
+          {/* 快速入口 */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <Link href="/xiu/breath" className="moonly-card p-4 flex items-center gap-3 hover:bg-white/5 transition">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/10 flex items-center justify-center text-lg">
+                🌬️
+              </div>
+              <div>
+                <div className="text-white text-sm font-medium">呼吸练习</div>
+                <div className="text-moonly-text-muted text-xs">调整呼吸节奏</div>
+              </div>
+            </Link>
+            <div className="moonly-card p-4 flex items-center gap-3 opacity-50">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 flex items-center justify-center text-lg">
+                💫
+              </div>
+              <div>
+                <div className="text-white text-sm font-medium">脉轮清理</div>
+                <div className="text-moonly-text-muted text-xs">开发中</div>
+              </div>
+            </div>
+          </div>
+
           {/* 分类筛选 */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-6">
             {MEDITATION_CATEGORIES.map(cat => (
@@ -157,22 +231,6 @@ export default function XiuPage() {
                 {cat.label}
               </button>
             ))}
-          </div>
-
-          {/* 今日推荐 */}
-          <div className="moonly-card p-5 mb-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-moonly-gold/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="relative z-10">
-              <div className="text-xs text-moonly-gold mb-1">今日推荐</div>
-              <h2 className="text-white font-bold text-lg mb-1">冥想入门</h2>
-              <p className="text-moonly-text-secondary text-sm mb-4">从零开始，建立冥想习惯</p>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-moonly-text-muted">热门 · 13 分钟</span>
-              </div>
-              <button className="mt-4 btn-gold px-6 py-2 text-sm font-semibold w-full">
-                开始冥想
-              </button>
-            </div>
           </div>
 
           {/* 冥想列表 */}
@@ -207,11 +265,31 @@ export default function XiuPage() {
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
                   </button>
-                  <div className="w-8 h-8 rounded-full bg-moonly-gold/10 flex items-center justify-center group-hover:bg-moonly-gold/20 transition">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-moonly-gold">
-                      <polygon points="5 3 19 12 5 21 5 3" />
-                    </svg>
-                  </div>
+                  {playingId === item.id ? (
+                    <button
+                      onClick={togglePause}
+                      className="w-10 h-10 rounded-full bg-moonly-gold/20 flex items-center justify-center hover:bg-moonly-gold/30 transition border border-moonly-gold/30"
+                    >
+                      {isPaused ? (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-gold">
+                          <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                      ) : (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-gold">
+                          <rect x="6" y="4" width="4" height="16" rx="1" /><rect x="14" y="4" width="4" height="16" rx="1" />
+                        </svg>
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => startMeditation(item.id, item.duration)}
+                      className="w-10 h-10 rounded-full bg-moonly-gold/10 flex items-center justify-center hover:bg-moonly-gold/20 transition border border-moonly-gold/20"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-gold">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -231,8 +309,8 @@ export default function XiuPage() {
                   <div className="text-moonly-text-muted text-xs mt-0.5">{item.desc}</div>
                   <div className="text-moonly-text-muted text-xs mt-1">{item.duration} 分钟</div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-moonly-gold/10 flex items-center justify-center hover:bg-moonly-gold/20 transition">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-moonly-gold">
+                <div className="w-10 h-10 rounded-full bg-moonly-gold/10 flex items-center justify-center hover:bg-moonly-gold/20 transition border border-moonly-gold/20">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-gold">
                     <polygon points="5 3 19 12 5 21 5 3" />
                   </svg>
                 </div>
@@ -240,6 +318,56 @@ export default function XiuPage() {
             ))}
           </div>
         </>
+      )}
+
+      {/* 冥想播放浮层 */}
+      {playingId && activeMeditation && (
+        <div className="fixed inset-x-0 bottom-16 z-50 px-4">
+          <div className="moonly-card p-4 border border-moonly-gold/20">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-moonly-gold/10 to-moonly-purple/10 flex items-center justify-center text-2xl">
+                {activeMeditation.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-white font-medium text-sm">{activeMeditation.title}</div>
+                <div className="text-moonly-gold text-lg font-bold font-mono">
+                  {formatTime(remainingSeconds)}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={togglePause}
+                  className="w-10 h-10 rounded-full bg-moonly-gold/20 flex items-center justify-center hover:bg-moonly-gold/30 transition border border-moonly-gold/30"
+                >
+                  {isPaused ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-gold">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-gold">
+                      <rect x="6" y="4" width="4" height="16" rx="1" /><rect x="14" y="4" width="4" height="16" rx="1" />
+                    </svg>
+                  )}
+                </button>
+                <button
+                  onClick={stopMeditation}
+                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-red-500/20 transition border border-white/10"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-white/70">
+                    <rect x="4" y="4" width="16" height="16" rx="2" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            {/* 进度条 */}
+            <div className="mt-3 w-full h-1 bg-white/10 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-moonly-gold to-moonly-purple rounded-full transition-all"
+                style={{ width: `${((activeMeditation.duration * 60 - remainingSeconds) / (activeMeditation.duration * 60)) * 100}%` }}
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

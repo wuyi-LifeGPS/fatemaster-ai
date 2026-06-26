@@ -5,6 +5,10 @@ import Link from 'next/link'
 import { getProfiles, BaziProfile } from '@/lib/bazi-profiles'
 import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, getYinYang, SHI_SHEN_MAP, DaYunInfo } from '@/lib/bazi'
 
+import LiunianTab from './components/LiunianTab'
+import LiuyueTab from './components/LiuyueTab'
+import LiuriTab from './components/LiuriTab'
+
 // ===== 常量 =====
 const WUXING_COLOR: Record<string, string> = {
   '木': '#4ade80', '火': '#f87171', '土': '#fbbf24', '金': '#e2e8f0', '水': '#60a5fa',
@@ -722,6 +726,15 @@ export default function MingPage() {
     setProfiles(list)
     if (list[0]) setCurrentId(list[0].id)
     setLoading(false)
+    
+    // 读取 URL tab 参数
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const tab = params.get('tab') as TabKey
+      if (tab && ['mingpan', 'dayun', 'liunian', 'liuyue', 'liuri'].includes(tab)) {
+        setActiveTab(tab)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -756,7 +769,13 @@ export default function MingPage() {
 
   return (
     <div className="animate-fade-in relative z-10">
-      <ProfileHeader profile={currentProfile} baziData={baziData} />
+      <ProfileHeader 
+        profile={currentProfile} 
+        baziData={baziData} 
+        profiles={profiles}
+        currentId={currentId}
+        onSwitchProfile={setCurrentId}
+      />
 
       <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (
@@ -770,9 +789,9 @@ export default function MingPage() {
         {activeTab === 'mingpan' && baziData && <MingPanTab data={baziData} profile={currentProfile} onOpenModal={setModalModule} />}
         {activeTab === 'dayun' && daYunData && <DayunTab daYunList={daYunData} profile={currentProfile} dayMaster={baziData?.dayMaster} />}
         {activeTab === 'dayun' && !daYunData && <LoadingTab />}
-        {activeTab === 'liunian' && <LiunianPlaceholder />}
-        {activeTab === 'liuyue' && <LiuyuePlaceholder />}
-        {activeTab === 'liuri' && <LiuriPlaceholder />}
+        {activeTab === 'liunian' && daYunData && <LiunianTab daYunList={daYunData} dayMaster={baziData?.dayMaster} />}
+        {activeTab === 'liuyue' && <LiuyueTab dayMaster={baziData?.dayMaster} />}
+        {activeTab === 'liuri' && <LiuriTab dayMaster={baziData?.dayMaster} />}
       </div>
 
       {modalContent && (
@@ -809,7 +828,9 @@ function LoadingTab() {
   )
 }
 
-function ProfileHeader({ profile, baziData }: { profile: BaziProfile; baziData: any }) {
+function ProfileHeader({ profile, baziData, profiles, currentId, onSwitchProfile }: { profile: BaziProfile; baziData: any; profiles: BaziProfile[]; currentId: string | null; onSwitchProfile: (id: string) => void }) {
+  const [showDropdown, setShowDropdown] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const age = getAge(profile.year)
   const zodiacEmoji = getZodiacEmoji(profile.year)
   const zodiac = getZodiac(profile.year)
@@ -817,15 +838,87 @@ function ProfileHeader({ profile, baziData }: { profile: BaziProfile; baziData: 
   const wuxingText = baziData?.pillars?.map((p: any) => getWuXingText(p.gan, p.zhi)).join(' ') || ''
   const baziStr = baziData?.pillars?.map((p: any) => p.gan + p.zhi).join(' ') || ''
 
+  // 点击外部关闭下拉
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false)
+      }
+    }
+    if (showDropdown) document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showDropdown])
+
   return (
-    <div className="px-4 pt-3 pb-2">
+    <div className="px-4 pt-3 pb-2 relative">
       <div className="flex items-center justify-between mb-4">
-        <Link href="/ming/records" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+        <Link href="/" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/70"><path d="M15 18l-6-6 6-6" /></svg>
         </Link>
-        <div className="flex items-center gap-1">
-          <span className="text-white font-medium text-base">{profile.name}</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2"><polyline points="6 9 12 15 18 9" /></svg>
+        <div className="relative" ref={dropdownRef}>
+          <button 
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 transition"
+          >
+            <span className="text-white font-medium text-base">{profile.name}</span>
+            <svg 
+              width="14" 
+              height="14" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="rgba(255,255,255,0.5)" 
+              strokeWidth="2"
+              className={`transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`}
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          
+          {/* 下拉档案列表 */}
+          {showDropdown && (
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-[#1a1428] border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fade-in">
+              <div className="p-2">
+                <div className="text-white/30 text-xs px-3 py-2">切换档案</div>
+                {profiles.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      onSwitchProfile(p.id)
+                      setShowDropdown(false)
+                    }}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${
+                      p.id === currentId 
+                        ? 'bg-moonly-gold/15 border border-moonly-gold/30' 
+                        : 'hover:bg-white/5'
+                    }`}
+                  >
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm">
+                      {ZODIAC_EMOJI[getZodiac(p.year)] || '🐷'}
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="text-white text-sm font-medium">{p.name}</div>
+                      <div className="text-white/40 text-xs">{p.gender} · {getAge(p.year)}岁 · {p.birthTimeLabel}</div>
+                    </div>
+                    {p.id === currentId && (
+                      <div className="w-4 h-4 rounded-full bg-moonly-gold flex items-center justify-center">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1a1428" strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="border-t border-white/5 p-2">
+                <Link 
+                  href="/bazi" 
+                  onClick={() => setShowDropdown(false)}
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition text-gold text-sm font-medium"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                  增加八字
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
         <div className="w-8" />
       </div>
@@ -845,7 +938,7 @@ function ProfileHeader({ profile, baziData }: { profile: BaziProfile; baziData: 
           <p className="text-white/30 text-xs">八字：{baziStr}</p>
           <p className="text-white/30 text-xs">五行：{wuxingText}</p>
         </div>
-        <Link href="/ming/bazi" className="px-5 py-1.5 rounded-full border border-white/15 text-white/50 text-sm hover:bg-white/5 transition">修改档案</Link>
+        <Link href={`/ming/edit?id=${profile.id}`} className="px-5 py-1.5 rounded-full border border-white/15 text-white/50 text-sm hover:bg-white/5 transition">修改档案</Link>
       </div>
     </div>
   )
@@ -1086,6 +1179,4 @@ function DayunChart({ daYunList, currentIndex }: { daYunList: DaYunInfo[]; curre
   )
 }
 
-function LiunianPlaceholder() { return <div className="flex flex-col items-center justify-center py-20 text-center"><div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg></div><p className="text-moonly-text-secondary text-sm">流年分析模块开发中...</p><p className="text-moonly-text-muted text-sm mt-1">将展示年度运势与关键事件预测</p></div> }
-function LiuyuePlaceholder() { return <div className="flex flex-col items-center justify-center py-20 text-center"><div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><path d="M1 4v6h6M23 20v-6h-6" /><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" /></svg></div><p className="text-moonly-text-secondary text-sm">流月分析模块开发中...</p><p className="text-moonly-text-muted text-sm mt-1">将展示月度运势与能量波动</p></div> }
-function LiuriPlaceholder() { return <div className="flex flex-col items-center justify-center py-20 text-center"><div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg></div><p className="text-moonly-text-secondary text-sm">流日分析模块开发中...</p><p className="text-moonly-text-muted text-sm mt-1">将展示每日运势与行动建议</p></div> }
+

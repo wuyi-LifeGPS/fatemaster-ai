@@ -8,6 +8,7 @@ const SUGGESTIONS = [
   '我该如何提升我的事业运？',
   '我的事业何时能迎来转机？',
   '我的理想工作何时能到来？',
+  '近期有什么需要注意的？',
 ]
 
 export default function BuChatPage() {
@@ -47,23 +48,26 @@ export default function BuChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#f5f5f7]">
-      {/* 顶部导航 */}
-      <div className="px-4 py-3 bg-white border-b border-gray-200 flex items-center justify-between shrink-0">
+    <div className="flex flex-col h-screen bg-moonly-bg">
+      {/* 顶部导航 - moonly深色 */}
+      <div className="px-4 py-3 bg-moonly-bg/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-3">
-          <Link href="/bu" className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2.5">
+          <Link href="/bu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-moonly-text-secondary">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </Link>
           <div>
-            <div className="text-gray-900 font-medium text-sm">AI 命理师</div>
-            <div className="text-gray-400 text-[11px]">内容由AI生成</div>
+            <div className="text-white font-medium text-sm">AI 命理师</div>
+            <div className="text-moonly-text-muted text-[11px]">内容由AI生成</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gray-500 text-xs">0 次</span>
-          <button className="w-6 h-6 rounded-full bg-gradient-to-br from-[#c9a96e] to-[#a08050] flex items-center justify-center text-white text-xs font-bold">
+          <span className="text-moonly-text-muted text-xs">{messages.filter(m => m.role === 'user').length} 次</span>
+          <button
+            onClick={() => setMessages([{ role: 'ai', text: '关于你的本命星图，还有什么是你想知道的？\n我会为你尽心解答。' }])}
+            className="w-6 h-6 rounded-full bg-moonly-gold/20 flex items-center justify-center text-gold text-xs font-bold hover:bg-moonly-gold/30 transition"
+          >
             +
           </button>
         </div>
@@ -73,17 +77,17 @@ export default function BuChatPage() {
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden">
+            <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden border border-white/10">
               {msg.role === 'ai' ? (
                 <Image src="/images/ai-avatar-new.png" alt="AI" width={36} height={36} className="object-cover" />
               ) : (
-                <div className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center text-white text-xs font-bold">我</div>
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-moonly-purple to-moonly-bg flex items-center justify-center text-white text-xs font-bold">我</div>
               )}
             </div>
             <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
               msg.role === 'user'
-                ? 'bg-gradient-to-br from-[#e8d5f5] to-[#d4c4e8] text-gray-800'
-                : 'bg-white text-gray-700 border border-gray-200'
+                ? 'bg-gradient-to-br from-moonly-purple/40 to-moonly-purple/20 text-white border border-white/10'
+                : 'bg-white/5 text-white/90 border border-white/10'
             }`}>
               {msg.text}
             </div>
@@ -91,14 +95,14 @@ export default function BuChatPage() {
         ))}
         {loading && (
           <div className="flex gap-3">
-            <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0">
+            <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border border-white/10">
               <Image src="/images/ai-avatar-new.png" alt="AI" width={36} height={36} className="object-cover" />
             </div>
-            <div className="bg-white border border-gray-200 rounded-2xl px-4 py-2.5">
+            <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-2.5">
               <div className="flex gap-1">
-                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-2 h-2 rounded-full bg-moonly-gold/60 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-2 h-2 rounded-full bg-moonly-gold/60 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-2 h-2 rounded-full bg-moonly-gold/60 animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           </div>
@@ -112,7 +116,7 @@ export default function BuChatPage() {
             <button
               key={s}
               onClick={() => { setInput(s); }}
-              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-white border border-gray-200 text-xs text-gray-600 hover:bg-gray-50 transition"
+              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-moonly-text-secondary hover:bg-white/10 hover:text-white transition"
             >
               {s}
             </button>
@@ -121,9 +125,9 @@ export default function BuChatPage() {
       )}
 
       {/* 底部输入区 */}
-      <div className="px-4 py-3 bg-white border-t border-gray-200 shrink-0">
+      <div className="px-4 py-3 bg-moonly-bg/80 backdrop-blur-xl border-t border-white/5 shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-bold flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-moonly-purple to-moonly-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0 border border-white/10">
             我
           </div>
           <div className="flex-1 flex items-center gap-2">
@@ -132,12 +136,12 @@ export default function BuChatPage() {
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSend()}
               placeholder="请输入您的问题..."
-              className="flex-1 bg-gray-100 border-0 rounded-full px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/30"
+              className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2.5 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-moonly-gold/30"
             />
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-[#c9a96e] to-[#a08050] flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-moonly-gold to-[#a08050] flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />

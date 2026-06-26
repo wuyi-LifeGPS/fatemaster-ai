@@ -36,16 +36,25 @@ const DIVINATION_TOOLS = [
     label: '周公解梦',
     desc: '梦境解析，吉凶预兆',
     href: '/bu/jiemeng',
-    status: 'coming',
+    status: 'ready',
     color: 'from-blue-500/20 to-blue-600/10',
     border: 'border-blue-500/20',
+  },
+  {
+    icon: '历',
+    label: '今日黄历',
+    desc: '择日宜忌，时辰吉凶',
+    href: '/bu/huangli',
+    status: 'ready',
+    color: 'from-amber-500/20 to-orange-600/10',
+    border: 'border-amber-500/20',
   },
   {
     icon: '塔',
     label: '塔罗占卜',
     desc: '西方塔罗，牌阵解读',
     href: '/bu/tarot',
-    status: 'coming',
+    status: 'ready',
     color: 'from-indigo-500/20 to-indigo-600/10',
     border: 'border-indigo-500/20',
   },
@@ -96,25 +105,40 @@ export default function BuPage() {
 
       {/* 工具网格 */}
       <div className="grid grid-cols-2 gap-3">
-        {filtered.map(tool => (
-          <div
-            key={tool.label}
-            className={`moonly-card p-4 flex flex-col items-center text-center gap-2 relative overflow-hidden ${tool.border}`}
-          >
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-2xl`}>
-              {tool.icon}
-            </div>
-            <div>
-              <div className="text-white font-medium text-sm">{tool.label}</div>
-              <div className="text-moonly-text-muted text-xs mt-0.5">{tool.desc}</div>
-            </div>
-            {tool.status === 'coming' && (
-              <div className="absolute top-2 right-2 text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-moonly-text-muted">
-                开发中
+        {filtered.map(tool => {
+          const CardContent = (
+            <>
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-2xl`}>
+                {tool.icon}
               </div>
-            )}
-          </div>
-        ))}
+              <div>
+                <div className="text-white font-medium text-sm">{tool.label}</div>
+                <div className="text-moonly-text-muted text-xs mt-0.5">{tool.desc}</div>
+              </div>
+              {tool.status === 'coming' && (
+                <div className="absolute top-2 right-2 text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-moonly-text-muted">
+                  开发中
+                </div>
+              )}
+            </>
+          )
+          return tool.status === 'ready' ? (
+            <Link
+              key={tool.label}
+              href={tool.href}
+              className={`moonly-card p-4 flex flex-col items-center text-center gap-2 relative overflow-hidden ${tool.border} hover:bg-white/5 transition`}
+            >
+              {CardContent}
+            </Link>
+          ) : (
+            <div
+              key={tool.label}
+              className={`moonly-card p-4 flex flex-col items-center text-center gap-2 relative overflow-hidden ${tool.border} opacity-60`}
+            >
+              {CardContent}
+            </div>
+          )
+        })}
       </div>
 
       {/* AI 命理师快捷入口 */}

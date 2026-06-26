@@ -78,6 +78,29 @@ const BOOKS = [
   },
 ]
 
+const DAILY_QUOTES = [
+  { text: '知人者智，自知者明。', source: '道德经·第三十三章' },
+  { text: '上善若水，水善利万物而不争。', source: '道德经·第八章' },
+  { text: '天行健，君子以自强不息。', source: '周易·乾卦' },
+  { text: '地势坤，君子以厚德载物。', source: '周易·坤卦' },
+  { text: '凡所有相，皆是虚妄。', source: '金刚经' },
+  { text: '色即是空，空即是色。', source: '心经' },
+  { text: '大道无形，生育天地。', source: '清静经' },
+  { text: '宇宙即我心，我心即宇宙。', source: '心之力' },
+  { text: '上古之人，春秋皆度百岁，而动作不衰。', source: '黄帝内经·素问' },
+  { text: '天性人也，人心机也。立天之道，以定人也。', source: '阴符经' },
+  { text: '观天之道，执天之行，尽矣。', source: '阴符经' },
+  { text: '致虚极，守静笃。', source: '道德经·第十六章' },
+  { text: '大音希声，大象无形。', source: '道德经·第四十一章' },
+  { text: '祸兮福之所倚，福兮祸之所伏。', source: '道德经·第五十八章' },
+  { text: '合抱之木，生于毫末；九层之台，起于累土。', source: '道德经·第六十四章' },
+  { text: '信言不美，美言不信。善者不辩，辩者不善。', source: '道德经·第八十一章' },
+  { text: '君子终日乾乾，夕惕若厉，无咎。', source: '周易·乾卦·九三' },
+  { text: '穷则变，变则通，通则久。', source: '周易·系辞下' },
+  { text: '一阴一阳之谓道。', source: '周易·系辞上' },
+  { text: '无平不陂，无往不复。', source: '周易·泰卦' },
+]
+
 const TAG_COLORS: Record<string, string> = {
   '道家': 'bg-teal-500/20 text-teal-300',
   '兵家': 'bg-red-500/20 text-red-300',
@@ -91,6 +114,10 @@ export default function ShuPage() {
   const [filter, setFilter] = useState('全部')
   const filters = ['全部', '道家', '易学', '佛学', '养生', '励志']
   const [search, setSearch] = useState('')
+  const [dailyQuote, setDailyQuote] = useState(() => {
+    const day = new Date().getDate()
+    return DAILY_QUOTES[day % DAILY_QUOTES.length]
+  })
 
   const filtered = BOOKS.filter(book => {
     const matchTag = filter === '全部' || book.tag === filter
@@ -102,6 +129,17 @@ export default function ShuPage() {
     <div className="px-4 pt-4 pb-24 animate-fade-in">
       <h1 className="text-gold-gradient text-xl font-bold mb-2">书</h1>
       <p className="text-moonly-text-secondary text-sm mb-6">经典智慧，修身养性</p>
+
+      {/* 每日一句 */}
+      <div className="moonly-card p-4 mb-6 border border-moonly-gold/20">
+        <div className="text-[10px] text-moonly-gold mb-2 tracking-wider">每日一句</div>
+        <div className="text-white text-base leading-relaxed mb-2">
+          「{dailyQuote.text}」
+        </div>
+        <div className="text-moonly-text-muted text-xs text-right">
+          — {dailyQuote.source}
+        </div>
+      </div>
 
       {/* 搜索 */}
       <div className="relative mb-4">
@@ -137,7 +175,11 @@ export default function ShuPage() {
       {/* 书籍列表 */}
       <div className="space-y-3">
         {filtered.map(book => (
-          <div key={book.title} className="moonly-card p-4 flex items-start gap-3 group hover:bg-white/5 transition">
+          <Link
+            key={book.title}
+            href={`/shu/detail?book=${encodeURIComponent(book.title)}`}
+            className="moonly-card p-4 flex items-start gap-3 group hover:bg-white/5 transition block"
+          >
             <div className="w-12 h-14 rounded-lg bg-gradient-to-br from-moonly-gold/10 to-moonly-purple/5 border border-moonly-gold/10 flex items-center justify-center text-2xl flex-shrink-0">
               {book.icon}
             </div>
@@ -156,7 +198,7 @@ export default function ShuPage() {
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

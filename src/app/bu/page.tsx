@@ -32,6 +32,15 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
+    icon: '风',
+    label: '风水罗盘',
+    desc: '方位吉凶，趋吉避凶',
+    href: '/bu/fengshui',
+    status: 'ready',
+    color: 'from-cyan-500/20 to-cyan-600/10',
+    border: 'border-cyan-500/20',
+  },
+  {
     icon: '手',
     label: '手相分析',
     desc: '掌纹解析，命运在手',

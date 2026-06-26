@@ -32,6 +32,15 @@ const DIVINATION_TOOLS = [
     border: 'border-pink-500/20',
   },
   {
+    icon: '卦',
+    label: '每日一卦',
+    desc: '周易六十四卦，今日指引',
+    href: '/bu/daily-hexagram',
+    status: 'ready',
+    color: 'from-emerald-500/20 to-emerald-600/10',
+    border: 'border-emerald-500/20',
+  },
+  {
     icon: '数',
     label: '数字命理',
     desc: '生命灵数，数字能量',

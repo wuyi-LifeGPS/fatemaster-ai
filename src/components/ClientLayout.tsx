@@ -87,6 +87,16 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         // 静默失败，不影响正常使用
       })
     }
+
+    // 应用字体大小设置
+    try {
+      const settings = JSON.parse(localStorage.getItem('lifegps_settings') || '{}')
+      const fontSize = settings.fontSize || 'normal'
+      const sizes: Record<string, string> = { small: '14px', normal: '16px', large: '18px' }
+      document.documentElement.style.fontSize = sizes[fontSize] || '16px'
+    } catch {
+      // ignore
+    }
   }, [pathname])
 
   return (

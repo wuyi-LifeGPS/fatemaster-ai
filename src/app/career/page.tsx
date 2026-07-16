@@ -187,7 +187,7 @@ export default function CareerPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="moonly-card rounded-xl p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white text-sm font-bold">甲</div>
+                    <div className="w-8 h-8 bg-[#c9a96e] rounded-full flex items-center justify-center text-white text-sm font-bold">甲</div>
                     <h3 className="font-bold text-lg">甲方信息</h3>
                   </div>
                   <PersonFormSelector form={mForm} setForm={setMForm} />
@@ -260,7 +260,7 @@ export default function CareerPage() {
               {mBazi && (
                 <div className="bg-white/5 rounded-xl p-4 border border-white/10">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs font-bold">甲</div>
+                    <div className="w-6 h-6 bg-[#c9a96e] rounded-full flex items-center justify-center text-white text-xs font-bold">甲</div>
                     <span className="font-bold">{mForm.name || '甲方'}八字</span>
                   </div>
                   <div className="text-sm text-moonly-text-secondary space-y-1">

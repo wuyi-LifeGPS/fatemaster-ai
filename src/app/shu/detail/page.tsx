@@ -377,7 +377,7 @@ function BookDetailContent() {
       <div className="px-4 py-2">
         <div className="max-w-md mx-auto">
           <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full bg-gold rounded-full transition-all" style={{ width: `${progress}%` }} />
+            <div className="h-full bg-[#c9a96e] rounded-full transition-all" style={{ width: `${progress}%` }} />
           </div>
           <div className="text-right text-xs text-moonly-text-muted mt-1">
             阅读进度 {Math.round(progress)}%

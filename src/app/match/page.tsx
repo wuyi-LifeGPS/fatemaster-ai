@@ -221,7 +221,7 @@ export default function MatchPage() {
             onClick={() => setMode('match')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
               mode === 'match'
-                ? 'bg-pink-500 text-white shadow-sm'
+                ? 'bg-[#c9a96e] text-[#1a1428] shadow-sm'
                 : 'text-moonly-text-muted hover:bg-white/5'
             }`}
           >
@@ -232,7 +232,7 @@ export default function MatchPage() {
             onClick={() => setMode('career')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
               mode === 'career'
-                ? 'bg-gold text-moonly-bg shadow-sm'
+                ? 'bg-[#c9a96e] text-[#1a1428] shadow-sm'
                 : 'text-moonly-text-muted hover:bg-white/5'
             }`}
           >
@@ -267,7 +267,7 @@ export default function MatchPage() {
                 <div className="moonly-card p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      mode === 'match' ? 'bg-pink-500' : 'bg-emerald-500'
+                      mode === 'match' ? 'bg-[#c9a96e]' : 'bg-[#8b9dc3]'
                     }`}>{fTag}</div>
                     <h3 className="font-bold text-lg text-white">{fLabel}信息</h3>
                   </div>
@@ -327,7 +327,7 @@ export default function MatchPage() {
                 className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
                   mode === 'match'
                     ? 'bg-white/5 border-white/10 text-gold hover:bg-white/10'
-                    : 'bg-pink-500/10 border-pink-500/20 text-pink-300 hover:bg-pink-500/20'
+                    : 'bg-[#c9a96e]/10 border-pink-500/20 text-pink-300 hover:bg-[#c9a96e]/20'
                 }`}
               >
                 切换到{mode === 'match' ? '事业合作' : '合婚分析'}分析
@@ -372,9 +372,9 @@ export default function MatchPage() {
                 </div>
               )}
               {fBazi && (
-                <div className={`rounded-xl p-4 border ${mode === 'match' ? 'bg-pink-500/10 border-pink-500/20' : 'bg-emerald-500/10 border-emerald-500/20'}`}>
+                <div className={`rounded-xl p-4 border ${mode === 'match' ? 'bg-[#c9a96e]/10 border-pink-500/20' : 'bg-[#8b9dc3]/10 border-emerald-500/20'}`}>
                   <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${mode === 'match' ? 'bg-pink-500' : 'bg-emerald-500'}`}>{fTag}</div>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${mode === 'match' ? 'bg-[#c9a96e]' : 'bg-[#8b9dc3]'}`}>{fTag}</div>
                     <span className="font-bold text-white">{fForm.name || fLabel}八字</span>
                   </div>
                   <div className="text-sm text-moonly-text-secondary space-y-1">
@@ -453,7 +453,7 @@ export default function MatchPage() {
                   <div className="text-lg font-bold text-white">{result.mToF_SS}</div>
                   <p className="text-sm text-moonly-text-secondary mt-2">{result.roles.mRole}</p>
                 </div>
-                <div className={`rounded-lg p-4 ${mode === 'match' ? 'bg-pink-500/10 border border-pink-500/20' : 'bg-emerald-500/10 border border-emerald-500/20'}`}>
+                <div className={`rounded-lg p-4 ${mode === 'match' ? 'bg-[#c9a96e]/10 border border-pink-500/20' : 'bg-[#8b9dc3]/10 border border-emerald-500/20'}`}>
                   <div className={`text-sm font-medium mb-2 ${mode === 'match' ? 'text-pink-600' : 'text-emerald-600'}`}>
                     {fLabel} → {mLabel}
                   </div>

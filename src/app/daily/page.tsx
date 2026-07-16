@@ -137,7 +137,7 @@ export default function DailyPage() {
     return (
       <div className="flex gap-0.5 justify-center">
         {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i} className={`text-lg ${i < count ? 'text-moonly-goldmber-400' : 'text-moonly-text-muted'}`}>
+          <span key={i} className={`text-lg ${i < count ? 'text-gold' : 'text-moonly-text-muted'}`}>
             ★
           </span>
         ))}
@@ -245,7 +245,7 @@ export default function DailyPage() {
             <div className="bg-white/5 border border-white/10 rounded-xl p-6 border border-amber-500/20">
               <div className="text-center">
                 <div className="text-sm text-moonly-text-muted mb-2">综合运势</div>
-                <div className="text-5xl font-bold text-moonly-goldmber-300 mb-2">{result.scores.overall}</div>
+                <div className="text-5xl font-bold text-gold mb-2">{result.scores.overall}</div>
                 {renderStars(result.scores.overall)}
                 <div className="text-lg font-medium text-white mt-3">{result.summary}</div>
               </div>

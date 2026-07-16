@@ -413,7 +413,7 @@ export default function TalentPage() {
                     key={career.field}
                     className="flex items-start gap-4 p-4 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-colors"
                   >
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gold/20 flex items-center justify-center text-lg font-bold text-gold">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#c9a96e]/20 flex items-center justify-center text-lg font-bold text-gold">
                       {i + 1}
                     </div>
                     <div className="flex-1 min-w-0">

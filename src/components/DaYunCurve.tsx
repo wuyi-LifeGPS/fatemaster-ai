@@ -115,7 +115,8 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           x={padding.left}
           y={18}
           textAnchor="start"
-          className="text-[11px] fill-gray-500 font-bold"
+          className="text-[11px] font-bold"
+          fill="rgba(255,255,255,0.35)"
         >
           人生运势起伏图
         </text>
@@ -130,7 +131,7 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 y1={y}
                 x2={width - padding.right}
                 y2={y}
-                stroke="#f0ebe5"
+                stroke="rgba(255,255,255,0.06)"
                 strokeWidth="1"
                 strokeDasharray="4 4"
               />
@@ -138,7 +139,8 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 x={padding.left - 8}
                 y={y + 4}
                 textAnchor="end"
-                className="text-[8px] fill-gray-400"
+                className="text-[8px]"
+                fill="rgba(255,255,255,0.25)"
               >
                 {v}
               </text>
@@ -174,20 +176,20 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
           const cardH = 78
           const cardY = padding.top + chartHeight + 14
 
-          let cardBg = '#ffffff'
-          let cardStroke = '#e8e2da'
+          let cardBg = 'rgba(255,255,255,0.06)'
+          let cardStroke = 'rgba(255,255,255,0.1)'
           let cardStrokeWidth = 1
           if (isPast) {
-            cardBg = '#f5f2ee'
-            cardStroke = '#d9d3cb'
+            cardBg = 'rgba(255,255,255,0.04)'
+            cardStroke = 'rgba(255,255,255,0.08)'
           }
           if (isCurrent) {
-            cardBg = '#fff8f0'
+            cardBg = 'rgba(255,255,255,0.06)'
             cardStroke = color
             cardStrokeWidth = 2
           }
           if (isSelected) {
-            cardBg = '#fff0d9'
+            cardBg = 'rgba(201,169,110,0.1)'
             cardStroke = color
             cardStrokeWidth = 2.5
           }
@@ -238,7 +240,8 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                   x={p.x}
                   y={cardY - 4}
                   textAnchor="middle"
-                  className="text-[9px] fill-amber-600 font-bold"
+                  className="text-[9px] font-bold"
+                  fill="#c9a96e"
                 >
                   当前
                 </text>
@@ -261,7 +264,8 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 x={p.x}
                 y={cardY + 17}
                 textAnchor="middle"
-                className="text-[13px] fill-fate-700 font-bold"
+                className="text-[13px] font-bold"
+                fill="rgba(255,255,255,0.85)"
               >
                 {p.dy.ganZhi}
               </text>
@@ -269,7 +273,8 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 x={p.x}
                 y={cardY + 32}
                 textAnchor="middle"
-                className="text-[9px] fill-gray-500"
+                className="text-[9px]"
+                fill="rgba(255,255,255,0.5)"
               >
                 {p.dy.startYear}-{p.dy.endYear}
               </text>
@@ -277,7 +282,8 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 x={p.x}
                 y={cardY + 45}
                 textAnchor="middle"
-                className="text-[9px] fill-gray-400"
+                className="text-[9px]"
+                fill="rgba(255,255,255,0.35)"
               >
                 {p.dy.startAge}-{p.dy.endAge}岁
               </text>
@@ -288,10 +294,10 @@ export function DaYunCurve({ daYunList, selectedDaYun, onSelect }: DaYunCurvePro
                 textAnchor="middle"
                 style={{ fontSize: 11 }}
               >
-                <tspan className="fill-amber-500">
+                <tspan fill="#c9a96e">
                   {starText.replace(/☆/g, '')}
                 </tspan>
-                <tspan className="fill-gray-400">
+                <tspan fill="rgba(255,255,255,0.15)">
                   {'☆'.repeat((5 - (starText.match(/★/g)?.length || 0)))}
                 </tspan>
               </text>

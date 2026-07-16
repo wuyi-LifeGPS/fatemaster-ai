@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { showToast } from '@/components/Toast'
 import Link from 'next/link'
 
 interface Settings {
@@ -86,10 +87,10 @@ export default function SettingsPage() {
         if (data.history) localStorage.setItem('lifegps-history', data.history)
         if (data.settings) localStorage.setItem('lifegps_settings', data.settings)
         if (data.favorites) localStorage.setItem('meditation_favorites', data.favorites)
-        alert('数据导入成功！')
+        showToast('数据导入成功！', 'success')
         window.location.reload()
       } catch {
-        alert('文件格式错误，请导入正确的备份文件')
+        showToast('文件格式错误，请导入正确的备份文件', 'error')
       }
     }
     reader.readAsText(file)
@@ -367,7 +368,7 @@ export default function SettingsPage() {
               onClick={() => {
                 if (confirm('确定要清除所有数据吗？此操作不可恢复！')) {
                   localStorage.clear()
-                  alert('所有数据已清除')
+                  showToast('所有数据已清除', 'success')
                   window.location.reload()
                 }
               }}

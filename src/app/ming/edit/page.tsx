@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
+import { showToast } from '@/components/Toast'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getProfileById, updateProfile, BaziProfile } from '@/lib/bazi-profiles'
@@ -197,7 +198,7 @@ function EditProfileContent() {
       router.push('/ming')
     } catch (error) {
       console.error('Error:', error)
-      alert('保存出错，请重试')
+      showToast('保存出错，请重试', 'error')
     } finally {
       setLoading(false)
     }

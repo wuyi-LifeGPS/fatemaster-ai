@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import ToastContainer from '@/components/Toast'
 import ClientLayout from '@/components/ClientLayout'
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className="min-h-screen">
+        <ToastContainer />
         <div className="moonly-bg">
           <div className="moonly-content relative max-w-md mx-auto min-h-screen pb-20">
             <ClientLayout>{children}</ClientLayout>

@@ -6,6 +6,7 @@ import { calculateBazi, getTodayGanZhi } from '@/lib/bazi'
 import { analyzeDailyFortune } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar } from '@/lib/lunar'
+import { showToast } from '@/components/Toast'
 import PersonFormSelector from '@/components/PersonFormSelector'
 
 interface FortuneResult {
@@ -83,7 +84,7 @@ export default function DailyPage() {
       if (formData.calendarType === 'lunar') {
         const solar = lunarToSolar(formData.birthYear, formData.birthMonth, formData.birthDay, formData.lunarIsLeap)
         if (!solar) {
-          alert('农历日期转换失败，请检查日期是否有效（如闰月是否存在）')
+          showToast('农历日期转换失败，请检查日期是否有效（如闰月是否存在）', 'error')
           setLoading(false)
           return
         }
@@ -108,7 +109,7 @@ export default function DailyPage() {
       setHistory(getHistoryByType('daily'))
     } catch (error) {
       console.error('Error:', error)
-      alert('分析出错，请重试')
+      showToast('分析出错，请重试', 'error')
     } finally {
       setLoading(false)
     }

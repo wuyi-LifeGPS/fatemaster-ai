@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useRef } from 'react'
+import { showToast } from '@/components/Toast'
 import Link from 'next/link'
 import { getProfiles, BaziProfile } from '@/lib/bazi-profiles'
 import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, getYinYang, SHI_SHEN_MAP, DaYunInfo } from '@/lib/bazi'
@@ -941,7 +942,7 @@ function ProfileHeader({ profile, baziData, profiles, currentId, onSwitchProfile
                 navigator.share(shareData)
               } else {
                 navigator.clipboard.writeText(shareData.text + '\n' + shareData.url)
-                alert('已复制到剪贴板')
+                showToast('已复制到剪贴板', 'success')
               }
             }}
             className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { analyzeBazi } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar } from '@/lib/lunar'
+import { showToast } from '@/components/Toast'
 import PersonFormSelector from '@/components/PersonFormSelector'
 import { analyzeTalent, type TalentResult, getTalentAiAnalysis, getScoreColor } from '@/lib/talent'
 import TalentRadar from '@/components/TalentRadar'
@@ -65,7 +66,7 @@ export default function TalentPage() {
       if (formData.calendarType === 'lunar') {
         const solar = lunarToSolar(formData.birthYear, formData.birthMonth, formData.birthDay, formData.lunarIsLeap)
         if (!solar) {
-          alert('农历日期转换失败，请检查日期是否有效')
+          showToast('农历日期转换失败，请检查日期是否有效', 'error')
           setLoading(false)
           return
         }
@@ -97,7 +98,7 @@ export default function TalentPage() {
       if (aiText) setAiAnalysis(aiText)
     } catch (error) {
       console.error('Error:', error)
-      alert('分析出错，请重试')
+      showToast('分析出错，请重试', 'error')
     } finally {
       setLoading(false)
       setAiLoading(false)

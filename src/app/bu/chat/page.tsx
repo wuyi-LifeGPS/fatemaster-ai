@@ -23,13 +23,41 @@ function Spinner({ className = '' }: { className?: string }) {
   )
 }
 
+const CHAT_STORAGE_KEY = 'lifegps_chat_history'
+const WELCOME_MESSAGE = { role: 'ai' as const, text: '关于你的本命星图，还有什么是你想知道的？\n我会为你尽心解答。' }
+
+function loadChatHistory(): { role: 'user' | 'ai'; text: string }[] {
+  if (typeof window === 'undefined') return [WELCOME_MESSAGE]
+  try {
+    const stored = localStorage.getItem(CHAT_STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    }
+  } catch {
+    // ignore
+  }
+  return [WELCOME_MESSAGE]
+}
+
+function saveChatHistory(messages: { role: 'user' | 'ai'; text: string }[]) {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages))
+  } catch {
+    // ignore
+  }
+}
+
 export default function BuChatPage() {
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([
-    { role: 'ai', text: '关于你的本命星图，还有什么是你想知道的？\n我会为你尽心解答。' },
-  ])
+  const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>(loadChatHistory)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    saveChatHistory(messages)
+  }, [messages])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -147,6 +175,26 @@ export default function BuChatPage() {
               {s}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* 操作栏 */}
+      {messages.length > 1 && (
+        <div className="px-4 py-2 flex justify-end">
+          <button
+            onClick={() => {
+              if (window.confirm('确定要清空所有对话记录吗？')) {
+                setMessages([WELCOME_MESSAGE])
+                showToast('对话已清空', 'success')
+              }
+            }}
+            className="text-xs text-moonly-muted hover:text-white/60 transition-colors flex items-center gap-1"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+            </svg>
+            清空对话
+          </button>
         </div>
       )}
 

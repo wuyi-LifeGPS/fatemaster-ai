@@ -9,6 +9,7 @@ import useKeyboard from '@/hooks/useKeyboard'
 import PullToRefresh from '@/components/PullToRefresh'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import CopyButton from '@/components/CopyButton'
+import LunarDateDisplay from '@/components/LunarDateDisplay'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -806,6 +807,10 @@ export default function MingPage() {
         currentId={currentId}
         onSwitchProfile={setCurrentId}
       />
+
+      <div className="px-4 pt-2">
+        <LunarDateDisplay />
+      </div>
 
       <PullToRefresh onRefresh={handleRefresh}>
         <QuickShortcuts />

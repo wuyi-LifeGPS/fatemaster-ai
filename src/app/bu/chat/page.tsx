@@ -64,6 +64,7 @@ export default function BuChatPage() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const typingRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     saveChatHistory(messages)
@@ -73,8 +74,20 @@ export default function BuChatPage() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages])
 
+  // 清理打字机定时器
+  useEffect(() => {
+    return () => {
+      if (typingRef.current) clearInterval(typingRef.current)
+    }
+  }, [])
+
   const handleSend = async () => {
     if (!input.trim() || loading) return
+    // 停止当前打字机
+    if (typingRef.current) {
+      clearInterval(typingRef.current)
+      typingRef.current = null
+    }
     const userText = input.trim()
     const now = formatTime()
     setInput('')
@@ -90,10 +103,29 @@ export default function BuChatPage() {
         }),
       })
       const data = await res.json()
-      setMessages(prev => [...prev, { role: 'ai', text: data.result || '思考中...', time: formatTime() }])
+      const fullText = data.result || '思考中...'
+      const aiTime = formatTime()
+      
+      // 先添加空消息
+      setMessages(prev => [...prev, { role: 'ai', text: '', time: aiTime }])
+      setLoading(false)
+      
+      // 打字机效果
+      let i = 0
+      typingRef.current = setInterval(() => {
+        i++
+        setMessages(prev => {
+          const last = prev[prev.length - 1]
+          if (!last || last.role !== 'ai') return prev
+          return [...prev.slice(0, -1), { ...last, text: fullText.slice(0, i) }]
+        })
+        if (i >= fullText.length) {
+          if (typingRef.current) clearInterval(typingRef.current)
+          typingRef.current = null
+        }
+      }, 25)
     } catch (e) {
       setMessages(prev => [...prev, { role: 'ai', text: '抱歉，服务暂时不可用，请稍后重试。', time: formatTime() }])
-    } finally {
       setLoading(false)
     }
   }

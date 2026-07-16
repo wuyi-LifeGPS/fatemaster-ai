@@ -146,12 +146,12 @@ export function getTypeLabel(type: QueryType): string {
  */
 export function getTypeColor(type: QueryType): string {
   const map: Record<QueryType, string> = {
-    bazi: 'bg-amber-100 text-amber-700',
-    match: 'bg-pink-100 text-pink-700',
-    career: 'bg-green-100 text-green-700',
-    daily: 'bg-blue-100 text-blue-700',
-    naming: 'bg-purple-100 text-purple-700',
-    talent: 'bg-teal-100 text-teal-700',
+    bazi: 'bg-amber-500/15 text-amber-300',
+    match: 'bg-pink-500/15 text-pink-300',
+    career: 'bg-green-500/15 text-green-300',
+    daily: 'bg-blue-500/15 text-blue-300',
+    naming: 'bg-purple-500/15 text-purple-300',
+    talent: 'bg-teal-500/15 text-teal-300',
   }
   return map[type]
 }

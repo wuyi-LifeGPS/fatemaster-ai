@@ -17,9 +17,11 @@ import {
 export default function HistoryPage() {
   const [history, setHistory] = useState<HistoryRecord[]>([])
   const [filter, setFilter] = useState<QueryType | 'all'>('all')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setHistory(getAllHistoryRecords())
+    setLoading(false)
   }, [])
 
   const filtered = filter === 'all' ? history : history.filter((r) => r.type === filter)
@@ -94,7 +96,21 @@ export default function HistoryPage() {
       )}
 
       {/* 记录列表 */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="space-y-3 animate-fade-in">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="moonly-card p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-white/5 animate-pulse" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-white/5 rounded w-1/3 animate-pulse" />
+                  <div className="h-3 bg-white/5 rounded w-1/2 animate-pulse" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-16">
           <div className="text-4xl mb-3 text-moonly-muted">📭</div>
           <p className="text-moonly-secondary">

@@ -20,6 +20,9 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30秒超时
+
     const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -40,7 +43,10 @@ export async function POST(req: NextRequest) {
         ],
         temperature,
       }),
+      signal: controller.signal,
     })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       const errorText = await response.text()
@@ -55,8 +61,14 @@ export async function POST(req: NextRequest) {
     const content = data.choices?.[0]?.message?.content || ''
 
     return NextResponse.json({ content })
-  } catch (error) {
+  } catch (error: any) {
     console.error('AI proxy error:', error)
+    if (error.name === 'AbortError') {
+      return NextResponse.json(
+        { error: '请求超时，请稍后重试' },
+        { status: 504 }
+      )
+    }
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

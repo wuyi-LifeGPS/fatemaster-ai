@@ -2,7 +2,14 @@
 // 存储用户的八字档案（自己、家人、朋友等）
 
 const STORAGE_KEY = 'bazi_profiles'
+const STORAGE_VERSION_KEY = 'bazi_profiles_version'
+const CURRENT_VERSION = 1
 const MAX_PROFILES = 20
+
+function migrateData(data: any[]): BaziProfile[] {
+  // 未来版本迁移逻辑
+  return data.filter(p => p && p.id && p.name)
+}
 
 export interface BaziProfile {
   id: string
@@ -27,7 +34,14 @@ function getAllProfiles(): BaziProfile[] {
   if (typeof window === 'undefined') return []
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : []
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    const migrated = migrateData(Array.isArray(parsed) ? parsed : [])
+    // 如果数据有变化，保存迁移后的数据
+    if (migrated.length !== (Array.isArray(parsed) ? parsed.length : 0)) {
+      saveAllProfiles(migrated)
+    }
+    return migrated
   } catch {
     return []
   }

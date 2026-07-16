@@ -192,7 +192,7 @@ export default function ShuPage() {
             href={`/shu/detail?book=${encodeURIComponent(book.title)}`}
             className="moonly-card p-4 flex items-start gap-3 group hover:bg-white/5 transition block"
           >
-            <div className="w-12 h-14 rounded-lg bg-gradient-to-br from-moonly-gold/10 to-moonly-purple/5 border border-moonly-gold/10 flex items-center justify-center text-2xl flex-shrink-0">
+            <div className="w-12 h-14 rounded-lg bg-gradient-to-br from-[#c9a96e]/10 to-moonly-purple/5 border border-moonly-gold/10 flex items-center justify-center text-2xl flex-shrink-0">
               {book.icon}
             </div>
             <div className="flex-1 min-w-0">

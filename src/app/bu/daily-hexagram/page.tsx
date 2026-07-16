@@ -106,7 +106,7 @@ export default function DailyHexagramPage() {
       </div>
 
       {hexagram && (
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-in">
           <div className="moonly-card p-6 text-center">
             <div className="text-4xl mb-3">☯️</div>
             <div className="text-gold text-3xl font-bold mb-2">{hexagram.name}卦</div>
@@ -125,10 +125,10 @@ export default function DailyHexagramPage() {
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">📅 今日信息</h3>
-            <div className="text-moonly-text-secondary text-sm">
+            <div className="text-moonly-text-secondary text-sm space-y-1">
               <div>日期：{new Date().toLocaleDateString('zh-CN')}</div>
-              <div className="mt-1">农历：{new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}</div>
-              <div className="mt-1">星期：{new Date().toLocaleDateString('zh-CN', { weekday: 'long' })}</div>
+              <div>农历：{new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}</div>
+              <div>星期：{new Date().toLocaleDateString('zh-CN', { weekday: 'long' })}</div>
             </div>
           </div>
 

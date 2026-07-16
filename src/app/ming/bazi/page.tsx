@@ -77,7 +77,7 @@ export default function BaziRecordsPage() {
               )}
               <div className="flex items-center gap-3">
                 {/* 生肖 */}
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-moonly-gold/20 to-moonly-gold/5 border border-moonly-gold/30 flex items-center justify-center text-lg font-bold text-gold">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#c9a96e]/20 to-moonly-gold/5 border border-moonly-gold/30 flex items-center justify-center text-lg font-bold text-gold">
                   {getZodiacIcon(profile.year)}
                 </div>
 

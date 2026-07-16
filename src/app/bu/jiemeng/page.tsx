@@ -37,28 +37,45 @@ const FORTUNE_COLOR = {
   '凶': 'text-orange-400 bg-orange-500/10 border-orange-500/20',
 }
 
+// Loading spinner
+function Spinner({ className = '' }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center gap-1 ${className}`}>
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+    </div>
+  )
+}
+
 export default function ZhouGongJieMengPage() {
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<string | null>(null)
   const [history, setHistory] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
 
   const handleSearch = () => {
     if (!query.trim()) return
-    const q = query.trim()
+    setLoading(true)
     
-    // 模糊匹配
-    let match: string | null = null
-    for (const key of Object.keys(DREAM_DB)) {
-      if (q.includes(key) || key.includes(q)) {
-        match = key
-        break
+    setTimeout(() => {
+      const q = query.trim()
+      
+      // 模糊匹配
+      let match: string | null = null
+      for (const key of Object.keys(DREAM_DB)) {
+        if (q.includes(key) || key.includes(q)) {
+          match = key
+          break
+        }
       }
-    }
-    
-    setResult(match)
-    if (match && !history.includes(q)) {
-      setHistory(prev => [q, ...prev].slice(0, 10))
-    }
+      
+      setResult(match)
+      if (match && !history.includes(q)) {
+        setHistory(prev => [q, ...prev].slice(0, 10))
+      }
+      setLoading(false)
+    }, 500)
   }
 
   const data = result ? DREAM_DB[result] : null
@@ -88,16 +105,17 @@ export default function ZhouGongJieMengPage() {
           />
           <button
             onClick={handleSearch}
-            className="px-5 py-3 rounded-xl bg-moonly-gold/10 text-gold font-medium text-sm hover:bg-moonly-gold/20 transition border border-moonly-gold/20"
+            disabled={loading || !query.trim()}
+            className="px-5 py-3 btn-gold text-sm font-semibold disabled:opacity-30 flex items-center gap-2"
           >
-            解梦
+            {loading ? <Spinner /> : '解梦'}
           </button>
         </div>
       </div>
 
       {/* 结果 */}
       {data && (
-        <div className="moonly-card p-5 mb-6">
+        <div className="moonly-card p-5 mb-6 animate-fade-in">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-white font-bold text-lg">梦见「{result}」</h2>
             <span className={`px-3 py-1 rounded-full text-xs font-medium border ${FORTUNE_COLOR[data.fortune]}`}>
@@ -117,8 +135,9 @@ export default function ZhouGongJieMengPage() {
         </div>
       )}
 
-      {result === null && query && (
+      {result === null && query && !loading && (
         <div className="text-center py-10">
+          <div className="text-4xl mb-3">🔍</div>
           <p className="text-moonly-text-secondary text-sm">暂未收录此梦境，试试其他关键词</p>
         </div>
       )}

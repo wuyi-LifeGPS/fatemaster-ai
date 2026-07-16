@@ -115,7 +115,7 @@ export default function MoleReadingPage() {
               <div className="text-moonly-text-muted text-xs mb-1">运势指数</div>
               <div className="w-full bg-white/5 rounded-full h-3">
                 <div
-                  className="bg-gradient-to-r from-moonly-gold to-yellow-400 h-3 rounded-full transition-all duration-1000"
+                  className="bg-gradient-to-r from-[#c9a96e] to-yellow-400 h-3 rounded-full transition-all duration-1000"
                   style={{ width: `${result.score}%` }}
                 />
               </div>

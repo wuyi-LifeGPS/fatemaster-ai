@@ -259,7 +259,7 @@ export default function MatchPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="moonly-card p-5">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold bg-gradient-to-br from-moonly-gold to-amber-700`}>{mTag}</div>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold bg-gradient-to-br from-[#c9a96e] to-amber-700`}>{mTag}</div>
                     <h3 className="font-bold text-base text-white">{mLabel}信息</h3>
                   </div>
                   <PersonFormSelector form={mForm} setForm={setMForm} />
@@ -359,7 +359,7 @@ export default function MatchPage() {
               {mBazi && (
                 <div className="moonly-card p-5">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold bg-gradient-to-br from-moonly-gold to-amber-700`}>{mTag}</div>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold bg-gradient-to-br from-[#c9a96e] to-amber-700`}>{mTag}</div>
                     <span className="font-bold text-base text-white">{mForm.name || mLabel}八字</span>
                   </div>
                   <div className="text-sm text-moonly-text-secondary space-y-1">
@@ -541,7 +541,7 @@ export default function MatchPage() {
             {(loadingAi || result.aiAnalysis) && (
               <div className="moonly-card p-5 border border-moonly-gold/20">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-moonly-gold to-amber-700 rounded-lg flex items-center justify-center text-white text-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#c9a96e] to-amber-700 rounded-lg flex items-center justify-center text-white text-sm">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M12 2L2 7l10 5 10-5-10-5z" />
                       <path d="M2 17l10 5 10-5" />

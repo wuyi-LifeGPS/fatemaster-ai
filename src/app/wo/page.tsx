@@ -57,7 +57,7 @@ export default function WoPage() {
 
       {/* 用户信息卡片 */}
       <div className="moonly-card p-5 text-center mb-6">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-moonly-gold/30 to-moonly-purple/20 border-2 border-moonly-gold/30 mx-auto mb-3 flex items-center justify-center text-3xl">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#c9a96e]/30 to-moonly-purple/20 border-2 border-moonly-gold/30 mx-auto mb-3 flex items-center justify-center text-3xl">
           👤
         </div>
         <div className="text-white font-semibold">LifeGPS 用户</div>

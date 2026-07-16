@@ -165,7 +165,7 @@ export default function TalentPage() {
                   type="text"
                   value={formData.birthPlace}
                   onChange={(e) => setFormData({ ...formData, birthPlace: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-moonly-gold/30 text-white placeholder-moonly-text-muted"
+                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/30 text-white placeholder-moonly-text-muted"
                   placeholder="如：北京"
                 />
               </div>
@@ -175,7 +175,7 @@ export default function TalentPage() {
                 <textarea
                   value={formData.note}
                   onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-moonly-gold/30 text-white placeholder-moonly-text-muted"
+                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/30 text-white placeholder-moonly-text-muted"
                   placeholder="如有特殊需求或想了解的具体问题，可在此填写"
                   rows={3}
                 />
@@ -475,7 +475,7 @@ export default function TalentPage() {
             {aiLoading && (
               <div className="moonly-card p-5 border border-moonly-gold/20">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-moonly-gold to-amber-700 rounded-lg flex items-center justify-center text-white text-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#c9a96e] to-amber-700 rounded-lg flex items-center justify-center text-white text-sm">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M12 2L2 7l10 5 10-5-10-5z" />
                       <path d="M2 17l10 5 10-5" />
@@ -497,7 +497,7 @@ export default function TalentPage() {
             {aiAnalysis && (
               <div className="moonly-card p-5 border border-moonly-gold/20">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-moonly-gold to-amber-700 rounded-lg flex items-center justify-center text-white text-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#c9a96e] to-amber-700 rounded-lg flex items-center justify-center text-white text-sm">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M12 2L2 7l10 5 10-5-10-5z" />
                       <path d="M2 17l10 5 10-5" />

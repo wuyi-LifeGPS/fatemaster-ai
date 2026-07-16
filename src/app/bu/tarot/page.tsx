@@ -169,7 +169,7 @@ export default function TarotPage() {
       {shuffling && (
         <div className="flex flex-col items-center justify-center py-16 gap-4">
           <div className="relative w-20 h-28">
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-moonly-gold/20 to-moonly-purple/20 border border-white/10 animate-pulse" />
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#c9a96e]/20 to-moonly-purple/20 border border-white/10 animate-pulse" />
             <div className="absolute inset-0 flex items-center justify-center">
               <Spinner className="text-moonly-gold" />
             </div>
@@ -190,7 +190,7 @@ export default function TarotPage() {
                   onClick={() => revealCard(i)}
                   className={`w-full aspect-[2/3] rounded-xl border transition-all duration-500 relative overflow-hidden ${
                     revealed.includes(i)
-                      ? 'bg-gradient-to-br from-moonly-gold/10 to-moonly-purple/10 border-moonly-gold/30 animate-fade-in-scale'
+                      ? 'bg-gradient-to-br from-[#c9a96e]/10 to-moonly-purple/10 border-moonly-gold/30 animate-fade-in-scale'
                       : 'bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border-white/10 hover:border-white/20'
                   }`}
                 >

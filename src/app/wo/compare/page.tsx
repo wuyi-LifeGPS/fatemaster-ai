@@ -156,7 +156,7 @@ export default function BaziComparePage() {
         <button
           onClick={handleCompare}
           disabled={!selected1 || !selected2 || selected1 === selected2}
-          className="w-full py-4 bg-gradient-to-r from-moonly-gold to-yellow-500 text-moonly-bg font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-4 bg-gradient-to-r from-[#c9a96e] to-yellow-500 text-moonly-bg font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {selected1 === selected2 ? '请选择不同的两个人' : '开始对比'}
         </button>

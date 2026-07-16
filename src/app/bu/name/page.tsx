@@ -44,6 +44,17 @@ function getElement(name: string) {
   return LUCKY_ELEMENTS[code % 5]
 }
 
+// Loading spinner
+function Spinner({ className = '' }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center gap-1 ${className}`}>
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+    </div>
+  )
+}
+
 export default function NameAnalysisPage() {
   const [name, setName] = useState('')
   const [result, setResult] = useState<{
@@ -52,25 +63,30 @@ export default function NameAnalysisPage() {
     strokeLevel: typeof NAME_ANALYSIS.strokes[keyof typeof NAME_ANALYSIS.strokes]
     elementAnalysis: typeof NAME_ANALYSIS.elements[keyof typeof NAME_ANALYSIS.elements]
   } | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const analyze = () => {
     if (!name.trim()) return
-    const strokes = calculateStrokes(name)
-    const element = getElement(name)
+    setLoading(true)
+    setTimeout(() => {
+      const strokes = calculateStrokes(name)
+      const element = getElement(name)
 
-    let strokeLevel
-    if (strokes <= 10) strokeLevel = NAME_ANALYSIS.strokes['1-10']
-    else if (strokes <= 20) strokeLevel = NAME_ANALYSIS.strokes['11-20']
-    else if (strokes <= 30) strokeLevel = NAME_ANALYSIS.strokes['21-30']
-    else if (strokes <= 40) strokeLevel = NAME_ANALYSIS.strokes['31-40']
-    else strokeLevel = NAME_ANALYSIS.strokes['41+']
+      let strokeLevel
+      if (strokes <= 10) strokeLevel = NAME_ANALYSIS.strokes['1-10']
+      else if (strokes <= 20) strokeLevel = NAME_ANALYSIS.strokes['11-20']
+      else if (strokes <= 30) strokeLevel = NAME_ANALYSIS.strokes['21-30']
+      else if (strokes <= 40) strokeLevel = NAME_ANALYSIS.strokes['31-40']
+      else strokeLevel = NAME_ANALYSIS.strokes['41+']
 
-    setResult({
-      strokes,
-      element,
-      strokeLevel,
-      elementAnalysis: NAME_ANALYSIS.elements[element as keyof typeof NAME_ANALYSIS.elements],
-    })
+      setResult({
+        strokes,
+        element,
+        strokeLevel,
+        elementAnalysis: NAME_ANALYSIS.elements[element as keyof typeof NAME_ANALYSIS.elements],
+      })
+      setLoading(false)
+    }, 600)
   }
 
   return (
@@ -99,16 +115,16 @@ export default function NameAnalysisPage() {
         />
         <button
           onClick={analyze}
-          disabled={!name.trim()}
-          className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+          disabled={!name.trim() || loading}
+          className="w-full py-3 btn-gold text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          分析姓名
+          {loading ? <><Spinner /> 分析中...</> : '分析姓名'}
         </button>
       </div>
 
       {/* Result */}
       {result && (
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-in">
           <div className="moonly-card p-6 text-center">
             <div className="text-4xl mb-3">✨</div>
             <div className="text-white text-lg font-bold mb-1">{name}</div>
@@ -148,7 +164,7 @@ export default function NameAnalysisPage() {
 
           <button
             onClick={() => { setName(''); setResult(null) }}
-            className="w-full py-3 bg-white/5 text-white rounded-xl font-medium hover:bg-white/10 transition"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新分析
           </button>

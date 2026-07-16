@@ -1,0 +1,22 @@
+{
+  "name": "LifeGPS · 人生导航",
+  "short_name": "LifeGPS",
+  "description": "融合现代AI技术与传统命理智慧，通过八字、紫微、塔罗等工具，为您提供客观的命理解读与人生指引",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e1c35",
+  "theme_color": "#1e1c35",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/images/ai-avatar.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/ai-avatar-new.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

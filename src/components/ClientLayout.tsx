@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import AIFloatingButton from './AIFloatingButton'
+import PageProgress from './PageProgress'
 import NetworkStatus from './NetworkStatus'
 import ErrorBoundary from './ErrorBoundary'
 import ScrollToTop from './ScrollToTop'
@@ -67,6 +68,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <>
+      <PageProgress />
       <NetworkStatus />
       <ErrorBoundary>
         {children}

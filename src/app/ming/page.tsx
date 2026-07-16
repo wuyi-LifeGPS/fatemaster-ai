@@ -1011,7 +1011,7 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
                 <div className="w-full rounded-xl bg-black/20 border border-white/5 p-2.5 flex flex-col items-center gap-1.5">
                   <span className="text-xl font-bold" style={{ color: WUXING_COLOR[getWuXing(p.gan)] || '#fff' }}>{p.gan}</span>
                   <span className="text-xl font-bold" style={{ color: WUXING_COLOR[getWuXing(p.zhi)] || '#fff' }}>{p.zhi}</span>
-                  {cg && <span className="text-sm text-white/40">{cg.gan}·{cg.shiShen}</span>}
+                  {cg && <span className="text-xs text-moonly-text-muted">{cg.gan}·{cg.shiShen}</span>}
                 </div>
                 <span className="text-xs text-moonly-text-muted mt-1">{ss}</span>
               </div>

@@ -48,7 +48,7 @@ export default function BuChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-moonly-bg">
+    <div className="flex flex-col h-screen moonly-bg moonly-content animate-fade-in">
       {/* 顶部导航 - moonly深色 */}
       <div className="px-4 py-3 bg-moonly-bg/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-3">

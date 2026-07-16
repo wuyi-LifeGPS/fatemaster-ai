@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useState, useMemo } from 'react'
+import FortuneDetailModal from './FortuneDetailModal'
 
 const FORTUNE_SCORES = [85, 70, 55, 90, 60, 75, 80, 65, 88, 72, 68, 78, 82, 62, 86, 74, 92, 84, 76, 66, 71, 87, 73, 89, 95, 81, 77, 63, 79, 83, 70]
 
@@ -17,6 +18,7 @@ function getScoreBg(score: number): string {
 }
 
 export default function FortuneCalendar() {
+  const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const today = new Date()
   const year = today.getFullYear()
   const month = today.getMonth()
@@ -72,7 +74,8 @@ export default function FortuneCalendar() {
           return (
             <div
               key={day}
-              className={`aspect-square rounded-lg flex flex-col items-center justify-center gap-0.5 ${
+              onClick={() => setSelectedDay(day)}
+              className={`aspect-square rounded-lg flex flex-col items-center justify-center gap-0.5 cursor-pointer hover:bg-white/5 transition-colors ${
                 isToday ? 'ring-1 ring-gold' : ''
               }`}
               style={{ background: getScoreBg(score) }}
@@ -103,6 +106,15 @@ export default function FortuneCalendar() {
           <span className="text-[10px] text-moonly-muted">需谨慎</span>
         </div>
       </div>
+
+      {/* Detail Modal */}
+      {selectedDay && (
+        <FortuneDetailModal
+          day={selectedDay}
+          score={FORTUNE_SCORES[(selectedDay - 1) % FORTUNE_SCORES.length]}
+          onClose={() => setSelectedDay(null)}
+        />
+      )}
     </div>
   )
 }

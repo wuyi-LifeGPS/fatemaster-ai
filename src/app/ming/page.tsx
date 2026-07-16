@@ -39,6 +39,7 @@ import DailyPositive from '@/components/DailyPositive'
 import MoodTracker from '@/components/MoodTracker'
 import DailyHealth from '@/components/DailyHealth'
 import DailySentence from '@/components/DailySentence'
+import BreathingGuide from '@/components/BreathingGuide'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -874,6 +875,7 @@ export default function MingPage() {
         <MoodTracker />
         <DailyHealth />
         <DailySentence />
+        <BreathingGuide />
 
         <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (

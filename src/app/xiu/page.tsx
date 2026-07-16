@@ -331,15 +331,15 @@ const [playingId, setPlayingId] = useState<string | null>(null)
                 <div className="text-moonly-text-muted text-xs">调整呼吸节奏</div>
               </div>
             </Link>
-            <div className="moonly-card p-4 flex items-center gap-3 opacity-50">
+            <Link href="/xiu/chakra" className="moonly-card p-4 flex items-center gap-3 hover:bg-white/5 transition">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 flex items-center justify-center text-lg">
                 💫
               </div>
               <div>
                 <div className="text-white text-sm font-medium">脉轮清理</div>
-                <div className="text-moonly-text-muted text-xs">开发中</div>
+                <div className="text-moonly-text-muted text-xs">七轮净化冥想</div>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* 自定义计时器 */}

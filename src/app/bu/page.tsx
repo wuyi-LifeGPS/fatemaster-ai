@@ -348,40 +348,21 @@ export default function BuPage() {
 
       {/* 工具网格 */}
       <div className="grid grid-cols-2 gap-3">
-        {filtered.map(tool => {
-          const CardContent = (
-            <>
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-2xl`}>
-                {tool.icon}
-              </div>
-              <div>
-                <div className="text-white font-medium text-sm">{tool.label}</div>
-                <div className="text-moonly-text-muted text-xs mt-0.5">{tool.desc}</div>
-              </div>
-              {tool.status === 'coming' && (
-                <div className="absolute top-2 right-2 text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-moonly-text-muted">
-                  开发中
-                </div>
-              )}
-            </>
-          )
-          return tool.status === 'ready' ? (
-            <Link
-              key={tool.label}
-              href={tool.href}
-              className={`moonly-card p-4 flex flex-col items-center text-center gap-2 relative overflow-hidden ${tool.border} hover:bg-white/5 transition`}
-            >
-              {CardContent}
-            </Link>
-          ) : (
-            <div
-              key={tool.label}
-              className={`moonly-card p-4 flex flex-col items-center text-center gap-2 relative overflow-hidden ${tool.border} opacity-60`}
-            >
-              {CardContent}
+        {filtered.map(tool => (
+          <Link
+            key={tool.label}
+            href={tool.href}
+            className={`moonly-card p-4 flex flex-col items-center text-center gap-2 relative overflow-hidden ${tool.border} hover:bg-white/5 transition`}
+          >
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-2xl`}>
+              {tool.icon}
             </div>
-          )
-        })}
+            <div>
+              <div className="text-white font-medium text-sm">{tool.label}</div>
+              <div className="text-moonly-text-muted text-xs mt-0.5">{tool.desc}</div>
+            </div>
+          </Link>
+        ))}
       </div>
 
       {/* AI 命理师快捷入口 */}

@@ -1024,7 +1024,7 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
 
   return (
     <div className="space-y-4">
-      <div onClick={() => onOpenModal('bazi')} className="info-card-black clickable p-4">
+      <div onClick={() => onOpenModal('bazi')} className="info-card-black clickable p-4 animate-fade-in">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-gold text-sm font-semibold">八字排盘</h3>
           <CopyButton text={profile.name + '的八字：' + baziStr + '\n五行：' + wuxingText} label="复制" />
@@ -1053,7 +1053,7 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
         </div>
       </div>
 
-      <div onClick={() => onOpenModal('summary')} className="info-card-black clickable p-4">
+      <div onClick={() => onOpenModal('summary')} className="info-card-black clickable p-4 animate-fade-in">
         <h3 className="text-gold text-sm font-semibold mb-2">人生总评</h3>
         <p className="text-sm text-moonly-secondary leading-relaxed">{lifeSummary}</p>
       </div>
@@ -1061,26 +1061,26 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
       <WuXingBarChart count={wuXingFullCount} onClick={() => onOpenModal('wuxing')} />
 
       <div className="grid grid-cols-2 gap-3">
-        <div onClick={() => onOpenModal('rizhu')} className="info-card-black clickable p-4">
+        <div onClick={() => onOpenModal('rizhu')} className="info-card-black clickable p-4 animate-fade-in">
           <h3 className="text-gold text-sm font-semibold mb-2">日主</h3>
           <div className="text-center py-1"><span className="text-2xl font-bold" style={{ color: WUXING_COLOR[getWuXing(dayMaster)] }}>{dayMaster}{getWuXing(dayMaster)}</span></div>
           <p className="text-xs text-moonly-muted leading-relaxed mt-1">{getYinYang(dayMaster)}性之金，主刚毅果断、重义气。</p>
         </div>
-        <div onClick={() => onOpenModal('geju')} className="info-card-black clickable p-4">
+        <div onClick={() => onOpenModal('geju')} className="info-card-black clickable p-4 animate-fade-in">
           <h3 className="text-gold text-sm font-semibold mb-2">格局</h3>
           <div className="text-center py-1"><span className="text-3xl font-bold text-gold">{pattern?.patternName?.split('/')[0]?.trim() || '——'}</span></div>
           <p className="text-xs text-moonly-muted leading-relaxed mt-1">{pattern?.patternDesc || '格局分析加载中...'}</p>
         </div>
       </div>
 
-      <div onClick={() => onOpenModal('shenruo')} className="info-card-black clickable p-4">
+      <div onClick={() => onOpenModal('shenruo')} className="info-card-black clickable p-4 animate-fade-in">
         <h3 className="text-gold text-sm font-semibold mb-2">身强身弱</h3>
         <div className="flex items-center justify-between mb-2"><span className="text-white font-semibold text-base">{bodyStrength?.strength || '——'}</span><span className="text-xs text-moonly-muted">{Math.round((bodyStrength?.score || 0) * 10)}/10</span></div>
         <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-gold/60 to-gold" style={{ width: `${Math.min(100, ((bodyStrength?.score || 0) / 5) * 100)}%` }} /></div>
         <p className="text-xs text-moonly-muted mt-2">{bodyStrength?.description || ''}</p>
       </div>
 
-      <div onClick={() => onOpenModal('xiyongshen')} className="info-card-black clickable p-4">
+      <div onClick={() => onOpenModal('xiyongshen')} className="info-card-black clickable p-4 animate-fade-in">
         <h3 className="text-gold text-sm font-semibold mb-2">喜用神</h3>
         <div className="flex items-center gap-3 py-1">
           {tiaoHou?.tiaoHouGod?.map((god: string, i: number) => (
@@ -1093,12 +1093,12 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
       <ShiShenGrid count={shishenCount} onClick={() => onOpenModal('shishen')} />
 
       <div className="grid grid-cols-2 gap-3">
-        <div onClick={() => onOpenModal('career')} className="info-card-black clickable p-4">
+        <div onClick={() => onOpenModal('career')} className="info-card-black clickable p-4 animate-fade-in">
           <h3 className="text-gold text-sm font-semibold mb-2">事业方向</h3>
           <div className="flex items-center gap-2 py-1">{careerDirs.map((dir, i) => <span key={i} className="text-xl font-bold" style={{ color: WUXING_COLOR[dir] }}>{dir}</span>)}</div>
           <p className="text-xs text-moonly-muted">五行属{careerDirs.join('、')}的行业有利</p>
         </div>
-        <div onClick={() => onOpenModal('wealth')} className="info-card-black clickable p-4">
+        <div onClick={() => onOpenModal('wealth')} className="info-card-black clickable p-4 animate-fade-in">
           <h3 className="text-gold text-sm font-semibold mb-2">财运走势</h3>
           <div className="text-gold font-semibold text-sm py-0.5">{wealthTrend.label}</div>
           <p className="text-xs text-moonly-muted">{wealthTrend.description}</p>
@@ -1107,12 +1107,12 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div onClick={() => onOpenModal('love')} className="info-card-black clickable p-4">
+        <div onClick={() => onOpenModal('love')} className="info-card-black clickable p-4 animate-fade-in">
           <h3 className="text-gold text-sm font-semibold mb-2">感情</h3>
           <div className="flex items-baseline gap-1 py-1"><span className="text-3xl font-bold text-gold">{loveScore}</span><span className="text-xs text-moonly-muted">分</span></div>
           <p className="text-xs text-moonly-muted">{loveScore >= 70 ? '感情顺遂，桃花旺盛' : loveScore >= 50 ? '感情平稳，需主动经营' : '感情多磨，宜晚婚'}</p>
         </div>
-        <div onClick={() => onOpenModal('health')} className="info-card-black clickable p-4">
+        <div onClick={() => onOpenModal('health')} className="info-card-black clickable p-4 animate-fade-in">
           <h3 className="text-gold text-sm font-semibold mb-2">健康</h3>
           <div className="flex items-baseline gap-1 py-1"><span className="text-3xl font-bold text-green-400">{healthScore}</span><span className="text-xs text-moonly-muted">分</span></div>
           <p className="text-xs text-moonly-muted">{healthScore >= 70 ? '体质较好，注意保养' : healthScore >= 50 ? '体质一般，需加强锻炼' : '体质偏弱，注意调养'}</p>
@@ -1130,7 +1130,7 @@ function WuXingBarChart({ count, onClick }: { count: Record<string, number>; onC
   ]
   const max = Math.max(...Object.values(count), 1)
   return (
-    <div onClick={onClick} className="info-card-black clickable p-4">
+    <div onClick={onClick} className="info-card-black clickable p-4 animate-fade-in">
       <h3 className="text-gold text-sm font-semibold mb-3">五行能量</h3>
       <div className="space-y-2.5">
         {items.map(item => {
@@ -1159,7 +1159,7 @@ function ShiShenGrid({ count, onClick }: { count: Record<string, number>; onClic
   ]
   const sorted = Object.entries(count).sort((a, b) => (b[1] as number) - (a[1] as number))
   return (
-    <div onClick={onClick} className="info-card-black clickable p-4">
+    <div onClick={onClick} className="info-card-black clickable p-4 animate-fade-in">
       <h3 className="text-gold text-sm font-semibold mb-3">十神</h3>
       <div className="grid grid-cols-5 gap-2">
         {items.map(item => (
@@ -1183,7 +1183,7 @@ function DayunTab({ daYunList, profile, dayMaster }: { daYunList: DaYunInfo[]; p
   const stars = getDimensionStars(currentDayun, profile.gender)
   return (
     <div className="space-y-4">
-      <div className="moonly-card p-4">
+      <div className="moonly-card p-4 animate-fade-in">
         <div className="flex items-baseline gap-2 mb-4">
           <span className="text-5xl font-bold text-gold">{currentDayun.score}</span>
           <span className="text-lg text-[#c9a96e]-light">{getFortuneLabel(currentDayun.fortuneLevel)}</span>
@@ -1194,11 +1194,11 @@ function DayunTab({ daYunList, profile, dayMaster }: { daYunList: DaYunInfo[]; p
           {(['事业','爱情','财运','健康'] as const).map((label, i) => <div key={label} className="flex items-center justify-between"><span className="text-moonly-secondary text-sm">{label}</span><StarRating count={[stars.career, stars.love, stars.wealth, stars.health][i]} /></div>)}
         </div>
       </div>
-      <div className="moonly-card p-4">
+      <div className="moonly-card p-4 animate-fade-in">
         <h3 className="text-gold text-sm font-semibold mb-2">大运简述</h3>
         <p className="text-moonly-secondary text-sm leading-relaxed">{dayMaster ? getDayunDescription(currentDayun, dayMaster) : '大运描述加载中...'}</p>
       </div>
-      <div className="moonly-card p-4">
+      <div className="moonly-card p-4 animate-fade-in">
         <h3 className="text-gold text-sm font-semibold mb-3">大运走势</h3>
         <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
           <div style={{ minWidth: `${Math.max(340, daYunList.length * 72)}px` }}>

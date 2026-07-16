@@ -158,6 +158,25 @@ export default function MatchPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    // 表单验证
+    const mLabelName = mode === 'match' ? '男方' : '甲方'
+    const fLabelName = mode === 'match' ? '女方' : '乙方'
+    if (!mForm.name.trim()) {
+      showToast(`请输入${mLabelName}姓名`, 'error')
+      return
+    }
+    if (mForm.birthYear < 1900 || mForm.birthYear > 2030) {
+      showToast(`请选择有效的${mLabelName}出生年份`, 'error')
+      return
+    }
+    if (!fForm.name.trim()) {
+      showToast(`请输入${fLabelName}姓名`, 'error')
+      return
+    }
+    if (fForm.birthYear < 1900 || fForm.birthYear > 2030) {
+      showToast(`请选择有效的${fLabelName}出生年份`, 'error')
+      return
+    }
     runAnalysis(mForm, fForm)
   }
 

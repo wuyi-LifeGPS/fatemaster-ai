@@ -74,6 +74,15 @@ export default function DailyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!todayGanZhi) return
+    // 表单验证
+    if (!formData.name.trim()) {
+      showToast('请输入姓名', 'error')
+      return
+    }
+    if (formData.birthYear < 1900 || formData.birthYear > 2030) {
+      showToast('请选择有效的出生年份', 'error')
+      return
+    }
     setLoading(true)
 
     try {

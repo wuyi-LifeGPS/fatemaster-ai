@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import AIFloatingButton from './AIFloatingButton'
+import NetworkStatus from './NetworkStatus'
 import ErrorBoundary from './ErrorBoundary'
 import ScrollToTop from './ScrollToTop'
 import BottomNav from './BottomNav'
@@ -66,6 +67,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <>
+      <NetworkStatus />
       <ErrorBoundary>
         {children}
       </ErrorBoundary>

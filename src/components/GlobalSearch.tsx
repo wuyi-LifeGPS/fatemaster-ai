@@ -27,15 +27,39 @@ const SEARCH_ITEMS: SearchItem[] = [
   { label: '我的', href: '/wo', category: '系统', keywords: ['我的', '个人', 'wo', 'profile'] },
 ]
 
+const HISTORY_KEY = 'lifegps_search_history'
+const MAX_HISTORY = 8
+
+function getSearchHistory(): string[] {
+  if (typeof window === 'undefined') return []
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function addSearchHistory(query: string) {
+  const history = getSearchHistory()
+  const newHistory = [query, ...history.filter(h => h !== query)].slice(0, MAX_HISTORY)
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory))
+}
+
+function clearSearchHistory() {
+  localStorage.removeItem(HISTORY_KEY)
+}
+
 export default function GlobalSearch() {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchItem[]>([])
+  const [history, setHistory] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (isOpen) {
       inputRef.current?.focus()
+      setHistory(getSearchHistory())
     }
   }, [isOpen])
 
@@ -66,6 +90,25 @@ export default function GlobalSearch() {
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
+
+  const handleResultClick = (item: SearchItem) => {
+    hapticLight()
+    if (query.trim()) {
+      addSearchHistory(query.trim())
+    }
+    setIsOpen(false)
+  }
+
+  const handleHistoryClick = (term: string) => {
+    hapticLight()
+    setQuery(term)
+  }
+
+  const handleClearHistory = () => {
+    hapticLight()
+    clearSearchHistory()
+    setHistory([])
+  }
 
   if (!isOpen) {
     return (
@@ -110,7 +153,7 @@ export default function GlobalSearch() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => handleResultClick(item)}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition"
                 >
                   <span className="text-xs text-gold bg-gold/10 px-2 py-0.5 rounded flex-shrink-0">{item.category}</span>
@@ -124,6 +167,31 @@ export default function GlobalSearch() {
             </div>
           ) : (
             <div className="p-2">
+              {/* 搜索历史 */}
+              {history.length > 0 && (
+                <>
+                  <div className="flex items-center justify-between px-3 py-2">
+                    <p className="text-xs text-moonly-muted">搜索历史</p>
+                    <button
+                      onClick={handleClearHistory}
+                      className="text-xs text-white/30 hover:text-white/60 transition"
+                    >
+                      清除
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2 px-3 pb-2">
+                    {history.map((term) => (
+                      <button
+                        key={term}
+                        onClick={() => handleHistoryClick(term)}
+                        className="px-3 py-1.5 rounded-lg bg-white/5 text-xs text-white/70 hover:bg-white/10 hover:text-white transition"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
               <p className="text-xs text-moonly-muted px-3 py-2">热门功能</p>
               {SEARCH_ITEMS.slice(0, 6).map((item) => (
                 <Link

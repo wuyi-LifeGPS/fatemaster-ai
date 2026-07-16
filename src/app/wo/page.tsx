@@ -7,6 +7,7 @@ import { getAllHistoryRecords } from '@/lib/history'
 import { getTodayGanZhi, getShiShen, getWuXing } from '@/lib/bazi'
 import { getProfiles } from '@/lib/bazi-profiles'
 import AchievementSystem from '@/components/AchievementSystem'
+import UserStats from '@/components/UserStats'
 
 const WUXING_COLOR: Record<string, string> = {
   '木': '#4ade80', '火': '#f87171', '土': '#fbbf24', '金': '#e2e8f0', '水': '#60a5fa',
@@ -123,6 +124,7 @@ export default function WoPage() {
       </div>
 
       <UsageStatsPanel />
+      <UserStats />
 
       {/* 菜单 */}
       <div className="space-y-1">

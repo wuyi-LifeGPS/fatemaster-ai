@@ -51,6 +51,7 @@ import DailyReflection from '@/components/DailyReflection'
 import DailyMantra from '@/components/DailyMantra'
 import TodaySummary from '@/components/TodaySummary'
 import ShareCard from '@/components/ShareCard'
+import DailyCheckIn from '@/components/DailyCheckIn'
 import FortuneCalendar from '@/components/FortuneCalendar'
 import FortuneStick from '@/components/FortuneStick'
 import DailyBenefactor from '@/components/DailyBenefactor'
@@ -857,6 +858,7 @@ export default function MingPage() {
 
       <div className="px-4 pt-2">
         <TodaySummary />
+        <DailyCheckIn />
         <ShareCard />
         <FortuneCalendar />
         <DailyBenefactor />

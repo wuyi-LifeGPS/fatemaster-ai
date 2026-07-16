@@ -1,6 +1,8 @@
 'use client'
 
-import { useMemo, useState, memo } from 'react'
+import { useMemo, useState, useCallback } from 'react'
+import { hapticLight } from '@/lib/haptic'
+import { showToast } from '@/components/Toast'
 
 const TAROT_CARDS = [
   { name: '愚者', emoji: '🃏', meaning: '新的开始，冒险精神', advice: '勇敢踏出第一步，相信直觉' },
@@ -29,11 +31,40 @@ const TAROT_CARDS = [
 
 const POSITIONS = ['今日主题', '挑战', '建议']
 
+interface TarotRecord {
+  date: string
+  cards: { name: string; emoji: string; position: string; isReversed: boolean; advice: string }[]
+}
+
+const STORAGE_KEY = 'lifegps_tarot_records'
+
+function loadRecords(): TarotRecord[] {
+  if (typeof window === 'undefined') return []
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function saveRecord(record: TarotRecord) {
+  if (typeof window === 'undefined') return
+  const records = loadRecords()
+  const filtered = records.filter(r => r.date !== record.date)
+  filtered.unshift(record)
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered.slice(0, 30)))
+}
+
+function getTodayStr(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 function getDailyTarot(date: Date): { card: typeof TAROT_CARDS[0]; position: string; isReversed: boolean }[] {
   const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000)
   return POSITIONS.map((position, i) => {
     const cardIndex = (dayOfYear * 7 + i * 13) % TAROT_CARDS.length
-    const isReversed = ((dayOfYear * 3 + i * 11) % 100) < 30 // 30% 概率逆位
+    const isReversed = ((dayOfYear * 3 + i * 11) % 100) < 30
     return {
       card: TAROT_CARDS[cardIndex],
       position,
@@ -42,9 +73,46 @@ function getDailyTarot(date: Date): { card: typeof TAROT_CARDS[0]; position: str
   })
 }
 
-function TarotDaily() {
+export default function TarotDaily() {
+  const [records, setRecords] = useState<TarotRecord[]>(() => loadRecords())
   const [revealed, setRevealed] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
+
+  const todayStr = getTodayStr()
+  const todayRecord = records.find(r => r.date === todayStr)
+
   const tarot = useMemo(() => getDailyTarot(new Date()), [])
+
+  const handleReveal = useCallback(() => {
+    if (todayRecord) {
+      setRevealed(true)
+      return
+    }
+    hapticLight()
+    setRevealed(true)
+
+    const record: TarotRecord = {
+      date: todayStr,
+      cards: tarot.map(t => ({
+        name: t.card.name,
+        emoji: t.card.emoji,
+        position: t.position,
+        isReversed: t.isReversed,
+        advice: t.isReversed ? `挑战：${t.card.meaning}，需谨慎对待` : t.card.advice,
+      })),
+    }
+    saveRecord(record)
+    setRecords(prev => [record, ...prev.filter(r => r.date !== todayStr)])
+    showToast('今日塔罗已抽取', 'success')
+  }, [todayRecord, tarot, todayStr])
+
+  const displayCards = todayRecord ? todayRecord.cards : tarot.map(t => ({
+    name: t.card.name,
+    emoji: t.card.emoji,
+    position: t.position,
+    isReversed: t.isReversed,
+    advice: t.isReversed ? `挑战：${t.card.meaning}，需谨慎对待` : t.card.advice,
+  }))
 
   return (
     <div className="moonly-card p-4 animate-fade-in">
@@ -53,42 +121,50 @@ function TarotDaily() {
           <span className="text-lg">🎴</span>
           <h3 className="text-gold text-sm font-semibold">塔罗日运</h3>
         </div>
-        {!revealed && (
-          <button
-            onClick={() => setRevealed(true)}
-            className="px-3 py-1 rounded-lg bg-gold/10 text-gold text-xs hover:bg-gold/20 transition"
-          >
-            抽牌
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {records.length > 0 && (
+            <button
+              onClick={() => setShowHistory(v => !v)}
+              className="text-[10px] text-moonly-muted hover:text-white/60 px-2 py-1 rounded bg-white/5 transition-colors"
+            >
+              {showHistory ? '收起' : '历史'}
+            </button>
+          )}
+          {!revealed && (
+            <button
+              onClick={handleReveal}
+              className="px-3 py-1 rounded-lg bg-gold/10 text-gold text-xs hover:bg-gold/20 transition"
+            >
+              {todayRecord ? '查看' : '抽牌'}
+            </button>
+          )}
+        </div>
       </div>
 
-      {revealed ? (
+      {revealed || todayRecord ? (
         <div className="space-y-3">
-          {tarot.map((item, i) => (
+          {displayCards.map((item, i) => (
             <div key={i} className="flex items-start gap-3 p-2.5 rounded-xl bg-white/5 animate-fade-in">
               <div className={`w-10 h-14 rounded-lg border-2 flex items-center justify-center text-lg flex-shrink-0 ${
                 item.isReversed ? 'border-red-500/30 bg-red-500/5 rotate-180' : 'border-gold/30 bg-gold/5'
               }`}>
-                {item.card.emoji}
+                {item.emoji}
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="text-white text-xs font-medium">{item.card.name}</span>
+                  <span className="text-white text-xs font-medium">{item.name}</span>
                   <span className="text-[10px] text-moonly-muted">{item.position}</span>
                   {item.isReversed && (
                     <span className="text-[10px] text-red-400 bg-red-500/10 px-1 rounded">逆位</span>
                   )}
                 </div>
-                <p className="text-moonly-muted text-[10px] leading-relaxed">
-                  {item.isReversed
-                    ? `挑战：${item.card.meaning}，需谨慎对待`
-                    : `${item.card.advice}`
-                  }
-                </p>
+                <p className="text-moonly-muted text-[10px] leading-relaxed">{item.advice}</p>
               </div>
             </div>
           ))}
+          {todayRecord && !revealed && (
+            <p className="text-[10px] text-moonly-muted text-center">今日已抽牌，明日再来吧～</p>
+          )}
         </div>
       ) : (
         <div className="text-center py-4">
@@ -98,8 +174,24 @@ function TarotDaily() {
           <p className="text-moonly-muted text-xs">点击抽牌，获取今日塔罗指引</p>
         </div>
       )}
+
+      {/* History */}
+      {showHistory && records.length > 0 && (
+        <div className="mt-4 pt-4 border-t border-white/5 animate-fade-in">
+          <p className="text-[10px] text-moonly-muted mb-2">最近抽牌记录</p>
+          <div className="space-y-2 max-h-40 overflow-y-auto">
+            {records.slice(0, 7).map(r => (
+              <div key={r.date} className="flex items-center gap-2 bg-white/5 rounded-lg p-2">
+                <span className="text-lg">{r.cards[0]?.emoji || '🎴'}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-white/80">{r.cards[0]?.name || ''} · {r.cards.length}张牌</p>
+                </div>
+                <span className="text-[10px] text-moonly-muted shrink-0">{r.date.slice(5)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
-
-export default memo(TarotDaily)

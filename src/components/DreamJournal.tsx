@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import { hapticLight } from '@/lib/haptic'
 import { showToast } from './Toast'
 
@@ -51,7 +51,7 @@ function analyzeDream(text: string): string[] {
   return symbols
 }
 
-export default function DreamJournal() {
+function DreamJournal() {
   const [entries, setEntries] = useState<DreamEntry[]>([])
   const [newEntry, setNewEntry] = useState('')
   const [showForm, setShowForm] = useState(false)
@@ -220,3 +220,5 @@ export default function DreamJournal() {
     </div>
   )
 }
+
+export default memo(DreamJournal)

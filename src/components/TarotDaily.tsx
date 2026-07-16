@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, memo } from 'react'
 
 const TAROT_CARDS = [
   { name: '愚者', emoji: '🃏', meaning: '新的开始，冒险精神', advice: '勇敢踏出第一步，相信直觉' },
@@ -42,7 +42,7 @@ function getDailyTarot(date: Date): { card: typeof TAROT_CARDS[0]; position: str
   })
 }
 
-export default function TarotDaily() {
+function TarotDaily() {
   const [revealed, setRevealed] = useState(false)
   const tarot = useMemo(() => getDailyTarot(new Date()), [])
 
@@ -101,3 +101,5 @@ export default function TarotDaily() {
     </div>
   )
 }
+
+export default memo(TarotDaily)

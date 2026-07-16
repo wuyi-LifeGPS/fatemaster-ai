@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, memo } from 'react'
 
 const JOKES = [
   { setup: '为什么算命先生总是戴眼镜？', punchline: '因为看相需要看得更清楚。' },
@@ -30,7 +30,7 @@ function getDailyJoke(): typeof JOKES[0] {
   return JOKES[dayOfYear % JOKES.length]
 }
 
-export default function DailyJoke() {
+function DailyJoke() {
   const [showPunchline, setShowPunchline] = useState(false)
   const joke = useMemo(() => getDailyJoke(), [])
 
@@ -56,3 +56,5 @@ export default function DailyJoke() {
     </div>
   )
 }
+
+export default memo(DailyJoke)

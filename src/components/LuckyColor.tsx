@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const LUCKY_COLORS = [
   { name: '红色', hex: '#ef4444', wuxing: '火', desc: '热情活力，增强自信' },
@@ -23,7 +23,7 @@ function getDailyLuckyColor(date: Date): { lucky: typeof LUCKY_COLORS[0]; avoid:
   }
 }
 
-export default function LuckyColor() {
+function LuckyColor() {
   const { lucky, avoid } = useMemo(() => getDailyLuckyColor(new Date()), [])
 
   return (
@@ -60,3 +60,5 @@ export default function LuckyColor() {
     </div>
   )
 }
+
+export default memo(LuckyColor)

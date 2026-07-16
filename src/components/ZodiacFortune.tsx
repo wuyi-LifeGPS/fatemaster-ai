@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, memo } from 'react'
 
 const ZODIAC_ANIMALS = [
   { name: '鼠', emoji: '🐭', desc: '机智灵活，善于应变' },
@@ -54,7 +54,7 @@ function getDailyFortune(animal: string, date: Date): { level: string; advice: s
   return { level, advice }
 }
 
-export default function ZodiacFortune() {
+function ZodiacFortune() {
   const [selectedZodiac, setSelectedZodiac] = useState<string | null>(null)
   const today = new Date()
 
@@ -101,3 +101,5 @@ export default function ZodiacFortune() {
     </div>
   )
 }
+
+export default memo(ZodiacFortune)

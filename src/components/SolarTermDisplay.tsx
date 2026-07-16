@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 // 24节气（简化版，固定日期）
 const JIE_QI = [
@@ -63,7 +63,7 @@ function getCurrentJieQi(date: Date): { current: typeof JIE_QI[0]; next: typeof 
   }
 }
 
-export default function SolarTermDisplay() {
+function SolarTermDisplay() {
   const { current, next, daysUntil } = useMemo(() => getCurrentJieQi(new Date()), [])
 
   return (
@@ -84,3 +84,5 @@ export default function SolarTermDisplay() {
     </div>
   )
 }
+
+export default memo(SolarTermDisplay)

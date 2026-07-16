@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const PROVERBS = [
   { text: '命里有时终须有，命里无时莫强求。', meaning: '顺应天命，不可强求。' },
@@ -40,7 +40,7 @@ function getDailyProverb(): typeof PROVERBS[0] {
   return PROVERBS[dayOfYear % PROVERBS.length]
 }
 
-export default function DailyProverb() {
+function DailyProverb() {
   const proverb = useMemo(() => getDailyProverb(), [])
 
   return (
@@ -57,3 +57,5 @@ export default function DailyProverb() {
     </div>
   )
 }
+
+export default memo(DailyProverb)

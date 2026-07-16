@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const DAILY_MOTTOS = [
   { text: '天行健，君子以自强不息。', author: '《周易》', theme: '奋斗' },
@@ -40,7 +40,7 @@ function getDailyMotto(): typeof DAILY_MOTTOS[0] {
   return DAILY_MOTTOS[dayOfYear % DAILY_MOTTOS.length]
 }
 
-export default function DailyMotto() {
+function DailyMotto() {
   const motto = useMemo(() => getDailyMotto(), [])
 
   return (
@@ -63,3 +63,5 @@ export default function DailyMotto() {
     </div>
   )
 }
+
+export default memo(DailyMotto)

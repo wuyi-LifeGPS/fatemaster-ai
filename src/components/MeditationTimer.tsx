@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, memo } from 'react'
 import { hapticLight } from '@/lib/haptic'
 
 const BREATH_CYCLES = [
@@ -9,7 +9,7 @@ const BREATH_CYCLES = [
   { name: '深度放松', inhale: 4, hold: 7, exhale: 8, hold2: 0, desc: '4-7-8 助眠呼吸' },
 ]
 
-export default function MeditationTimer() {
+function MeditationTimer() {
   const [selectedCycle, setSelectedCycle] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [phase, setPhase] = useState<'idle' | 'inhale' | 'hold' | 'exhale' | 'hold2'>('idle')
@@ -146,3 +146,5 @@ export default function MeditationTimer() {
     </div>
   )
 }
+
+export default memo(MeditationTimer)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, memo } from 'react'
 
 const POEMS = [
   {
@@ -80,7 +80,7 @@ function getDailyPoem(): typeof POEMS[0] {
   return POEMS[dayOfYear % POEMS.length]
 }
 
-export default function DailyPoem() {
+function DailyPoem() {
   const [expanded, setExpanded] = useState(false)
   const poem = useMemo(() => getDailyPoem(), [])
 
@@ -118,3 +118,5 @@ export default function DailyPoem() {
     </div>
   )
 }
+
+export default memo(DailyPoem)

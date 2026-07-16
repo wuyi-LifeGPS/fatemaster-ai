@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, memo } from 'react'
 
 const QUOTES = [
   { text: '知命者不怨天，知己者不怨人。', author: '《荀子》', theme: '人生' },
@@ -40,7 +40,7 @@ function getDailyQuote(): typeof QUOTES[0] {
   return QUOTES[dayOfYear % QUOTES.length]
 }
 
-export default function DailyWisdom() {
+function DailyWisdom() {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const quote = useMemo(() => getDailyQuote(), [])
 
@@ -72,3 +72,5 @@ export default function DailyWisdom() {
     </div>
   )
 }
+
+export default memo(DailyWisdom)

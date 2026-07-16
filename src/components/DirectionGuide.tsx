@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const DIRECTIONS = [
   { name: '东', emoji: '➡️', angle: 90 },
@@ -32,7 +32,7 @@ function getDailyDirections(date: Date): { type: string; direction: string; emoj
   })
 }
 
-export default function DirectionGuide() {
+function DirectionGuide() {
   const directions = useMemo(() => getDailyDirections(new Date()), [])
 
   return (
@@ -55,3 +55,5 @@ export default function DirectionGuide() {
     </div>
   )
 }
+
+export default memo(DirectionGuide)

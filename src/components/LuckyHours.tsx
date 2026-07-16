@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const SHI_CHEN = [
   { name: '子时', time: '23:00-01:00', emoji: '🌙' },
@@ -38,7 +38,7 @@ function getShiChenFortune(date: Date): { name: string; level: string }[] {
   })
 }
 
-export default function LuckyHours() {
+function LuckyHours() {
   const fortunes = useMemo(() => getShiChenFortune(new Date()), [])
   const currentHour = new Date().getHours()
   const currentShiChenIndex = Math.floor((currentHour + 1) / 2) % 12
@@ -80,3 +80,5 @@ export default function LuckyHours() {
     </div>
   )
 }
+
+export default memo(LuckyHours)

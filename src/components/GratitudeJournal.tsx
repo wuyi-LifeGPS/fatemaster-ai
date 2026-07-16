@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import { hapticLight } from '@/lib/haptic'
 import { showToast } from './Toast'
 
@@ -26,7 +26,7 @@ function saveEntries(entries: GratitudeEntry[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
 }
 
-export default function GratitudeJournal() {
+function GratitudeJournal() {
   const [entries, setEntries] = useState<GratitudeEntry[]>([])
   const [newEntry, setNewEntry] = useState('')
   const [mood, setMood] = useState(3)
@@ -140,3 +140,5 @@ export default function GratitudeJournal() {
     </div>
   )
 }
+
+export default memo(GratitudeJournal)

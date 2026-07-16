@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const DAILY_SENTENCES = [
   { text: '今天的你，比昨天更强大。', emoji: '💪' },
@@ -40,7 +40,7 @@ function getDailySentence(): typeof DAILY_SENTENCES[0] {
   return DAILY_SENTENCES[dayOfYear % DAILY_SENTENCES.length]
 }
 
-export default function DailySentence() {
+function DailySentence() {
   const sentence = useMemo(() => getDailySentence(), [])
 
   return (
@@ -56,3 +56,5 @@ export default function DailySentence() {
     </div>
   )
 }
+
+export default memo(DailySentence)

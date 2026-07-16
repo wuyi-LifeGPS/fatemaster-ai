@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const DAILY_ZEN = [
   { text: '春有百花秋有月，夏有凉风冬有雪。若无闲事挂心头，便是人间好时节。', author: '无门慧开禅师', theme: '当下' },
@@ -40,7 +40,7 @@ function getDailyZen(): typeof DAILY_ZEN[0] {
   return DAILY_ZEN[dayOfYear % DAILY_ZEN.length]
 }
 
-export default function DailyZen() {
+function DailyZen() {
   const zen = useMemo(() => getDailyZen(), [])
 
   return (
@@ -63,3 +63,5 @@ export default function DailyZen() {
     </div>
   )
 }
+
+export default memo(DailyZen)

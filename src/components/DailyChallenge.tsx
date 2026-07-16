@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, memo } from 'react'
 import { hapticLight } from '@/lib/haptic'
 import { showToast } from './Toast'
 
@@ -59,7 +59,7 @@ function getDailyChallenges(): typeof CHALLENGES[0][] {
   return indices.map((i) => CHALLENGES[i])
 }
 
-export default function DailyChallenge() {
+function DailyChallenge() {
   const [completed, setCompleted] = useState<string[]>(getTodayChallenges)
   const challenges = useMemo(() => getDailyChallenges(), [])
 
@@ -127,3 +127,5 @@ export default function DailyChallenge() {
     </div>
   )
 }
+
+export default memo(DailyChallenge)

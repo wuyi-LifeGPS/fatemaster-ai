@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const DAILY_AFFIRMATIONS = [
   { text: '我值得拥有美好的一切。', emoji: '✨' },
@@ -40,7 +40,7 @@ function getDailyAffirmation(): typeof DAILY_AFFIRMATIONS[0] {
   return DAILY_AFFIRMATIONS[dayOfYear % DAILY_AFFIRMATIONS.length]
 }
 
-export default function DailyAffirmation() {
+function DailyAffirmation() {
   const affirmation = useMemo(() => getDailyAffirmation(), [])
 
   return (
@@ -59,3 +59,5 @@ export default function DailyAffirmation() {
     </div>
   )
 }
+
+export default memo(DailyAffirmation)

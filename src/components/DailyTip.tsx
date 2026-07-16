@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { hapticLight } from '@/lib/haptic'
 
 const TIPS = [
@@ -37,7 +37,7 @@ function getDailyTip(): typeof TIPS[0] {
   return tip
 }
 
-export default function DailyTip() {
+function DailyTip() {
   const [tip, setTip] = useState<typeof TIPS[0] | null>(null)
   const [collapsed, setCollapsed] = useState(false)
 
@@ -73,3 +73,5 @@ export default function DailyTip() {
     </div>
   )
 }
+
+export default memo(DailyTip)

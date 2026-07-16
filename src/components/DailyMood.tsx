@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const DAILY_MOODS = [
   { mood: '阳光灿烂', emoji: '☀️', desc: '今天心情明媚，适合与人交流。', color: '#fbbf24' },
@@ -40,7 +40,7 @@ function getDailyMood(): typeof DAILY_MOODS[0] {
   return DAILY_MOODS[dayOfYear % DAILY_MOODS.length]
 }
 
-export default function DailyMood() {
+function DailyMood() {
   const mood = useMemo(() => getDailyMood(), [])
 
   return (
@@ -70,3 +70,5 @@ export default function DailyMood() {
     </div>
   )
 }
+
+export default memo(DailyMood)

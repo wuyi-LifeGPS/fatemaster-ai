@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, memo } from 'react'
 
 const TRIVIA = [
   { category: '八字', content: '八字中的「日主」代表命主自己，是整个命盘的核心。' },
@@ -40,7 +40,7 @@ function getDailyTrivia(): typeof TRIVIA[0] {
   return TRIVIA[dayOfYear % TRIVIA.length]
 }
 
-export default function DailyTrivia() {
+function DailyTrivia() {
   const [showMore, setShowMore] = useState(false)
   const trivia = useMemo(() => getDailyTrivia(), [])
 
@@ -77,3 +77,5 @@ export default function DailyTrivia() {
     </div>
   )
 }
+
+export default memo(DailyTrivia)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const DAILY_MANTRAS = [
   { text: '嗡嘛呢叭咪吽', emoji: '🙏', meaning: '观音菩萨心咒，慈悲为怀。' },
@@ -40,7 +40,7 @@ function getDailyMantra(): typeof DAILY_MANTRAS[0] {
   return DAILY_MANTRAS[dayOfYear % DAILY_MANTRAS.length]
 }
 
-export default function DailyMantra() {
+function DailyMantra() {
   const mantra = useMemo(() => getDailyMantra(), [])
 
   return (
@@ -60,3 +60,5 @@ export default function DailyMantra() {
     </div>
   )
 }
+
+export default memo(DailyMantra)

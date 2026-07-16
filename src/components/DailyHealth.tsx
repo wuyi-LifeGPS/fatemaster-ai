@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const HEALTH_TIPS = [
   { category: '饮食', emoji: '🍎', tip: '多吃蔬菜水果，保持营养均衡。' },
@@ -40,7 +40,7 @@ function getDailyHealth(): typeof HEALTH_TIPS[0] {
   return HEALTH_TIPS[dayOfYear % HEALTH_TIPS.length]
 }
 
-export default function DailyHealth() {
+function DailyHealth() {
   const health = useMemo(() => getDailyHealth(), [])
 
   return (
@@ -57,3 +57,5 @@ export default function DailyHealth() {
     </div>
   )
 }
+
+export default memo(DailyHealth)

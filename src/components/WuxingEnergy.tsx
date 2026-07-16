@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const WUXING_DATA = [
   { name: '木', color: '#4ade80', emoji: '🌲' },
@@ -19,7 +19,7 @@ function getDailyWuxingEnergy(date: Date): { name: string; value: number }[] {
   })
 }
 
-export default function WuxingEnergy() {
+function WuxingEnergy() {
   const energies = useMemo(() => getDailyWuxingEnergy(new Date()), [])
 
   return (
@@ -56,3 +56,5 @@ export default function WuxingEnergy() {
     </div>
   )
 }
+
+export default memo(WuxingEnergy)

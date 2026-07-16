@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const DAILY_FORTUNES = [
   { aspect: '整体', emoji: '🌟', score: 85, desc: '今日运势整体向好，适合主动出击。' },
@@ -40,7 +40,7 @@ function getDailyFortune(): typeof DAILY_FORTUNES[0] {
   return DAILY_FORTUNES[dayOfYear % DAILY_FORTUNES.length]
 }
 
-export default function DailyFortune() {
+function DailyFortune() {
   const fortune = useMemo(() => getDailyFortune(), [])
 
   return (
@@ -74,3 +74,5 @@ export default function DailyFortune() {
     </div>
   )
 }
+
+export default memo(DailyFortune)

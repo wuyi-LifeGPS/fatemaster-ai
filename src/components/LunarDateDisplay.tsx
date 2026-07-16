@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 
 // 简化的农历转换（使用近似算法）
 const LUNAR_MONTH_NAMES = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊']
@@ -44,7 +44,7 @@ function getGanZhi(date: Date): { yearGanZhi: string; monthGanZhi: string; dayGa
   }
 }
 
-export default function LunarDateDisplay() {
+function LunarDateDisplay() {
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {
@@ -78,3 +78,5 @@ export default function LunarDateDisplay() {
     </div>
   )
 }
+
+export default memo(LunarDateDisplay)

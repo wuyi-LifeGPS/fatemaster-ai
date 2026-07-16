@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const POSITIVE_MESSAGES = [
   { text: '今天的你，比昨天更强大。', emoji: '💪' },
@@ -40,7 +40,7 @@ function getDailyPositive(): typeof POSITIVE_MESSAGES[0] {
   return POSITIVE_MESSAGES[dayOfYear % POSITIVE_MESSAGES.length]
 }
 
-export default function DailyPositive() {
+function DailyPositive() {
   const message = useMemo(() => getDailyPositive(), [])
 
   return (
@@ -56,3 +56,5 @@ export default function DailyPositive() {
     </div>
   )
 }
+
+export default memo(DailyPositive)

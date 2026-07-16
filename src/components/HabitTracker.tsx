@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import { hapticLight } from '@/lib/haptic'
 import { showToast } from './Toast'
 
@@ -52,7 +52,7 @@ function getWeekDays(): string[] {
   return days
 }
 
-export default function HabitTracker() {
+function HabitTracker() {
   const [habits, setHabits] = useState<Habit[]>(getHabits)
   const [showAdd, setShowAdd] = useState(false)
   const [newHabitName, setNewHabitName] = useState('')
@@ -211,3 +211,5 @@ export default function HabitTracker() {
     </div>
   )
 }
+
+export default memo(HabitTracker)

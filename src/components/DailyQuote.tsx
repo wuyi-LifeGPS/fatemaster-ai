@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const DAILY_QUOTES = [
   { text: '命里有时终须有，命里无时莫强求。', author: '《增广贤文》', theme: '命运' },
@@ -40,7 +40,7 @@ function getDailyQuote(): typeof DAILY_QUOTES[0] {
   return DAILY_QUOTES[dayOfYear % DAILY_QUOTES.length]
 }
 
-export default function DailyQuote() {
+function DailyQuote() {
   const quote = useMemo(() => getDailyQuote(), [])
 
   return (
@@ -63,3 +63,5 @@ export default function DailyQuote() {
     </div>
   )
 }
+
+export default memo(DailyQuote)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, memo } from 'react'
 
 const COUNTDOWN_EVENTS = [
   { name: '春节', month: 1, day: 1, type: 'lunar' },
@@ -69,7 +69,7 @@ function formatTimeDiff(targetDate: Date): { days: number; hours: number; minute
   return { days, hours, minutes, seconds }
 }
 
-export default function CountdownWidget() {
+function CountdownWidget() {
   const [now, setNow] = useState(new Date())
   const event = useMemo(() => getNextEvent(), [])
 
@@ -114,3 +114,5 @@ export default function CountdownWidget() {
     </div>
   )
 }
+
+export default memo(CountdownWidget)

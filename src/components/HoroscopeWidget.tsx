@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, memo } from 'react'
 
 const ZODIAC_SIGNS = [
   { name: '白羊座', emoji: '♈', date: '3.21-4.19' },
@@ -42,7 +42,7 @@ function getZodiacFortune(signIndex: number, date: Date): { overall: string; sco
   return { overall, scores, advice }
 }
 
-export default function HoroscopeWidget() {
+function HoroscopeWidget() {
   const [selectedSign, setSelectedSign] = useState<number | null>(null)
   const today = new Date()
 
@@ -119,3 +119,5 @@ export default function HoroscopeWidget() {
     </div>
   )
 }
+
+export default memo(HoroscopeWidget)

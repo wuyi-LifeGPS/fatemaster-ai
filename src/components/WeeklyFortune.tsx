@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 const WEEK_DAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
@@ -45,7 +45,7 @@ function getWeekFortune(date: Date): { day: string; date: string; fortune: strin
   })
 }
 
-export default function WeeklyFortune() {
+function WeeklyFortune() {
   const weekFortune = useMemo(() => getWeekFortune(new Date()), [])
   const today = new Date().getDay()
 
@@ -81,3 +81,5 @@ export default function WeeklyFortune() {
     </div>
   )
 }
+
+export default memo(WeeklyFortune)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 
 // 简化的每日宜忌数据（基于日期哈希）
 const YI_ACTIVITIES = [
@@ -33,7 +33,7 @@ function getDailyYiJi(date: Date): { yi: string[]; ji: string[] } {
   }
 }
 
-export default function DailyYiJi() {
+function DailyYiJi() {
   const { yi, ji } = useMemo(() => getDailyYiJi(new Date()), [])
 
   return (
@@ -70,3 +70,5 @@ export default function DailyYiJi() {
     </div>
   )
 }
+
+export default memo(DailyYiJi)

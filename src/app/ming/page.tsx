@@ -43,6 +43,7 @@ import BreathingGuide from '@/components/BreathingGuide'
 import DailyMood from '@/components/DailyMood'
 import DailyFortune from '@/components/DailyFortune'
 import DailyMotto from '@/components/DailyMotto'
+import DailyZen from '@/components/DailyZen'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -882,6 +883,7 @@ export default function MingPage() {
         <DailyMood />
         <DailyFortune />
         <DailyMotto />
+        <DailyZen />
 
         <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (

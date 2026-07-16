@@ -1,5 +1,6 @@
 'use client'
 
+import { hapticLight } from '@/lib/haptic'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -72,6 +73,7 @@ export default function BottomNav() {
             <Link
               key={tab.path}
               href={tab.path}
+              onClick={() => hapticLight()}
               className={`tab-item flex flex-col items-center gap-0.5 py-1 px-3 ${isActive ? 'active' : ''}`}
             >
               <span className="tab-icon"><Icon active={isActive} /></span>

@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
+import { hapticMedium } from '@/lib/haptic'
+
 export default function AIFloatingButton() {
   const [pulse, setPulse] = useState(false)
 
@@ -15,6 +17,7 @@ export default function AIFloatingButton() {
   }, [])
 
   const handleClick = () => {
+    hapticMedium()
     window.location.href = '/bu/chat'
   }
 

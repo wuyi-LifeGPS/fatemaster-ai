@@ -77,6 +77,11 @@ export default function AboutPage() {
           人生道路由自己掌控，命理分析不能替代专业医疗、法律或财务建议。
         </p>
       </div>
+      <div className="mt-6 text-center">
+        <Link href="/privacy" className="text-moonly-muted text-xs hover:text-gold transition">
+          隐私政策
+        </Link>
+      </div>
     </div>
   )
 }

@@ -8,6 +8,7 @@ import { calculateBazi, getTodayGanZhi } from '@/lib/bazi'
 import { analyzeDailyFortune } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar } from '@/lib/lunar'
+import CopyButton from '@/components/CopyButton'
 import PersonFormSelector from '@/components/PersonFormSelector'
 
 interface FortuneResult {
@@ -246,13 +247,19 @@ export default function DailyPage() {
         {/* 结果展示 */}
         {result && (
           <div className="space-y-4">
-            {/* 重新输入按钮 */}
-            <button
-              onClick={() => setResult(null)}
-              className="text-gold text-sm hover:underline"
-            >
-              ← 重新输入
-            </button>
+            {/* 操作栏 */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setResult(null)}
+                className="text-gold text-sm hover:underline"
+              >
+                ← 重新输入
+              </button>
+              <CopyButton
+                text={`【每日运势】${formData.name || '命主'} · ${todayGanZhi?.dateStr || ''}\n综合评分：${result.scores.overall}分\n事业：${result.scores.career}分  财运：${result.scores.wealth}分\n感情：${result.scores.love}分  健康：${result.scores.health}分\n${result.summary}\n宜：${result.suitable.join('、')}\n忌：${result.unsuitable.join('、')}\n开运色：${result.luckyColor}  吉方：${result.luckyDirection}`}
+                label="分享运势"
+              />
+            </div>
 
             {/* 综合评分 */}
             <div className="bg-white/5 border border-[#c9a96e]/20 rounded-xl p-6">

@@ -55,6 +55,7 @@ export default function WoPage() {
     { icon: '⭐', label: '我的收藏', href: '/wo/favorites' },
     { icon: '☯️', label: '今日运势', href: '/ming?tab=liuri' },
     { icon: '⚙️', label: '设置', href: '/settings' },
+    { icon: '🧰', label: '工具箱', href: '/toolbox' },
     { icon: '❓', label: '帮助', href: '/help' },
     { icon: 'ℹ️', label: '关于', href: '/about' },
   ]

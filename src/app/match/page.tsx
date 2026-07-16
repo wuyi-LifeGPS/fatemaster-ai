@@ -183,7 +183,7 @@ export default function MatchPage() {
 
   const renderHeChong = (label: string, match: boolean, type: 'he' | 'chong' | 'hai') => {
     const colors = {
-      he: match ? 'bg-moonly-gold/10 border-moonly-gold/30 text-moonly-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted',
+      he: match ? 'bg-[#c9a96e]/10 border-moonly-gold/30 text-moonly-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted',
       chong: match ? 'bg-red-500/10 border-red-500/20 text-red-300' : 'bg-white/5 border-white/10 text-moonly-text-muted',
       hai: match ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-moonly-text-muted',
     }
@@ -221,7 +221,7 @@ export default function MatchPage() {
             onClick={() => setMode('match')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
               mode === 'match'
-                ? 'bg-moonly-gold text-[#1a1428] shadow-sm'
+                ? 'bg-[#c9a96e] text-[#1a1428] '
                 : 'text-moonly-text-muted hover:bg-white/5'
             }`}
           >
@@ -232,7 +232,7 @@ export default function MatchPage() {
             onClick={() => setMode('career')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
               mode === 'career'
-                ? 'bg-moonly-gold text-[#1a1428] shadow-sm'
+                ? 'bg-[#c9a96e] text-[#1a1428] '
                 : 'text-moonly-text-muted hover:bg-white/5'
             }`}
           >
@@ -414,10 +414,10 @@ export default function MatchPage() {
                   </>
                 ) : (
                   <>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-moonly-gold/10 border-moonly-gold/30 text-moonly-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-[#c9a96e]/10 border-moonly-gold/30 text-moonly-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
                       {result.ganHeMatch ? '✓' : '○'} 天干相合
                     </span>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-moonly-gold/10 border-moonly-gold/30 text-moonly-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-[#c9a96e]/10 border-moonly-gold/30 text-moonly-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
                       {result.zhiHeMatch ? '✓' : '○'} 地支相合
                     </span>
                   </>

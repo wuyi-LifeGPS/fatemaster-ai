@@ -137,7 +137,7 @@ export default function DailyPage() {
     return (
       <div className="flex gap-0.5 justify-center">
         {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i} className={`text-lg ${i < count ? 'text-gold' : 'text-moonly-text-muted'}`}>
+          <span key={i} className={`text-lg ${i < count ? 'text-gold' : 'text-white/20'}`}>
             ★
           </span>
         ))}
@@ -287,27 +287,27 @@ export default function DailyPage() {
 
             {/* 宜忌 */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="border-green-500/20 bg-green-500/10 rounded-xl p-4 border border-green-500/20">
+              <div className="border border-green-500/20 bg-green-500/10 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">宜</span>
-                  <span className="font-bold text-green-300">宜</span>
+                  <span className="text-xl">✅</span>
+                  <span className="font-bold text-green-400">宜</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {result.suitable.map((item, i) => (
-                    <span key={i} className="text-sm bg-green-500/15 text-green-300 px-2 py-1 rounded">
+                    <span key={i} className="text-sm bg-green-500/15 text-green-400 px-3 py-1 rounded-full border border-green-500/20">
                       {item}
                     </span>
                   ))}
                 </div>
               </div>
-              <div className="border-red-500/20 bg-red-500/10 rounded-xl p-4 border border-red-500/20">
+              <div className="border border-red-500/20 bg-red-500/10 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">忌</span>
-                  <span className="font-bold text-red-300">忌</span>
+                  <span className="text-xl">❌</span>
+                  <span className="font-bold text-red-400">忌</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {result.unsuitable.map((item, i) => (
-                    <span key={i} className="text-sm bg-red-500/15 text-red-300 px-2 py-1 rounded">
+                    <span key={i} className="text-sm bg-red-500/15 text-red-400 px-3 py-1 rounded-full border border-red-500/20">
                       {item}
                     </span>
                   ))}
@@ -347,7 +347,7 @@ export default function DailyPage() {
               <h3 className="font-bold text-lg mb-4 font-serif">开运指南</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-xl shadow-sm">
+                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-xl ">
                     色
                   </div>
                   <div>
@@ -356,7 +356,7 @@ export default function DailyPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-xl shadow-sm">
+                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-xl ">
                     向
                   </div>
                   <div>

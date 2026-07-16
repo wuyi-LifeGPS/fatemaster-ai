@@ -294,7 +294,7 @@ export default function DailyPage() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {result.suitable.map((item, i) => (
-                    <span key={i} className="text-sm bg-green-100 text-green-300 px-2 py-1 rounded">
+                    <span key={i} className="text-sm bg-green-500/15 text-green-300 px-2 py-1 rounded">
                       {item}
                     </span>
                   ))}
@@ -307,7 +307,7 @@ export default function DailyPage() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {result.unsuitable.map((item, i) => (
-                    <span key={i} className="text-sm bg-red-100 text-red-300 px-2 py-1 rounded">
+                    <span key={i} className="text-sm bg-red-500/15 text-red-300 px-2 py-1 rounded">
                       {item}
                     </span>
                   ))}

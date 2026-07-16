@@ -137,7 +137,7 @@ export default function CoinDivinationPage() {
             </p>
             <button
               onClick={() => setStep('tossing')}
-              className="px-6 py-3 bg-gradient-to-r from-moonly-gold to-yellow-500 text-moonly-bg font-bold rounded-xl"
+              className="px-6 py-3 btn-gold text-sm font-semibold"
             >
               开始占卜
             </button>
@@ -203,9 +203,9 @@ export default function CoinDivinationPage() {
           <button
             onClick={handleToss}
             disabled={isTossing}
-            className="w-full py-4 bg-gradient-to-r from-moonly-gold to-yellow-500 text-moonly-bg font-bold rounded-xl disabled:opacity-50"
+            className="w-full py-4 btn-gold text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {isTossing ? '投掷中...' : currentCoins.length === 0 ? '点击投掷' : '再次投掷'}
+            {isTossing ? <><Spinner /> 投掷中...</> : currentCoins.length === 0 ? '点击投掷' : '再次投掷'}
           </button>
         </div>
       )}
@@ -270,7 +270,7 @@ export default function CoinDivinationPage() {
 
           <button
             onClick={reset}
-            className="w-full py-3 border border-moonly-gold/40 text-moonly-gold rounded-xl hover:bg-moonly-gold/10 transition-colors"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新占卜
           </button>

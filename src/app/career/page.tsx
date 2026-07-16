@@ -134,6 +134,23 @@ export default function CareerPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    // 表单验证
+    if (!mForm.name.trim()) {
+      showToast('请输入甲方姓名', 'error')
+      return
+    }
+    if (mForm.birthYear < 1900 || mForm.birthYear > 2030) {
+      showToast('请选择有效的甲方出生年份', 'error')
+      return
+    }
+    if (!fForm.name.trim()) {
+      showToast('请输入乙方姓名', 'error')
+      return
+    }
+    if (fForm.birthYear < 1900 || fForm.birthYear > 2030) {
+      showToast('请选择有效的乙方出生年份', 'error')
+      return
+    }
     runAnalysis(mForm, fForm)
   }
 

@@ -47,15 +47,25 @@ export default function BreathPage() {
   const [isRunning, setIsRunning] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const startTimeRef = useRef(0)
+  const isRunningRef = useRef(false)
+
+  // 清理 timer
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [])
 
   const start = () => {
     setIsRunning(true)
+    isRunningRef.current = true
     setCycle(0)
     runPhase('inhale')
   }
 
   const stop = () => {
     setIsRunning(false)
+    isRunningRef.current = false
     setPhase('idle')
     setProgress(0)
     if (timerRef.current) clearInterval(timerRef.current)
@@ -64,20 +74,24 @@ export default function BreathPage() {
   const runPhase = (p: Phase) => {
     setPhase(p)
     setProgress(0)
-    
+
     let duration = 0
     if (p === 'inhale') duration = selected.inhale
     else if (p === 'hold') duration = selected.hold
     else if (p === 'exhale') duration = selected.exhale
     else if (p === 'hold2') duration = selected.hold2 || 0
-    
+
     if (duration <= 0) {
       nextPhase(p)
       return
     }
-    
+
     startTimeRef.current = Date.now()
     timerRef.current = setInterval(() => {
+      if (!isRunningRef.current) {
+        if (timerRef.current) clearInterval(timerRef.current)
+        return
+      }
       const elapsed = (Date.now() - startTimeRef.current) / 1000
       const pct = Math.min(elapsed / duration, 1)
       setProgress(pct)
@@ -89,6 +103,7 @@ export default function BreathPage() {
   }
 
   const nextPhase = (current: Phase) => {
+    if (!isRunningRef.current) return
     if (current === 'inhale') {
       if (selected.hold > 0) runPhase('hold')
       else runPhase('exhale')
@@ -97,21 +112,25 @@ export default function BreathPage() {
     } else if (current === 'exhale') {
       if ((selected as any).hold2 > 0) runPhase('hold2')
       else {
-        const newCycle = cycle + 1
-        if (newCycle >= selected.cycles) {
-          stop()
-          return
-        }
-        setCycle(newCycle)
+        setCycle(prev => {
+          const newCycle = prev + 1
+          if (newCycle >= selected.cycles) {
+            stop()
+            return prev
+          }
+          return newCycle
+        })
         runPhase('inhale')
       }
     } else if (current === 'hold2') {
-      const newCycle = cycle + 1
-      if (newCycle >= selected.cycles) {
-        stop()
-        return
-      }
-      setCycle(newCycle)
+      setCycle(prev => {
+        const newCycle = prev + 1
+        if (newCycle >= selected.cycles) {
+          stop()
+          return prev
+        }
+        return newCycle
+      })
       runPhase('inhale')
     }
   }

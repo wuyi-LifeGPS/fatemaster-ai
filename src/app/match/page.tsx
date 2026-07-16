@@ -183,19 +183,19 @@ export default function MatchPage() {
 
   const renderHeChong = (label: string, match: boolean, type: 'he' | 'chong' | 'hai') => {
     const colors = {
-      he: match ? 'bg-red-500/10 border-red-500/20 text-red-300' : 'bg-white/5 border-white/10 text-moonly-text-muted',
+      he: match ? 'bg-moonly-gold/10 border-moonly-gold/30 text-moonly-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted',
       chong: match ? 'bg-red-500/10 border-red-500/20 text-red-300' : 'bg-white/5 border-white/10 text-moonly-text-muted',
-      hai: match ? 'bg-[#c9a96e]/10 border-[#c9a96e]/20 text-[#c9a96e]' : 'bg-white/5 border-white/10 text-moonly-text-muted',
+      hai: match ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-moonly-text-muted',
     }
     const icons = {
-      he: match ? '合' : '○',
-      chong: match ? '冲' : '○',
-      hai: match ? '害' : '○',
+      he: match ? '✓' : '○',
+      chong: match ? '!' : '○',
+      hai: match ? '~' : '○',
     }
     return (
       <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${colors[type]}`}>
         <span>{icons[type]}</span>
-        <span>{label}{match ? ' ✓' : ' ✗'}</span>
+        <span>{label}</span>
       </div>
     )
   }
@@ -221,7 +221,7 @@ export default function MatchPage() {
             onClick={() => setMode('match')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
               mode === 'match'
-                ? 'bg-[#c9a96e] text-[#1a1428] shadow-sm'
+                ? 'bg-moonly-gold text-[#1a1428] shadow-sm'
                 : 'text-moonly-text-muted hover:bg-white/5'
             }`}
           >
@@ -232,7 +232,7 @@ export default function MatchPage() {
             onClick={() => setMode('career')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
               mode === 'career'
-                ? 'bg-[#c9a96e] text-[#1a1428] shadow-sm'
+                ? 'bg-moonly-gold text-[#1a1428] shadow-sm'
                 : 'text-moonly-text-muted hover:bg-white/5'
             }`}
           >
@@ -241,11 +241,11 @@ export default function MatchPage() {
         </div>
 
         {!result && (
-          <div className={`rounded-xl p-6 mb-6 border border-white/10 bg-white/5`}>
-            <h2 className="text-xl font-bold mb-2 font-serif text-white">
+          <div className="moonly-card p-6 mb-6">
+            <h2 className="text-base font-medium text-white mb-2 font-serif">
               {mode === 'match' ? '八字合婚' : '事业合作八字分析'}
             </h2>
-            <p className="text-moonly-text-secondary text-sm">
+            <p className="text-sm text-moonly-text-secondary">
               {mode === 'match'
                 ? '通过双方八字的日主关系、五行互补、十神互动、喜用神互济等维度，综合评估婚配契合度。输入双方生日即可开始分析。'
                 : '通过双方八字的五行互补、十神互动、喜用神互济等维度，评估商业合作契合度。适合合伙创业、项目合作、投资伙伴等场景。'}
@@ -256,20 +256,20 @@ export default function MatchPage() {
         {!result && (
           <>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="moonly-card p-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="moonly-card p-5">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold bg-gold`}>{mTag}</div>
-                    <h3 className="font-bold text-lg text-white">{mLabel}信息</h3>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold bg-gradient-to-br from-moonly-gold to-amber-700`}>{mTag}</div>
+                    <h3 className="font-bold text-base text-white">{mLabel}信息</h3>
                   </div>
                   <PersonFormSelector form={mForm} setForm={setMForm} />
                 </div>
-                <div className="moonly-card p-6">
+                <div className="moonly-card p-5">
                   <div className="flex items-center gap-2 mb-4">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      mode === 'match' ? 'bg-[#c9a96e]' : 'bg-[#8b9dc3]'
+                      mode === 'match' ? 'bg-gradient-to-br from-pink-400 to-pink-700' : 'bg-gradient-to-br from-blue-400 to-blue-700'
                     }`}>{fTag}</div>
-                    <h3 className="font-bold text-lg text-white">{fLabel}信息</h3>
+                    <h3 className="font-bold text-base text-white">{fLabel}信息</h3>
                   </div>
                   <PersonFormSelector form={fForm} setForm={setFForm} />
                 </div>
@@ -277,9 +277,14 @@ export default function MatchPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-gold text-[#1a1428] py-3 font-bold text-lg transition-all "
+                className="w-full btn-gold text-[#1a1428] py-3 font-bold text-lg transition-all disabled:opacity-60"
               >
-                {loading ? '分析中...' : (mode === 'match' ? '开始合婚分析' : '开始事业合作分析')}
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="animate-spin w-5 h-5 border-2 border-[#1a1428]/30 border-t-[#1a1428] rounded-full" />
+                    分析中...
+                  </span>
+                ) : (mode === 'match' ? '开始合婚分析' : '开始事业合作分析')}
               </button>
             </form>
 
@@ -287,19 +292,18 @@ export default function MatchPage() {
               <div className="mt-6">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-gold mb-3"
+                  className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-gold transition-colors mb-3"
                 >
-                  <span>📜</span>
                   <span>{modeLabel}查询历史（{history.length} 条）</span>
                   <span>{showHistory ? '▲' : '▼'}</span>
                 </button>
                 {showHistory && (
-                  <div className="moonly-card border border-white/10 overflow-hidden">
+                  <div className="moonly-card overflow-hidden">
                     {history.map((record) => (
                       <div
                         key={record.id}
                         onClick={() => handleHistoryClick(record)}
-                        className="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 cursor-pointer transition-colors"
+                        className="px-4 py-3 border-b border-white/5 last:border-0 hover:bg-white/5 cursor-pointer transition-colors"
                       >
                         <div className="flex justify-between items-start">
                           <div>
@@ -320,42 +324,43 @@ export default function MatchPage() {
         {result && (
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <button onClick={() => setResult(null)} className="text-gold text-sm hover:underline">← 重新输入</button>
+              <button
+                onClick={() => setResult(null)}
+                className="btn-gold-outline px-4 py-2 text-sm"
+              >
+                ← 重新输入
+              </button>
               <div className="flex-1" />
               <button
                 onClick={() => setMode(mode === 'match' ? 'career' : 'match')}
-                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
-                  mode === 'match'
-                    ? 'bg-white/5 border-white/10 text-gold hover:bg-white/10'
-                    : 'bg-[#c9a96e]/10 border-pink-500/20 text-pink-300 hover:bg-[#c9a96e]/20'
-                }`}
+                className="btn-gold-outline px-3 py-1.5 text-xs"
               >
-                切换到{mode === 'match' ? '事业合作' : '合婚分析'}分析
+                切换到{mode === 'match' ? '事业合作' : '合婚分析'}
               </button>
             </div>
 
             {/* 总评分 */}
-            <div className={`rounded-2xl p-8 border border-white/10 text-center bg-white/5`}>
+            <div className="moonly-card p-8 text-center">
               <div className="text-sm text-moonly-text-muted mb-2">{mode === 'match' ? '婚配契合度' : '合作契合度'}</div>
               <div className={`text-6xl font-bold mb-2 ${result.levelColor}`}>{result.score}</div>
               <div className="flex justify-center gap-1 mb-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? (mode === 'match' ? 'text-pink-400' : 'text-gold') : 'text-white/20'}`}>
-                    {mode === 'match' ? '❤' : '●'}
+                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? 'text-moonly-gold' : 'text-white/15'}`}>
+                    {mode === 'match' ? '❤' : '★'}
                   </span>
                 ))}
               </div>
               <div className={`text-xl font-bold ${result.levelColor}`}>{result.level}</div>
-              <p className="text-moonly-text-secondary mt-2 max-w-md mx-auto">{result.levelDesc}</p>
+              <p className="text-sm text-moonly-text-secondary mt-2 max-w-md mx-auto">{result.levelDesc}</p>
             </div>
 
             {/* 双方八字概览 */}
             <div className="grid md:grid-cols-2 gap-4">
               {mBazi && (
-                <div className={`rounded-xl p-4 border border-white/10 bg-white/5`}>
+                <div className="moonly-card p-5">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold bg-gold`}>{mTag}</div>
-                    <span className="font-bold text-white">{mForm.name || mLabel}八字</span>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold bg-gradient-to-br from-moonly-gold to-amber-700`}>{mTag}</div>
+                    <span className="font-bold text-base text-white">{mForm.name || mLabel}八字</span>
                   </div>
                   <div className="text-sm text-moonly-text-secondary space-y-1">
                     {mBazi.pillars.map((p: any) => (
@@ -364,7 +369,7 @@ export default function MatchPage() {
                         <span className="font-medium text-white">{p.gan}{p.zhi}</span>
                       </div>
                     ))}
-                    <div className={`pt-2 border-t border-white/10 mt-2`}>
+                    <div className="pt-2 border-t border-white/10 mt-2">
                       <span className="text-moonly-text-muted">日主：</span>
                       <span className="font-bold text-white">{mBazi.dayMaster}（{mBazi.yinYang}·{mBazi.wuXing}）</span>
                     </div>
@@ -372,10 +377,10 @@ export default function MatchPage() {
                 </div>
               )}
               {fBazi && (
-                <div className={`rounded-xl p-4 border ${mode === 'match' ? 'bg-[#c9a96e]/10 border-pink-500/20' : 'bg-[#8b9dc3]/10 border-emerald-500/20'}`}>
+                <div className="moonly-card p-5">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${mode === 'match' ? 'bg-[#c9a96e]' : 'bg-[#8b9dc3]'}`}>{fTag}</div>
-                    <span className="font-bold text-white">{fForm.name || fLabel}八字</span>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${mode === 'match' ? 'bg-gradient-to-br from-pink-400 to-pink-700' : 'bg-gradient-to-br from-blue-400 to-blue-700'}`}>{fTag}</div>
+                    <span className="font-bold text-base text-white">{fForm.name || fLabel}八字</span>
                   </div>
                   <div className="text-sm text-moonly-text-secondary space-y-1">
                     {fBazi.pillars.map((p: any) => (
@@ -384,7 +389,7 @@ export default function MatchPage() {
                         <span className="font-medium text-white">{p.gan}{p.zhi}</span>
                       </div>
                     ))}
-                    <div className={`pt-2 border-t border-white/10 mt-2`}>
+                    <div className="pt-2 border-t border-white/10 mt-2">
                       <span className="text-moonly-text-muted">日主：</span>
                       <span className="font-bold text-white">{fBazi.dayMaster}（{fBazi.yinYang}·{fBazi.wuXing}）</span>
                     </div>
@@ -394,8 +399,8 @@ export default function MatchPage() {
             </div>
 
             {/* 合冲关系 / 合作气场 */}
-            <div className="moonly-card p-6">
-              <h3 className="font-bold text-lg mb-4 font-serif text-white">
+            <div className="moonly-card p-5">
+              <h3 className="font-bold text-base text-white mb-4 font-serif">
                 {mode === 'match' ? '合冲关系' : '合作气场'}
               </h3>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -409,52 +414,52 @@ export default function MatchPage() {
                   </>
                 ) : (
                   <>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-white/5 border-white/10 text-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
-                      {result.ganHeMatch ? '合' : '○'} 天干相合{result.ganHeMatch ? ' ✓' : ' ✗'}
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-moonly-gold/10 border-moonly-gold/30 text-moonly-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
+                      {result.ganHeMatch ? '✓' : '○'} 天干相合
                     </span>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-white/5 border-white/10 text-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
-                      {result.zhiHeMatch ? '合' : '○'} 地支相合{result.zhiHeMatch ? ' ✓' : ' ✗'}
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-moonly-gold/10 border-moonly-gold/30 text-moonly-gold' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
+                      {result.zhiHeMatch ? '✓' : '○'} 地支相合
                     </span>
                   </>
                 )}
               </div>
-              <div className="text-sm text-moonly-text-secondary bg-white/5 rounded-lg p-3">
+              <div className="moonly-card-light rounded-lg p-3">
                 {mode === 'match' ? (
                   <>
-                    {result.ganHeMatch && <p> 日主天干相合，彼此有天然的吸引力，容易产生好感。</p>}
-                    {result.zhiHeMatch && <p> 日支六合，生活习惯、价值观容易契合，相处融洽。</p>}
-                    {result.sanHeMatch && <p> 地支三合，缘分深厚，合作默契度高。</p>}
-                    {result.chongMatch && <p> 日支相冲，性格差异大，容易有冲突，需要更多磨合。</p>}
-                    {result.haiMatch && <p> 日支相害，关系中暗藏隐患，注意沟通方式。</p>}
+                    {result.ganHeMatch && <p className="text-sm text-moonly-text-secondary">日主天干相合，彼此有天然的吸引力，容易产生好感。</p>}
+                    {result.zhiHeMatch && <p className="text-sm text-moonly-text-secondary">日支六合，生活习惯、价值观容易契合，相处融洽。</p>}
+                    {result.sanHeMatch && <p className="text-sm text-moonly-text-secondary">地支三合，缘分深厚，合作默契度高。</p>}
+                    {result.chongMatch && <p className="text-sm text-moonly-text-secondary">日支相冲，性格差异大，容易有冲突，需要更多磨合。</p>}
+                    {result.haiMatch && <p className="text-sm text-moonly-text-secondary">日支相害，关系中暗藏隐患，注意沟通方式。</p>}
                     {!result.ganHeMatch && !result.zhiHeMatch && !result.sanHeMatch && !result.chongMatch && !result.haiMatch && (
-                      <p>双方八字无明显合冲关系，属于中性组合，缘分需要后天培养。</p>
+                      <p className="text-sm text-moonly-text-secondary">双方八字无明显合冲关系，属于中性组合，缘分需要后天培养。</p>
                     )}
                   </>
                 ) : (
                   <>
-                    {result.ganHeMatch && <p> 天干相合，合作理念容易达成共识，沟通顺畅。</p>}
-                    {result.zhiHeMatch && <p> 地支相合，合作中步调一致，执行层面配合默契。</p>}
-                    {!result.ganHeMatch && !result.zhiHeMatch && <p>双方八字无明显合象，合作需要后天磨合，建议先从小项目试水。</p>}
+                    {result.ganHeMatch && <p className="text-sm text-moonly-text-secondary">天干相合，合作理念容易达成共识，沟通顺畅。</p>}
+                    {result.zhiHeMatch && <p className="text-sm text-moonly-text-secondary">地支相合，合作中步调一致，执行层面配合默契。</p>}
+                    {!result.ganHeMatch && !result.zhiHeMatch && <p className="text-sm text-moonly-text-secondary">双方八字无明显合象，合作需要后天磨合，建议先从小项目试水。</p>}
                   </>
                 )}
               </div>
             </div>
 
             {/* 十神互动 / 角色定位 */}
-            <div className="moonly-card p-6">
-              <h3 className="font-bold text-lg mb-4 font-serif text-white">
+            <div className="moonly-card p-5">
+              <h3 className="font-bold text-base text-white mb-4 font-serif">
                 {mode === 'match' ? '十神互动' : '角色定位'}
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
-                <div className={`rounded-lg p-4 bg-white/5`}>
-                  <div className={`text-sm font-medium mb-2 text-gold`}>
+                <div className="moonly-card-light p-4">
+                  <div className="text-sm text-moonly-gold font-medium mb-2">
                     {mLabel} → {fLabel}
                   </div>
                   <div className="text-lg font-bold text-white">{result.mToF_SS}</div>
                   <p className="text-sm text-moonly-text-secondary mt-2">{result.roles.mRole}</p>
                 </div>
-                <div className={`rounded-lg p-4 ${mode === 'match' ? 'bg-[#c9a96e]/10 border border-pink-500/20' : 'bg-[#8b9dc3]/10 border border-emerald-500/20'}`}>
-                  <div className={`text-sm font-medium mb-2 ${mode === 'match' ? 'text-pink-600' : 'text-emerald-600'}`}>
+                <div className={`rounded-lg p-4 ${mode === 'match' ? 'moonly-card-light border border-pink-500/20' : 'moonly-card-light border border-blue-500/20'}`}>
+                  <div className={`text-sm font-medium mb-2 ${mode === 'match' ? 'text-pink-300' : 'text-blue-300'}`}>
                     {fLabel} → {mLabel}
                   </div>
                   <div className="text-lg font-bold text-white">{result.fToM_SS}</div>
@@ -462,10 +467,10 @@ export default function MatchPage() {
                 </div>
               </div>
               {result.pairMatch && (
-                <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-4">
+                <div className="mt-4 moonly-card-light p-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl text-gold"></span>
-                    <span className="font-bold text-[#c9a96e]">
+                    <span className="text-moonly-gold">✦</span>
+                    <span className="font-bold text-moonly-gold">
                       {mode === 'match' ? '理想婚配组合' : '理想合作组合'}：{result.pairMatch.desc}
                     </span>
                   </div>
@@ -475,14 +480,14 @@ export default function MatchPage() {
 
             {/* 五行互补 / 资源互补 */}
             {result.complementDetails.length > 0 && (
-              <div className="moonly-card p-6">
-                <h3 className="font-bold text-lg mb-4 font-serif text-white">
+              <div className="moonly-card p-5">
+                <h3 className="font-bold text-base text-white mb-4 font-serif">
                   {mode === 'match' ? '五行互补' : '资源互补'}
                 </h3>
                 <div className="space-y-2">
                   {result.complementDetails.map((item, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
-                      <span className="text-green-500">✓</span>
+                      <span className="text-green-400">✓</span>
                       <span className="text-moonly-text-secondary">{item}</span>
                     </div>
                   ))}
@@ -491,12 +496,12 @@ export default function MatchPage() {
             )}
 
             {/* 喜用神互济 / 运势互济 */}
-            <div className="moonly-card p-6">
-              <h3 className="font-bold text-lg mb-4 font-serif text-white">
+            <div className="moonly-card p-5">
+              <h3 className="font-bold text-base text-white mb-4 font-serif">
                 {mode === 'match' ? '喜用神互济' : '运势互济'}
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
-                <div className={`rounded-lg p-4 ${result.mHelpF > 0 ? 'bg-green-500/10 border border-green-500/20' : 'bg-white/5'}`}>
+                <div className={`rounded-lg p-4 ${result.mHelpF > 0 ? 'moonly-card-light border border-green-500/20' : 'moonly-card-light'}`}>
                   <div className="text-sm text-moonly-text-muted mb-1">{mLabel}旺{fLabel}</div>
                   <div className="text-lg font-bold text-white">{result.mHelpF > 0 ? '✓ 旺对方' : '○ 中性'}</div>
                   {result.mHelpF > 0 && (
@@ -505,7 +510,7 @@ export default function MatchPage() {
                     </p>
                   )}
                 </div>
-                <div className={`rounded-lg p-4 ${result.fHelpM > 0 ? 'bg-green-500/10 border border-green-500/20' : 'bg-white/5'}`}>
+                <div className={`rounded-lg p-4 ${result.fHelpM > 0 ? 'moonly-card-light border border-green-500/20' : 'moonly-card-light'}`}>
                   <div className="text-sm text-moonly-text-muted mb-1">{fLabel}旺{mLabel}</div>
                   <div className="text-lg font-bold text-white">{result.fHelpM > 0 ? '✓ 旺对方' : '○ 中性'}</div>
                   {result.fHelpM > 0 && (
@@ -518,14 +523,14 @@ export default function MatchPage() {
             </div>
 
             {/* 建议 */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-              <h3 className="font-bold text-lg mb-4 font-serif text-white">
+            <div className="moonly-card p-5">
+              <h3 className="font-bold text-base text-white mb-4 font-serif">
                 {mode === 'match' ? '婚配建议' : '合作建议'}
               </h3>
               <div className="space-y-3">
                 {result.suggestions.map((item, i) => (
                   <div key={i} className="flex items-start gap-2 text-sm text-moonly-text-secondary">
-                    <span className="text-gold mt-0.5">•</span>
+                    <span className="text-moonly-gold mt-0.5">•</span>
                     <span>{item}</span>
                   </div>
                 ))}
@@ -534,20 +539,24 @@ export default function MatchPage() {
 
             {/* AI 深度分析 */}
             {(loadingAi || result.aiAnalysis) && (
-              <div className="moonly-card p-6">
+              <div className="moonly-card p-5 border border-moonly-gold/20">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-fate-500 to-fate-600 rounded-lg flex items-center justify-center text-white text-sm">
-                    AI
+                  <div className="w-8 h-8 bg-gradient-to-br from-moonly-gold to-amber-700 rounded-lg flex items-center justify-center text-white text-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                      <path d="M2 17l10 5 10-5" />
+                      <path d="M2 12l10 5 10-5" />
+                    </svg>
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg font-serif text-white">AI 深度分析</h3>
+                    <h3 className="font-bold text-base text-white font-serif">AI 深度分析</h3>
                     <p className="text-xs text-moonly-text-muted">基于双方八字的专业级{mode === 'match' ? '婚配' : '合作'}解读</p>
                   </div>
                 </div>
 
                 {loadingAi ? (
                   <div className="flex items-center gap-3 py-8">
-                    <div className="w-5 h-5 border-2 border-[#c9a96e]/[0.3] border-t-[#c9a96e] rounded-full animate-spin" />
+                    <div className="animate-spin w-5 h-5 border-2 border-moonly-gold/30 border-t-moonly-gold rounded-full" />
                     <span className="text-sm text-moonly-text-muted">正在调用 Kimi AI 进行深度分析...</span>
                   </div>
                 ) : result.aiAnalysis ? (

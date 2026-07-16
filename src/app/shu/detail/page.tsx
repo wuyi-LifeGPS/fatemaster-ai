@@ -355,7 +355,7 @@ function BookDetailContent() {
             <button
               onClick={() => setCurrentChapter(c => Math.max(0, c - 1))}
               disabled={currentChapter === 0}
-              className="px-3 py-1.5 rounded-lg text-sm text-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition"
+              className="px-3 py-1.5 rounded-lg text-sm text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition"
             >
               ← 上一章
             </button>
@@ -365,7 +365,7 @@ function BookDetailContent() {
             <button
               onClick={() => setCurrentChapter(c => Math.min(totalChapters - 1, c + 1))}
               disabled={currentChapter === totalChapters - 1}
-              className="px-3 py-1.5 rounded-lg text-sm text-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition"
+              className="px-3 py-1.5 rounded-lg text-sm text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition"
             >
               下一章 →
             </button>
@@ -388,7 +388,7 @@ function BookDetailContent() {
       {/* 内容 */}
       <div className="px-4 py-6 pb-32">
         <div className="max-w-md mx-auto">
-          <h2 className="text-gold font-bold text-xl mb-6 text-center">{chapter.title}</h2>
+          <h2 className="text-moonly-gold font-bold text-xl mb-6 text-center">{chapter.title}</h2>
           <div className="space-y-4">
             {chapter.content.map((line, i) => (
               <p
@@ -409,7 +409,7 @@ function BookDetailContent() {
           <button
             onClick={() => setCurrentChapter(c => Math.max(0, c - 1))}
             disabled={currentChapter === 0}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-gold/20"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-moonly-gold/20"
           >
             ← 上一章
           </button>
@@ -419,7 +419,7 @@ function BookDetailContent() {
           <button
             onClick={() => setCurrentChapter(c => Math.min(totalChapters - 1, c + 1))}
             disabled={currentChapter === totalChapters - 1}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-gold/20"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-moonly-gold/20"
           >
             下一章 →
           </button>

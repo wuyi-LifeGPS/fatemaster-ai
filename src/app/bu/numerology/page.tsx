@@ -53,6 +53,17 @@ const NUMBER_MEANINGS: Record<number, { title: string; traits: string; careers: 
   9: { title: '人道者', traits: '博爱、智慧、奉献、理想主义', careers: '慈善家、艺术家、治疗师', advice: '学会放下，接受不完美' },
 }
 
+// Loading spinner
+function Spinner({ className = '' }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center gap-1 ${className}`}>
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+    </div>
+  )
+}
+
 export default function NumerologyPage() {
   const [birthDate, setBirthDate] = useState('')
   const [name, setName] = useState('')
@@ -62,18 +73,23 @@ export default function NumerologyPage() {
     lifePathMeaning: typeof NUMBER_MEANINGS[1]
     destinyMeaning: typeof NUMBER_MEANINGS[1]
   } | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const analyze = () => {
     if (!birthDate) return
-    const lifePath = calculateLifePathNumber(birthDate)
-    const destiny = name ? calculateDestinyNumber(name) : 0
+    setLoading(true)
+    setTimeout(() => {
+      const lifePath = calculateLifePathNumber(birthDate)
+      const destiny = name ? calculateDestinyNumber(name) : 0
 
-    setResult({
-      lifePath,
-      destiny,
-      lifePathMeaning: NUMBER_MEANINGS[lifePath],
-      destinyMeaning: destiny ? NUMBER_MEANINGS[destiny] : null as any,
-    })
+      setResult({
+        lifePath,
+        destiny,
+        lifePathMeaning: NUMBER_MEANINGS[lifePath],
+        destinyMeaning: destiny ? NUMBER_MEANINGS[destiny] : null as any,
+      })
+      setLoading(false)
+    }, 600)
   }
 
   return (
@@ -113,16 +129,16 @@ export default function NumerologyPage() {
         </div>
         <button
           onClick={analyze}
-          disabled={!birthDate}
-          className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+          disabled={!birthDate || loading}
+          className="w-full py-3 btn-gold text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          分析数字命理
+          {loading ? <><Spinner /> 分析中...</> : '分析数字命理'}
         </button>
       </div>
 
       {/* Result */}
       {result && (
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-in">
           <div className="moonly-card p-6 text-center">
             <div className="text-4xl mb-3">🔢</div>
             <div className="text-white text-lg font-bold mb-1">你的生命灵数</div>
@@ -162,7 +178,7 @@ export default function NumerologyPage() {
 
           <button
             onClick={() => { setBirthDate(''); setName(''); setResult(null) }}
-            className="w-full py-3 bg-white/5 text-white rounded-xl font-medium hover:bg-white/10 transition"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新分析
           </button>

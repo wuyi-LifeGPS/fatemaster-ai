@@ -73,14 +73,31 @@ function generateGua(method: string, input?: string): { shang: string; xia: stri
   return { shang, xia, dong, full }
 }
 
+// Loading spinner
+function Spinner({ className = '' }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center gap-1 ${className}`}>
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+    </div>
+  )
+}
+
 export default function MeiHuaPage() {
   const [method, setMethod] = useState('')
   const [input, setInput] = useState('')
   const [result, setResult] = useState<ReturnType<typeof generateGua> | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const castGua = () => {
-    const gua = generateGua(method, input)
-    setResult(gua)
+    setLoading(true)
+    // 模拟计算延迟，增加仪式感
+    setTimeout(() => {
+      const gua = generateGua(method, input)
+      setResult(gua)
+      setLoading(false)
+    }, 800)
   }
 
   const shangData = result ? GUA_MEANINGS[result.shang] : null
@@ -139,9 +156,10 @@ export default function MeiHuaPage() {
           {method && (
             <button
               onClick={castGua}
-              className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition"
+              disabled={loading}
+              className="w-full py-3 btn-gold text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              起卦
+              {loading ? <><Spinner /> 起卦中...</> : '起卦'}
             </button>
           )}
 
@@ -149,12 +167,12 @@ export default function MeiHuaPage() {
             <div className="moonly-card p-6 text-center">
               <div className="text-4xl mb-3">🌸</div>
               <div className="text-white font-medium mb-2">选择起卦方式</div>
-              <div className="text-moonly-text-muted text-sm">梅花易数强调\"心诚则灵\"，起卦前请先静心凝神</div>
+              <div className="text-moonly-text-muted text-sm">梅花易数强调"心诚则灵"，起卦前请先静心凝神</div>
             </div>
           )}
         </>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-in">
           {/* 卦象结果 */}
           <div className="moonly-card p-6 text-center">
             <div className="text-moonly-text-muted text-xs mb-4">起卦方式：{method}</div>
@@ -205,7 +223,7 @@ export default function MeiHuaPage() {
 
           <button
             onClick={() => { setResult(null); setMethod(''); setInput('') }}
-            className="w-full py-3 bg-white/5 text-white rounded-xl font-medium hover:bg-white/10 transition"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新起卦
           </button>

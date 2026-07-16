@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 // 《心之力》全文
@@ -26,27 +26,47 @@ export default function HeartPowerPage() {
   const [currentChapter, setCurrentChapter] = useState(0)
   const [fontSize, setFontSize] = useState(18)
   const [showToc, setShowToc] = useState(false)
-  const [progress, setProgress] = useState(0)
   const [saved, setSaved] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const paragraphs = HEART_POWER_TEXT.split('\n').filter(p => p.trim())
-  const totalParas = paragraphs.length
+  const totalChapters = CHAPTERS.length
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const el = e.currentTarget
-    const scrollProgress = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100
-    setProgress(Math.min(scrollProgress, 100))
+  const currentChapterData = CHAPTERS[currentChapter]
+  const currentParagraphs = paragraphs.slice(currentChapterData.start, currentChapterData.end)
+  const chapterProgress = ((currentChapter + 1) / totalChapters) * 100
+
+  const goToChapter = (idx: number) => {
+    if (idx < 0 || idx >= totalChapters) return
+    setCurrentChapter(idx)
+    setShowToc(false)
+    // 滚动到顶部
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0
+    }
   }
 
   const saveBookmark = () => {
     setSaved(true)
+    localStorage.setItem('heart_power_chapter', currentChapter.toString())
     setTimeout(() => setSaved(false), 2000)
   }
 
+  // 恢复阅读进度
+  useEffect(() => {
+    const savedChapter = localStorage.getItem('heart_power_chapter')
+    if (savedChapter) {
+      const parsed = parseInt(savedChapter, 10)
+      if (!isNaN(parsed) && parsed >= 0 && parsed < totalChapters) {
+        setCurrentChapter(parsed)
+      }
+    }
+  }, [totalChapters])
+
   return (
-    <div className="min-h-screen moonly-bg moonly-content h-[calc(100vh-80px)] flex flex-col animate-fade-in">
+    <div className="min-h-screen moonly-bg moonly-content flex flex-col animate-fade-in relative">
       {/* 顶部导航 */}
-      <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between flex-shrink-0">
+      <div className="sticky top-0 z-30 bg-[#1a1428]/95 backdrop-blur-sm border-b border-white/5 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
           <Link href="/shu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-text-secondary">
@@ -55,25 +75,25 @@ export default function HeartPowerPage() {
           </Link>
           <div>
             <div className="text-white font-medium text-sm">心之力</div>
-            <div className="text-moonly-text-muted text-xs">毛泽东</div>
+            <div className="text-moonly-text-muted text-xs">毛泽东 · 第 {currentChapter + 1} / {totalChapters} 章</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {/* 字体大小 */}
-          <button 
+          <button
             onClick={() => setFontSize(s => Math.max(14, s - 2))}
-            className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-xs text-moonly-text-secondary hover:bg-white/10"
+            className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-xs text-moonly-text-secondary hover:bg-white/10 transition"
           >
             A-
           </button>
-          <button 
+          <button
             onClick={() => setFontSize(s => Math.min(24, s + 2))}
-            className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-sm text-moonly-text-secondary hover:bg-white/10"
+            className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-sm text-moonly-text-secondary hover:bg-white/10 transition"
           >
             A+
           </button>
           {/* 目录 */}
-          <button 
+          <button
             onClick={() => setShowToc(!showToc)}
             className={`w-8 h-8 rounded-full flex items-center justify-center transition ${showToc ? 'bg-moonly-gold/20 text-moonly-gold' : 'bg-white/5 text-moonly-text-secondary hover:bg-white/10'}`}
           >
@@ -82,7 +102,7 @@ export default function HeartPowerPage() {
             </svg>
           </button>
           {/* 收藏 */}
-          <button 
+          <button
             onClick={saveBookmark}
             className={`w-8 h-8 rounded-full flex items-center justify-center transition ${saved ? 'bg-moonly-gold/20 text-moonly-gold' : 'bg-white/5 text-moonly-text-secondary hover:bg-white/10'}`}
           >
@@ -95,62 +115,86 @@ export default function HeartPowerPage() {
 
       {/* 目录浮层 */}
       {showToc && (
-        <div className="absolute top-14 right-4 z-50 moonly-card p-4 w-48 shadow-2xl">
-          <div className="text-white font-bold text-sm mb-3">目录</div>
-          <div className="space-y-2">
-            {CHAPTERS.map((ch, i) => (
-              <button
-                key={i}
-                onClick={() => { setCurrentChapter(i); setShowToc(false); }}
-                className={`block text-sm w-full text-left py-1 px-2 rounded transition ${
-                  currentChapter === i ? 'text-moonly-gold bg-moonly-gold/10' : 'text-moonly-text-secondary hover:text-white hover:bg-white/5'
-                }`}
-              >
-                {ch.title}
-              </button>
-            ))}
+        <>
+          <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setShowToc(false)} />
+          <div className="fixed top-14 right-4 z-50 moonly-card p-4 w-56 shadow-2xl">
+            <div className="text-white font-bold text-sm mb-3">目录</div>
+            <div className="space-y-1">
+              {CHAPTERS.map((ch, i) => (
+                <button
+                  key={i}
+                  onClick={() => goToChapter(i)}
+                  className={`block text-sm w-full text-left py-2 px-3 rounded-lg transition ${
+                    currentChapter === i ? 'text-moonly-gold bg-moonly-gold/10' : 'text-moonly-text-secondary hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <span className="text-moonly-text-muted mr-2">{i + 1}.</span>
+                  {ch.title}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* 阅读进度条 */}
       <div className="w-full h-0.5 bg-white/10 flex-shrink-0">
-        <div className="h-full bg-moonly-gold transition-all duration-300" style={{ width: `${progress}%` }} />
+        <div className="h-full bg-moonly-gold transition-all duration-300" style={{ width: `${chapterProgress}%` }} />
       </div>
 
       {/* 正文区域 */}
-      <div 
-        className="flex-1 overflow-y-auto px-5 py-6"
-        onScroll={handleScroll}
+      <div
+        ref={contentRef}
+        className="flex-1 overflow-y-auto px-5 py-6 pb-28"
       >
         {/* 章节标题 */}
         <div className="text-center mb-8">
-          <div className="text-moonly-gold text-xs mb-2 tracking-widest">{CHAPTERS[currentChapter]?.title}</div>
-          <h1 className="text-white font-bold text-lg">心之力</h1>
-          <div className="text-moonly-text-muted text-xs mt-1">毛泽东</div>
+          <div className="text-moonly-gold text-xs mb-2 tracking-widest">第 {currentChapter + 1} 章</div>
+          <h1 className="text-white font-bold text-lg">{CHAPTERS[currentChapter]?.title}</h1>
+          <div className="text-moonly-text-muted text-xs mt-1">心之力 · 毛泽东</div>
         </div>
 
         {/* 正文 */}
         <div className="space-y-5" style={{ fontSize: `${fontSize}px`, lineHeight: '1.8' }}>
-          {paragraphs.map((para, i) => (
-            <p key={i} className="text-moonly-text-secondary" style={{ textIndent: '2em' }}>
+          {currentParagraphs.map((para, i) => (
+            <p key={i} className="text-white/90" style={{ textIndent: '2em' }}>
               {para}
             </p>
           ))}
         </div>
 
-        {/* 底部操作 */}
-        <div className="mt-10 flex items-center justify-center gap-4">
-          <button className="px-4 py-2 rounded-full bg-white/5 text-moonly-text-secondary text-sm hover:bg-white/10 transition">
-            上一章
-          </button>
-          <button className="px-4 py-2 rounded-full bg-white/5 text-moonly-text-secondary text-sm hover:bg-white/10 transition">
-            下一章
-          </button>
+        {/* 章节底部提示 */}
+        <div className="mt-10 text-center">
+          <div className="text-moonly-text-muted text-xs">
+            — 第 {currentChapter + 1} / {totalChapters} 章 · {CHAPTERS[currentChapter]?.title} —
+          </div>
         </div>
 
         <div className="mt-8 text-center text-moonly-text-muted text-xs pb-8">
-          已读 {Math.round(progress)}%
+          已读 {Math.round(chapterProgress)}%
+        </div>
+      </div>
+
+      {/* 底部翻页导航 */}
+      <div className="fixed bottom-0 left-0 right-0 bg-[#1a1428]/95 backdrop-blur-sm border-t border-white/10 px-4 py-3 z-20">
+        <div className="max-w-md mx-auto flex items-center justify-between">
+          <button
+            onClick={() => goToChapter(currentChapter - 1)}
+            disabled={currentChapter === 0}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-moonly-gold/20"
+          >
+            ← 上一章
+          </button>
+          <span className="text-sm text-moonly-text-muted">
+            {CHAPTERS[currentChapter]?.title}
+          </span>
+          <button
+            onClick={() => goToChapter(currentChapter + 1)}
+            disabled={currentChapter === totalChapters - 1}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-moonly-gold/20"
+          >
+            下一章 →
+          </button>
         </div>
       </div>
     </div>

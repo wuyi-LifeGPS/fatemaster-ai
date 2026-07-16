@@ -21,23 +21,37 @@ export default function ChakraPage() {
   const [progress, setProgress] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const isRunningRef = useRef(false)
 
   const CHAKRA_DURATION = 60 // 每个脉轮60秒
+
+  // 清理 timer
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [])
 
   const start = () => {
     setPhase('chakra')
     setCurrentIdx(0)
     setProgress(0)
     setIsRunning(true)
+    isRunningRef.current = true
     runChakra(0)
   }
 
   const runChakra = (idx: number) => {
+    if (!isRunningRef.current) return
     setCurrentIdx(idx)
     setProgress(0)
 
     const startTime = Date.now()
     timerRef.current = setInterval(() => {
+      if (!isRunningRef.current) {
+        if (timerRef.current) clearInterval(timerRef.current)
+        return
+      }
       const elapsed = (Date.now() - startTime) / 1000
       const pct = Math.min(elapsed / CHAKRA_DURATION, 1)
       setProgress(pct)
@@ -54,12 +68,14 @@ export default function ChakraPage() {
 
   const complete = () => {
     setIsRunning(false)
+    isRunningRef.current = false
     setPhase('complete')
     if (timerRef.current) clearInterval(timerRef.current)
   }
 
   const stop = () => {
     setIsRunning(false)
+    isRunningRef.current = false
     if (timerRef.current) clearInterval(timerRef.current)
   }
 

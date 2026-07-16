@@ -99,15 +99,13 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <Link href="/wo" className="text-moonly-text-secondary hover:text-white transition text-sm flex items-center gap-1">
+      <div className="flex items-center gap-3 mb-6">
+        <Link href="/wo" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M15 18l-6-6 6-6" />
+            <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          返回
         </Link>
         <h1 className="text-gold-gradient text-xl font-bold">设置</h1>
-        <div className="w-10" />
       </div>
 
       {/* 主题设置 */}

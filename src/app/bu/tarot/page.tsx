@@ -54,6 +54,17 @@ interface DrawnCard {
   reversed: boolean
 }
 
+// Loading spinner
+function Spinner({ className = '' }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center gap-1 ${className}`}>
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+    </div>
+  )
+}
+
 export default function TarotPage() {
   const [selectedSpread, setSelectedSpread] = useState(SPREADS[0])
   const [cards, setCards] = useState<DrawnCard[]>([])
@@ -96,6 +107,8 @@ export default function TarotPage() {
     setQuestion('')
   }
 
+  const allRevealed = revealed.length === cards.length && cards.length > 0
+
   return (
     <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       {/* Header */}
@@ -122,7 +135,7 @@ export default function TarotPage() {
       </div>
 
       {/* 牌阵选择 */}
-      {!cards.length && (
+      {!cards.length && !shuffling && (
         <div className="space-y-3 mb-6">
           {SPREADS.map(spread => (
             <button
@@ -143,28 +156,31 @@ export default function TarotPage() {
       )}
 
       {/* 洗牌按钮 */}
-      {!cards.length && (
+      {!cards.length && !shuffling && (
         <button
           onClick={shuffle}
-          disabled={shuffling}
-          className="w-full py-3.5 rounded-xl bg-moonly-gold/15 text-gold border border-moonly-gold/20 font-medium hover:bg-moonly-gold/20 transition disabled:opacity-50"
+          className="w-full py-3.5 btn-gold text-sm font-semibold flex items-center justify-center gap-2"
         >
-          {shuffling ? '洗牌中...' : '开始抽牌'}
+          开始抽牌
         </button>
       )}
 
       {/* 洗牌动画 */}
       {shuffling && (
-        <div className="flex justify-center py-12">
-          <div className="w-24 h-36 rounded-xl bg-gradient-to-br from-moonly-gold/20 to-moonly-purple/20 border border-white/10 flex items-center justify-center animate-pulse">
-            <span className="text-3xl">🃏</span>
+        <div className="flex flex-col items-center justify-center py-16 gap-4">
+          <div className="relative w-20 h-28">
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-moonly-gold/20 to-moonly-purple/20 border border-white/10 animate-pulse" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Spinner className="text-moonly-gold" />
+            </div>
           </div>
+          <p className="text-moonly-text-secondary text-sm">正在洗牌...</p>
         </div>
       )}
 
       {/* 牌阵展示 */}
       {cards.length > 0 && !shuffling && (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in">
           {/* 牌阵 */}
           <div className={`grid gap-3 ${cards.length === 1 ? 'grid-cols-1 max-w-[140px] mx-auto' : cards.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
             {cards.map((drawn, i) => (
@@ -174,7 +190,7 @@ export default function TarotPage() {
                   onClick={() => revealCard(i)}
                   className={`w-full aspect-[2/3] rounded-xl border transition-all duration-500 relative overflow-hidden ${
                     revealed.includes(i)
-                      ? 'bg-gradient-to-br from-moonly-gold/10 to-moonly-purple/10 border-moonly-gold/30'
+                      ? 'bg-gradient-to-br from-moonly-gold/10 to-moonly-purple/10 border-moonly-gold/30 animate-fade-in-scale'
                       : 'bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border-white/10 hover:border-white/20'
                   }`}
                 >
@@ -207,14 +223,14 @@ export default function TarotPage() {
           </div>
 
           {/* 综合解读 */}
-          {revealed.length === cards.length && (
-            <div className="moonly-card p-5">
+          {allRevealed && (
+            <div className="moonly-card p-5 animate-fade-in">
               <h3 className="text-gold text-sm font-semibold mb-3">综合解读</h3>
               <p className="text-sm text-moonly-text-secondary leading-relaxed">
                 {question ? `关于「${question}」：\n` : ''}
                 {cards.map((d, i) => `${selectedSpread.positions[i]} — ${d.card.name}（${d.reversed ? '逆位' : '正位'}）`).join('，')}
                 。这组牌阵提示你当前{question ? '所问之事' : '面临的情况'}的关键在于
-                {cards.find(c => !c.reversed)?.card?.name || cards[0]?.card?.name}的能量，
+                {cards.find(c => !c.reversed)?.card?.name || cards[0]?.card.name}的能量，
                 {cards.some(c => c.reversed) ? '其中逆位牌提醒你需要注意调整的方向。' : '整体能量积极向上，建议顺势而为。'}
               </p>
             </div>
@@ -223,7 +239,7 @@ export default function TarotPage() {
           {/* 重新抽牌 */}
           <button
             onClick={reset}
-            className="w-full py-3 rounded-xl bg-white/5 text-moonly-text-secondary border border-white/10 hover:bg-white/10 transition"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新抽牌
           </button>

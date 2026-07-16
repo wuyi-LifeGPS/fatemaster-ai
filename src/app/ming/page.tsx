@@ -807,6 +807,18 @@ export default function MingPage() {
     return getModuleDetail(modalModule, baziData, currentProfile)
   }, [modalModule, baziData, currentProfile])
 
+  if (loading) {
+    return (
+      <div className="min-h-screen moonly-bg moonly-content px-4 pt-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-16 bg-white/5 rounded-xl" />
+          <div className="h-32 bg-white/5 rounded-xl" />
+          <div className="h-48 bg-white/5 rounded-xl" />
+          <div className="h-24 bg-white/5 rounded-xl" />
+        </div>
+      </div>
+    )
+  }
   if (!loading && profiles.length === 0) return <EmptyState />
   if (!currentProfile) return null
 

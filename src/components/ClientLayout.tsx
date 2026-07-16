@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import AIFloatingButton from './AIFloatingButton'
+import ScrollToTop from './ScrollToTop'
 import BottomNav from './BottomNav'
 
 const HIDE_NAV_PAGES = [
@@ -65,6 +66,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   return (
     <>
       {children}
+      <ScrollToTop />
       {!hideNav && <AIFloatingButton />}
       {!hideNav && <BottomNav />}
     </>

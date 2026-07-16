@@ -75,6 +75,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     trackVisit()
+
+    // 注册 Service Worker（PWA 支持）
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {
+        // 静默失败，不影响正常使用
+      })
+    }
   }, [pathname])
 
   return (

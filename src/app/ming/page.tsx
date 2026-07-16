@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { getProfiles, BaziProfile } from '@/lib/bazi-profiles'
 import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, getYinYang, SHI_SHEN_MAP, DaYunInfo } from '@/lib/bazi'
 import useKeyboard from '@/hooks/useKeyboard'
+import PullToRefresh from '@/components/PullToRefresh'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -765,6 +766,26 @@ export default function MingPage() {
   }, [baziData, currentId, profiles])
 
   const currentProfile = useMemo(() => profiles.find(p => p.id === currentId), [profiles, currentId])
+
+  // 下拉刷新
+  const handleRefresh = async () => {
+    const list = getProfiles()
+    setProfiles(list)
+    // 重新触发 baziData 和 daYunData 的计算
+    if (currentId && list.find(p => p.id === currentId)) {
+      setBaziData(null)
+      setDaYunData(null)
+      // 短暂延迟让 React 重新渲染 effect
+      await new Promise(r => setTimeout(r, 50))
+      const profile = list.find(p => p.id === currentId)
+      if (profile) {
+        const birthDate = `${profile.year}-${String(profile.month).padStart(2, '0')}-${String(profile.day).padStart(2, '0')}`
+        const birthTime = `${String(profile.hour).padStart(2, '0')}:00`
+        try { setBaziData(calculateBazi(birthDate, birthTime)) } catch (e) { console.error(e) }
+      }
+    }
+  }
+
   const modalContent = useMemo(() => {
     if (!modalModule || !baziData || !currentProfile) return null
     return getModuleDetail(modalModule, baziData, currentProfile)
@@ -783,11 +804,12 @@ export default function MingPage() {
         onSwitchProfile={setCurrentId}
       />
 
-      <QuickShortcuts />
-      <RecentVisits />
-      <DailyTip />
+      <PullToRefresh onRefresh={handleRefresh}>
+        <QuickShortcuts />
+        <RecentVisits />
+        <DailyTip />
 
-      <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
+        <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (
           <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={`top-tab text-sm font-medium py-1 relative ${activeTab === tab.key ? 'active' : ''}`}>
             {tab.label}
@@ -803,6 +825,8 @@ export default function MingPage() {
         {activeTab === 'liuyue' && <LiuyueTab dayMaster={baziData?.dayMaster} />}
         {activeTab === 'liuri' && <LiuriTab dayMaster={baziData?.dayMaster} />}
       </div>
+
+      </PullToRefresh>
 
       {modalContent && (
         <BottomSheet title={modalContent.title} subtitle={modalContent.subtitle} onClose={() => setModalModule(null)}>

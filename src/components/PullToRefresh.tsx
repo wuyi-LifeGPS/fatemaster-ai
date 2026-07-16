@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 
 interface PullToRefreshProps {
   onRefresh: () => Promise<void> | void
@@ -12,20 +12,24 @@ export default function PullToRefresh({ onRefresh, children }: PullToRefreshProp
   const [pullDistance, setPullDistance] = useState(0)
   const [refreshing, setRefreshing] = useState(false)
   const startY = useRef(0)
-  const containerRef = useRef<HTMLDivElement>(null)
+
+  const isAtTop = useCallback(() => {
+    return (window.scrollY || document.documentElement.scrollTop) <= 1
+  }, [])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (containerRef.current && containerRef.current.scrollTop <= 0) {
+    if (isAtTop()) {
       startY.current = e.touches[0].clientY
       setPulling(true)
     }
-  }, [])
+  }, [isAtTop])
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (!pulling) return
     const delta = e.touches[0].clientY - startY.current
-    if (delta > 0 && delta < 150) {
-      setPullDistance(delta)
+    if (delta > 0 && delta < 120) {
+      // 阻力效果
+      setPullDistance(delta * 0.5)
     }
   }, [pulling])
 
@@ -33,9 +37,9 @@ export default function PullToRefresh({ onRefresh, children }: PullToRefreshProp
     if (!pulling) return
     setPulling(false)
 
-    if (pullDistance > 80) {
+    if (pullDistance > 40) {
       setRefreshing(true)
-      setPullDistance(80)
+      setPullDistance(50)
       try {
         await onRefresh()
       } finally {
@@ -49,18 +53,17 @@ export default function PullToRefresh({ onRefresh, children }: PullToRefreshProp
 
   return (
     <div
-      ref={containerRef}
-      className="relative overflow-y-auto h-full"
+      className="relative"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       {/* 下拉指示器 */}
       <div
-        className="absolute top-0 left-0 right-0 flex items-center justify-center overflow-hidden transition-transform"
+        className="absolute top-0 left-0 right-0 flex items-center justify-center overflow-hidden z-10"
         style={{
-          height: pullDistance,
-          transform: `translateY(${pullDistance > 0 ? 0 : -pullDistance}px)`,
+          height: Math.max(0, pullDistance),
+          opacity: Math.min(1, pullDistance / 30),
         }}
       >
         <div className="flex flex-col items-center gap-1">
@@ -75,7 +78,7 @@ export default function PullToRefresh({ onRefresh, children }: PullToRefreshProp
               stroke="#c9a96e"
               strokeWidth="2"
               style={{
-                transform: `rotate(${Math.min(pullDistance * 2, 180)}deg)`,
+                transform: `rotate(${Math.min(pullDistance * 3, 180)}deg)`,
                 transition: 'transform 0.2s',
               }}
             >
@@ -83,7 +86,7 @@ export default function PullToRefresh({ onRefresh, children }: PullToRefreshProp
             </svg>
           )}
           <span className="text-xs text-moonly-muted">
-            {refreshing ? '刷新中...' : pullDistance > 80 ? '释放刷新' : '下拉刷新'}
+            {refreshing ? '刷新中...' : pullDistance > 40 ? '释放刷新' : '下拉刷新'}
           </span>
         </div>
       </div>

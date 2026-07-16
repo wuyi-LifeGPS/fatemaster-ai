@@ -111,6 +111,78 @@ function getGuaName(yaoList: Yao[]): { ben: string; bian?: string; dong: number[
   return { ben, dong: [] }
 }
 
+// 卦象基本解读库
+const HEXAGRAM_MEANING: Record<string, { general: string; advice: string }> = {
+  '乾为天': { general: '天行健，君子以自强不息。象征刚健、创造、领导力。', advice: '宜积极进取，不宜消极等待。事业可大展宏图。' },
+  '坤为地': { general: '地势坤，君子以厚德载物。象征包容、柔顺、承载。', advice: '宜守成不宜冒进，以柔克刚，静待时机。' },
+  '屯': { general: '水雷屯，象征万物始生，充满艰难但蕴含生机。', advice: '创业初期多艰，宜稳扎稳打，不可急于求成。' },
+  '蒙': { general: '山水蒙，象征启蒙、教育，如孩童蒙昧待开。', advice: '宜虚心求教，接受指导，不可自以为是。' },
+  '需': { general: '水天需，象征等待、需求，如密云不雨。', advice: '宜耐心等待，时机未到不可强行。' },
+  '讼': { general: '天水讼，象征争讼、矛盾，需以和为贵。', advice: '宜和解不宜争讼，退一步海阔天空。' },
+  '师': { general: '地水师，象征军队、组织，需纪律严明。', advice: '宜团结众人，不可独断专行。' },
+  '比': { general: '水地比，象征亲比、团结，如水附大地。', advice: '宜与人合作，亲近有德之人。' },
+  '小畜': { general: '风天小畜，象征小有蓄积，力量尚薄。', advice: '宜积蓄力量，不可急功近利。' },
+  '履': { general: '天泽履，象征履行、实践，如履薄冰。', advice: '宜谨慎行事，循礼而行则吉。' },
+  '泰': { general: '地天泰，象征天地交泰，万物通顺。', advice: '宜把握良机，乘势而上。' },
+  '否': { general: '天地否，象征闭塞不通，小人当道。', advice: '宜韬光养晦，坚守正道，等待转机。' },
+  '同人': { general: '天火同人，象征志同道合，与人同心。', advice: '宜广结善缘，与人合作共事。' },
+  '大有': { general: '火天大有，象征大丰收、大成就。', advice: '宜感恩惜福，不可骄奢淫逸。' },
+  '谦': { general: '地山谦，象征谦虚，山在地下。', advice: '宜谦受益，满招损，谦虚待人则吉。' },
+  '豫': { general: '雷地豫，象征喜悦、安乐，但需防乐极生悲。', advice: '宜适度享乐，不可沉迷。' },
+  '随': { general: '泽雷随，象征随从、顺应，随遇而安。', advice: '宜顺势而为，不可逆流而动。' },
+  '蛊': { general: '山风蛊，象征积弊、腐败，需革新除弊。', advice: '宜改革弊政，重振旗鼓。' },
+  '临': { general: '地泽临，象征居高临下，审视全局。', advice: '宜把握大局，以德临人。' },
+  '观': { general: '风地观，象征观察、瞻仰，如风行地上。', advice: '宜仔细观察，不可轻举妄动。' },
+  '噬嗑': { general: '火雷噬嗑，象征咬合、决断，如口中含物。', advice: '宜果断决策，除去障碍。' },
+  '贲': { general: '山火贲，象征文饰、修饰，美观而虚。', advice: '宜注重内涵，不可徒有其表。' },
+  '剥': { general: '山地剥，象征剥落、衰败，如高山倾颓。', advice: '宜守静待变，不可逆势而动。' },
+  '复': { general: '地雷复，象征反复、回归，一阳来复。', advice: '宜回归初心，重新开始。' },
+  '无妄': { general: '天雷无妄，象征无妄之灾，不可妄为。', advice: '宜守正不妄，顺其自然。' },
+  '大畜': { general: '山天大畜，象征大蓄积，蓄养贤能。', advice: '宜积蓄力量，厚积薄发。' },
+  '颐': { general: '山雷颐，象征颐养、自养，如口中进食。', advice: '宜自食其力，谨慎养生。' },
+  '大过': { general: '泽风大过，象征大过失，栋桡之险。', advice: '宜谨慎行事，不可冒险。' },
+  '坎': { general: '坎为水，象征险陷、重重困难。', advice: '宜保持诚信，行险而不失其信。' },
+  '离': { general: '离为火，象征光明、依附，如日月丽天。', advice: '宜依附正道，传播光明。' },
+  '咸': { general: '泽山咸，象征感应、交感，男女相感。', advice: '宜真诚相待，以感通人。' },
+  '恒': { general: '雷风恒，象征恒久、持久，如天地常久。', advice: '宜持之以恒，不可半途而废。' },
+  '遁': { general: '天山遁，象征退避、隐遁，以退为进。', advice: '宜适时退避，保全实力。' },
+  '大壮': { general: '雷天大壮，象征壮盛、强盛，但需防过刚。', advice: '宜刚健中正，不可恃强凌弱。' },
+  '晋': { general: '火地晋，象征晋升、前进，如日出地上。', advice: '宜积极进取，以柔克刚。' },
+  '明夷': { general: '地火明夷，象征光明受损，如日落地下。', advice: '宜韬光养晦，外愚内明。' },
+  '家人': { general: '风火家人，象征家庭、家风，正家而天下定。', advice: '宜修身齐家，以正治家。' },
+  '睽': { general: '火泽睽，象征乖离、分歧，如火泽不相交。', advice: '宜求同存异，化解分歧。' },
+  '蹇': { general: '水山蹇，象征艰难、蹇滞，如山上有水。', advice: '宜见险而止，不可冒进。' },
+  '解': { general: '雷水解，象征解脱、缓解，如雷雨作而万物解。', advice: '宜把握时机，解除困难。' },
+  '损': { general: '山泽损，象征减损、损益，损下益上。', advice: '宜适度损己利人，以和为贵。' },
+  '益': { general: '风雷益，象征增益、受益，损上益下。', advice: '宜把握良机，积极受益。' },
+  '夬': { general: '泽天夬，象征决断、果决，如泽在天上。', advice: '宜果断决策，不可优柔寡断。' },
+  '姤': { general: '天风姤，象征相遇、邂逅，一女遇五男。', advice: '宜谨慎行事，不可妄动。' },
+  '萃': { general: '泽地萃，象征聚集、荟萃，如泽在地上。', advice: '宜聚集众人，共成大事。' },
+  '升': { general: '地风升，象征上升、晋升，如木生于地。', advice: '宜积极进取，循序渐进。' },
+  '困': { general: '泽水困，象征困顿、困境，如泽无水。', advice: '宜坚守正道，穷困中保持希望。' },
+  '井': { general: '水风井，象征井泉、滋养，如木入水中。', advice: '宜修身养德，惠泽他人。' },
+  '革': { general: '泽火革，象征变革、革新，如泽中有火。', advice: '宜把握时机，顺势变革。' },
+  '鼎': { general: '火风鼎，象征鼎新、立器，如木上有火。', advice: '宜破旧立新，建立新秩序。' },
+  '震': { general: '震为雷，象征震动、惊雷，恐惧修省。', advice: '宜谨慎修省，化危为机。' },
+  '艮': { general: '艮为山，象征静止、止步，如高山仰止。', advice: '宜知止而后有定，不可冒进。' },
+  '渐': { general: '风山渐，象征渐进、逐步，如木生于山。', advice: '宜循序渐进，不可急于求成。' },
+  '归妹': { general: '雷泽归妹，象征婚嫁、归宿，少女从长男。', advice: '宜慎重选择，不可轻率。' },
+  '丰': { general: '雷火丰，象征丰盛、盛大，如雷电交加。', advice: '宜把握盛时，防微杜渐。' },
+  '旅': { general: '火山旅，象征旅行、羁旅，如火烧山上。', advice: '宜谨慎守中，不可冒进。' },
+  '巽': { general: '巽为风，象征顺从、渗透，如风无孔不入。', advice: '宜柔顺处世，以退为进。' },
+  '兑': { general: '兑为泽，象征喜悦、和悦，如泽润万物。', advice: '宜和悦待人，以和为贵。' },
+  '涣': { general: '风水涣，象征涣散、离散，如风在水上。', advice: '宜凝聚人心，化解涣散。' },
+  '节': { general: '水泽节，象征节制、节约，如水在泽上。', advice: '宜适度节制，不可过度。' },
+  '中孚': { general: '风泽中孚，象征诚信、孚信，如风行泽上。', advice: '宜诚信为本，以信立身。' },
+  '小过': { general: '雷山小过，象征小过失，小事可过。', advice: '宜谨慎行事，大事不可冒进。' },
+  '既济': { general: '水火既济，象征成功、完成，水火相交。', advice: '宜居安思危，防微杜渐。' },
+  '未济': { general: '火水未济，象征未完成，火水不交。', advice: '宜继续努力，不可半途而废。' },
+}
+
+function getHexagramMeaning(name: string): { general: string; advice: string } {
+  return HEXAGRAM_MEANING[name] || { general: '此卦象显示事情有其内在的规律，需细心体察。', advice: '宜静观其变，审时度势。' }
+}
+
 export default function LiuYaoPage() {
   const [step, setStep] = useState<'intro' | 'tossing' | 'result'>('intro')
   const [currentToss, setCurrentToss] = useState(0) // 当前第几次摇卦 1-6
@@ -341,17 +413,36 @@ export default function LiuYaoPage() {
             <div className="text-white text-sm">{question}</div>
           </div>
 
-          {/* AI 解读（占位） */}
+          {/* AI 解读 */}
           <div className="moonly-card p-5">
             <h3 className="text-white font-bold text-sm mb-3">AI 解读</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
-              <p className="mb-2">根据您的卦象，{result.benGua} 提示：</p>
-              <p>此卦为{result.dongYao.length > 0 ? '动卦' : '静卦'}，{result.dongYao.length > 0 
-                ? `动爻在第 ${result.dongYao.join('、')} 爻，说明事情有变化，需要关注变卦 ${result.bianGua} 的启示。`
-                : '六爻皆静，说明事情目前处于稳定状态，可按本卦象理解。'}
-              </p>
-              <p className="mt-2 text-moonly-text-muted">（完整AI解读功能开发中，后续将接入专业六爻解卦库）</p>
-            </div>
+            {(() => {
+              const meaning = getHexagramMeaning(result.benGua)
+              return (
+                <div className="text-moonly-text-secondary text-sm leading-relaxed space-y-3">
+                  <div>
+                    <span className="text-moonly-gold font-medium">本卦 {result.benGua}：</span>
+                    <span>{meaning.general}</span>
+                  </div>
+                  <div>
+                    <span className="text-moonly-gold font-medium">建议：</span>
+                    <span>{meaning.advice}</span>
+                  </div>
+                  {result.bianGua && (
+                    <div>
+                      <span className="text-moonly-gold font-medium">变卦 {result.bianGua} 启示：</span>
+                      <span>此卦有{result.dongYao.length}个动爻，事情将有变化。变卦提示事情的发展趋势，需关注环境变化，灵活应对。</span>
+                    </div>
+                  )}
+                  <div className="p-3 moonly-card text-xs text-moonly-text-muted">
+                    <p>💡 所问：{question}</p>
+                    <p className="mt-1">{result.dongYao.length > 0
+                      ? `动爻在第 ${result.dongYao.join('、')} 爻，主事情有变，需结合变卦综合判断。`
+                      : '六爻皆静，事情发展平稳，可按本卦理解。'}</p>
+                  </div>
+                </div>
+              )
+            })()}
           </div>
 
           <button onClick={reset} className="w-full btn-gold py-3 text-sm font-semibold">

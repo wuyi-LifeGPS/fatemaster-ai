@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { showToast } from '@/components/Toast'
+import useBeforeUnload from '@/hooks/useBeforeUnload'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getProfileById, updateProfile, BaziProfile } from '@/lib/bazi-profiles'
@@ -97,6 +98,8 @@ function EditProfileContent() {
     calendarType: 'solar' as 'solar' | 'lunar',
     lunarIsLeap: false,
   })
+
+  useBeforeUnload(formData.name !== '' || formData.birthYear !== 1990)
 
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [showTimePicker, setShowTimePicker] = useState(false)

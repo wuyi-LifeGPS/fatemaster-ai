@@ -7,6 +7,7 @@ import { analyzeBazi, getAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar, getSolarDaysInMonth, getLunarDaysInMonth, getLunarMonthOptions } from '@/lib/lunar'
 import { showToast } from '@/components/Toast'
+import useBeforeUnload from '@/hooks/useBeforeUnload'
 import { addProfile } from '@/lib/bazi-profiles'
 
 interface BaziResult {
@@ -144,6 +145,8 @@ export default function BaziPage() {
     lunarIsLeap: false,
     unknownTime: false,
   })
+
+  useBeforeUnload(formData.name !== '' || formData.birthYear !== 1990)
 
   // 选择器状态
   const [showDatePicker, setShowDatePicker] = useState(false)

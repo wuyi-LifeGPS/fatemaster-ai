@@ -8,6 +8,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'moonly-gold': '#c9a96e',
+        'moonly-purple': '#6b5b95',
+        'moonly-text': {
+          DEFAULT: '#ffffff',
+          secondary: 'rgba(255, 255, 255, 0.75)',
+          muted: 'rgba(255, 255, 255, 0.5)',
+        },
         'fate': {
           50: '#fdf8f0',
           100: '#f5e6d3',

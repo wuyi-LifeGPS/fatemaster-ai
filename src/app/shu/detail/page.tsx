@@ -307,12 +307,12 @@ function BookDetailContent() {
           <Link href="/shu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition text-white">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
           </Link>
-          <h1 className="text-gold text-xl font-bold">书籍详情</h1>
+          <h1 className="text-moonly-gold text-xl font-bold">书籍详情</h1>
         </div>
         <div className="text-center py-20">
           <div className="text-4xl mb-3">📚</div>
           <p className="text-moonly-text-secondary text-sm">未找到该书籍</p>
-          <Link href="/shu" className="mt-4 inline-block px-6 py-2 rounded-full bg-gold/10 text-gold text-sm hover:bg-gold/20 transition border border-gold/20">
+          <Link href="/shu" className="mt-4 inline-block px-6 py-2 rounded-full bg-moonly-gold/10 text-moonly-gold text-sm hover:bg-moonly-gold/20 transition border border-moonly-gold/20">
             返回书库
           </Link>
         </div>
@@ -325,7 +325,7 @@ function BookDetailContent() {
   const progress = totalChapters > 1 ? ((currentChapter + 1) / totalChapters) * 100 : 100
 
   return (
-    <div className="min-h-screen text-white"
+    <div className="min-h-screen moonly-bg moonly-content text-white animate-fade-in"
       style={{ fontFamily: "'Noto Serif SC', 'Songti SC', serif" }}
     >
       {/* 头部 */}
@@ -377,7 +377,7 @@ function BookDetailContent() {
       <div className="px-4 py-2">
         <div className="max-w-md mx-auto">
           <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full bg-[#c9a96e] rounded-full transition-all" style={{ width: `${progress}%` }} />
+            <div className="h-full bg-moonly-gold rounded-full transition-all" style={{ width: `${progress}%` }} />
           </div>
           <div className="text-right text-xs text-moonly-text-muted mt-1">
             阅读进度 {Math.round(progress)}%

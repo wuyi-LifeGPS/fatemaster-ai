@@ -52,6 +52,7 @@ import DailyMantra from '@/components/DailyMantra'
 import TodaySummary from '@/components/TodaySummary'
 import FortuneCalendar from '@/components/FortuneCalendar'
 import FortuneStick from '@/components/FortuneStick'
+import DailyBenefactor from '@/components/DailyBenefactor'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -854,6 +855,7 @@ export default function MingPage() {
         <TodaySummary />
         <FortuneCalendar />
         <FortuneStick />
+        <DailyBenefactor />
         <LunarDateDisplay />
       </div>
 

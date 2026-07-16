@@ -55,6 +55,7 @@ import FortuneStick from '@/components/FortuneStick'
 import DailyBenefactor from '@/components/DailyBenefactor'
 import WeeklyFortuneSummary from '@/components/WeeklyFortuneSummary'
 import FortuneQuiz from '@/components/FortuneQuiz'
+import CollapsibleSection from '@/components/CollapsibleSection'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -856,56 +857,72 @@ export default function MingPage() {
       <div className="px-4 pt-2">
         <TodaySummary />
         <FortuneCalendar />
-        <FortuneStick />
         <DailyBenefactor />
         <WeeklyFortuneSummary />
-        <FortuneQuiz />
-        <LunarDateDisplay />
       </div>
 
       <PullToRefresh onRefresh={handleRefresh}>
-        <QuickShortcuts />
-        <RecentVisits />
-        <DailyTip />
-        <DailyYiJi />
-        <SolarTermDisplay />
-        <ZodiacFortune />
-        <LuckyColor />
-        <LuckyHours />
-        <DailyQuote />
-        <WuxingEnergy />
-        <DirectionGuide />
-        <LuckyNumbers />
-        <FengShuiTip />
-        <HealthTip />
-        <WeeklyFortune />
-        <HoroscopeWidget />
-        <TarotDaily />
-        <MeditationTimer />
-        <GratitudeJournal />
-        <DreamJournal />
-        <HabitTracker />
-        <CountdownWidget />
-        <DailyPoem />
-        <DailyTrivia />
-        <DailyWisdom />
-        <DailyProverb />
-        <DailyJoke />
-        <DailyChallenge />
-        <DailyPositive />
-        <MoodTracker />
-        <DailyHealth />
-        <DailySentence />
-        <BreathingGuide />
-        <DailyMood />
-        <DailyFortune />
-        <DailyMotto />
-        <DailyZen />
-        <DailyAdvice />
-        <DailyInsight />
-        <DailyAffirmation />
-        <DailyReflection />
-        <DailyMantra />
+        <div className="px-4 space-y-3">
+          <QuickShortcuts />
+          <RecentVisits />
+          <DailyTip />
+
+          <CollapsibleSection title="命理工具" icon="🔮" defaultOpen={true}>
+            <DailyYiJi />
+            <SolarTermDisplay />
+            <LunarDateDisplay />
+          </CollapsibleSection>
+
+          <CollapsibleSection title="每日运势" icon="🌟" defaultOpen={true}>
+            <ZodiacFortune />
+            <LuckyColor />
+            <LuckyHours />
+            <DailyQuote />
+            <WuxingEnergy />
+            <DirectionGuide />
+            <LuckyNumbers />
+            <FengShuiTip />
+            <WeeklyFortune />
+            <HoroscopeWidget />
+          </CollapsibleSection>
+
+          <CollapsibleSection title="心灵成长" icon="🧘" defaultOpen={false}>
+            <MeditationTimer />
+            <GratitudeJournal />
+            <DreamJournal />
+            <HabitTracker />
+            <CountdownWidget />
+            <BreathingGuide />
+            <MoodTracker />
+          </CollapsibleSection>
+
+          <CollapsibleSection title="每日充电" icon="📚" defaultOpen={false}>
+            <DailyPoem />
+            <DailyTrivia />
+            <DailyWisdom />
+            <DailyProverb />
+            <DailyJoke />
+            <DailyChallenge />
+            <DailyPositive />
+            <DailyHealth />
+            <DailySentence />
+            <DailyMood />
+            <DailyFortune />
+            <DailyMotto />
+            <DailyZen />
+            <DailyAdvice />
+            <DailyInsight />
+            <DailyAffirmation />
+            <DailyReflection />
+            <DailyMantra />
+          </CollapsibleSection>
+
+          <CollapsibleSection title="趣味测试" icon="🎯" defaultOpen={true}>
+            <FortuneStick />
+            <FortuneQuiz />
+            <TarotDaily />
+          </CollapsibleSection>
+        </div>
 
         <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (

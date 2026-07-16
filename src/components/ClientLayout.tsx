@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import AIFloatingButton from './AIFloatingButton'
 import UsageStatsPanel, { trackVisit } from './UsageStats'
+import Onboarding from './Onboarding'
 import PageTransition from './PageTransition'
 import GlobalSearch from './GlobalSearch'
 import RouteTracker from './RouteTracker'
@@ -77,6 +78,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <>
+      <Onboarding />
       <PageTransition />
       <GlobalSearch />
       <RouteTracker />

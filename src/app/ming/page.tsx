@@ -5,6 +5,7 @@ import { showToast } from '@/components/Toast'
 import Link from 'next/link'
 import { getProfiles, BaziProfile } from '@/lib/bazi-profiles'
 import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, getYinYang, SHI_SHEN_MAP, DaYunInfo } from '@/lib/bazi'
+import useKeyboard from '@/hooks/useKeyboard'
 
 import LiunianTab from './components/LiunianTab'
 import LiuyueTab from './components/LiuyueTab'
@@ -642,6 +643,7 @@ function StarRating({ count, max = 5 }: { count: number; max?: number }) {
 
 // ===== 底部弹窗组件 =====
 function BottomSheet({ title, subtitle, children, onClose }: { title: string; subtitle?: string; children: React.ReactNode; onClose: () => void }) {
+  useKeyboard({ onEscape: onClose })
   const [dragY, setDragY] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const startYRef = useRef(0)

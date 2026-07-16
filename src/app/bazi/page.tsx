@@ -9,6 +9,7 @@ import { lunarToSolar, getSolarDaysInMonth, getLunarDaysInMonth, getLunarMonthOp
 import { showToast } from '@/components/Toast'
 import useBeforeUnload from '@/hooks/useBeforeUnload'
 import { addProfile } from '@/lib/bazi-profiles'
+import useKeyboard from '@/hooks/useKeyboard'
 
 interface BaziResult {
   pillars: { name: string; gan: string; zhi: string }[]
@@ -37,6 +38,7 @@ interface WheelPickerProps {
 }
 
 function BottomSheet({ open, onClose, title, children, onConfirm }: WheelPickerProps) {
+  useKeyboard({ onEscape: onClose, onEnter: onConfirm, enabled: open })
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end">

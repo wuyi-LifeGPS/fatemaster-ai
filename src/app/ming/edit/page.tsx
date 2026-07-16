@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getProfileById, updateProfile, BaziProfile } from '@/lib/bazi-profiles'
 import { getSolarDaysInMonth, getLunarDaysInMonth, getLunarMonthOptions } from '@/lib/lunar'
+import useKeyboard from '@/hooks/useKeyboard'
 
 interface WheelPickerProps {
   open: boolean
@@ -17,6 +18,7 @@ interface WheelPickerProps {
 }
 
 function BottomSheet({ open, onClose, title, children, onConfirm }: WheelPickerProps) {
+  useKeyboard({ onEscape: onClose, onEnter: onConfirm, enabled: open })
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end">

@@ -14,6 +14,7 @@ const DEFAULT_SHORTCUTS: ShortcutItem[] = [
   { label: '合婚', href: '/match', icon: '💕' },
   { label: '事业', href: '/career', icon: '💼' },
   { label: '学堂', href: '/academy', icon: '📚' },
+  { label: '周报', href: '/weekly-report', icon: '📊' },
   { label: '起名', href: '/naming', icon: '✨' },
   { label: '天赋', href: '/talent', icon: '🌟' },
   { label: '塔罗', href: '/bu/tarot', icon: '🎴' },

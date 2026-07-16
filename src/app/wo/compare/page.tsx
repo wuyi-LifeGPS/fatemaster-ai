@@ -126,7 +126,7 @@ export default function BaziComparePage() {
           <select
             value={selected1}
             onChange={(e) => { setSelected1(e.target.value); setResult(null) }}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-moonly-gold/50"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#c9a96e]/50"
           >
             <option value="" className="bg-moonly-bg">请选择</option>
             {profiles.map(p => (
@@ -142,7 +142,7 @@ export default function BaziComparePage() {
           <select
             value={selected2}
             onChange={(e) => { setSelected2(e.target.value); setResult(null) }}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-moonly-gold/50"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#c9a96e]/50"
           >
             <option value="" className="bg-moonly-bg">请选择</option>
             {profiles.map(p => (

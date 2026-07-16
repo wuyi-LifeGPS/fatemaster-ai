@@ -68,7 +68,7 @@ export default function ZodiacMatchPage() {
             <select
               value={animal1}
               onChange={e => setAnimal1(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-moonly-gold/30"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-[#c9a96e]/30"
             >
               <option value="" className="bg-[#1a1428]">选择生肖</option>
               {ZODIAC_ANIMALS.map(animal => (
@@ -83,7 +83,7 @@ export default function ZodiacMatchPage() {
             <select
               value={animal2}
               onChange={e => setAnimal2(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-moonly-gold/30"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-[#c9a96e]/30"
             >
               <option value="" className="bg-[#1a1428]">选择生肖</option>
               {ZODIAC_ANIMALS.map(animal => (

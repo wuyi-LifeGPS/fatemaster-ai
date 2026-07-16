@@ -130,7 +130,7 @@ export default function TarotPage() {
           value={question}
           onChange={e => setQuestion(e.target.value)}
           placeholder="心中默念你的问题..."
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-moonly-gold/30"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-[#c9a96e]/30"
         />
       </div>
 

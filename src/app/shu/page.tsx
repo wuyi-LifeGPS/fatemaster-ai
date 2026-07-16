@@ -159,7 +159,7 @@ export default function ShuPage() {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="搜索书名或作者..."
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-moonly-gold/30"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-[#c9a96e]/30"
         />
         <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-moonly-text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="11" cy="11" r="8" />

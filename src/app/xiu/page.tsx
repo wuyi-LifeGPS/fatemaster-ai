@@ -351,7 +351,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
                 min="1"
                 max="120"
                 placeholder="分钟"
-                className="w-20 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-moonly-gold/30"
+                className="w-20 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]/30"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     const val = parseInt((e.target as HTMLInputElement).value, 10)

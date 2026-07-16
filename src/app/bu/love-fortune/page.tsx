@@ -83,7 +83,7 @@ export default function LoveFortunePage() {
               type="date"
               value={birthDate}
               onChange={e => setBirthDate(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-moonly-gold/30"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-[#c9a96e]/30"
             />
           </div>
 

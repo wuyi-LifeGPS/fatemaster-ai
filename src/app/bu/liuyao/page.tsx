@@ -284,7 +284,7 @@ export default function LiuYaoPage() {
               value={question}
               onChange={e => setQuestion(e.target.value)}
               placeholder="例如：这次合作能否成功？近期事业发展如何？"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-moonly-text-muted focus:outline-none focus:border-moonly-gold/30 resize-none"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-moonly-text-muted focus:outline-none focus:border-[#c9a96e]/30 resize-none"
               rows={3}
             />
             <button

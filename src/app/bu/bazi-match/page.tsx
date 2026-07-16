@@ -114,13 +114,13 @@ export default function BaziMatchPage() {
             value={person1.name}
             onChange={e => setPerson1({ ...person1, name: e.target.value })}
             placeholder="姓名"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-moonly-gold/30 mb-3"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-[#c9a96e]/30 mb-3"
           />
           <input
             type="date"
             value={person1.birthDate}
             onChange={e => setPerson1({ ...person1, birthDate: e.target.value })}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-moonly-gold/30"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-[#c9a96e]/30"
           />
         </div>
 
@@ -130,13 +130,13 @@ export default function BaziMatchPage() {
             value={person2.name}
             onChange={e => setPerson2({ ...person2, name: e.target.value })}
             placeholder="姓名"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-moonly-gold/30 mb-3"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-[#c9a96e]/30 mb-3"
           />
           <input
             type="date"
             value={person2.birthDate}
             onChange={e => setPerson2({ ...person2, birthDate: e.target.value })}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-moonly-gold/30"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-[#c9a96e]/30"
           />
         </div>
 

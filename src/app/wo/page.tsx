@@ -50,6 +50,7 @@ export default function WoPage() {
     { icon: '♈', label: '星座运势', href: '/wo/horoscope' },
     { icon: '☯️', label: '今日运势', href: '/ming?tab=liuri' },
     { icon: '⚙️', label: '设置', href: '/settings' },
+    { icon: '❓', label: '帮助', href: '/help' },
   ]
 
   return (

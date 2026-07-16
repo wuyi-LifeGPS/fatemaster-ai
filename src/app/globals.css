@@ -380,14 +380,40 @@ a:hover .moonly-card,
 }
 .bottom-sheet-body::-webkit-scrollbar { display: none; }
 
-/* 可点击卡片 */
-.info-card-black.clickable,
-.moonly-card.clickable {
-  cursor: pointer;
-  transition: all 0.2s ease;
+/* 文本截断 */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.info-card-black.clickable:active,
-.moonly-card.clickable:active {
-  transform: scale(0.98);
-  opacity: 0.9;
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
+
+/* 安全区域适配 */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* 触摸反馈 */
+.touch-feedback {
+  -webkit-tap-highlight-color: transparent;
+}
+.touch-feedback:active {
+  opacity: 0.7;
+}
+
+/* 玻璃态效果 */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+

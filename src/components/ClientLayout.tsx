@@ -1,7 +1,9 @@
 'use client'
 
+import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import AIFloatingButton from './AIFloatingButton'
+import UsageStatsPanel, { trackVisit } from './UsageStats'
 import PageTransition from './PageTransition'
 import GlobalSearch from './GlobalSearch'
 import RouteTracker from './RouteTracker'
@@ -68,6 +70,10 @@ const HIDE_NAV_PAGES = [
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const hideNav = HIDE_NAV_PAGES.some(p => pathname?.startsWith(p))
+
+  useEffect(() => {
+    trackVisit()
+  }, [pathname])
 
   return (
     <>

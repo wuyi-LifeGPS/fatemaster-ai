@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import UsageStatsPanel from '@/components/UsageStats'
 import { getAllHistoryRecords } from '@/lib/history'
 import { getTodayGanZhi, getShiShen, getWuXing } from '@/lib/bazi'
 import { getProfiles } from '@/lib/bazi-profiles'
@@ -116,6 +117,8 @@ export default function WoPage() {
           <div className="text-moonly-muted text-xs">已读书籍</div>
         </div>
       </div>
+
+      <UsageStatsPanel />
 
       {/* 菜单 */}
       <div className="space-y-1">

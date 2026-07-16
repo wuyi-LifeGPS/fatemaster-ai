@@ -7,6 +7,7 @@ import { getProfiles, BaziProfile } from '@/lib/bazi-profiles'
 import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, getYinYang, SHI_SHEN_MAP, DaYunInfo } from '@/lib/bazi'
 import useKeyboard from '@/hooks/useKeyboard'
 import PullToRefresh from '@/components/PullToRefresh'
+import { FavoriteButton } from '@/components/FavoriteButton'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -968,6 +969,12 @@ function ProfileHeader({ profile, baziData, profiles, currentId, onSwitchProfile
           <ShareButton
             title={`${profile.name}的八字命盘`}
             text={`姓名：${profile.name}\n出生：${profile.year}年${profile.month}月${profile.day}日 ${profile.birthTimeLabel}\n八字：${baziStr}\n五行：${wuxingText}`}
+          />
+          <FavoriteButton
+            type="profile"
+            title={profile.name}
+            subtitle={`${profile.year}年${profile.month}月${profile.day}日 ${profile.birthTimeLabel}`}
+            data={{ id: profile.id }}
           />
         </div>
       </div>

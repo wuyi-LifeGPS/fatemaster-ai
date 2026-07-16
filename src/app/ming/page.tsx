@@ -8,6 +8,7 @@ import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, getYi
 import useKeyboard from '@/hooks/useKeyboard'
 import PullToRefresh from '@/components/PullToRefresh'
 import { FavoriteButton } from '@/components/FavoriteButton'
+import CopyButton from '@/components/CopyButton'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -1002,6 +1003,8 @@ function ProfileHeader({ profile, baziData, profiles, currentId, onSwitchProfile
 
 function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziProfile; onOpenModal: (id: string) => void }) {
   const { pillars, dayMaster, cangGanDetail, bodyStrength, pattern, tiaoHou, wuXingFullCount } = data
+  const baziStr = pillars.map((p: any) => p.gan + p.zhi).join(' ')
+  const wuxingText = pillars.map((p: any) => getWuXingText(p.gan, p.zhi)).join(' ')
   const shishenCount = useMemo(() => countShiShen(pillars, dayMaster), [pillars, dayMaster])
   const lifeSummary = useMemo(() => {
     const { dayMaster, bodyStrength, pattern, tiaoHou } = data
@@ -1022,7 +1025,10 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
   return (
     <div className="space-y-4">
       <div onClick={() => onOpenModal('bazi')} className="info-card-black clickable p-4">
-        <h3 className="text-gold text-sm font-semibold mb-3">八字排盘</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-gold text-sm font-semibold">八字排盘</h3>
+          <CopyButton text={profile.name + '的八字：' + baziStr + '\n五行：' + wuxingText} label="复制" />
+        </div>
         <div className="flex gap-2">
           {pillars.map((p: any, i: number) => {
             const labels = ['年柱', '月柱', '日柱', '时柱']

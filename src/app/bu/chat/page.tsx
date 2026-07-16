@@ -24,10 +24,20 @@ function Spinner({ className = '' }: { className?: string }) {
 }
 
 const CHAT_STORAGE_KEY = 'lifegps_chat_history'
-const WELCOME_MESSAGE = { role: 'ai' as const, text: '关于你的本命星图，还有什么是你想知道的？\n我会为你尽心解答。' }
+const WELCOME_MESSAGE = { role: 'ai' as const, text: '关于你的本命星图，还有什么是你想知道的？\n我会为你尽心解答。', time: '' }
 
-function loadChatHistory(): { role: 'user' | 'ai'; text: string }[] {
-  if (typeof window === 'undefined') return [WELCOME_MESSAGE]
+interface ChatMessage {
+  role: 'user' | 'ai'
+  text: string
+  time: string
+}
+
+function formatTime(date = new Date()): string {
+  return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+}
+
+function loadChatHistory(): ChatMessage[] {
+  if (typeof window === 'undefined') return [{ ...WELCOME_MESSAGE, time: formatTime() }]
   try {
     const stored = localStorage.getItem(CHAT_STORAGE_KEY)
     if (stored) {
@@ -37,10 +47,10 @@ function loadChatHistory(): { role: 'user' | 'ai'; text: string }[] {
   } catch {
     // ignore
   }
-  return [WELCOME_MESSAGE]
+  return [{ ...WELCOME_MESSAGE, time: formatTime() }]
 }
 
-function saveChatHistory(messages: { role: 'user' | 'ai'; text: string }[]) {
+function saveChatHistory(messages: ChatMessage[]) {
   if (typeof window === 'undefined') return
   try {
     localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages))
@@ -50,7 +60,7 @@ function saveChatHistory(messages: { role: 'user' | 'ai'; text: string }[]) {
 }
 
 export default function BuChatPage() {
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>(loadChatHistory)
+  const [messages, setMessages] = useState<ChatMessage[]>(loadChatHistory)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -66,8 +76,9 @@ export default function BuChatPage() {
   const handleSend = async () => {
     if (!input.trim() || loading) return
     const userText = input.trim()
+    const now = formatTime()
     setInput('')
-    setMessages(prev => [...prev, { role: 'user', text: userText }])
+    setMessages(prev => [...prev, { role: 'user', text: userText, time: now }])
     setLoading(true)
 
     try {
@@ -79,9 +90,9 @@ export default function BuChatPage() {
         }),
       })
       const data = await res.json()
-      setMessages(prev => [...prev, { role: 'ai', text: data.result || '思考中...' }])
+      setMessages(prev => [...prev, { role: 'ai', text: data.result || '思考中...', time: formatTime() }])
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'ai', text: '抱歉，服务暂时不可用，请稍后重试。' }])
+      setMessages(prev => [...prev, { role: 'ai', text: '抱歉，服务暂时不可用，请稍后重试。', time: formatTime() }])
     } finally {
       setLoading(false)
     }
@@ -105,7 +116,7 @@ export default function BuChatPage() {
         <div className="flex items-center gap-2">
           <span className="text-moonly-muted text-xs">{messages.filter(m => m.role === 'user').length} 次</span>
           <button
-            onClick={() => setMessages([{ role: 'ai', text: '关于你的本命星图，还有什么是你想知道的？\n我会为你尽心解答。' }])}
+            onClick={() => setMessages([{ role: 'ai', text: '关于你的本命星图，还有什么是你想知道的？\n我会为你尽心解答。', time: formatTime() }])}
             className="w-6 h-6 rounded-full bg-[#c9a96e]/20 flex items-center justify-center text-gold text-xs font-bold hover:bg-[#c9a96e]/30 transition"
           >
             +
@@ -134,7 +145,8 @@ export default function BuChatPage() {
               >
                 {msg.text}
               </div>
-              <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`flex items-center gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                {msg.time && <span className="text-[10px] text-moonly-muted">{msg.time}</span>}
                 <button
                   onClick={() => {
                     navigator.clipboard?.writeText(msg.text).then(() => showToast('已复制', 'success'))

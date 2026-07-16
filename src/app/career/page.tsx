@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { analyzeCareer, analyzeBazi, getCareerAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar } from '@/lib/lunar'
+import CopyButton from '@/components/CopyButton'
 import PersonFormSelector from '@/components/PersonFormSelector'
 
 interface CareerResult {
@@ -270,12 +271,18 @@ export default function CareerPage() {
 
         {result && (
           <div className="space-y-6">
-            <button
-              onClick={() => setResult(null)}
-              className="btn-gold-outline px-4 py-2 text-sm"
-            >
-              ← 重新输入
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setResult(null)}
+                className="btn-gold-outline px-4 py-2 text-sm"
+              >
+                ← 重新输入
+              </button>
+              <CopyButton
+                text={`【事业合作分析】\n甲方：${mForm.name || '未命名'}  乙方：${fForm.name || '未命名'}\n合作契合度：${result.score}分 · ${result.level}\n${result.levelDesc}\n五行互补：${result.complementScore}分\n${result.suggestions.slice(0, 3).join('；')}`}
+                label="分享结果"
+              />
+            </div>
 
             {/* 总评分 */}
             <div className="moonly-card p-8 text-center">

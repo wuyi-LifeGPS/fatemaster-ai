@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { analyzeMarriage, analyzeCareer, analyzeBazi, getMatchAiAnalysis, getCareerAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar } from '@/lib/lunar'
+import CopyButton from '@/components/CopyButton'
 import PersonFormSelector from '@/components/PersonFormSelector'
 
 interface CombinedResult {
@@ -353,6 +354,10 @@ export default function MatchPage() {
               >
                 ← 重新输入
               </button>
+              <CopyButton
+                text={`【${mode === 'match' ? '八字合婚' : '事业合作'}分析】\n${mLabel}：${mForm.name || '未命名'}  ${fLabel}：${fForm.name || '未命名'}\n契合度：${result.score}分 · ${result.level}\n${result.levelDesc}\n${result.suggestions.slice(0, 3).join('；')}`}
+                label="分享结果"
+              />
               <div className="flex-1" />
               <button
                 onClick={() => setMode(mode === 'match' ? 'career' : 'match')}

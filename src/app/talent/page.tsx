@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { analyzeBazi } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar } from '@/lib/lunar'
+import CopyButton from '@/components/CopyButton'
 import PersonFormSelector from '@/components/PersonFormSelector'
 import { analyzeTalent, type TalentResult, getTalentAiAnalysis, getScoreColor } from '@/lib/talent'
 import TalentRadar from '@/components/TalentRadar'
@@ -254,6 +255,10 @@ export default function TalentPage() {
               >
                 ← 重新分析
               </button>
+              <CopyButton
+                text={`【天赋分析报告】\n姓名：${formData.name || '命主'}\n日主：${baziResult?.dayMaster || ''}（${baziResult?.yinYang || ''}性${baziResult?.wuXing || ''}命）\n主导天赋：${result?.dominantType || ''}\nTOP3：${result?.top3?.join('、') || ''}\n${result?.lifeAdvice || ''}`}
+                label="分享结果"
+              />
               <h2 className="text-xl font-bold font-serif text-white">天赋分析报告</h2>
             </div>
 

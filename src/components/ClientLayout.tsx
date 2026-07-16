@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import AIFloatingButton from './AIFloatingButton'
+import PageTransition from './PageTransition'
 import GlobalSearch from './GlobalSearch'
 import RouteTracker from './RouteTracker'
 import PageProgress from './PageProgress'
@@ -70,6 +71,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <>
+      <PageTransition />
       <GlobalSearch />
       <RouteTracker />
       <PageProgress />

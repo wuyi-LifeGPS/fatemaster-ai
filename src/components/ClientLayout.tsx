@@ -14,6 +14,7 @@ import NetworkStatus from './NetworkStatus'
 import ErrorBoundary from './ErrorBoundary'
 import ScrollToTop from './ScrollToTop'
 import BottomNav from './BottomNav'
+import FeedbackButton from './FeedbackButton'
 
 const HIDE_NAV_PAGES = [
   '/bazi',
@@ -97,6 +98,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         {children}
       </ErrorBoundary>
       <ScrollToTop />
+      <FeedbackButton />
       {!hideNav && <AIFloatingButton />}
       {!hideNav && <BottomNav />}
     </>

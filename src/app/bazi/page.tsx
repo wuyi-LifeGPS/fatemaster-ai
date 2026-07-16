@@ -10,6 +10,7 @@ import { showToast } from '@/components/Toast'
 import useBeforeUnload from '@/hooks/useBeforeUnload'
 import { addProfile } from '@/lib/bazi-profiles'
 import useKeyboard from '@/hooks/useKeyboard'
+import { useAutosave } from '@/hooks/useAutosave'
 import Celebration from '@/components/Celebration'
 
 interface BaziResult {
@@ -149,6 +150,26 @@ export default function BaziPage() {
     lunarIsLeap: false,
     unknownTime: false,
   })
+
+  // 自动保存
+  const { hasDraft, loadDraft, clearDraft } = useAutosave('bazi', formData, 3000)
+
+  // 恢复草稿
+  useEffect(() => {
+    if (hasDraft) {
+      const draft = loadDraft()
+      if (draft && draft.name) {
+        const shouldRestore = window.confirm('检测到未提交的草稿，是否恢复？')
+        if (shouldRestore) {
+          setFormData(prev => ({ ...prev, ...draft }))
+          showToast('草稿已恢复', 'success')
+        } else {
+          clearDraft()
+        }
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useBeforeUnload(formData.name !== '' || formData.birthYear !== 1990)
 
@@ -297,6 +318,7 @@ export default function BaziPage() {
       if (typeof window !== 'undefined') {
         localStorage.setItem('bazi_selected_profile', newProfile.id)
       }
+      clearDraft() // 清除自动保存的草稿
       setShowCelebration(true)
       setTimeout(() => {
         router.push('/ming')

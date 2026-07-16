@@ -588,11 +588,227 @@ export interface NameAnalysis {
   overallScore: number
 }
 
+// AI 起名推荐字库（按五行分类）
+const NAME_CHAR_DB: Record<string, Array<{char: string; meaning: string; tone: string}>> = {
+  '木': [
+    {char: '梓', meaning: '梓树，象征生机与才华', tone: 'zǐ'},
+    {char: '森', meaning: '森林，茂盛繁荣', tone: 'sēn'},
+    {char: '林', meaning: '树林，生机勃勃', tone: 'lín'},
+    {char: '柏', meaning: '柏树，坚韧不拔', tone: 'bǎi'},
+    {char: '楠', meaning: '楠木，高贵典雅', tone: 'nán'},
+    {char: '桐', meaning: '梧桐，祥瑞之树', tone: 'tóng'},
+    {char: '榕', meaning: '榕树，庇荫众生', tone: 'róng'},
+    {char: '桦', meaning: '白桦，纯洁挺拔', tone: 'huà'},
+    {char: '枫', meaning: '枫树，热情浪漫', tone: 'fēng'},
+    {char: '松', meaning: '青松，刚毅长青', tone: 'sōng'},
+    {char: '芷', meaning: '香草，清雅高洁', tone: 'zhǐ'},
+    {char: '芸', meaning: '芸香，温婉贤淑', tone: 'yún'},
+    {char: '菲', meaning: '芳菲，美丽芬芳', tone: 'fēi'},
+    {char: '萌', meaning: '萌芽，充满希望', tone: 'méng'},
+    {char: '菁', meaning: '菁华，才华出众', tone: 'jīng'},
+    {char: '艺', meaning: '才艺，多才多艺', tone: 'yì'},
+    {char: '荣', meaning: '荣耀，兴旺发达', tone: 'róng'},
+    {char: '茂', meaning: '茂盛，蓬勃发展', tone: 'mào'},
+  ],
+  '火': [
+    {char: '炎', meaning: '光明炽热，热情奔放', tone: 'yán'},
+    {char: '煜', meaning: '照耀，光辉灿烂', tone: 'yù'},
+    {char: '炜', meaning: '光明，辉煌夺目', tone: 'wěi'},
+    {char: '烨', meaning: '火光，光彩照人', tone: 'yè'},
+    {char: '煊', meaning: '温暖，名声显赫', tone: 'xuān'},
+    {char: '煦', meaning: '温暖，和煦宜人', tone: 'xù'},
+    {char: '昕', meaning: '黎明，朝气蓬勃', tone: 'xīn'},
+    {char: '晗', meaning: '天将明，充满希望', tone: 'hán'},
+    {char: '曦', meaning: '晨光，光明美好', tone: 'xī'},
+    {char: '晴', meaning: '晴朗，开朗乐观', tone: 'qíng'},
+    {char: '晶', meaning: '晶莹，聪慧通透', tone: 'jīng'},
+    {char: '灿', meaning: '灿烂，光彩夺目', tone: 'càn'},
+    {char: '烁', meaning: '闪烁，才华出众', tone: 'shuò'},
+    {char: '彤', meaning: '红色，热情活力', tone: 'tóng'},
+    {char: '丹', meaning: '赤诚，忠贞不渝', tone: 'dān'},
+    {char: '旭', meaning: '旭日，蒸蒸日上', tone: 'xù'},
+    {char: '昊', meaning: '广大，胸怀宽广', tone: 'hào'},
+    {char: '明', meaning: '光明，聪慧睿智', tone: 'míng'},
+  ],
+  '土': [
+    {char: '坤', meaning: '大地，厚德载物', tone: 'kūn'},
+    {char: '垣', meaning: '城墙，稳重守护', tone: 'yuán'},
+    {char: '培', meaning: '培育，悉心栽培', tone: 'péi'},
+    {char: '基', meaning: '基础，根基稳固', tone: 'jī'},
+    {char: '城', meaning: '城池，稳重可靠', tone: 'chéng'},
+    {char: '堂', meaning: '殿堂，光明正大', tone: 'táng'},
+    {char: '墨', meaning: '文墨，学识渊博', tone: 'mò'},
+    {char: '均', meaning: '均匀，公平公正', tone: 'jūn'},
+    {char: '圣', meaning: '圣贤，品德高尚', tone: 'shèng'},
+    {char: '坚', meaning: '坚定，坚韧不拔', tone: 'jiān'},
+    {char: '岩', meaning: '岩石，刚毅不屈', tone: 'yán'},
+    {char: '岳', meaning: '山岳，高大伟岸', tone: 'yuè'},
+    {char: '峰', meaning: '山峰，志向高远', tone: 'fēng'},
+    {char: '峻', meaning: '高峻，气度不凡', tone: 'jùn'},
+    {char: '屹', meaning: '屹立，坚定不移', tone: 'yì'},
+    {char: '安', meaning: '平安，安定祥和', tone: 'ān'},
+    {char: '宇', meaning: '宇宙，气度恢宏', tone: 'yǔ'},
+    {char: '辰', meaning: '星辰，吉祥如意', tone: 'chén'},
+  ],
+  '金': [
+    {char: '铭', meaning: '铭记，志存高远', tone: 'míng'},
+    {char: '锐', meaning: '锐利，锐意进取', tone: 'ruì'},
+    {char: '铮', meaning: '铮铮，刚正不阿', tone: 'zhēng'},
+    {char: '锦', meaning: '锦绣，前程似锦', tone: 'jǐn'},
+    {char: '钰', meaning: '珍宝，珍贵美好', tone: 'yù'},
+    {char: '琛', meaning: '珍宝，才华出众', tone: 'chēn'},
+    {char: '瑞', meaning: '祥瑞，吉祥如意', tone: 'ruì'},
+    {char: '璟', meaning: '玉光，光彩照人', tone: 'jǐng'},
+    {char: '琦', meaning: '美玉，珍贵不凡', tone: 'qí'},
+    {char: '瑜', meaning: '美玉，品德高洁', tone: 'yú'},
+    {char: '璇', meaning: '美玉，聪慧灵巧', tone: 'xuán'},
+    {char: '琳', meaning: '美玉，温润如玉', tone: 'lín'},
+    {char: '鑫', meaning: '多金，财源广进', tone: 'xīn'},
+    {char: '钟', meaning: '钟爱，专注执着', tone: 'zhōng'},
+    {char: '铄', meaning: '熔化，才华横溢', tone: 'shuò'},
+    {char: '铠', meaning: '铠甲，坚强勇敢', tone: 'kǎi'},
+    {char: '锋', meaning: '锋芒，锐不可当', tone: 'fēng'},
+    {char: '刚', meaning: '刚强，刚毅果断', tone: 'gāng'},
+  ],
+  '水': [
+    {char: '涵', meaning: '涵养，包容万物', tone: 'hán'},
+    {char: '泽', meaning: '恩泽，润物无声', tone: 'zé'},
+    {char: '浩', meaning: '浩大，气势磅礴', tone: 'hào'},
+    {char: '洋', meaning: '海洋，胸怀宽广', tone: 'yáng'},
+    {char: '清', meaning: '清澈，清正廉明', tone: 'qīng'},
+    {char: '澈', meaning: '清澈，通透明白', tone: 'chè'},
+    {char: '润', meaning: '滋润，温润如玉', tone: 'rùn'},
+    {char: '沐', meaning: '沐浴，蒙受恩泽', tone: 'mù'},
+    {char: '沛', meaning: '充沛，精力充沛', tone: 'pèi'},
+    {char: '澜', meaning: '波澜，气度不凡', tone: 'lán'},
+    {char: '涛', meaning: '波涛，勇往直前', tone: 'tāo'},
+    {char: '溪', meaning: '溪流，清澈灵动', tone: 'xī'},
+    {char: '泓', meaning: '水深，学识渊博', tone: 'hóng'},
+    {char: '澄', meaning: '澄清，心境澄明', tone: 'chéng'},
+    {char: '潇', meaning: '潇洒，洒脱不羁', tone: 'xiāo'},
+    {char: '霖', meaning: '甘霖，恩泽绵长', tone: 'lín'},
+    {char: '雪', meaning: '纯洁，冰清玉洁', tone: 'xuě'},
+    {char: '冰', meaning: '冰清，纯洁无瑕', tone: 'bīng'},
+  ],
+}
+
+export interface GeneratedName {
+  givenName: string
+  fullName: string
+  meaning: string
+  wuxing: string
+  fiveGrid: FiveGrid
+  overallScore: number
+  sanCaiLuck: { level: string; desc: string }
+}
+
+// AI 智能起名：根据姓氏、性别、喜用神推荐名字
+export function generateNames(
+  surname: string,
+  gender: 'male' | 'female',
+  xiShen?: string[],
+  expectChar?: string
+): GeneratedName[] {
+  const results: GeneratedName[] = []
+  
+  // 确定优先使用的五行
+  const preferredWuxing = xiShen && xiShen.length > 0 ? xiShen : ['木', '火', '土', '金', '水']
+  
+  // 如果是单字名，从期望字或字库中取
+  // 如果是双字名，组合两个字
+  const nameLengths = [2, 1] // 优先推荐双字名
+  
+  for (const nameLen of nameLengths) {
+    for (const wx of preferredWuxing) {
+      const chars = NAME_CHAR_DB[wx] || []
+      if (chars.length === 0) continue
+      
+      // 如果有期望字，优先使用
+      let candidates: Array<{char: string; meaning: string; tone: string}> = []
+      if (expectChar && expectChar.length > 0) {
+        // 尝试找到期望字
+        for (const c of expectChar) {
+          const found = Object.values(NAME_CHAR_DB).flat().find(item => item.char === c)
+          if (found) candidates.push(found)
+        }
+      }
+      
+      // 补充字库候选
+      const shuffled = [...chars].sort(() => Math.random() - 0.5)
+      candidates = [...candidates, ...shuffled].slice(0, 12)
+      
+      for (let i = 0; i < candidates.length; i++) {
+        let givenName = candidates[i].char
+        let meaning = candidates[i].meaning
+        
+        if (nameLen === 2) {
+          // 双字名：再选一个互补五行的字
+          const secondWx = preferredWuxing[(preferredWuxing.indexOf(wx) + 1) % preferredWuxing.length]
+          const secondChars = NAME_CHAR_DB[secondWx] || chars
+          const second = secondChars[Math.floor(Math.random() * secondChars.length)]
+          givenName = candidates[i].char + second.char
+          meaning = `${candidates[i].meaning}；${second.meaning}`
+        }
+        
+        const fullName = surname + givenName
+        const fiveGrid = calculateFiveGrid(surname, givenName)
+        const sanCai = getSanCai(fiveGrid)
+        const sanCaiLuck = getSanCaiLuck(sanCai)
+        
+        // 计算综合评分
+        let score = 60
+        const grids = [
+          getNumerologyMeaning(fiveGrid.tianGe),
+          getNumerologyMeaning(fiveGrid.renGe),
+          getNumerologyMeaning(fiveGrid.diGe),
+          getNumerologyMeaning(fiveGrid.zongGe),
+        ]
+        grids.forEach(g => {
+          if (g.level === '吉') score += 8
+          else if (g.level === '凶') score -= 8
+          else score += 2
+        })
+        if (sanCaiLuck.level === '吉') score += 10
+        else if (sanCaiLuck.level === '凶') score -= 10
+        else score += 3
+        
+        // 喜用神加分
+        const nameWx = getNameWuxing(givenName)
+        const hasXiShen = xiShen ? nameWx.some(nw => xiShen.includes(nw.wuxing)) : true
+        if (hasXiShen) score += 8
+        
+        score = Math.max(0, Math.min(100, score))
+        
+        results.push({
+          givenName,
+          fullName,
+          meaning,
+          wuxing: nameWx.map(n => n.wuxing).join('、'),
+          fiveGrid,
+          overallScore: score,
+          sanCaiLuck,
+        })
+      }
+    }
+  }
+  
+  // 按分数排序，去重
+  const seen = new Set<string>()
+  return results
+    .filter(r => {
+      if (seen.has(r.givenName)) return false
+      seen.add(r.givenName)
+      return true
+    })
+    .sort((a, b) => b.overallScore - a.overallScore)
+    .slice(0, 8)
+}
+
 export function analyzeName(surname: string, givenName: string): NameAnalysis {
   const fiveGrid = calculateFiveGrid(surname, givenName)
   const sanCai = getSanCai(fiveGrid)
   const sanCaiLuck = getSanCaiLuck(sanCai)
-  
+
   const gridMeanings = {
     tianGe: { num: fiveGrid.tianGe, wuxing: getNumberWuxing(fiveGrid.tianGe), luck: getNumerologyMeaning(fiveGrid.tianGe) },
     renGe: { num: fiveGrid.renGe, wuxing: getNumberWuxing(fiveGrid.renGe), luck: getNumerologyMeaning(fiveGrid.renGe) },
@@ -600,7 +816,7 @@ export function analyzeName(surname: string, givenName: string): NameAnalysis {
     waiGe: { num: fiveGrid.waiGe, wuxing: getNumberWuxing(fiveGrid.waiGe), luck: getNumerologyMeaning(fiveGrid.waiGe) },
     zongGe: { num: fiveGrid.zongGe, wuxing: getNumberWuxing(fiveGrid.zongGe), luck: getNumerologyMeaning(fiveGrid.zongGe) },
   }
-  
+
   // 简单评分算法
   let score = 60
   const grids = [gridMeanings.tianGe, gridMeanings.renGe, gridMeanings.diGe, gridMeanings.zongGe]
@@ -609,11 +825,11 @@ export function analyzeName(surname: string, givenName: string): NameAnalysis {
     else if (g.luck.level === '凶') score -= 10
     else score += 2
   })
-  
+
   if (sanCaiLuck.level === '吉') score += 10
   else if (sanCaiLuck.level === '凶') score -= 10
-  
+
   score = Math.max(0, Math.min(100, score))
-  
+
   return { fiveGrid, sanCai, sanCaiLuck, gridMeanings, overallScore: score }
 }

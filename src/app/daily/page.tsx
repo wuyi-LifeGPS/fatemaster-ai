@@ -160,8 +160,8 @@ export default function DailyPage() {
       <div className="max-w-2xl mx-auto py-8 px-4">
         {/* 今天日期 */}
         {todayGanZhi && (
-          <div className="bg-[#faf8f3] border border-white/10 text-white rounded-xl p-6 mb-6 text-center">
-            <div className="text-sm text-fate-300 mb-2">
+          <div className="bg-white/5 border border-white/10 text-white rounded-xl p-6 mb-6 text-center">
+            <div className="text-sm text-moonly-text-muted mb-2">
               {todayGanZhi.dateStr} · 星期{todayGanZhi.weekday}
             </div>
             <div className="text-3xl font-bold font-serif mb-1">
@@ -169,7 +169,7 @@ export default function DailyPage() {
               {todayGanZhi.month.gan}{todayGanZhi.month.zhi}月
               {todayGanZhi.day.gan}{todayGanZhi.day.zhi}日
             </div>
-            <div className="text-sm text-[#8b1a1a]">
+            <div className="text-sm text-gold">
               今日日柱：{todayGanZhi.day.gan}{todayGanZhi.day.zhi}
             </div>
           </div>

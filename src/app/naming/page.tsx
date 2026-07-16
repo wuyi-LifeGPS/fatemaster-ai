@@ -11,7 +11,9 @@ import {
   analyzeBrandName,
   getNameWuxing,
   calculateWuxingMatch,
+  generateNames,
   type NameAnalysis,
+  type GeneratedName,
 } from '@/lib/naming'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 

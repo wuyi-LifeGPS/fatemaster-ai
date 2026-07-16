@@ -49,6 +49,7 @@ import DailyInsight from '@/components/DailyInsight'
 import DailyAffirmation from '@/components/DailyAffirmation'
 import DailyReflection from '@/components/DailyReflection'
 import DailyMantra from '@/components/DailyMantra'
+import TodaySummary from '@/components/TodaySummary'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -848,6 +849,7 @@ export default function MingPage() {
       />
 
       <div className="px-4 pt-2">
+        <TodaySummary />
         <LunarDateDisplay />
       </div>
 

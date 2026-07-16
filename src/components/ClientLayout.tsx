@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import AIFloatingButton from './AIFloatingButton'
 import UsageStatsPanel, { trackVisit } from './UsageStats'
+import UpdatePrompt from './UpdatePrompt'
 import Onboarding from './Onboarding'
 import PageTransition from './PageTransition'
 import GlobalSearch from './GlobalSearch'
@@ -78,6 +79,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <>
+      <UpdatePrompt />
       <Onboarding />
       <PageTransition />
       <GlobalSearch />

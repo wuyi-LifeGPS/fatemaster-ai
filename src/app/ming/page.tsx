@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react'
 import { showToast } from '@/components/Toast'
 import Link from 'next/link'
 import { getProfiles, BaziProfile } from '@/lib/bazi-profiles'
@@ -9,55 +9,11 @@ import useKeyboard from '@/hooks/useKeyboard'
 import PullToRefresh from '@/components/PullToRefresh'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import CopyButton from '@/components/CopyButton'
-import LunarDateDisplay from '@/components/LunarDateDisplay'
-import DailyYiJi from '@/components/DailyYiJi'
-import SolarTermDisplay from '@/components/SolarTermDisplay'
-import ZodiacFortune from '@/components/ZodiacFortune'
-import LuckyColor from '@/components/LuckyColor'
-import LuckyHours from '@/components/LuckyHours'
-import DailyQuote from '@/components/DailyQuote'
-import WuxingEnergy from '@/components/WuxingEnergy'
-import DirectionGuide from '@/components/DirectionGuide'
-import LuckyNumbers from '@/components/LuckyNumbers'
-import FengShuiTip from '@/components/FengShuiTip'
-import HealthTip from '@/components/HealthTip'
-import WeeklyFortune from '@/components/WeeklyFortune'
-import HoroscopeWidget from '@/components/HoroscopeWidget'
-import TarotDaily from '@/components/TarotDaily'
-import MeditationTimer from '@/components/MeditationTimer'
-import GratitudeJournal from '@/components/GratitudeJournal'
-import DreamJournal from '@/components/DreamJournal'
-import HabitTracker from '@/components/HabitTracker'
-import CountdownWidget from '@/components/CountdownWidget'
-import DailyPoem from '@/components/DailyPoem'
-import DailyTrivia from '@/components/DailyTrivia'
-import DailyWisdom from '@/components/DailyWisdom'
-import DailyProverb from '@/components/DailyProverb'
-import DailyJoke from '@/components/DailyJoke'
-import DailyChallenge from '@/components/DailyChallenge'
-import DailyPositive from '@/components/DailyPositive'
-import MoodTracker from '@/components/MoodTracker'
-import DailyHealth from '@/components/DailyHealth'
-import DailySentence from '@/components/DailySentence'
-import BreathingGuide from '@/components/BreathingGuide'
-import DailyMood from '@/components/DailyMood'
-import DailyFortune from '@/components/DailyFortune'
-import DailyMotto from '@/components/DailyMotto'
-import DailyZen from '@/components/DailyZen'
-import DailyAdvice from '@/components/DailyAdvice'
-import DailyInsight from '@/components/DailyInsight'
-import DailyAffirmation from '@/components/DailyAffirmation'
-import DailyReflection from '@/components/DailyReflection'
-import DailyMantra from '@/components/DailyMantra'
 import TodaySummary from '@/components/TodaySummary'
 import ShareCard from '@/components/ShareCard'
 import ShareMingPan from '@/components/ShareMingPan'
 import DailyCheckIn from '@/components/DailyCheckIn'
 import FortuneCalendar from '@/components/FortuneCalendar'
-import FortuneStick from '@/components/FortuneStick'
-import DailyBenefactor from '@/components/DailyBenefactor'
-import WeeklyFortuneSummary from '@/components/WeeklyFortuneSummary'
-import FortuneQuiz from '@/components/FortuneQuiz'
 import CollapsibleSection from '@/components/CollapsibleSection'
 
 import DailyTip from '@/components/DailyTip'
@@ -67,6 +23,13 @@ import ShareButton from '@/components/ShareButton'
 import LiunianTab from './components/LiunianTab'
 import LiuyueTab from './components/LiuyueTab'
 import LiuriTab from './components/LiuriTab'
+
+// Lazy-loaded sections for performance
+const MingToolsSection = lazy(() => import('./components/MingToolsSection'))
+const DailyFortuneSection = lazy(() => import('./components/DailyFortuneSection'))
+const MindGrowthSection = lazy(() => import('./components/MindGrowthSection'))
+const DailyChargeSection = lazy(() => import('./components/DailyChargeSection'))
+const FunQuizSection = lazy(() => import('./components/FunQuizSection'))
 
 // ===== 常量 =====
 const WUXING_COLOR: Record<string, string> = {
@@ -862,8 +825,6 @@ export default function MingPage() {
         <DailyCheckIn />
         <ShareCard />
         <FortuneCalendar />
-        <DailyBenefactor />
-        <WeeklyFortuneSummary />
       </div>
 
       <PullToRefresh onRefresh={handleRefresh}>
@@ -873,59 +834,33 @@ export default function MingPage() {
           <DailyTip />
 
           <CollapsibleSection title="命理工具" icon="🔮" defaultOpen={true}>
-            <DailyYiJi />
-            <SolarTermDisplay />
-            <LunarDateDisplay />
+            <Suspense fallback={<SectionFallback />}>
+              <MingToolsSection />
+            </Suspense>
           </CollapsibleSection>
 
           <CollapsibleSection title="每日运势" icon="🌟" defaultOpen={true}>
-            <ZodiacFortune />
-            <LuckyColor />
-            <LuckyHours />
-            <DailyQuote />
-            <WuxingEnergy />
-            <DirectionGuide />
-            <LuckyNumbers />
-            <FengShuiTip />
-            <WeeklyFortune />
-            <HoroscopeWidget />
+            <Suspense fallback={<SectionFallback />}>
+              <DailyFortuneSection />
+            </Suspense>
           </CollapsibleSection>
 
           <CollapsibleSection title="心灵成长" icon="🧘" defaultOpen={false}>
-            <MeditationTimer />
-            <GratitudeJournal />
-            <DreamJournal />
-            <HabitTracker />
-            <CountdownWidget />
-            <BreathingGuide />
-            <MoodTracker />
+            <Suspense fallback={<SectionFallback />}>
+              <MindGrowthSection />
+            </Suspense>
           </CollapsibleSection>
 
           <CollapsibleSection title="每日充电" icon="📚" defaultOpen={false}>
-            <DailyPoem />
-            <DailyTrivia />
-            <DailyWisdom />
-            <DailyProverb />
-            <DailyJoke />
-            <DailyChallenge />
-            <DailyPositive />
-            <DailyHealth />
-            <DailySentence />
-            <DailyMood />
-            <DailyFortune />
-            <DailyMotto />
-            <DailyZen />
-            <DailyAdvice />
-            <DailyInsight />
-            <DailyAffirmation />
-            <DailyReflection />
-            <DailyMantra />
+            <Suspense fallback={<SectionFallback />}>
+              <DailyChargeSection />
+            </Suspense>
           </CollapsibleSection>
 
           <CollapsibleSection title="趣味测试" icon="🎯" defaultOpen={true}>
-            <FortuneStick />
-            <FortuneQuiz />
-            <TarotDaily />
+            <Suspense fallback={<SectionFallback />}>
+              <FunQuizSection />
+            </Suspense>
           </CollapsibleSection>
         </div>
 
@@ -963,6 +898,15 @@ export default function MingPage() {
 }
 
 // ===== 子组件 =====
+
+function SectionFallback() {
+  return (
+    <div className="space-y-2 animate-fade-in">
+      <div className="h-16 bg-white/5 rounded-xl animate-pulse" />
+      <div className="h-16 bg-white/5 rounded-xl animate-pulse" />
+    </div>
+  )
+}
 
 function EmptyState() {
   return (

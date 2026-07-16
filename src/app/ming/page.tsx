@@ -1025,7 +1025,7 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
 
       <div onClick={() => onOpenModal('summary')} className="info-card-black clickable p-4">
         <h3 className="text-gold text-sm font-semibold mb-2">人生总评</h3>
-        <p className="text-white/70 text-sm leading-relaxed">{lifeSummary}</p>
+        <p className="text-sm text-moonly-text-secondary leading-relaxed">{lifeSummary}</p>
       </div>
 
       <WuXingBarChart count={wuXingFullCount} onClick={() => onOpenModal('wuxing')} />
@@ -1034,20 +1034,20 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
         <div onClick={() => onOpenModal('rizhu')} className="info-card-black clickable p-4">
           <h3 className="text-gold text-sm font-semibold mb-2">日主</h3>
           <div className="text-center py-1"><span className="text-2xl font-bold" style={{ color: WUXING_COLOR[getWuXing(dayMaster)] }}>{dayMaster}{getWuXing(dayMaster)}</span></div>
-          <p className="text-white/50 text-xs leading-relaxed mt-1">{getYinYang(dayMaster)}性之金，主刚毅果断、重义气。</p>
+          <p className="text-xs text-moonly-text-muted leading-relaxed mt-1">{getYinYang(dayMaster)}性之金，主刚毅果断、重义气。</p>
         </div>
         <div onClick={() => onOpenModal('geju')} className="info-card-black clickable p-4">
           <h3 className="text-gold text-sm font-semibold mb-2">格局</h3>
           <div className="text-center py-1"><span className="text-3xl font-bold text-gold">{pattern?.patternName?.split('/')[0]?.trim() || '——'}</span></div>
-          <p className="text-white/50 text-xs leading-relaxed mt-1">{pattern?.patternDesc || '格局分析加载中...'}</p>
+          <p className="text-xs text-moonly-text-muted leading-relaxed mt-1">{pattern?.patternDesc || '格局分析加载中...'}</p>
         </div>
       </div>
 
       <div onClick={() => onOpenModal('shenruo')} className="info-card-black clickable p-4">
         <h3 className="text-gold text-sm font-semibold mb-2">身强身弱</h3>
-        <div className="flex items-center justify-between mb-2"><span className="text-white font-semibold text-base">{bodyStrength?.strength || '——'}</span><span className="text-white/40 text-sm">{Math.round((bodyStrength?.score || 0) * 10)}/10</span></div>
+        <div className="flex items-center justify-between mb-2"><span className="text-white font-semibold text-base">{bodyStrength?.strength || '——'}</span><span className="text-xs text-moonly-text-muted">{Math.round((bodyStrength?.score || 0) * 10)}/10</span></div>
         <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-gold/60 to-gold" style={{ width: `${Math.min(100, ((bodyStrength?.score || 0) / 5) * 100)}%` }} /></div>
-        <p className="text-white/40 text-xs mt-2">{bodyStrength?.description || ''}</p>
+        <p className="text-xs text-moonly-text-muted mt-2">{bodyStrength?.description || ''}</p>
       </div>
 
       <div onClick={() => onOpenModal('xiyongshen')} className="info-card-black clickable p-4">
@@ -1057,7 +1057,7 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
             <span key={i} className="text-2xl font-bold" style={{ color: WUXING_COLOR[getWuXing(god)] }}>{getWuXing(god)}</span>
           ))}
         </div>
-        <p className="text-white/40 text-xs mt-1">{tiaoHou?.tiaoHouReason || ''}</p>
+        <p className="text-xs text-moonly-text-muted mt-1">{tiaoHou?.tiaoHouReason || ''}</p>
       </div>
 
       <ShiShenGrid count={shishenCount} onClick={() => onOpenModal('shishen')} />
@@ -1066,12 +1066,12 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
         <div onClick={() => onOpenModal('career')} className="info-card-black clickable p-4">
           <h3 className="text-gold text-sm font-semibold mb-2">事业方向</h3>
           <div className="flex items-center gap-2 py-1">{careerDirs.map((dir, i) => <span key={i} className="text-xl font-bold" style={{ color: WUXING_COLOR[dir] }}>{dir}</span>)}</div>
-          <p className="text-white/40 text-sm">五行属{careerDirs.join('、')}的行业有利</p>
+          <p className="text-xs text-moonly-text-muted">五行属{careerDirs.join('、')}的行业有利</p>
         </div>
         <div onClick={() => onOpenModal('wealth')} className="info-card-black clickable p-4">
           <h3 className="text-gold text-sm font-semibold mb-2">财运走势</h3>
           <div className="text-gold font-semibold text-sm py-0.5">{wealthTrend.label}</div>
-          <p className="text-white/40 text-sm">{wealthTrend.description}</p>
+          <p className="text-xs text-moonly-text-muted">{wealthTrend.description}</p>
           <svg viewBox="0 0 100 30" className="w-full h-6 mt-1"><path d="M0 25 Q25 20 50 15 T100 5" fill="none" stroke="#c9a96e" strokeWidth="1.5" /><circle cx="100" cy="5" r="2" fill="#c9a96e" /></svg>
         </div>
       </div>
@@ -1080,12 +1080,12 @@ function MingPanTab({ data, profile, onOpenModal }: { data: any; profile: BaziPr
         <div onClick={() => onOpenModal('love')} className="info-card-black clickable p-4">
           <h3 className="text-gold text-sm font-semibold mb-2">感情</h3>
           <div className="flex items-baseline gap-1 py-1"><span className="text-3xl font-bold text-gold">{loveScore}</span><span className="text-white/40 text-sm">分</span></div>
-          <p className="text-white/40 text-sm">{loveScore >= 70 ? '感情顺遂，桃花旺盛' : loveScore >= 50 ? '感情平稳，需主动经营' : '感情多磨，宜晚婚'}</p>
+          <p className="text-xs text-moonly-text-muted">{loveScore >= 70 ? '感情顺遂，桃花旺盛' : loveScore >= 50 ? '感情平稳，需主动经营' : '感情多磨，宜晚婚'}</p>
         </div>
         <div onClick={() => onOpenModal('health')} className="info-card-black clickable p-4">
           <h3 className="text-gold text-sm font-semibold mb-2">健康</h3>
           <div className="flex items-baseline gap-1 py-1"><span className="text-3xl font-bold text-green-400">{healthScore}</span><span className="text-white/40 text-sm">分</span></div>
-          <p className="text-white/40 text-sm">{healthScore >= 70 ? '体质较好，注意保养' : healthScore >= 50 ? '体质一般，需加强锻炼' : '体质偏弱，注意调养'}</p>
+          <p className="text-xs text-moonly-text-muted">{healthScore >= 70 ? '体质较好，注意保养' : healthScore >= 50 ? '体质一般，需加强锻炼' : '体质偏弱，注意调养'}</p>
         </div>
       </div>
     </div>

@@ -297,7 +297,7 @@ export default function TalentPage() {
                       key={key}
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${
                         i === 0
-                          ? 'bg-amber-500/15 text-amber-300 border border-amber-500/20'
+                          ? 'bg-[#c9a96e]/15 text-[#c9a96e] border border-[#c9a96e]/20'
                           : i === 1
                           ? 'bg-teal-500/15 text-teal-300 border border-teal-500/20'
                           : 'bg-blue-500/15 text-blue-300 border border-blue-500/20'

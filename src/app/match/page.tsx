@@ -185,7 +185,7 @@ export default function MatchPage() {
     const colors = {
       he: match ? 'bg-red-500/10 border-red-500/20 text-red-300' : 'bg-white/5 border-white/10 text-moonly-text-muted',
       chong: match ? 'bg-red-500/10 border-red-500/20 text-red-300' : 'bg-white/5 border-white/10 text-moonly-text-muted',
-      hai: match ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-moonly-text-muted',
+      hai: match ? 'bg-[#c9a96e]/10 border-[#c9a96e]/20 text-[#c9a96e]' : 'bg-white/5 border-white/10 text-moonly-text-muted',
     }
     const icons = {
       he: match ? '合' : '○',
@@ -465,7 +465,7 @@ export default function MatchPage() {
                 <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-4">
                   <div className="flex items-center gap-2">
                     <span className="text-xl text-gold"></span>
-                    <span className="font-bold text-amber-300">
+                    <span className="font-bold text-[#c9a96e]">
                       {mode === 'match' ? '理想婚配组合' : '理想合作组合'}：{result.pairMatch.desc}
                     </span>
                   </div>

@@ -3,6 +3,17 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
+// Loading spinner component
+function Spinner() {
+  return (
+    <div className="flex items-center justify-center gap-1">
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+    </div>
+  )
+}
+
 const HEXAGRAM_NAMES: Record<string, string> = {
   '777777': '乾为天', '777778': '天风姤', '777787': '天山遁', '777788': '天地否',
   '777877': '风地观', '777878': '山地剥', '777887': '火地晋', '777888': '火天大有',

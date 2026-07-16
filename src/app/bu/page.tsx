@@ -12,7 +12,7 @@ const DIVINATION_TOOLS = [
     status: 'ready',
     category: '东方',
     color: 'from-amber-500/20 to-amber-600/10',
-    border: 'border-amber-500/20',
+    border: 'border-[#c9a96e]/20',
   },
   {
     icon: '钱',
@@ -62,7 +62,7 @@ const DIVINATION_TOOLS = [
     status: 'ready',
     category: '日常',
     color: 'from-amber-500/20 to-amber-600/10',
-    border: 'border-amber-500/20',
+    border: 'border-[#c9a96e]/20',
   },
   {
     icon: '搬',
@@ -182,7 +182,7 @@ const DIVINATION_TOOLS = [
     status: 'ready',
     category: '东方',
     color: 'from-amber-500/20 to-amber-600/10',
-    border: 'border-amber-500/20',
+    border: 'border-[#c9a96e]/20',
   },
   {
     icon: '痣',
@@ -292,7 +292,7 @@ const DIVINATION_TOOLS = [
     status: 'ready',
     category: '东方',
     color: 'from-amber-500/20 to-orange-600/10',
-    border: 'border-amber-500/20',
+    border: 'border-[#c9a96e]/20',
   },
   {
     icon: '塔',

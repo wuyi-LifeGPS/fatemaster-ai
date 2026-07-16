@@ -203,7 +203,7 @@ export default function NamingPage() {
   }
 
   const getWuxingColor = (wx: string) => {
-    if (wx === '金') return 'text-amber-300'
+    if (wx === '金') return 'text-[#c9a96e]'
     if (wx === '木') return 'text-green-300'
     if (wx === '水') return 'text-moonly-gold'
     if (wx === '火') return 'text-red-300'
@@ -595,7 +595,7 @@ export default function NamingPage() {
                     .filter(([_, count]) => count > 0)
                     .map(([wx, count]) => (
                       <span key={wx} className={`px-3 py-1 rounded-full text-sm ${
-                        wx === '金' ? 'bg-amber-500/20 text-amber-300' :
+                        wx === '金' ? 'bg-[#c9a96e]/20 text-[#c9a96e]' :
                         wx === '木' ? 'border-green-500/20 bg-green-500/10 text-green-300' :
                         wx === '水' ? 'bg-white/5 text-moonly-gold' :
                         wx === '火' ? 'border-red-500/20 bg-red-500/10 text-red-300' :

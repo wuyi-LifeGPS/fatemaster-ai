@@ -230,15 +230,15 @@ function EditProfileContent() {
   }
 
   return (
-    <div className="min-h-screen moonly-bg moonly-content">
+    <div className="min-h-screen moonly-bg moonly-content animate-fade-in">
       <header className="sticky top-0 z-40 bg-[#0f0b1a]/90 backdrop-blur-md border-b border-white/5">
         <div className="flex items-center px-4 h-12 relative">
-          <Link href="/ming" className="flex items-center text-white/80 hover:text-white transition absolute left-4">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <Link href="/ming" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition absolute left-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/70">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </Link>
-          <h1 className="flex-1 text-center text-base font-semibold text-white">编辑档案</h1>
+          <h1 className="flex-1 text-center text-lg font-semibold text-gold-gradient">编辑档案</h1>
         </div>
       </header>
 
@@ -250,7 +250,7 @@ function EditProfileContent() {
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
             placeholder="请输入姓名"
-            className="w-full px-4 py-3.5 rounded-xl bg-black/15 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-moonly-gold/50 focus:ring-1 focus:ring-moonly-gold/30 transition-all"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-moonly-gold/30"
           />
         </div>
 
@@ -325,13 +325,16 @@ function EditProfileContent() {
         <button
           onClick={handleSave}
           disabled={loading}
-          className="block w-full max-w-sm mx-auto py-3.5 rounded-2xl text-sm font-semibold transition-all disabled:opacity-50"
-          style={{
-            background: 'linear-gradient(135deg, #c9a96e 0%, #a08050 100%)',
-            color: '#1a1428',
-          }}
+          className="block w-full max-w-sm mx-auto btn-gold py-3.5 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? '保存中...' : '保存'}
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="w-4 h-4 rounded-full border-2 border-[#1a1428]/30 border-t-[#1a1428] animate-spin" />
+              保存中...
+            </span>
+          ) : (
+            '保存'
+          )}
         </button>
       </div>
 

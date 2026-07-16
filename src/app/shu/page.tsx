@@ -106,7 +106,7 @@ const TAG_COLORS: Record<string, string> = {
   '兵家': 'bg-red-500/20 text-red-300',
   '励志': 'bg-orange-500/20 text-orange-300',
   '养生': 'bg-green-500/20 text-green-300',
-  '易学': 'bg-amber-500/20 text-amber-300',
+  '易学': 'bg-[#c9a96e]/20 text-[#c9a96e]',
   '佛学': 'bg-purple-500/20 text-purple-300',
 }
 

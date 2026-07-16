@@ -242,7 +242,7 @@ export default function DailyPage() {
             </button>
 
             {/* 综合评分 */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6 border border-amber-500/20">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-6 border border-[#c9a96e]/20">
               <div className="text-center">
                 <div className="text-sm text-moonly-text-muted mb-2">综合运势</div>
                 <div className="text-5xl font-bold text-gold mb-2">{result.scores.overall}</div>

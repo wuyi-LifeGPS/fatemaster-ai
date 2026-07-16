@@ -22,7 +22,7 @@ const WUXING_COLOR: Record<string, string> = {
 const WUXING_BG: Record<string, string> = {
   '木': 'bg-emerald-500/10',
   '火': 'bg-red-500/10',
-  '土': 'bg-amber-500/10',
+  '土': 'bg-[#c9a96e]/10',
   '金': 'bg-slate-400/10',
   '水': 'bg-blue-500/10',
 }
@@ -160,16 +160,16 @@ export default function RecordsPage() {
   }
 
   return (
-    <div className="min-h-screen moonly-bg">
+    <div className="min-h-screen moonly-bg moonly-content animate-fade-in">
       {/* 顶部导航 */}
       <header className="sticky top-0 z-40 bg-[#0f0b1a]/90 backdrop-blur-md border-b border-white/5">
-        <div className="flex items-center px-4 h-12">
-          <Link href="/ming" className="flex items-center text-white/80 hover:text-white transition">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <div className="flex items-center px-4 h-12 relative">
+          <Link href="/ming" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition absolute left-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/70">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </Link>
-          <h1 className="flex-1 text-center text-base font-semibold text-white pr-6">八字记录</h1>
+          <h1 className="flex-1 text-center text-lg font-semibold text-gold-gradient pr-0">八字记录</h1>
         </div>
       </header>
 
@@ -200,8 +200,9 @@ export default function RecordsPage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-2 border-[#c9a96e]/[0.3] border-t-[#c9a96e] rounded-full animate-spin" />
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-10 h-10 rounded-full border-2 border-moonly-gold/30 border-t-moonly-gold animate-spin mb-4" />
+            <p className="text-moonly-text-secondary text-sm">加载中...</p>
           </div>
         ) : activeTab === 'profiles' ? (
           baziDisplays.length === 0 ? (

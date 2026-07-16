@@ -213,7 +213,7 @@ export default function CareerPage() {
               <div className="mt-6">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-amber-300 mb-3"
+                  className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-[#c9a96e] mb-3"
                 >
                   <span>查询历史（{history.length} 条）</span>
                   <span>{showHistory ? '▲' : '▼'}</span>
@@ -244,13 +244,13 @@ export default function CareerPage() {
 
         {result && (
           <div className="space-y-6">
-            <button onClick={() => setResult(null)} className="text-amber-300 text-sm hover:underline">← 重新输入</button>
+            <button onClick={() => setResult(null)} className="text-[#c9a96e] text-sm hover:underline">← 重新输入</button>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-8 border border-white/10 text-center">
               <div className="text-sm text-moonly-text-muted mb-2">合作契合度</div>
               <div className={`text-6xl font-bold mb-2 ${result.levelColor}`}>{result.score}</div>
               <div className="flex justify-center gap-1 mb-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? 'text-amber-300' : 'text-gray-300'}`}>★</span>
+                  <span key={i} className={`text-2xl ${i < Math.round(result.score / 20) ? 'text-[#c9a96e]' : 'text-moonly-text-secondary'}`}>★</span>
                 ))}
               </div>
               <div className={`text-xl font-bold ${result.levelColor}`}>{result.level}</div>
@@ -301,10 +301,10 @@ export default function CareerPage() {
             <div className="moonly-card rounded-xl p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">合作气场</h3>
               <div className="flex flex-wrap gap-2 mb-4">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-white/5 border-white/10 text-amber-300' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-white/5 border-white/10 text-[#c9a96e]' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
                   {result.ganHeMatch ? '合' : '○'} 天干相合{result.ganHeMatch ? ' ✓' : ' ✗'}
                 </span>
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-white/5 border-white/10 text-amber-300' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.zhiHeMatch ? 'bg-white/5 border-white/10 text-[#c9a96e]' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
                   {result.zhiHeMatch ? '合' : '○'} 地支相合{result.zhiHeMatch ? ' ✓' : ' ✗'}
                 </span>
               </div>
@@ -318,7 +318,7 @@ export default function CareerPage() {
               <h3 className="font-bold text-lg mb-4 font-serif">角色定位</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="bg-white/5 rounded-lg p-4">
-                  <div className="text-sm text-amber-300 font-medium mb-2">甲方 → 乙方</div>
+                  <div className="text-sm text-[#c9a96e] font-medium mb-2">甲方 → 乙方</div>
                   <div className="text-lg font-bold text-white">{result.mToF_SS}</div>
                   <p className="text-sm text-moonly-text-secondary mt-2">{result.roles.mRole}</p>
                 </div>
@@ -332,7 +332,7 @@ export default function CareerPage() {
                 <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-4 border border-white/10">
                   <div className="flex items-center gap-2">
                     <span className="text-xl"></span>
-                    <span className="font-bold text-amber-300">理想合作组合：{result.pairMatch.desc}</span>
+                    <span className="font-bold text-[#c9a96e]">理想合作组合：{result.pairMatch.desc}</span>
                   </div>
                 </div>
               )}

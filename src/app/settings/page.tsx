@@ -15,6 +15,7 @@ interface Settings {
   dailyFortuneReminder: boolean
   reminderTime: string
   soundEnabled: boolean
+  fontSize: 'small' | 'normal' | 'large'
 }
 
 const defaultSettings: Settings = {
@@ -28,6 +29,7 @@ const defaultSettings: Settings = {
   dailyFortuneReminder: false,
   reminderTime: '08:00',
   soundEnabled: true,
+  fontSize: 'normal',
 }
 
 export default function SettingsPage() {
@@ -142,6 +144,31 @@ export default function SettingsPage() {
               <div className="font-medium text-sm">{opt.label}</div>
             </button>
           ))}
+        </div>
+
+        {/* 字体大小 */}
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="text-white text-sm font-medium mb-3">字体大小</div>
+          <div className="grid grid-cols-3 gap-3">
+            {([
+              { key: 'small', label: '小', desc: 'A' },
+              { key: 'normal', label: '标准', desc: 'A' },
+              { key: 'large', label: '大', desc: 'A' },
+            ] as const).map((opt) => (
+              <button
+                key={opt.key}
+                onClick={() => update('fontSize', opt.key)}
+                className={`p-3 rounded-xl text-center transition-all border ${
+                  settings.fontSize === opt.key
+                    ? 'border-[#c9a96e] bg-[#c9a96e]/10 text-white'
+                    : 'border-white/10 hover:border-white/20 text-white'
+                }`}
+              >
+                <div className={`font-medium ${opt.key === 'small' ? 'text-xs' : opt.key === 'large' ? 'text-lg' : 'text-base'}`}>{opt.desc}</div>
+                <div className="text-xs mt-1">{opt.label}</div>
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 

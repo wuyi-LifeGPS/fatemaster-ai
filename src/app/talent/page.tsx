@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { showToast } from '@/components/Toast'
+import useBeforeUnload from '@/hooks/useBeforeUnload'
 import Link from 'next/link'
 import { analyzeBazi } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar } from '@/lib/lunar'
-import { showToast } from '@/components/Toast'
 import PersonFormSelector from '@/components/PersonFormSelector'
 import { analyzeTalent, type TalentResult, getTalentAiAnalysis, getScoreColor } from '@/lib/talent'
 import TalentRadar from '@/components/TalentRadar'
@@ -46,6 +47,8 @@ export default function TalentPage() {
     calendarType: 'solar',
     lunarIsLeap: false,
   })
+
+  useBeforeUnload(!result && formData.name !== '')
 
   const pad = (n: number) => String(n).padStart(2, '0')
 

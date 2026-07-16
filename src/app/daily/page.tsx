@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { showToast } from '@/components/Toast'
+import useBeforeUnload from '@/hooks/useBeforeUnload'
 import Link from 'next/link'
 import { calculateBazi, getTodayGanZhi } from '@/lib/bazi'
 import { analyzeDailyFortune } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar } from '@/lib/lunar'
-import { showToast } from '@/components/Toast'
 import PersonFormSelector from '@/components/PersonFormSelector'
 
 interface FortuneResult {
@@ -57,6 +58,8 @@ export default function DailyPage() {
     calendarType: 'solar' as 'solar' | 'lunar',
     lunarIsLeap: false,
   })
+
+  useBeforeUnload(!result && formData.name !== '')
 
   // 客户端获取今天干支
   useEffect(() => {

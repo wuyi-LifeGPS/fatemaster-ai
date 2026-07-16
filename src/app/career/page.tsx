@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { showToast } from '@/components/Toast'
+import useBeforeUnload from '@/hooks/useBeforeUnload'
 import Link from 'next/link'
 import { analyzeCareer, analyzeBazi, getCareerAiAnalysis } from '@/lib/analysis'
 import { addHistory, getHistoryByType, formatHistoryTime, type HistoryRecord } from '@/lib/history'
 import { lunarToSolar } from '@/lib/lunar'
-import { showToast } from '@/components/Toast'
 import PersonFormSelector from '@/components/PersonFormSelector'
 
 interface CareerResult {
@@ -60,6 +61,8 @@ export default function CareerPage() {
   const [showHistory, setShowHistory] = useState(false)
   const [mForm, setMForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1990 })
   const [fForm, setFForm] = useState<PersonForm>({ ...defaultPerson, birthYear: 1992 })
+
+  useBeforeUnload(!result && (mForm.name !== '' || fForm.name !== ''))
 
   const pad = (n: number) => String(n).padStart(2, '0')
 

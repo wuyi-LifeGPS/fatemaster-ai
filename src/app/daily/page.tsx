@@ -148,16 +148,18 @@ export default function DailyPage() {
   return (
     <main className="min-h-screen moonly-bg moonly-content animate-fade-in">
       {/* Header */}
-      <header className="bg-transparent border-b border-white/10 text-white py-4 px-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold font-serif">
-            ← AI 命理大师
+      <header className="bg-transparent py-4 px-4">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
           </Link>
-          <h1 className="text-lg font-serif">每日运势</h1>
+          <h1 className="text-gold-gradient text-xl font-bold">每日运势</h1>
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto py-8 px-4">
+      <div className="py-4 px-4">
         {/* 今天日期 */}
         {todayGanZhi && (
           <div className="bg-white/5 border border-white/10 text-white rounded-xl p-6 mb-6 text-center">

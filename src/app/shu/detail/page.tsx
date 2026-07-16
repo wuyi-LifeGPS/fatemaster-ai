@@ -434,7 +434,7 @@ export default function ShuDetailPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-gold animate-spin mb-4 mx-auto" />
+          <div className="w-10 h-10 rounded-full border-2 border-[#c9a96e]/[0.3] border-t-[#c9a96e] animate-spin mb-4 mx-auto" />
           <p className="text-moonly-text-muted text-sm">加载中...</p>
         </div>
       </div>

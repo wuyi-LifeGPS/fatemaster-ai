@@ -159,14 +159,18 @@ export default function CareerPage() {
 
   return (
     <main className="min-h-screen moonly-bg moonly-content animate-fade-in">
-      <header className="bg-[#1a1630]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold font-serif">← AI 命理大师</Link>
-          <h1 className="text-lg font-serif">事业合作分析</h1>
+      <header className="bg-transparent py-4 px-4">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <h1 className="text-gold-gradient text-xl font-bold">事业合作分析</h1>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto py-8 px-4">
+      <div className="py-4 px-4">
         {!result && (
           <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6">
             <h2 className="text-xl font-bold mb-2 font-serif">事业合作八字分析</h2>
@@ -181,14 +185,14 @@ export default function CareerPage() {
           <>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="moonly-card rounded-xl shadow-sm p-6">
+                <div className="moonly-card rounded-xl p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white text-sm font-bold">甲</div>
                     <h3 className="font-bold text-lg">甲方信息</h3>
                   </div>
                   <PersonFormSelector form={mForm} setForm={setMForm} />
                 </div>
-                <div className="moonly-card rounded-xl shadow-sm p-6">
+                <div className="moonly-card rounded-xl p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 bg-white/50 rounded-full flex items-center justify-center text-white text-sm font-bold">乙</div>
                     <h3 className="font-bold text-lg">乙方信息</h3>
@@ -215,7 +219,7 @@ export default function CareerPage() {
                   <span>{showHistory ? '▲' : '▼'}</span>
                 </button>
                 {showHistory && (
-                  <div className="moonly-card rounded-xl shadow-sm border border-white/10 overflow-hidden">
+                  <div className="moonly-card rounded-xl border border-white/10 overflow-hidden">
                     {history.map((record) => (
                       <div
                         key={record.id}
@@ -294,7 +298,7 @@ export default function CareerPage() {
                 </div>
               )}
             </div>
-            <div className="moonly-card rounded-xl shadow-sm p-6">
+            <div className="moonly-card rounded-xl p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">合作气场</h3>
               <div className="flex flex-wrap gap-2 mb-4">
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm ${result.ganHeMatch ? 'bg-white/5 border-white/10 text-amber-300' : 'bg-white/5 border-white/10 text-moonly-text-muted'}`}>
@@ -310,7 +314,7 @@ export default function CareerPage() {
                 {!result.ganHeMatch && !result.zhiHeMatch && <p>双方八字无明显合象，合作需要后天磨合，建议先从小项目试水。</p>}
               </div>
             </div>
-            <div className="moonly-card rounded-xl shadow-sm p-6">
+            <div className="moonly-card rounded-xl p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">角色定位</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="bg-white/5 rounded-lg p-4">
@@ -334,7 +338,7 @@ export default function CareerPage() {
               )}
             </div>
             {result.complementDetails.length > 0 && (
-              <div className="moonly-card rounded-xl shadow-sm p-6">
+              <div className="moonly-card rounded-xl p-6">
                 <h3 className="font-bold text-lg mb-4 font-serif">资源互补</h3>
                 <div className="space-y-2">
                   {result.complementDetails.map((item, i) => (
@@ -346,7 +350,7 @@ export default function CareerPage() {
                 </div>
               </div>
             )}
-            <div className="moonly-card rounded-xl shadow-sm p-6">
+            <div className="moonly-card rounded-xl p-6">
               <h3 className="font-bold text-lg mb-4 font-serif">运势互济</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className={`rounded-lg p-4 ${result.mHelpF > 0 ? 'bg-white/5 border border-white/10' : 'bg-white/5'}`}>
@@ -375,7 +379,7 @@ export default function CareerPage() {
 
             {/* AI 深度分析 */}
             {(aiLoading || result.aiAnalysis) && (
-              <div className="moonly-card rounded-xl shadow-sm p-6 border border-white/10">
+              <div className="moonly-card rounded-xl p-6 border border-white/10">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-gold to-amber-600 rounded-lg flex items-center justify-center text-white text-sm">
                     
@@ -388,7 +392,7 @@ export default function CareerPage() {
 
                 {aiLoading ? (
                   <div className="flex items-center gap-3 py-8">
-                    <div className="w-5 h-5 border-2 border-fate-300 border-t-fate-600 rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-[#c9a96e]/[0.3] border-t-[#c9a96e] rounded-full animate-spin" />
                     <span className="text-sm text-moonly-text-muted">正在调用 Kimi AI 进行深度分析...</span>
                   </div>
                 ) : result.aiAnalysis ? (

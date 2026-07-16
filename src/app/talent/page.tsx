@@ -135,16 +135,18 @@ export default function TalentPage() {
   return (
     <main className="min-h-screen moonly-bg moonly-content text-white animate-fade-in">
       {/* Header */}
-      <header className="bg-[#1a1630]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-lg font-bold font-serif text-white hover:text-white transition-colors">
-            ← AI 命理大师
+      <header className="bg-transparent py-4 px-4">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
           </Link>
-          <h1 className="text-base font-serif text-white">天赋分析</h1>
+          <h1 className="text-gold-gradient text-xl font-bold">天赋分析</h1>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto py-8 px-4">
+      <div className="py-4 px-4">
         {!result ? (
           <>
             <div className="text-center mb-8">
@@ -469,7 +471,7 @@ export default function TalentPage() {
             {aiLoading && (
               <div className="moonly-card border border-white/10 rounded-xl p-6 text-center">
                 <div className="inline-flex items-center gap-2 text-moonly-text-muted">
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-gold rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-[#c9a96e]/[0.3] border-t-[#c9a96e] rounded-full animate-spin" />
                   <span>AI 正在深度解读你的天赋基因...</span>
                 </div>
               </div>

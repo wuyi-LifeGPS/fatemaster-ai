@@ -201,7 +201,7 @@ export default function RecordsPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-2 border-moonly-gold/30 border-t-moonly-gold rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-[#c9a96e]/[0.3] border-t-[#c9a96e] rounded-full animate-spin" />
           </div>
         ) : activeTab === 'profiles' ? (
           baziDisplays.length === 0 ? (

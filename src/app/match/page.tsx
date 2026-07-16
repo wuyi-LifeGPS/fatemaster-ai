@@ -202,14 +202,18 @@ export default function MatchPage() {
 
   return (
     <main className="min-h-screen moonly-bg moonly-content animate-fade-in">
-      <header className="bg-[#1a1630]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold font-serif text-white">← AI 命理大师</Link>
-          <h1 className="text-lg font-serif text-white">合婚合作</h1>
+      <header className="bg-transparent py-4 px-4">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <h1 className="text-gold-gradient text-xl font-bold">合婚合作</h1>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto py-8 px-4">
+      <div className="py-4 px-4">
         {/* 模式切换 Tab */}
         <div className="moonly-card p-1.5 mb-6 flex gap-1">
           <button
@@ -543,7 +547,7 @@ export default function MatchPage() {
 
                 {loadingAi ? (
                   <div className="flex items-center gap-3 py-8">
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-gold rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-[#c9a96e]/[0.3] border-t-[#c9a96e] rounded-full animate-spin" />
                     <span className="text-sm text-moonly-text-muted">正在调用 Kimi AI 进行深度分析...</span>
                   </div>
                 ) : result.aiAnalysis ? (

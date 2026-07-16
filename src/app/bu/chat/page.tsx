@@ -11,6 +11,17 @@ const SUGGESTIONS = [
   '近期有什么需要注意的？',
 ]
 
+// Loading spinner
+function Spinner({ className = '' }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center gap-1 ${className}`}>
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+    </div>
+  )
+}
+
 export default function BuChatPage() {
   const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([
     { role: 'ai', text: '关于你的本命星图，还有什么是你想知道的？\n我会为你尽心解答。' },
@@ -48,7 +59,7 @@ export default function BuChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen moonly-bg moonly-content animate-fade-in">
+    <div className="flex flex-col h-screen bg-moonly-bg">
       {/* 顶部导航 - moonly深色 */}
       <div className="px-4 py-3 bg-moonly-bg/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-3">
@@ -76,7 +87,7 @@ export default function BuChatPage() {
       {/* 消息列表 */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         {messages.map((msg, idx) => (
-          <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+          <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''} animate-fade-in`}>
             <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden border border-white/10">
               {msg.role === 'ai' ? (
                 <Image src="/images/ai-avatar-new.png" alt="AI" width={36} height={36} className="object-cover" />
@@ -99,11 +110,7 @@ export default function BuChatPage() {
               <Image src="/images/ai-avatar-new.png" alt="AI" width={36} height={36} className="object-cover" />
             </div>
             <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-2.5">
-              <div className="flex gap-1">
-                <div className="w-2 h-2 rounded-full bg-moonly-gold/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 rounded-full bg-moonly-gold/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 rounded-full bg-moonly-gold/60 animate-bounce" style={{ animationDelay: '300ms' }} />
-              </div>
+              <Spinner className="text-moonly-gold" />
             </div>
           </div>
         )}
@@ -141,7 +148,7 @@ export default function BuChatPage() {
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-[#c9a96e] to-[#a08050] flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-moonly-gold to-[#a08050] flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />

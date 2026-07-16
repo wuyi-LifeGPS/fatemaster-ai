@@ -54,25 +54,41 @@ function getCompatibility(person1: any, person2: any) {
   return { score, desc }
 }
 
+// Loading spinner
+function Spinner({ className = '' }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center gap-1 ${className}`}>
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+      <div className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+    </div>
+  )
+}
+
 export default function BaziMatchPage() {
   const [person1, setPerson1] = useState({ name: '', birthDate: '', gender: '男' as '男' | '女' })
   const [person2, setPerson2] = useState({ name: '', birthDate: '', gender: '女' as '男' | '女' })
   const [result, setResult] = useState<any>(null)
+  const [loading, setLoading] = useState(false)
 
   const analyze = () => {
     if (!person1.birthDate || !person2.birthDate) return
+    setLoading(true)
     
-    const date1 = new Date(person1.birthDate)
-    const date2 = new Date(person2.birthDate)
-    const bazi1 = getGanZhi(date1.getFullYear(), date1.getMonth() + 1, date1.getDate())
-    const bazi2 = getGanZhi(date2.getFullYear(), date2.getMonth() + 1, date2.getDate())
-    const compatibility = getCompatibility(bazi1, bazi2)
-    
-    setResult({
-      person1: { ...person1, bazi: bazi1 },
-      person2: { ...person2, bazi: bazi2 },
-      ...compatibility
-    })
+    setTimeout(() => {
+      const date1 = new Date(person1.birthDate)
+      const date2 = new Date(person2.birthDate)
+      const bazi1 = getGanZhi(date1.getFullYear(), date1.getMonth() + 1, date1.getDate())
+      const bazi2 = getGanZhi(date2.getFullYear(), date2.getMonth() + 1, date2.getDate())
+      const compatibility = getCompatibility(bazi1, bazi2)
+      
+      setResult({
+        person1: { ...person1, bazi: bazi1 },
+        person2: { ...person2, bazi: bazi2 },
+        ...compatibility
+      })
+      setLoading(false)
+    }, 800)
   }
 
   return (
@@ -126,16 +142,16 @@ export default function BaziMatchPage() {
 
         <button
           onClick={analyze}
-          disabled={!person1.birthDate || !person2.birthDate}
-          className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+          disabled={!person1.birthDate || !person2.birthDate || loading}
+          className="w-full py-3 btn-gold text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          合婚分析
+          {loading ? <><Spinner /> 分析中...</> : '合婚分析'}
         </button>
       </div>
 
       {/* Result */}
       {result && (
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-in">
           <div className="moonly-card p-6 text-center">
             <div className="text-4xl mb-3">💕</div>
             <div className="text-gold text-2xl font-bold mb-2">合婚结果</div>
@@ -146,7 +162,7 @@ export default function BaziMatchPage() {
               <div className="text-moonly-text-muted text-xs mb-1">匹配指数</div>
               <div className="w-full bg-white/5 rounded-full h-3">
                 <div
-                  className="bg-gradient-to-r from-[#c9a96e] to-yellow-400 h-3 rounded-full transition-all duration-1000"
+                  className="bg-gradient-to-r from-moonly-gold to-yellow-400 h-3 rounded-full transition-all duration-1000"
                   style={{ width: `${result.score}%` }}
                 />
               </div>
@@ -169,7 +185,7 @@ export default function BaziMatchPage() {
 
           <button
             onClick={() => { setResult(null); setPerson1({ name: '', birthDate: '', gender: '男' }); setPerson2({ name: '', birthDate: '', gender: '女' }) }}
-            className="w-full py-3 bg-white/5 text-white rounded-xl font-medium hover:bg-white/10 transition"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新合婚
           </button>

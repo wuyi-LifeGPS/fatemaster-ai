@@ -51,6 +51,7 @@ import DailyReflection from '@/components/DailyReflection'
 import DailyMantra from '@/components/DailyMantra'
 import TodaySummary from '@/components/TodaySummary'
 import ShareCard from '@/components/ShareCard'
+import ShareMingPan from '@/components/ShareMingPan'
 import DailyCheckIn from '@/components/DailyCheckIn'
 import FortuneCalendar from '@/components/FortuneCalendar'
 import FortuneStick from '@/components/FortuneStick'
@@ -937,7 +938,12 @@ export default function MingPage() {
       </div>
 
       <div className="px-4 py-4 pb-24 space-y-4">
-        {activeTab === 'mingpan' && baziData && <MingPanTab data={baziData} profile={currentProfile} onOpenModal={setModalModule} />}
+        {activeTab === 'mingpan' && baziData && (
+          <>
+            <MingPanTab data={baziData} profile={currentProfile} onOpenModal={setModalModule} />
+            <ShareMingPan profile={currentProfile} baziData={baziData} />
+          </>
+        )}
         {activeTab === 'dayun' && daYunData && <DayunTab daYunList={daYunData} profile={currentProfile} dayMaster={baziData?.dayMaster} />}
         {activeTab === 'dayun' && !daYunData && <LoadingTab />}
         {activeTab === 'liunian' && daYunData && <LiunianTab daYunList={daYunData} dayMaster={baziData?.dayMaster} />}

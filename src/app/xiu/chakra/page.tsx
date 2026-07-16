@@ -146,7 +146,10 @@ export default function ChakraPage() {
               className={`w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-br ${currentChakra.colorClass} flex items-center justify-center border border-white/10 transition-all duration-1000`}
               style={{
                 transform: `scale(${0.8 + progress * 0.5})`,
-                boxShadow: `0 0 ${30 + progress * 40}px ${currentChakra.color}40`,
+                boxShadow: isRunning
+                  ? `0 0 ${20 + progress * 50}px ${currentChakra.color}60, 0 0 ${40 + progress * 80}px ${currentChakra.color}30`
+                  : 'none',
+                animation: isRunning ? 'pulse 2s ease-in-out infinite' : 'none',
               }}
             >
               <span className="text-4xl">{currentChakra.emoji}</span>
@@ -163,6 +166,7 @@ export default function ChakraPage() {
                 style={{
                   width: `${progress * 100}%`,
                   backgroundColor: currentChakra.color,
+                  boxShadow: `0 0 8px ${currentChakra.color}80`,
                 }}
               />
             </div>

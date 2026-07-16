@@ -133,7 +133,7 @@ export default function TalentPage() {
   }
 
   return (
-    <main className="min-h-screen moonly-bg moonly-content text-white animate-fade-in">
+    <main className="min-h-screen moonly-bg moonly-content animate-fade-in">
       {/* Header */}
       <header className="bg-transparent py-4 px-4">
         <div className="flex items-center gap-3">
@@ -151,10 +151,10 @@ export default function TalentPage() {
           <>
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold font-serif mb-2 text-white">天赋基因解码</h2>
-              <p className="text-moonly-text-muted">融合八字命理 × 加德纳多元智能理论，发现你的天赋密码</p>
+              <p className="text-sm text-moonly-text-muted">融合八字命理 × 加德纳多元智能理论，发现你的天赋密码</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="moonly-card border border-white/10 rounded-xl p-6 max-w-lg mx-auto">
+            <form onSubmit={handleSubmit} className="moonly-card p-6 max-w-lg mx-auto">
               <div className="mb-4">
                 <PersonFormSelector form={formData} setForm={setFormData as any} showGender={true} />
               </div>
@@ -165,7 +165,7 @@ export default function TalentPage() {
                   type="text"
                   value={formData.birthPlace}
                   onChange={(e) => setFormData({ ...formData, birthPlace: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-400 text-white placeholder-moonly-text-muted"
+                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-moonly-gold/30 text-white placeholder-moonly-text-muted"
                   placeholder="如：北京"
                 />
               </div>
@@ -175,7 +175,7 @@ export default function TalentPage() {
                 <textarea
                   value={formData.note}
                   onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-fate-400 text-white placeholder-moonly-text-muted"
+                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-moonly-gold/30 text-white placeholder-moonly-text-muted"
                   placeholder="如有特殊需求或想了解的具体问题，可在此填写"
                   rows={3}
                 />
@@ -184,9 +184,14 @@ export default function TalentPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-gold text-[#1a1428] py-3 font-medium transition-all disabled:opacity-50 hover:"
+                className="w-full btn-gold text-[#1a1428] py-3 font-medium transition-all disabled:opacity-60"
               >
-                {loading ? '正在解码天赋基因...' : '开始天赋分析'}
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="animate-spin w-5 h-5 border-2 border-[#1a1428]/30 border-t-[#1a1428] rounded-full" />
+                    正在解码天赋基因...
+                  </span>
+                ) : '开始天赋分析'}
               </button>
             </form>
 
@@ -195,19 +200,18 @@ export default function TalentPage() {
               <div className="mt-6 max-w-lg mx-auto">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-white mb-3"
+                  className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-gold transition-colors mb-3"
                 >
-                  <span>📜</span>
                   <span>查询历史（{history.length} 条）</span>
                   <span>{showHistory ? '▲' : '▼'}</span>
                 </button>
                 {showHistory && (
-                  <div className="moonly-card border border-white/10 overflow-hidden">
+                  <div className="moonly-card overflow-hidden">
                     {history.map((record) => (
                       <div
                         key={record.id}
                         onClick={() => loadHistory(record)}
-                        className="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 cursor-pointer transition-colors"
+                        className="px-4 py-3 border-b border-white/5 last:border-0 hover:bg-white/5 cursor-pointer transition-colors"
                       >
                         <div className="flex justify-between items-start">
                           <div>
@@ -224,28 +228,28 @@ export default function TalentPage() {
             )}
           </>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* 头部导航 */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold font-serif text-white">天赋分析报告</h2>
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => {
                   setResult(null)
                   setAiAnalysis('')
                   setBaziResult(null)
                 }}
-                className="text-gold hover:text-gold-light text-sm"
+                className="btn-gold-outline px-4 py-2 text-sm"
               >
                 ← 重新分析
               </button>
+              <h2 className="text-xl font-bold font-serif text-white">天赋分析报告</h2>
             </div>
 
             {/* 八字概览 */}
-            <div className="moonly-card border border-white/10 rounded-xl p-6">
+            <div className="moonly-card p-5">
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-2xl">{formData.name || '命主'}</span>
+                <span className="text-lg font-bold text-white">{formData.name || '命主'}</span>
                 <span className="text-moonly-text-muted">·</span>
-                <span className="text-moonly-text-muted">
+                <span className="text-sm text-moonly-text-muted">
                   {baziResult?.dayMaster}日主 · {baziResult?.yinYang}性{baziResult?.wuXing}命
                 </span>
               </div>
@@ -260,7 +264,7 @@ export default function TalentPage() {
                     '午': '火', '未': '土', '申': '金', '酉': '金', '戌': '土', '亥': '水',
                   }
                   return (
-                  <div key={pillar.name} className="bg-white/5 border border-white/10 rounded-lg p-3 text-center">
+                  <div key={pillar.name} className="moonly-card-light p-3 text-center">
                     <div className="text-xs text-moonly-text-muted mb-1">{pillar.name}</div>
                     <div className="flex items-center justify-center gap-1.5">
                       <span className={`text-xl font-bold ${wxColor[ganWx[pillar.gan]] || 'text-white/60'}`}>{pillar.gan}</span>
@@ -273,9 +277,9 @@ export default function TalentPage() {
             </div>
 
             {/* 雷达图 */}
-            <div className="moonly-card border border-white/10 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-2 font-serif text-white">多元智能雷达图</h3>
-              <p className="text-sm text-moonly-text-muted mb-6">基于八字五行能量与十神格局的天赋评估</p>
+            <div className="moonly-card p-5">
+              <h3 className="text-base font-medium text-white mb-1 font-serif">多元智能雷达图</h3>
+              <p className="text-xs text-moonly-text-muted mb-6">基于八字五行能量与十神格局的天赋评估</p>
               <TalentRadar data={radarData} size={360} />
               <p className="text-center text-xs text-moonly-text-muted mt-4">
                 分值 0-100 · 基于五行分布、十神透出、日主特质、格局类型综合计算
@@ -283,11 +287,11 @@ export default function TalentPage() {
             </div>
 
             {/* 天赋模式 */}
-            <div className="moonly-card border border-white/10 rounded-xl p-6">
+            <div className="moonly-card p-5">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xl font-bold font-serif text-white">天赋模式</h3>
+                <h3 className="text-base font-medium text-white font-serif">天赋模式</h3>
               </div>
-              <p className="text-moonly-text-secondary leading-relaxed mb-4">{result.patternDescription}</p>
+              <p className="text-sm text-moonly-text-secondary leading-relaxed mb-4">{result.patternDescription}</p>
               <div className="flex flex-wrap gap-2">
                 {result.top3.map((key, i) => {
                   const dim = result.dimensions.find((d) => d.key === key)
@@ -297,7 +301,7 @@ export default function TalentPage() {
                       key={key}
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${
                         i === 0
-                          ? 'bg-[#c9a96e]/15 text-[#c9a96e] border border-[#c9a96e]/20'
+                          ? 'bg-moonly-gold/15 text-moonly-gold border border-moonly-gold/20'
                           : i === 1
                           ? 'bg-teal-500/15 text-teal-300 border border-teal-500/20'
                           : 'bg-blue-500/15 text-blue-300 border border-blue-500/20'
@@ -316,7 +320,7 @@ export default function TalentPage() {
 
             {/* Top3 天赋详解 */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold font-serif text-white">天赋详解</h3>
+              <h3 className="text-base font-medium text-white font-serif">天赋详解</h3>
               {result.top3.map((key, i) => {
                 const dim = result.dimensions.find((d) => d.key === key)
                 if (!dim) return null
@@ -324,14 +328,14 @@ export default function TalentPage() {
                 return (
                   <div
                     key={key}
-                    className="moonly-card border border-white/10 rounded-xl p-5 hover:border-white/20 transition-colors"
+                    className="moonly-card p-5 hover:border-white/20 transition-colors"
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <span className="text-2xl">{dim.icon}</span>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-lg font-bold text-white">{dim.name}</span>
-                          <span className="text-sm px-2 py-0.5 rounded-full bg-white/10 text-moonly-text-secondary">{dim.level}</span>
+                          <span className="text-base font-medium text-white">{dim.name}</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-moonly-text-secondary">{dim.level}</span>
                         </div>
                       </div>
                       <span className="text-2xl font-bold" style={{ color }}>
@@ -350,8 +354,8 @@ export default function TalentPage() {
                     <p className="text-sm text-moonly-text-muted mb-3">{dim.description}</p>
 
                     {/* 日常表现对照 */}
-                    <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-3">
-                      <p className="text-xs text-gold mb-1.5 font-medium">日常表现对照</p>
+                    <div className="moonly-card-light p-3 mb-3">
+                      <p className="text-xs text-moonly-gold mb-1.5 font-medium">日常表现对照</p>
                       <div className="space-y-1">
                         {dim.dailySigns.map((s: string, idx: number) => (
                           <div key={idx} className="flex items-start gap-2 text-sm">
@@ -366,7 +370,7 @@ export default function TalentPage() {
                     <div className="space-y-1.5">
                       {dim.strengths.map((s, idx) => (
                         <div key={idx} className="flex items-start gap-2 text-sm">
-                          <span className="text-gold mt-0.5">✓</span>
+                          <span className="text-moonly-gold mt-0.5">✓</span>
                           <span className="text-moonly-text-secondary">{s}</span>
                         </div>
                       ))}
@@ -377,8 +381,8 @@ export default function TalentPage() {
             </div>
 
             {/* 所有维度一览 */}
-            <div className="moonly-card border border-white/10 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-4 font-serif text-white">八维天赋全景</h3>
+            <div className="moonly-card p-5">
+              <h3 className="text-base font-medium text-white mb-4 font-serif">八维天赋全景</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {result.dimensions.map((dim) => {
                   const color = getScoreColor(dim.score)
@@ -405,21 +409,21 @@ export default function TalentPage() {
             </div>
 
             {/* 职业建议 */}
-            <div className="moonly-card border border-white/10 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-4 font-serif text-white">职业方向建议</h3>
+            <div className="moonly-card p-5">
+              <h3 className="text-base font-medium text-white mb-4 font-serif">职业方向建议</h3>
               <div className="space-y-4">
                 {result.careerSuggestions.map((career, i) => (
                   <div
                     key={career.field}
-                    className="flex items-start gap-4 p-4 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-colors"
+                    className="flex items-start gap-4 p-4 rounded-lg moonly-card-light hover:border-white/15 transition-colors"
                   >
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#c9a96e]/20 flex items-center justify-center text-lg font-bold text-gold">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-moonly-gold/20 flex items-center justify-center text-lg font-bold text-moonly-gold">
                       {i + 1}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-white">{career.field}</span>
-                        <span className="text-xs text-gold bg-white/10 px-2 py-0.5 rounded-full">
+                        <span className="text-xs text-moonly-gold bg-white/10 px-2 py-0.5 rounded-full">
                           匹配度 {Math.round(career.matchScore)}%
                         </span>
                       </div>
@@ -441,8 +445,8 @@ export default function TalentPage() {
             </div>
 
             {/* 人生发展建议 */}
-            <div className="moonly-card border border-white/10 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-4 font-serif text-white">人生发展建议</h3>
+            <div className="moonly-card p-5">
+              <h3 className="text-base font-medium text-white mb-4 font-serif">人生发展建议</h3>
               <div className="prose prose-sm max-w-none">
                 {result.lifeAdvice.split('\n\n').map((para, i) => {
                   if (para.startsWith('**') && para.includes('**')) {
@@ -452,7 +456,7 @@ export default function TalentPage() {
                       const content = parts.slice(1).join('**：')
                       return (
                         <div key={i} className="mb-4 last:mb-0">
-                          <h4 className="text-gold font-bold mb-1">{title}</h4>
+                          <h4 className="text-moonly-gold font-bold mb-1">{title}</h4>
                           <p className="text-moonly-text-muted leading-relaxed">{content}</p>
                         </div>
                       )
@@ -469,17 +473,42 @@ export default function TalentPage() {
 
             {/* AI 深度解读 */}
             {aiLoading && (
-              <div className="moonly-card border border-white/10 rounded-xl p-6 text-center">
-                <div className="inline-flex items-center gap-2 text-moonly-text-muted">
-                  <div className="w-4 h-4 border-2 border-[#c9a96e]/[0.3] border-t-[#c9a96e] rounded-full animate-spin" />
-                  <span>AI 正在深度解读你的天赋基因...</span>
+              <div className="moonly-card p-5 border border-moonly-gold/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-moonly-gold to-amber-700 rounded-lg flex items-center justify-center text-white text-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                      <path d="M2 17l10 5 10-5" />
+                      <path d="M2 12l10 5 10-5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-white font-serif">AI 深度解读</h3>
+                    <p className="text-xs text-moonly-text-muted">基于八字命理的个性化天赋分析</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 py-8">
+                  <div className="animate-spin w-5 h-5 border-2 border-moonly-gold/30 border-t-moonly-gold rounded-full" />
+                  <span className="text-sm text-moonly-text-muted">AI 正在深度解读你的天赋基因...</span>
                 </div>
               </div>
             )}
 
             {aiAnalysis && (
-              <div className="moonly-card border border-white/10 rounded-xl p-6">
-                <h3 className="text-xl font-bold mb-4 font-serif text-gold">AI 深度解读</h3>
+              <div className="moonly-card p-5 border border-moonly-gold/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-moonly-gold to-amber-700 rounded-lg flex items-center justify-center text-white text-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                      <path d="M2 17l10 5 10-5" />
+                      <path d="M2 12l10 5 10-5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-white font-serif">AI 深度解读</h3>
+                    <p className="text-xs text-moonly-text-muted">基于八字命理的个性化天赋分析</p>
+                  </div>
+                </div>
                 <div className="prose prose-sm max-w-none whitespace-pre-line text-moonly-text-secondary leading-relaxed">
                   {aiAnalysis}
                 </div>

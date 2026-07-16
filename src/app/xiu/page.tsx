@@ -1,4 +1,8 @@
 'use client'
+
+import { useState, useEffect, useRef, useCallback } from 'react'
+import Link from 'next/link'
+
 const DAILY_ZEN = [
   { text: '心若止水，万象皆空。', source: '禅宗' },
   { text: '本来无一物，何处惹尘埃。', source: '六祖坛经' },
@@ -11,10 +15,6 @@ const DAILY_ZEN = [
   { text: '春有百花秋有月，夏有凉风冬有雪。', source: '无门关' },
   { text: '不识庐山真面目，只缘身在此山中。', source: '苏轼' },
 ]
-
-
-import { useState, useEffect, useRef, useCallback } from 'react'
-import Link from 'next/link'
 
 const MEDITATION_CATEGORIES = [
   { key: 'all', label: '全部' },

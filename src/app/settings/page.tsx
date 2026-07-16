@@ -14,6 +14,7 @@ interface Settings {
   enableNotifications: boolean
   dailyFortuneReminder: boolean
   reminderTime: string
+  soundEnabled: boolean
 }
 
 const defaultSettings: Settings = {
@@ -26,6 +27,7 @@ const defaultSettings: Settings = {
   enableNotifications: true,
   dailyFortuneReminder: false,
   reminderTime: '08:00',
+  soundEnabled: true,
 }
 
 export default function SettingsPage() {
@@ -211,6 +213,28 @@ export default function SettingsPage() {
               />
             </div>
           )}
+
+          <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-lg">🔊</span>
+              <div>
+                <div className="text-white text-sm font-medium">声音反馈</div>
+                <div className="text-moonly-muted text-xs">操作音效提示</div>
+              </div>
+            </div>
+            <button
+              onClick={() => update('soundEnabled', !settings.soundEnabled)}
+              className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
+                settings.soundEnabled ? 'bg-[#c9a96e]' : 'bg-white/20'
+              }`}
+            >
+              <span
+                className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform shadow-sm ${
+                  settings.soundEnabled ? 'left-7' : 'left-1'
+                }`}
+              />
+            </button>
+          </div>
         </div>
       </section>
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { playSuccessSound, playErrorSound, playNotificationSound } from '@/lib/sound'
 
 interface Toast {
   id: number
@@ -20,6 +21,12 @@ export function showToast(message: string, type: 'success' | 'error' | 'info' = 
   const id = ++toastId
   toasts = [...toasts, { id, message, type }]
   notifyListeners()
+
+  // 播放音效
+  if (type === 'success') playSuccessSound()
+  else if (type === 'error') playErrorSound()
+  else playNotificationSound()
+
   setTimeout(() => {
     toasts = toasts.filter(t => t.id !== id)
     notifyListeners()

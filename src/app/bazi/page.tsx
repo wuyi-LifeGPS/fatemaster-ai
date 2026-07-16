@@ -10,6 +10,7 @@ import { showToast } from '@/components/Toast'
 import useBeforeUnload from '@/hooks/useBeforeUnload'
 import { addProfile } from '@/lib/bazi-profiles'
 import useKeyboard from '@/hooks/useKeyboard'
+import Celebration from '@/components/Celebration'
 
 interface BaziResult {
   pillars: { name: string; gan: string; zhi: string }[]
@@ -129,6 +130,7 @@ function WheelColumn({ options, value, onChange, label }: {
 export default function BaziPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [showCelebration, setShowCelebration] = useState(false)
   const [result, setResult] = useState<BaziResult | null>(null)
   const [solarBirthDate, setSolarBirthDate] = useState<string>('')
 
@@ -295,7 +297,10 @@ export default function BaziPage() {
       if (typeof window !== 'undefined') {
         localStorage.setItem('bazi_selected_profile', newProfile.id)
       }
-      router.push('/ming')
+      setShowCelebration(true)
+      setTimeout(() => {
+        router.push('/ming')
+      }, 1500)
     } catch (error) {
       console.error('Error:', error)
       showToast('分析出错，请重试', 'error')
@@ -530,6 +535,8 @@ export default function BaziPage() {
           />
         </div>
       </BottomSheet>
+
+      <Celebration show={showCelebration} />
     </div>
   )
 }

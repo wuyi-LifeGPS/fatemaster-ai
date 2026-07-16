@@ -1,0 +1,102 @@
+'use client'
+
+import { useState, useRef, useCallback } from 'react'
+
+interface PullToRefreshProps {
+  onRefresh: () => Promise<void> | void
+  children: React.ReactNode
+}
+
+export default function PullToRefresh({ onRefresh, children }: PullToRefreshProps) {
+  const [pulling, setPulling] = useState(false)
+  const [pullDistance, setPullDistance] = useState(0)
+  const [refreshing, setRefreshing] = useState(false)
+  const startY = useRef(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (containerRef.current && containerRef.current.scrollTop <= 0) {
+      startY.current = e.touches[0].clientY
+      setPulling(true)
+    }
+  }, [])
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!pulling) return
+    const delta = e.touches[0].clientY - startY.current
+    if (delta > 0 && delta < 150) {
+      setPullDistance(delta)
+    }
+  }, [pulling])
+
+  const handleTouchEnd = useCallback(async () => {
+    if (!pulling) return
+    setPulling(false)
+
+    if (pullDistance > 80) {
+      setRefreshing(true)
+      setPullDistance(80)
+      try {
+        await onRefresh()
+      } finally {
+        setRefreshing(false)
+        setPullDistance(0)
+      }
+    } else {
+      setPullDistance(0)
+    }
+  }, [pulling, pullDistance, onRefresh])
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative overflow-y-auto h-full"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* 下拉指示器 */}
+      <div
+        className="absolute top-0 left-0 right-0 flex items-center justify-center overflow-hidden transition-transform"
+        style={{
+          height: pullDistance,
+          transform: `translateY(${pullDistance > 0 ? 0 : -pullDistance}px)`,
+        }}
+      >
+        <div className="flex flex-col items-center gap-1">
+          {refreshing ? (
+            <div className="w-5 h-5 rounded-full border-2 border-gold/30 border-t-gold animate-spin" />
+          ) : (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#c9a96e"
+              strokeWidth="2"
+              style={{
+                transform: `rotate(${Math.min(pullDistance * 2, 180)}deg)`,
+                transition: 'transform 0.2s',
+              }}
+            >
+              <path d="M12 5v14M5 12l7-7 7 7" />
+            </svg>
+          )}
+          <span className="text-xs text-moonly-muted">
+            {refreshing ? '刷新中...' : pullDistance > 80 ? '释放刷新' : '下拉刷新'}
+          </span>
+        </div>
+      </div>
+
+      {/* 内容区域 */}
+      <div
+        style={{
+          transform: `translateY(${pullDistance}px)`,
+          transition: pulling ? 'none' : 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}

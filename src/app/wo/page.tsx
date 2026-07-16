@@ -48,6 +48,7 @@ export default function WoPage() {
     { icon: '👔', label: '五行穿衣', href: '/wo/dress-guide' },
     { icon: '⚖️', label: '八字对比', href: '/wo/compare' },
     { icon: '♈', label: '星座运势', href: '/wo/horoscope' },
+    { icon: '⭐', label: '我的收藏', href: '/wo/favorites' },
     { icon: '☯️', label: '今日运势', href: '/ming?tab=liuri' },
     { icon: '⚙️', label: '设置', href: '/settings' },
     { icon: '❓', label: '帮助', href: '/help' },

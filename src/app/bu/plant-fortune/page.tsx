@@ -79,7 +79,7 @@ export default function PlantFortunePage() {
           <button
             onClick={analyze}
             disabled={!plantType}
-            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3 btn-gold text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed"
           >
             查看植物运势
           </button>
@@ -111,7 +111,7 @@ export default function PlantFortunePage() {
 
           <button
             onClick={() => { setResult(null); setPlantType('') }}
-            className="w-full py-3 bg-white/5 text-white rounded-xl font-medium hover:bg-white/10 transition"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新查看
           </button>

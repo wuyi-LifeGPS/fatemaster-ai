@@ -107,7 +107,7 @@ export default function OraclePage() {
           <button
             onClick={drawCard}
             disabled={isDrawing}
-            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30"
+            className="w-full py-3 btn-gold text-sm font-semibold disabled:opacity-30"
           >
             {isDrawing ? '抽卡中...' : '开始抽卡'}
           </button>
@@ -137,7 +137,7 @@ export default function OraclePage() {
 
           <button
             onClick={() => { setSelected(null); setDrawnCards([]) }}
-            className="w-full py-3 bg-white/5 text-white rounded-xl font-medium hover:bg-white/10 transition"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新抽卡
           </button>
@@ -186,7 +186,7 @@ export default function OraclePage() {
 
           <button
             onClick={() => { setSelected(null); setDrawnCards([]) }}
-            className="w-full py-3 bg-white/5 text-white rounded-xl font-medium hover:bg-white/10 transition"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新抽卡
           </button>

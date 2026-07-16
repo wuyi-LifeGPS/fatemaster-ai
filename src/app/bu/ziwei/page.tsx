@@ -95,7 +95,7 @@ export default function ZiWeiPage() {
           <button
             onClick={analyze}
             disabled={!birthDate}
-            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3 btn-gold text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed"
           >
             开始排盘
           </button>
@@ -196,7 +196,7 @@ export default function ZiWeiPage() {
 
           <button
             onClick={() => { setChart(null); setBirthDate('') }}
-            className="w-full py-3 bg-white/5 text-white rounded-xl font-medium hover:bg-white/10 transition"
+            className="w-full py-3 btn-gold-outline text-sm font-semibold"
           >
             重新排盘
           </button>

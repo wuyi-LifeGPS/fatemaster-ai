@@ -325,11 +325,11 @@ function BookDetailContent() {
   const progress = totalChapters > 1 ? ((currentChapter + 1) / totalChapters) * 100 : 100
 
   return (
-    <div className="min-h-screen moonly-bg moonly-content text-white animate-fade-in"
+    <div className="min-h-screen moonly-bg moonly-content flex flex-col animate-fade-in relative"
       style={{ fontFamily: "'Noto Serif SC', 'Songti SC', serif" }}
     >
       {/* 头部 */}
-      <div className="sticky top-0 z-10 bg-[#1a1428]/95 backdrop-blur-sm border-b border-white/10 px-4 py-3">
+      <div className="sticky top-0 z-50 bg-[#1a1428]/95 backdrop-blur-sm border-b border-white/10 px-4 py-3">
         <div className="flex items-center justify-between max-w-md mx-auto">
           <div className="flex items-center gap-3">
             <Link href="/shu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition text-white">
@@ -342,8 +342,8 @@ function BookDetailContent() {
           </div>
           {/* 字体大小切换 */}
           <div className="flex items-center gap-1 bg-white/5 rounded-full p-0.5">
-            <button onClick={() => setFontSize(s => Math.max(14, s - 2))} className="w-8 h-8 rounded-full flex items-center justify-center text-xs text-moonly-muted hover:text-white hover:bg-white/10 transition">A-</button>
-            <button onClick={() => setFontSize(s => Math.min(26, s + 2))} className="w-8 h-8 rounded-full flex items-center justify-center text-sm text-moonly-muted hover:text-white hover:bg-white/10 transition">A+</button>
+            <button onClick={() => setFontSize(s => Math.max(14, s - 2))} className="w-8 h-8 rounded-full flex items-center justify-center text-xs text-moonly-secondary hover:text-white hover:bg-white/10 transition">A-</button>
+            <button onClick={() => setFontSize(s => Math.min(26, s + 2))} className="w-8 h-8 rounded-full flex items-center justify-center text-sm text-moonly-secondary hover:text-white hover:bg-white/10 transition">A+</button>
           </div>
         </div>
       </div>

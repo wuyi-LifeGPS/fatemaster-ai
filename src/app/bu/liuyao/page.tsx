@@ -290,7 +290,7 @@ export default function LiuYaoPage() {
             <button
               onClick={startDivination}
               disabled={!question.trim()}
-              className="w-full mt-4 btn-gold py-3 text-sm font-semibold disabled:opacity-40"
+              className="w-full mt-4 btn-gold py-3 text-sm font-semibold disabled:opacity-30"
             >
               开始摇卦
             </button>
@@ -364,7 +364,7 @@ export default function LiuYaoPage() {
             <button
               onClick={tossOnce}
               disabled={coinsAnimating}
-              className="w-full btn-gold py-3 text-sm font-semibold disabled:opacity-40"
+              className="w-full btn-gold py-3 text-sm font-semibold disabled:opacity-30"
             >
               {coinsAnimating ? '铜钱摇动中...' : '摇卦'}
             </button>

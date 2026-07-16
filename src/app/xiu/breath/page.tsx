@@ -45,6 +45,7 @@ export default function BreathPage() {
   const [cycle, setCycle] = useState(0)
   const [progress, setProgress] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
+  const [showComplete, setShowComplete] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const startTimeRef = useRef(0)
   const isRunningRef = useRef(false)
@@ -59,6 +60,7 @@ export default function BreathPage() {
   const start = () => {
     setIsRunning(true)
     isRunningRef.current = true
+    setShowComplete(false)
     setCycle(0)
     runPhase('inhale')
   }
@@ -68,6 +70,7 @@ export default function BreathPage() {
     isRunningRef.current = false
     setPhase('idle')
     setProgress(0)
+    setShowComplete(false)
     if (timerRef.current) clearInterval(timerRef.current)
   }
 
@@ -115,6 +118,7 @@ export default function BreathPage() {
         setCycle(prev => {
           const newCycle = prev + 1
           if (newCycle >= selected.cycles) {
+            setShowComplete(true)
             stop()
             return prev
           }
@@ -126,6 +130,7 @@ export default function BreathPage() {
       setCycle(prev => {
         const newCycle = prev + 1
         if (newCycle >= selected.cycles) {
+          setShowComplete(true)
           stop()
           return prev
         }
@@ -144,12 +149,14 @@ export default function BreathPage() {
   }
 
   const phaseSubtext = {
-    inhale: '让空气充满肺部',
-    hold: '保持自然放松',
-    exhale: '缓缓释放所有气息',
-    hold2: '保持自然放松',
-    idle: '选择一种呼吸法开始',
+    inhale: '让空气缓缓充满肺部...',
+    hold: '保持自然放松的状态',
+    exhale: '缓缓释放所有气息...',
+    hold2: '保持自然放松的状态',
+    idle: '选择一种呼吸法，开始练习',
   }
+
+  const currentPhaseDuration = phase === 'inhale' ? selected.inhale : phase === 'hold' ? selected.hold : phase === 'exhale' ? selected.exhale : selected.hold2 || 0
 
   return (
     <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
@@ -167,8 +174,42 @@ export default function BreathPage() {
       </div>
 
       {/* 呼吸可视化 */}
-      <div className="moonly-card p-8 mb-6 flex flex-col items-center">
+      <div className="moonly-card p-8 mb-6 flex flex-col items-center relative overflow-hidden">
+        {/* 完成遮罩 */}
+        {showComplete && (
+          <div className="absolute inset-0 z-10 bg-[#1a1428]/90 backdrop-blur-sm flex flex-col items-center justify-center animate-fade-in">
+            <div className="text-4xl mb-3">🌟</div>
+            <div className="text-lg font-bold text-gold mb-2">练习完成</div>
+            <p className="text-sm text-moonly-secondary mb-4">{selected.cycles} 轮 {selected.name} 已完成</p>
+            <button
+              onClick={() => {
+                setShowComplete(false)
+                start()
+              }}
+              className="px-6 py-2 rounded-full bg-[#c9a96e]/15 text-gold border border-[#c9a96e]/20 text-sm font-medium hover:bg-[#c9a96e]/20 transition"
+            >
+              再来一次
+            </button>
+          </div>
+        )}
         <div className="relative w-48 h-48 mb-6">
+          {/* 外圈进度环 */}
+          <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
+            {isRunning && (
+              <circle
+                cx="50" cy="50" r="46"
+                fill="none"
+                stroke="#c9a96e"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeDasharray={`${2 * Math.PI * 46}`}
+                strokeDashoffset={`${2 * Math.PI * 46 * (1 - progress)}`}
+                className="transition-all duration-100"
+                style={{ filter: 'drop-shadow(0 0 4px rgba(201,169,110,0.4))' }}
+              />
+            )}
+          </svg>
           <div
             className={`w-full h-full rounded-full bg-gradient-to-br ${selected.color} transition-all duration-1000 flex items-center justify-center border border-white/10`}
             style={{
@@ -177,7 +218,7 @@ export default function BreathPage() {
             }}
           >
             <div className="text-4xl font-bold text-white">
-              {isRunning ? Math.ceil((1 - progress) * (phase === 'inhale' ? selected.inhale : phase === 'hold' ? selected.hold : phase === 'exhale' ? selected.exhale : selected.hold2 || 0)) : '🌬️'}
+              {isRunning ? Math.ceil((1 - progress) * currentPhaseDuration) : '🌬️'}
             </div>
           </div>
         </div>
@@ -196,7 +237,7 @@ export default function BreathPage() {
           {!isRunning ? (
             <button
               onClick={start}
-              className="px-8 py-3 rounded-full bg-[#c9a96e]/15 text-gold border border-[#c9a96e]/20 font-medium hover:bg-[#c9a96e]/20 transition"
+              className="btn-gold-outline px-8 py-3"
             >
               开始练习
             </button>
@@ -220,7 +261,7 @@ export default function BreathPage() {
               stop()
               setSelected(tech)
             }}
-            className={`w-full text-left moonly-card p-4 transition ${selected.id === tech.id ? 'border-[#c9a96e]/30' : ''}`}
+            className={`w-full text-left moonly-card p-4 transition ${selected.id === tech.id ? 'border-[#c9a96e]/40 bg-[#c9a96e]/5' : ''}`}
           >
             <div className="flex items-center justify-between mb-1">
               <span className={`text-sm font-medium ${selected.id === tech.id ? 'text-gold' : 'text-white'}`}>

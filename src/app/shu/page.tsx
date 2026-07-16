@@ -226,9 +226,10 @@ export default function ShuPage() {
       </div>
 
       {filtered.length === 0 && (
-        <div className="text-center py-20">
-          <div className="text-4xl mb-3">📚</div>
-          <p className="text-moonly-secondary text-sm">未找到相关书籍</p>
+        <div className="empty-state">
+          <div className="empty-state-icon">📚</div>
+          <p className="empty-state-title">未找到相关书籍</p>
+          <p className="empty-state-desc">尝试其他关键词或分类</p>
         </div>
       )}
     </div>

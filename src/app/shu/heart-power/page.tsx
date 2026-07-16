@@ -66,7 +66,7 @@ export default function HeartPowerPage() {
   return (
     <div className="min-h-screen moonly-bg moonly-content flex flex-col animate-fade-in relative">
       {/* 顶部导航 */}
-      <div className="sticky top-0 z-30 bg-[#1a1428]/95 backdrop-blur-sm border-b border-white/5 px-4 py-3 flex items-center justify-between flex-shrink-0">
+      <div className="sticky top-0 z-50 bg-[#1a1428]/95 backdrop-blur-sm border-b border-white/5 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
           <Link href="/shu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-secondary">
@@ -116,8 +116,8 @@ export default function HeartPowerPage() {
       {/* 目录浮层 */}
       {showToc && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setShowToc(false)} />
-          <div className="fixed top-14 right-4 z-50 moonly-card p-4 w-56 shadow-2xl">
+          <div className="fixed inset-0 z-[60] bg-black/50" onClick={() => setShowToc(false)} />
+          <div className="fixed top-14 right-4 z-[70] moonly-card p-4 w-56 shadow-2xl">
             <div className="text-white font-bold text-sm mb-3">目录</div>
             <div className="space-y-1">
               {CHAPTERS.map((ch, i) => (
@@ -138,8 +138,8 @@ export default function HeartPowerPage() {
       )}
 
       {/* 阅读进度条 */}
-      <div className="w-full h-0.5 bg-white/10 flex-shrink-0">
-        <div className="h-full bg-[#c9a96e] transition-all duration-300" style={{ width: `${chapterProgress}%` }} />
+      <div className="w-full h-0.5 bg-white/10 flex-shrink-0 relative overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-[#c9a96e] to-[#e0c896] transition-all duration-300" style={{ width: `${chapterProgress}%` }} />
       </div>
 
       {/* 正文区域 */}

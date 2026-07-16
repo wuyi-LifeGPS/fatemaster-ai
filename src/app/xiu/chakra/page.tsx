@@ -105,23 +105,38 @@ export default function ChakraPage() {
 
       {/* 七脉轮可视化 */}
       <div className="moonly-card p-6 mb-6">
-        <div className="flex justify-center gap-3 mb-6">
-          {CHAKRAS.map((c, i) => (
-            <div
-              key={c.id}
-              className={`w-3 h-3 rounded-full transition-all duration-500 ${
-                i === currentIdx && isRunning
-                  ? 'scale-150 shadow-lg'
-                  : i < currentIdx
-                  ? 'opacity-100'
-                  : 'opacity-30'
-              }`}
-              style={{
-                backgroundColor: c.color,
-                boxShadow: i === currentIdx && isRunning ? `0 0 12px ${c.color}` : 'none',
-              }}
-            />
-          ))}
+        {/* 垂直脉轮排列 */}
+        <div className="flex justify-center mb-6">
+          <div className="flex flex-col items-center gap-2">
+            {CHAKRAS.map((c, i) => (
+              <div key={c.id} className="flex items-center gap-3">
+                <div
+                  className={`rounded-full transition-all duration-700 ${
+                    i === currentIdx && isRunning
+                      ? 'scale-125'
+                      : i < currentIdx
+                      ? 'opacity-100'
+                      : 'opacity-30'
+                  }`}
+                  style={{
+                    width: i === currentIdx && isRunning ? 20 : 14,
+                    height: i === currentIdx && isRunning ? 20 : 14,
+                    backgroundColor: c.color,
+                    boxShadow: i === currentIdx && isRunning
+                      ? `0 0 16px ${c.color}80, 0 0 32px ${c.color}40`
+                      : i < currentIdx
+                      ? `0 0 6px ${c.color}40`
+                      : 'none',
+                  }}
+                />
+                <span className={`text-xs transition-all duration-500 ${
+                  i === currentIdx && isRunning ? 'text-white font-medium' : 'text-moonly-muted'
+                }`}>
+                  {c.name}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {phase === 'intro' && (
@@ -133,7 +148,7 @@ export default function ChakraPage() {
             </p>
             <button
               onClick={start}
-              className="px-8 py-3 rounded-full bg-[#c9a96e]/15 text-gold border border-[#c9a96e]/20 font-medium hover:bg-[#c9a96e]/20 transition"
+              className="btn-gold-outline px-8 py-3"
             >
               开始净化
             </button>
@@ -184,9 +199,14 @@ export default function ChakraPage() {
         )}
 
         {phase === 'complete' && (
-          <div className="text-center">
-            <div className="text-4xl mb-3">✨</div>
-            <div className="text-lg font-bold text-white mb-2">净化完成</div>
+          <div className="text-center animate-fade-in">
+            <div className="relative w-24 h-24 mx-auto mb-4">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#c9a96e]/30 to-[#6b5b95]/20 animate-pulse" />
+              <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#c9a96e]/20 to-[#6b5b95]/10 flex items-center justify-center">
+                <span className="text-4xl">✨</span>
+              </div>
+            </div>
+            <div className="text-lg font-bold text-gold mb-2">净化完成</div>
             <p className="text-sm text-moonly-secondary mb-4">
               七个脉轮已全部净化，能量场已恢复平衡。
             </p>
@@ -210,11 +230,21 @@ export default function ChakraPage() {
 
       {/* 脉轮说明 */}
       <div className="space-y-2">
-        {CHAKRAS.map(c => (
-          <div key={c.id} className="moonly-card p-3 flex items-center gap-3">
+        {CHAKRAS.map((c, i) => (
+          <div
+            key={c.id}
+            className={`moonly-card p-3 flex items-center gap-3 transition-all duration-300 ${
+              i === currentIdx && (phase === 'chakra' || phase === 'complete') ? 'border-[#c9a96e]/30 bg-[#c9a96e]/5' : ''
+            }`}
+          >
             <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-sm"
-              style={{ backgroundColor: `${c.color}20` }}
+              className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0"
+              style={{
+                backgroundColor: `${c.color}25`,
+                boxShadow: i <= currentIdx && (phase === 'chakra' || phase === 'complete')
+                  ? `0 0 8px ${c.color}40`
+                  : 'none',
+              }}
             >
               {c.emoji}
             </div>
@@ -222,6 +252,12 @@ export default function ChakraPage() {
               <div className="text-white text-sm font-medium">{c.name}</div>
               <div className="text-moonly-muted text-xs">{c.location} · {c.desc}</div>
             </div>
+            {i < currentIdx && (phase === 'chakra' || phase === 'complete') && (
+              <div className="text-green-400 text-xs flex-shrink-0">✓ 已净化</div>
+            )}
+            {i === currentIdx && phase === 'chakra' && isRunning && (
+              <div className="text-[#c9a96e] text-xs flex-shrink-0 animate-pulse">● 净化中</div>
+            )}
           </div>
         ))}
       </div>

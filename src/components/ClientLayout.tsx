@@ -15,6 +15,7 @@ import ErrorBoundary from './ErrorBoundary'
 import ScrollToTop from './ScrollToTop'
 import BottomNav from './BottomNav'
 import FeedbackButton from './FeedbackButton'
+import { useDoubleTapToTop } from '@/hooks/useSwipe'
 
 const HIDE_NAV_PAGES = [
   '/bazi',
@@ -73,6 +74,9 @@ const HIDE_NAV_PAGES = [
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const hideNav = HIDE_NAV_PAGES.some(p => pathname?.startsWith(p))
+
+  // 双击返回顶部
+  useDoubleTapToTop()
 
   useEffect(() => {
     trackVisit()

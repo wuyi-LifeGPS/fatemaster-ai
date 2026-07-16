@@ -22,6 +22,7 @@ export default function NamingPage() {
   const [surname, setSurname] = useState('')
   const [givenName, setGivenName] = useState('')
   const [analysis, setAnalysis] = useState<NameAnalysis | null>(null)
+  const [generatedNames, setGeneratedNames] = useState<GeneratedName[]>([])
   const [loading, setLoading] = useState(false)
   const [history, setHistory] = useState<HistoryRecord[]>([])
   const [showHistory, setShowHistory] = useState(false)
@@ -61,6 +62,40 @@ export default function NamingPage() {
         const result = analyzeBrandName(brandName)
         setBrandResult(result)
         addHistory('naming', `${brandName} · 品牌分析`, { mode: 'brand', brandName }, `${result.brandScore}分`)
+        setHistory(getHistoryByType('naming'))
+        setLoading(false)
+      }, 500)
+      return
+    }
+
+    // AI起名模式
+    if (mode === 'generate') {
+      if (!surname) return
+      setLoading(true)
+      setTimeout(() => {
+        let xiShen: string[] = []
+        if (formData.birthYear) {
+          try {
+            let solarYear = formData.birthYear
+            let solarMonth = formData.birthMonth
+            let solarDay = formData.birthDay
+            if (formData.calendarType === 'lunar') {
+              const solar = lunarToSolar(formData.birthYear, formData.birthMonth, formData.birthDay, formData.lunarIsLeap)
+              if (solar) { solarYear = solar.year; solarMonth = solar.month; solarDay = solar.day }
+            }
+            const birthDate = `${solarYear}-${pad(solarMonth)}-${pad(solarDay)}`
+            const birthTime = `${pad(formData.birthHour)}:${pad(formData.birthMinute)}`
+            const bazi = calculateBazi(birthDate, birthTime)
+            const god = calculateCombinedGod(bazi)
+            xiShen = god.xi || []
+            setBaziInfo(bazi)
+            setCombinedGod(god)
+          } catch (e) { console.error('八字计算出错:', e) }
+        }
+        const expectChar = givenName || undefined
+        const names = generateNames(surname, formData.gender, xiShen.length > 0 ? xiShen : undefined, expectChar)
+        setGeneratedNames(names)
+        addHistory('naming', `${surname} · AI起名`, { mode: 'generate', surname, givenName, formData }, `推荐${names.length}个`)
         setHistory(getHistoryByType('naming'))
         setLoading(false)
       }, 500)
@@ -191,7 +226,7 @@ export default function NamingPage() {
         {/* 模式切换 */}
         <div className="moonly-card p-1 mb-6 flex">
           <button
-            onClick={() => { setMode('analyze'); setAnalysis(null); setBrandResult(null) }}
+            onClick={() => { setMode('analyze'); setAnalysis(null); setBrandResult(null); setGeneratedNames([]) }}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
               mode === 'analyze' ? 'bg-moonly-gold text-moonly-bg' : 'text-moonly-text-secondary hover:text-white'
             }`}
@@ -199,7 +234,7 @@ export default function NamingPage() {
             名字分析
           </button>
           <button
-            onClick={() => { setMode('generate'); setAnalysis(null); setBrandResult(null) }}
+            onClick={() => { setMode('generate'); setAnalysis(null); setBrandResult(null); setGeneratedNames([]) }}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
               mode === 'generate' ? 'bg-moonly-gold text-moonly-bg' : 'text-moonly-text-secondary hover:text-white'
             }`}
@@ -207,7 +242,7 @@ export default function NamingPage() {
             AI起名
           </button>
           <button
-            onClick={() => { setMode('brand'); setAnalysis(null); setBrandResult(null) }}
+            onClick={() => { setMode('brand'); setAnalysis(null); setBrandResult(null); setGeneratedNames([]) }}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
               mode === 'brand' ? 'bg-moonly-gold text-moonly-bg' : 'text-moonly-text-secondary hover:text-white'
             }`}
@@ -471,13 +506,43 @@ export default function NamingPage() {
           </div>
         )}
 
-        {/* AI起名结果占位 */}
-        {mode === 'generate' && analysis && (
-          <div className="moonly-card p-6">
-            <h2 className="text-xl font-bold font-serif mb-4">AI起名推荐</h2>
-            <p className="text-moonly-text-muted text-center py-8">
-              AI起名功能开发中，敬请期待...
-            </p>
+        {/* AI起名结果 */}
+        {mode === 'generate' && generatedNames.length > 0 && (
+          <div className="space-y-6">
+            <div className="moonly-card p-6">
+              <h2 className="text-xl font-bold font-serif mb-4">AI起名推荐</h2>
+              {combinedGod && (
+                <div className="mb-4 p-3 moonly-card text-sm">
+                  <span className="text-moonly-text-muted">喜用神：</span>
+                  <span className="font-bold text-green-300">{combinedGod.xi?.join('、') || '无'}</span>
+                </div>
+              )}
+              <div className="space-y-3">
+                {generatedNames.map((n, idx) => (
+                  <div key={n.givenName} className="moonly-card p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-moonly-text-muted w-5 h-5 flex items-center justify-center rounded-full bg-white/10">{idx + 1}</span>
+                        <span className="text-xl font-bold text-moonly-gold">{n.fullName}</span>
+                      </div>
+                      <span className="text-lg font-bold text-moonly-gold">{n.overallScore}分</span>
+                    </div>
+                    <p className="text-sm text-moonly-text-secondary mb-2">{n.meaning}</p>
+                    <div className="flex items-center gap-2 text-xs text-moonly-text-muted">
+                      <span className="px-2 py-0.5 rounded bg-white/5">五行：{n.wuxing}</span>
+                      <span className="px-2 py-0.5 rounded bg-white/5">三才：{n.sanCaiLuck.level}</span>
+                    </div>
+                    <div className="mt-2 grid grid-cols-5 gap-1 text-center text-[10px] text-moonly-text-muted">
+                      <div>天格{n.fiveGrid.tianGe}</div>
+                      <div>人格{n.fiveGrid.renGe}</div>
+                      <div>地格{n.fiveGrid.diGe}</div>
+                      <div>外格{n.fiveGrid.waiGe}</div>
+                      <div>总格{n.fiveGrid.zongGe}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import AIFloatingButton from './AIFloatingButton'
 import BottomNav from './BottomNav'
 
-const HIDE_NAV_PAGES = ['/bazi', '/bu/chat', '/ming/records', '/settings', '/history', '/naming', '/match', '/career', '/talent']
+const HIDE_NAV_PAGES = ['/bazi', '/bu/chat', '/ming/records', '/ming/edit', '/ming/bazi', '/settings', '/history', '/naming', '/match', '/career', '/talent']
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

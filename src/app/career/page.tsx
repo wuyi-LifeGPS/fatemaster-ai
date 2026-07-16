@@ -377,7 +377,7 @@ export default function CareerPage() {
             {(aiLoading || result.aiAnalysis) && (
               <div className="moonly-card rounded-xl shadow-sm p-6 border border-white/10">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-[#8b1a1a] to-[#a52a2a] rounded-lg flex items-center justify-center text-white text-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-gold to-amber-600 rounded-lg flex items-center justify-center text-white text-sm">
                     
                   </div>
                   <div>

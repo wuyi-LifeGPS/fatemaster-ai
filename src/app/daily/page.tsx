@@ -187,7 +187,7 @@ export default function DailyPage() {
               <button
                 type="submit"
                 disabled={loading || !todayGanZhi}
-                className="w-full bg-[#8b1a1a] hover:bg-[#6b1414] text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+                className="w-full btn-gold py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
               >
                 {loading ? '分析中...' : '查看今日运势'}
               </button>
@@ -234,7 +234,7 @@ export default function DailyPage() {
             {/* 重新输入按钮 */}
             <button
               onClick={() => setResult(null)}
-              className="text-[#8b1a1a] text-sm hover:underline"
+              className="text-gold text-sm hover:underline"
             >
               ← 重新输入
             </button>
@@ -277,9 +277,9 @@ export default function DailyPage() {
               <h3 className="font-bold text-lg mb-3 font-serif">今日运势解读</h3>
               <p className="text-moonly-text-secondary leading-relaxed">{result.description}</p>
               <div className="mt-4 text-sm text-moonly-text-muted">
-                今日日干十神：<span className="text-[#8b1a1a] font-medium">{result.dayShiShen.gan}</span>
+                今日日干十神：<span className="text-gold font-medium">{result.dayShiShen.gan}</span>
                 {' · '}
-                日支本气：<span className="text-[#8b1a1a] font-medium">{result.dayShiShen.zhiBenQi}</span>
+                日支本气：<span className="text-gold font-medium">{result.dayShiShen.zhiBenQi}</span>
               </div>
             </div>
 

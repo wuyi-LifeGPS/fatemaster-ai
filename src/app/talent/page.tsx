@@ -125,11 +125,11 @@ export default function TalentPage() {
 
   // 颜色映射
   const wxColor: Record<string, string> = {
-    '金': 'text-amber-600',
-    '木': 'text-green-600',
-    '水': 'text-[#8b1a1a]',
-    '火': 'text-red-600',
-    '土': 'text-yellow-700',
+    '金': 'text-amber-400',
+    '木': 'text-green-400',
+    '水': 'text-blue-400',
+    '火': 'text-red-400',
+    '土': 'text-yellow-400',
   }
 
   return (
@@ -297,8 +297,8 @@ export default function TalentPage() {
                         i === 0
                           ? 'bg-amber-500/15 text-amber-300 border border-amber-500/20'
                           : i === 1
-                          ? 'bg-teal-500/15 text-teal-600 border border-teal-500/20'
-                          : 'bg-[#8b1a1a]/15 text-[#8b1a1a] border border-[#8b1a1a]/20'
+                          ? 'bg-teal-500/15 text-teal-300 border border-teal-500/20'
+                          : 'bg-blue-500/15 text-blue-300 border border-blue-500/20'
                       }`}
                     >
                       <span>{dim.icon}</span>

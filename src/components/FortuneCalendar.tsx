@@ -3,7 +3,19 @@
 import { useState, useMemo } from 'react'
 import FortuneDetailModal from './FortuneDetailModal'
 
-const FORTUNE_SCORES = [85, 70, 55, 90, 60, 75, 80, 65, 88, 72, 68, 78, 82, 62, 86, 74, 92, 84, 76, 66, 71, 87, 73, 89, 95, 81, 77, 63, 79, 83, 70]
+function getDaySeed(year: number, month: number, day: number): number {
+  return year * 10000 + (month + 1) * 100 + day
+}
+
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed * 9301 + 49297) * 233280
+  return x - Math.floor(x)
+}
+
+function getScoreForDay(year: number, month: number, day: number): number {
+  const seed = getDaySeed(year, month, day)
+  return Math.floor(seededRandom(seed) * 41) + 55 // 55-95
+}
 
 function getScoreColor(score: number): string {
   if (score >= 80) return '#4ade80'
@@ -17,30 +29,53 @@ function getScoreBg(score: number): string {
   return 'rgba(248, 113, 113, 0.15)'
 }
 
+const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+const weekDays = ['日', '一', '二', '三', '四', '五', '六']
+
 export default function FortuneCalendar() {
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = today.getMonth()
-  const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const firstDayOfWeek = new Date(year, month, 1).getDay()
+  const [displayYear, setDisplayYear] = useState(() => new Date().getFullYear())
+  const [displayMonth, setDisplayMonth] = useState(() => new Date().getMonth())
 
-  const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+  const today = new Date()
+  const isCurrentMonth = displayYear === today.getFullYear() && displayMonth === today.getMonth()
+
+  const daysInMonth = new Date(displayYear, displayMonth + 1, 0).getDate()
+  const firstDayOfWeek = new Date(displayYear, displayMonth, 1).getDay()
 
   const days = useMemo(() => {
-    const result = []
-    // Empty cells for days before the 1st
+    const result: (number | null)[] = []
     for (let i = 0; i < firstDayOfWeek; i++) {
       result.push(null)
     }
-    // Days of the month
     for (let i = 1; i <= daysInMonth; i++) {
       result.push(i)
     }
     return result
   }, [firstDayOfWeek, daysInMonth])
 
-  const weekDays = ['日', '一', '二', '三', '四', '五', '六']
+  const goPrevMonth = () => {
+    if (displayMonth === 0) {
+      setDisplayMonth(11)
+      setDisplayYear(y => y - 1)
+    } else {
+      setDisplayMonth(m => m - 1)
+    }
+  }
+
+  const goNextMonth = () => {
+    if (displayMonth === 11) {
+      setDisplayMonth(0)
+      setDisplayYear(y => y + 1)
+    } else {
+      setDisplayMonth(m => m + 1)
+    }
+  }
+
+  const goToday = () => {
+    setDisplayYear(today.getFullYear())
+    setDisplayMonth(today.getMonth())
+  }
 
   return (
     <div className="moonly-card p-4 animate-fade-in">
@@ -49,7 +84,33 @@ export default function FortuneCalendar() {
           <span className="text-lg">📅</span>
           <h3 className="text-gold text-sm font-semibold">运势日历</h3>
         </div>
-        <span className="text-xs text-moonly-muted">{year}年 {monthNames[month]}</span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={goPrevMonth}
+            className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <span className="text-xs text-white/80 w-20 text-center">{displayYear}年 {monthNames[displayMonth]}</span>
+          <button
+            onClick={goNextMonth}
+            className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+          {!isCurrentMonth && (
+            <button
+              onClick={goToday}
+              className="text-[10px] text-gold px-2 py-1 rounded bg-gold/10 hover:bg-gold/20 transition"
+            >
+              今
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Weekday headers */}
@@ -68,8 +129,8 @@ export default function FortuneCalendar() {
             return <div key={`empty-${index}`} className="aspect-square" />
           }
 
-          const score = FORTUNE_SCORES[(day - 1) % FORTUNE_SCORES.length]
-          const isToday = day === today.getDate()
+          const score = getScoreForDay(displayYear, displayMonth, day)
+          const isToday = isCurrentMonth && day === today.getDate()
 
           return (
             <div
@@ -108,10 +169,12 @@ export default function FortuneCalendar() {
       </div>
 
       {/* Detail Modal */}
-      {selectedDay && (
+      {selectedDay !== null && (
         <FortuneDetailModal
           day={selectedDay}
-          score={FORTUNE_SCORES[(selectedDay - 1) % FORTUNE_SCORES.length]}
+          month={displayMonth}
+          year={displayYear}
+          score={getScoreForDay(displayYear, displayMonth, selectedDay)}
           onClose={() => setSelectedDay(null)}
         />
       )}

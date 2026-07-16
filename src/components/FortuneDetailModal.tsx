@@ -4,6 +4,8 @@ import { useMemo } from 'react'
 
 interface FortuneDetailModalProps {
   day: number
+  month: number
+  year: number
   score: number
   onClose: () => void
 }
@@ -23,21 +25,22 @@ const LUCKY_ITEMS = [
   { label: '贵人', value: '属鼠', emoji: '🐭' },
 ]
 
+const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+
 function getScoreColor(score: number): string {
   if (score >= 80) return '#4ade80'
   if (score >= 60) return '#fbbf24'
   return '#f87171'
 }
 
-export default function FortuneDetailModal({ day, score, onClose }: FortuneDetailModalProps) {
+export default function FortuneDetailModal({ day, month, year, score, onClose }: FortuneDetailModalProps) {
   const aspects = useMemo(() => {
-    // Use day as seed to make it deterministic
-    const seed = day * 13 + 7
+    const seed = day * 13 + month * 7 + year
     return ASPECTS.map((a, i) => ({
       ...a,
       score: Math.min(100, Math.max(40, (seed + i * 17) % 60 + 40)),
     }))
-  }, [day])
+  }, [day, month, year])
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end">
@@ -47,7 +50,7 @@ export default function FortuneDetailModal({ day, score, onClose }: FortuneDetai
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
           <div className="flex items-center gap-2">
             <span className="text-lg">📅</span>
-            <span className="text-white font-medium">{day}日运势详情</span>
+            <span className="text-white font-medium">{monthNames[month]}{day}日运势详情</span>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:bg-white/10">
             ✕

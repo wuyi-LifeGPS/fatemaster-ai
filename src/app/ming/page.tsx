@@ -15,6 +15,7 @@ import SolarTermDisplay from '@/components/SolarTermDisplay'
 import ZodiacFortune from '@/components/ZodiacFortune'
 import LuckyColor from '@/components/LuckyColor'
 import LuckyHours from '@/components/LuckyHours'
+import DailyQuote from '@/components/DailyQuote'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -826,6 +827,7 @@ export default function MingPage() {
         <ZodiacFortune />
         <LuckyColor />
         <LuckyHours />
+        <DailyQuote />
 
         <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (

@@ -28,6 +28,7 @@ import MeditationTimer from '@/components/MeditationTimer'
 import GratitudeJournal from '@/components/GratitudeJournal'
 import DreamJournal from '@/components/DreamJournal'
 import HabitTracker from '@/components/HabitTracker'
+import CountdownWidget from '@/components/CountdownWidget'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -852,6 +853,7 @@ export default function MingPage() {
         <GratitudeJournal />
         <DreamJournal />
         <HabitTracker />
+        <CountdownWidget />
 
         <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (

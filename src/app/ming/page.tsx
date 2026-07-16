@@ -33,6 +33,7 @@ import DailyPoem from '@/components/DailyPoem'
 import DailyTrivia from '@/components/DailyTrivia'
 import DailyWisdom from '@/components/DailyWisdom'
 import DailyProverb from '@/components/DailyProverb'
+import DailyJoke from '@/components/DailyJoke'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -862,6 +863,7 @@ export default function MingPage() {
         <DailyTrivia />
         <DailyWisdom />
         <DailyProverb />
+        <DailyJoke />
 
         <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (

@@ -70,7 +70,7 @@ export default function ZiWeiPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">紫微斗数</h1>
-          <p className="text-moonly-text-muted text-xs">星曜排盘，命格详解</p>
+          <p className="text-moonly-muted text-xs">星曜排盘，命格详解</p>
         </div>
       </div>
 
@@ -79,7 +79,7 @@ export default function ZiWeiPage() {
           <div className="moonly-card p-6 mb-6 text-center">
             <div className="text-4xl mb-3">⭐</div>
             <div className="text-white font-medium mb-2">紫微斗数排盘</div>
-            <div className="text-moonly-text-muted text-sm">根据出生日期，排出紫微命盘</div>
+            <div className="text-moonly-muted text-sm">根据出生日期，排出紫微命盘</div>
           </div>
 
           <div className="moonly-card p-4 mb-6">
@@ -95,14 +95,14 @@ export default function ZiWeiPage() {
           <button
             onClick={analyze}
             disabled={!birthDate}
-            className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
           >
             开始排盘
           </button>
 
           <div className="mt-6 moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">📖 紫微斗数简介</h3>
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               紫微斗数是中国传统命理学的重要分支，以出生年月日时排出命盘，
               通过十四主星在各宫位的分布，分析一个人的性格、命运、事业、婚姻等各方面。
               命宫是紫微斗数的核心，代表一个人的先天性格和命运走向。
@@ -113,10 +113,10 @@ export default function ZiWeiPage() {
         <div className="space-y-4">
           {/* 命宫信息 */}
           <div className="moonly-card p-6 text-center">
-            <div className="text-moonly-text-muted text-xs mb-2">命宫</div>
+            <div className="text-moonly-muted text-xs mb-2">命宫</div>
             <div className="text-white text-2xl font-bold mb-2">{chart.mingGong}</div>
-            <div className="text-moonly-gold text-lg font-medium">{chart.mingStar.name}星</div>
-            <div className="text-moonly-text-muted text-sm mt-1">{chart.mingStar.desc}</div>
+            <div className="text-[#c9a96e] text-lg font-medium">{chart.mingStar.name}星</div>
+            <div className="text-moonly-muted text-sm mt-1">{chart.mingStar.desc}</div>
           </div>
 
           {/* 主星列表 */}
@@ -128,12 +128,12 @@ export default function ZiWeiPage() {
                   key={star.name}
                   className={`p-2 rounded-lg text-center ${
                     star.name === chart.mingStar.name
-                      ? 'bg-moonly-gold/10 border border-moonly-gold/30'
+                      ? 'bg-[#c9a96e]/10 border border-[#c9a96e]/30'
                       : 'bg-white/5'
                   }`}
                 >
                   <div className="text-white text-sm font-medium">{star.name}</div>
-                  <div className="text-moonly-text-muted text-xs">{star.nature}</div>
+                  <div className="text-moonly-muted text-xs">{star.nature}</div>
                 </div>
               ))}
             </div>
@@ -149,7 +149,7 @@ export default function ZiWeiPage() {
                   onClick={() => setSelectedPalace(palace)}
                   className={`p-2 rounded-lg text-center text-sm transition ${
                     selectedPalace === palace
-                      ? 'bg-moonly-gold/10 border border-moonly-gold/30 text-moonly-gold'
+                      ? 'bg-[#c9a96e]/10 border border-[#c9a96e]/30 text-[#c9a96e]'
                       : 'bg-white/5 text-white hover:bg-white/10'
                   }`}
                 >
@@ -164,7 +164,7 @@ export default function ZiWeiPage() {
             <h3 className="text-gold text-sm font-semibold mb-2">
               {selectedPalace} · {chart.palaceStars[selectedPalace]?.[0]?.name}星
             </h3>
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               {selectedPalace}宫主星为{chart.palaceStars[selectedPalace]?.[0]?.name}，
               代表{chart.palaceStars[selectedPalace]?.[0]?.desc}。
               此宫位在{selectedPalace}方面的影响力较为明显。
@@ -174,7 +174,7 @@ export default function ZiWeiPage() {
           {/* 命宫解读 */}
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-2">💡 命宫解读</h3>
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               你的命宫位于{chart.mingGong}，主星为{chart.mingStar.name}。
               {chart.mingStar.desc}，意味着你天生具有{chart.mingStar.nature}的特质。
               在性格上表现为{chart.mingStar.name === '紫微' ? '领导力强，有王者风范' :

@@ -102,7 +102,7 @@ export default function BaziMatchPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">八字合婚</h1>
-          <p className="text-moonly-text-muted text-xs">八字配对，缘分天定</p>
+          <p className="text-moonly-muted text-xs">八字配对，缘分天定</p>
         </div>
       </div>
 
@@ -155,14 +155,14 @@ export default function BaziMatchPage() {
           <div className="moonly-card p-6 text-center">
             <div className="text-4xl mb-3">💕</div>
             <div className="text-gold text-2xl font-bold mb-2">合婚结果</div>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.desc}
             </div>
             <div className="mt-4">
-              <div className="text-moonly-text-muted text-xs mb-1">匹配指数</div>
+              <div className="text-moonly-muted text-xs mb-1">匹配指数</div>
               <div className="w-full bg-white/5 rounded-full h-3">
                 <div
-                  className="bg-gradient-to-r from-moonly-gold to-yellow-400 h-3 rounded-full transition-all duration-1000"
+                  className="bg-gradient-to-r from-[#c9a96e] to-yellow-400 h-3 rounded-full transition-all duration-1000"
                   style={{ width: `${result.score}%` }}
                 />
               </div>
@@ -174,12 +174,12 @@ export default function BaziMatchPage() {
             <div className="moonly-card p-4">
               <div className="text-white font-medium text-sm mb-2">{result.person1.name || '男方'}</div>
               <div className="text-gold text-lg font-bold mb-1">{result.person1.bazi.year}</div>
-              <div className="text-moonly-text-muted text-xs">{result.person1.bazi.month} {result.person1.bazi.day}</div>
+              <div className="text-moonly-muted text-xs">{result.person1.bazi.month} {result.person1.bazi.day}</div>
             </div>
             <div className="moonly-card p-4">
               <div className="text-white font-medium text-sm mb-2">{result.person2.name || '女方'}</div>
               <div className="text-gold text-lg font-bold mb-1">{result.person2.bazi.year}</div>
-              <div className="text-moonly-text-muted text-xs">{result.person2.bazi.month} {result.person2.bazi.day}</div>
+              <div className="text-moonly-muted text-xs">{result.person2.bazi.month} {result.person2.bazi.day}</div>
             </div>
           </div>
 

@@ -39,7 +39,7 @@ export default function FengShuiPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">风水罗盘</h1>
-          <p className="text-moonly-text-muted text-xs">方位吉凶，趋吉避凶</p>
+          <p className="text-moonly-muted text-xs">方位吉凶，趋吉避凶</p>
         </div>
       </div>
 
@@ -47,12 +47,12 @@ export default function FengShuiPage() {
       <div className="moonly-card p-6 mb-6">
         <div className="relative w-64 h-64 mx-auto">
           {/* 外圈 */}
-          <div className="absolute inset-0 rounded-full border-2 border-moonly-gold/30" />
+          <div className="absolute inset-0 rounded-full border-2 border-[#c9a96e]/30" />
           {/* 内圈 */}
           <div className="absolute inset-4 rounded-full border border-white/10" />
           {/* 中心 */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-12 h-12 rounded-full bg-moonly-gold/20 border border-moonly-gold/30 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-[#c9a96e]/20 border border-[#c9a96e]/30 flex items-center justify-center">
               <span className="text-gold text-lg font-bold">中</span>
             </div>
           </div>
@@ -75,7 +75,7 @@ export default function FengShuiPage() {
             )
           })}
         </div>
-        <p className="text-moonly-text-muted text-xs text-center mt-4">点击方向查看风水详解</p>
+        <p className="text-moonly-muted text-xs text-center mt-4">点击方向查看风水详解</p>
       </div>
 
       {/* 方向详情 */}
@@ -88,8 +88,8 @@ export default function FengShuiPage() {
                 <span className="text-white font-bold text-lg">{dir.name}方</span>
                 <span className={`text-xs px-2 py-0.5 rounded ${dir.color}`}>{dir.element}属性</span>
               </div>
-              <p className="text-moonly-text-secondary text-sm leading-relaxed">{dir.desc}</p>
-              <div className="mt-3 text-moonly-gold text-xs">
+              <p className="text-moonly-secondary text-sm leading-relaxed">{dir.desc}</p>
+              <div className="mt-3 text-[#c9a96e] text-xs">
                 💡 建议：此方位宜放置{dir.element}属性物件（如{dir.element === '木' ? '绿植' : dir.element === '火' ? '红色装饰' : dir.element === '土' ? '陶瓷' : dir.element === '金' ? '金属' : '鱼缸'}）来增强运势。
               </div>
             </div>
@@ -112,7 +112,7 @@ export default function FengShuiPage() {
                 'bg-blue-500/20 text-blue-300'
               }`}>{tip.element}</span>
             </div>
-            <p className="text-moonly-text-secondary text-xs leading-relaxed">{tip.tip}</p>
+            <p className="text-moonly-secondary text-xs leading-relaxed">{tip.tip}</p>
           </div>
         ))}
       </div>

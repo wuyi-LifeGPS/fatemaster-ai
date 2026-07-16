@@ -46,14 +46,14 @@ export default function PlantFortunePage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">植物运势</h1>
-          <p className="text-moonly-text-muted text-xs">看看你家绿植今日状态</p>
+          <p className="text-moonly-muted text-xs">看看你家绿植今日状态</p>
         </div>
       </div>
 
       {!result ? (
         <>
           <div className="moonly-card p-4 mb-6">
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               选择你家植物的类型，AI将为你分析植物今日运势和养护建议。
             </p>
           </div>
@@ -65,13 +65,13 @@ export default function PlantFortunePage() {
                 onClick={() => setPlantType(plant.type)}
                 className={`moonly-card p-4 text-center transition ${
                   plantType === plant.type
-                    ? 'border-moonly-gold/50 bg-moonly-gold/5'
+                    ? 'border-[#c9a96e]/50 bg-[#c9a96e]/5'
                     : 'hover:bg-white/5'
                 }`}
               >
                 <div className="text-3xl mb-2">{plant.icon}</div>
                 <div className="text-white text-sm font-medium">{plant.type}</div>
-                <div className="text-moonly-text-muted text-xs mt-1">{plant.traits}</div>
+                <div className="text-moonly-muted text-xs mt-1">{plant.traits}</div>
               </button>
             ))}
           </div>
@@ -79,7 +79,7 @@ export default function PlantFortunePage() {
           <button
             onClick={analyze}
             disabled={!plantType}
-            className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
           >
             查看植物运势
           </button>
@@ -89,9 +89,9 @@ export default function PlantFortunePage() {
           <div className="moonly-card p-6 text-center">
             <div className="text-5xl mb-3">{result.icon}</div>
             <div className="text-gold text-2xl font-bold mb-2">{result.type}今日运势</div>
-            <div className="text-moonly-text-secondary text-sm">{result.traits}</div>
+            <div className="text-moonly-secondary text-sm">{result.traits}</div>
             <div className="mt-4">
-              <div className="text-moonly-text-muted text-xs mb-1">生长指数</div>
+              <div className="text-moonly-muted text-xs mb-1">生长指数</div>
               <div className="w-full bg-white/5 rounded-full h-3">
                 <div
                   className="bg-gradient-to-r from-green-400 to-green-500 h-3 rounded-full transition-all duration-1000"
@@ -104,7 +104,7 @@ export default function PlantFortunePage() {
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">💡 今日建议</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.fortune}
             </div>
           </div>

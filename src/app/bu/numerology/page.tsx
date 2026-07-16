@@ -103,7 +103,7 @@ export default function NumerologyPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">数字命理</h1>
-          <p className="text-moonly-text-muted text-xs">生命灵数，数字能量</p>
+          <p className="text-moonly-muted text-xs">生命灵数，数字能量</p>
         </div>
       </div>
 
@@ -143,26 +143,26 @@ export default function NumerologyPage() {
             <div className="text-4xl mb-3">🔢</div>
             <div className="text-white text-lg font-bold mb-1">你的生命灵数</div>
             <div className="text-gold text-4xl font-bold mb-2">{result.lifePath}</div>
-            <div className="text-moonly-gold text-sm font-medium">{result.lifePathMeaning.title}</div>
+            <div className="text-[#c9a96e] text-sm font-medium">{result.lifePathMeaning.title}</div>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">生命灵数特质</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.lifePathMeaning.traits}
             </div>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">适合职业</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.lifePathMeaning.careers}
             </div>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">人生建议</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.lifePathMeaning.advice}
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function NumerologyPage() {
           {result.destiny > 0 && (
             <div className="moonly-card p-4">
               <h3 className="text-gold text-sm font-semibold mb-3">命运数（姓名）: {result.destiny}</h3>
-              <div className="text-moonly-text-secondary text-sm leading-relaxed">
+              <div className="text-moonly-secondary text-sm leading-relaxed">
                 {result.destinyMeaning.title} — {result.destinyMeaning.traits}
               </div>
             </div>

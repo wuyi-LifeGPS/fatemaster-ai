@@ -64,7 +64,7 @@ export default function OraclePage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">神谕卡</h1>
-          <p className="text-moonly-text-muted text-xs">灵性指引，每日启示</p>
+          <p className="text-moonly-muted text-xs">灵性指引，每日启示</p>
         </div>
       </div>
 
@@ -74,7 +74,7 @@ export default function OraclePage() {
           onClick={() => setMode('single')}
           className={`flex-1 py-2 rounded-xl text-sm font-medium transition ${
             mode === 'single'
-              ? 'bg-moonly-gold/10 text-moonly-gold border border-moonly-gold/30'
+              ? 'bg-[#c9a96e]/10 text-[#c9a96e] border border-[#c9a96e]/30'
               : 'bg-white/5 text-white hover:bg-white/10'
           }`}
         >
@@ -84,7 +84,7 @@ export default function OraclePage() {
           onClick={() => setMode('three')}
           className={`flex-1 py-2 rounded-xl text-sm font-medium transition ${
             mode === 'three'
-              ? 'bg-moonly-gold/10 text-moonly-gold border border-moonly-gold/30'
+              ? 'bg-[#c9a96e]/10 text-[#c9a96e] border border-[#c9a96e]/30'
               : 'bg-white/5 text-white hover:bg-white/10'
           }`}
         >
@@ -99,7 +99,7 @@ export default function OraclePage() {
           <div className="text-white font-medium mb-2">
             {mode === 'single' ? '抽取一张神谕卡' : '抽取三张神谕卡'}
           </div>
-          <div className="text-moonly-text-muted text-sm mb-6">
+          <div className="text-moonly-muted text-sm mb-6">
             {mode === 'single'
               ? '静心思考一个问题，然后抽卡'
               : '过去 · 现在 · 未来'}
@@ -107,7 +107,7 @@ export default function OraclePage() {
           <button
             onClick={drawCard}
             disabled={isDrawing}
-            className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30"
+            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30"
           >
             {isDrawing ? '抽卡中...' : '开始抽卡'}
           </button>
@@ -116,7 +116,7 @@ export default function OraclePage() {
         <div className="moonly-card p-8 text-center">
           <div className="text-6xl mb-4 animate-pulse">🃏</div>
           <div className="text-white font-medium">正在抽取...</div>
-          <div className="text-moonly-text-muted text-sm">请静心等待</div>
+          <div className="text-moonly-muted text-sm">请静心等待</div>
         </div>
       ) : null}
 
@@ -126,13 +126,13 @@ export default function OraclePage() {
           <div className="moonly-card p-6 text-center">
             <div className="text-6xl mb-4">{selected.image}</div>
             <div className="text-white text-xl font-bold mb-1">{selected.name}</div>
-            <div className="text-moonly-gold text-sm mb-3">{selected.meaning}</div>
-            <div className="text-moonly-text-secondary text-sm">{selected.desc}</div>
+            <div className="text-[#c9a96e] text-sm mb-3">{selected.meaning}</div>
+            <div className="text-moonly-secondary text-sm">{selected.desc}</div>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-2">💡 今日指引</h3>
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">{selected.advice}</p>
+            <p className="text-moonly-secondary text-sm leading-relaxed">{selected.advice}</p>
           </div>
 
           <button
@@ -150,12 +150,12 @@ export default function OraclePage() {
           <div className="grid grid-cols-3 gap-3">
             {drawnCards.map((card, i) => (
               <div key={i} className="moonly-card p-3 text-center">
-                <div className="text-moonly-text-muted text-xs mb-2">
+                <div className="text-moonly-muted text-xs mb-2">
                   {i === 0 ? '过去' : i === 1 ? '现在' : '未来'}
                 </div>
                 <div className="text-4xl mb-2">{card.image}</div>
                 <div className="text-white text-sm font-medium">{card.name}</div>
-                <div className="text-moonly-gold text-xs mt-1">{card.meaning}</div>
+                <div className="text-[#c9a96e] text-xs mt-1">{card.meaning}</div>
               </div>
             ))}
           </div>
@@ -163,21 +163,21 @@ export default function OraclePage() {
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-2">💡 牌阵解读</h3>
             <div className="space-y-2">
-              <p className="text-moonly-text-secondary text-sm">
-                <span className="text-moonly-gold">过去：</span>{drawnCards[0].desc}
+              <p className="text-moonly-secondary text-sm">
+                <span className="text-[#c9a96e]">过去：</span>{drawnCards[0].desc}
               </p>
-              <p className="text-moonly-text-secondary text-sm">
-                <span className="text-moonly-gold">现在：</span>{drawnCards[1].desc}
+              <p className="text-moonly-secondary text-sm">
+                <span className="text-[#c9a96e]">现在：</span>{drawnCards[1].desc}
               </p>
-              <p className="text-moonly-text-secondary text-sm">
-                <span className="text-moonly-gold">未来：</span>{drawnCards[2].desc}
+              <p className="text-moonly-secondary text-sm">
+                <span className="text-[#c9a96e]">未来：</span>{drawnCards[2].desc}
               </p>
             </div>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-2">✨ 综合建议</h3>
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               从过去到现在，{drawnCards[0].name}的能量正在转化为{drawnCards[1].name}的特质。
               未来{drawnCards[2].name}的出现预示着新的转变。
               {drawnCards[1].advice}

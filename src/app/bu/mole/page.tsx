@@ -60,14 +60,14 @@ export default function MoleReadingPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">痣相分析</h1>
-          <p className="text-moonly-text-muted text-xs">痣的位置，揭示命运</p>
+          <p className="text-moonly-muted text-xs">痣的位置，揭示命运</p>
         </div>
       </div>
 
       {!result ? (
         <>
           <div className="moonly-card p-4 mb-6">
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               痣相学认为痣的位置与命运息息相关。选择你身上的痣所在部位，AI将为你分析综合运势。
             </p>
           </div>
@@ -79,15 +79,15 @@ export default function MoleReadingPage() {
                 onClick={() => toggleMole(mole.id)}
                 className={`moonly-card p-4 text-left transition ${
                   selectedMoles.includes(mole.id)
-                    ? 'border-moonly-gold/50 bg-moonly-gold/5'
+                    ? 'border-[#c9a96e]/50 bg-[#c9a96e]/5'
                     : 'hover:bg-white/5'
                 }`}
               >
                 <div className="text-2xl mb-2">{mole.icon}</div>
                 <div className="text-white text-sm font-medium">{mole.name}</div>
-                <div className="text-moonly-text-muted text-xs mt-1">{mole.meaning}</div>
+                <div className="text-moonly-muted text-xs mt-1">{mole.meaning}</div>
                 {selectedMoles.includes(mole.id) && (
-                  <div className="mt-2 text-moonly-gold text-xs">✓ 已选</div>
+                  <div className="mt-2 text-[#c9a96e] text-xs">✓ 已选</div>
                 )}
               </button>
             ))}
@@ -96,7 +96,7 @@ export default function MoleReadingPage() {
           <button
             onClick={analyze}
             disabled={selectedMoles.length === 0}
-            className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
           >
             开始分析（已选 {selectedMoles.length} 项）
           </button>
@@ -108,11 +108,11 @@ export default function MoleReadingPage() {
             <div className={`text-2xl font-bold mb-2 ${result.score >= 80 ? 'text-gold' : result.score >= 60 ? 'text-yellow-400' : 'text-blue-400'}`}>
               {result.level}
             </div>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.desc}
             </div>
             <div className="mt-4">
-              <div className="text-moonly-text-muted text-xs mb-1">运势指数</div>
+              <div className="text-moonly-muted text-xs mb-1">运势指数</div>
               <div className="w-full bg-white/5 rounded-full h-3">
                 <div
                   className="bg-gradient-to-r from-[#c9a96e] to-yellow-400 h-3 rounded-full transition-all duration-1000"
@@ -133,7 +133,7 @@ export default function MoleReadingPage() {
                     <span className="text-lg">{mole.icon}</span>
                     <span className="text-white font-medium text-sm">{mole.name}</span>
                   </div>
-                  <div className="text-moonly-text-muted text-xs mb-2">{mole.meaning}</div>
+                  <div className="text-moonly-muted text-xs mb-2">{mole.meaning}</div>
                   <div className="text-green-400 text-xs">{mole.good}</div>
                 </div>
               )

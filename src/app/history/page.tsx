@@ -71,12 +71,12 @@ export default function HistoryPage() {
             onClick={() => setFilter(t)}
             className={`moonly-card p-3 text-center transition-all ${
               filter === t
-                ? 'border-moonly-gold/40 bg-moonly-gold/10'
+                ? 'border-[#c9a96e]/40 bg-[#c9a96e]/10'
                 : ''
             }`}
           >
             <div className="text-xl font-bold text-white">{typeCounts[t]}</div>
-            <div className="text-xs text-moonly-text-muted mt-0.5">{t === 'all' ? '全部' : getTypeLabel(t as QueryType)}</div>
+            <div className="text-xs text-moonly-muted mt-0.5">{t === 'all' ? '全部' : getTypeLabel(t as QueryType)}</div>
           </button>
         ))}
       </div>
@@ -96,11 +96,11 @@ export default function HistoryPage() {
       {/* 记录列表 */}
       {filtered.length === 0 ? (
         <div className="text-center py-16">
-          <div className="text-4xl mb-3 text-moonly-text-muted">📭</div>
-          <p className="text-moonly-text-secondary">
+          <div className="text-4xl mb-3 text-moonly-muted">📭</div>
+          <p className="text-moonly-secondary">
             {filter === 'all' ? '暂无查询记录，去试试看吧～' : `暂无「${getTypeLabel(filter)}」的记录`}
           </p>
-          <Link href="/" className="text-moonly-gold hover:underline text-sm mt-2 inline-block">
+          <Link href="/" className="text-[#c9a96e] hover:underline text-sm mt-2 inline-block">
             返回首页 →
           </Link>
         </div>
@@ -117,21 +117,21 @@ export default function HistoryPage() {
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getTypeColor(record.type)}`}>
                       {getTypeLabel(record.type)}
                     </span>
-                    <span className="text-xs text-moonly-text-muted">{formatHistoryTime(record.timestamp)}</span>
+                    <span className="text-xs text-moonly-muted">{formatHistoryTime(record.timestamp)}</span>
                   </div>
                   <div className="font-medium text-white text-sm truncate">{record.title}</div>
-                  <div className="text-sm text-moonly-text-secondary mt-0.5">{record.resultSummary}</div>
+                  <div className="text-sm text-moonly-secondary mt-0.5">{record.resultSummary}</div>
                 </div>
                 <div className="flex items-center gap-2 ml-3">
                   <Link
                     href={`/${record.type}`}
-                    className="text-xs bg-moonly-gold/10 text-moonly-gold px-3 py-1.5 rounded-md hover:bg-moonly-gold/20 transition-colors"
+                    className="text-xs bg-[#c9a96e]/10 text-[#c9a96e] px-3 py-1.5 rounded-md hover:bg-[#c9a96e]/20 transition-colors"
                   >
                     再次查询
                   </Link>
                   <button
                     onClick={() => handleDelete(record.id)}
-                    className="text-xs text-moonly-text-muted hover:text-red-400 px-2 py-1.5 transition-colors"
+                    className="text-xs text-moonly-muted hover:text-red-400 px-2 py-1.5 transition-colors"
                   >
                     ✕
                   </button>
@@ -147,7 +147,7 @@ export default function HistoryPage() {
         <div className="mt-6 text-center">
           <button
             onClick={() => handleClearType(filter)}
-            className="text-sm text-moonly-text-muted hover:text-red-400 transition-colors"
+            className="text-sm text-moonly-muted hover:text-red-400 transition-colors"
           >
             清空「{getTypeLabel(filter)}」的记录
           </button>

@@ -152,7 +152,7 @@ export default function DailyFortunePage() {
         </div>
         <div className="text-center py-20">
           <div className="text-4xl mb-3">📝</div>
-          <p className="text-moonly-text-secondary">请先添加八字档案</p>
+          <p className="text-moonly-secondary">请先添加八字档案</p>
           <Link href="/bazi" className="text-gold text-sm mt-2 inline-block">去添加 →</Link>
         </div>
       </div>
@@ -175,7 +175,7 @@ export default function DailyFortunePage() {
 
       {/* 日期 */}
       <div className="text-center mb-6">
-        <div className="text-moonly-text-muted text-sm">{today.dateStr}</div>
+        <div className="text-moonly-muted text-sm">{today.dateStr}</div>
         <div className="text-white text-lg mt-1">
           今日干支：
           <span className="text-gold font-bold">{today.day.gan}{today.day.zhi}</span>
@@ -183,7 +183,7 @@ export default function DailyFortunePage() {
       </div>
 
       {/* 签文卡片 */}
-      <div className="moonly-card p-6 mb-6 text-center border border-moonly-gold/20">
+      <div className="moonly-card p-6 mb-6 text-center border border-[#c9a96e]/20">
         <div className="text-4xl mb-4">🎋</div>
         <div className="text-gold text-lg font-bold mb-2">
           {profile.name} · {shiShen}日
@@ -192,7 +192,7 @@ export default function DailyFortunePage() {
         <div className="text-white text-base leading-relaxed mb-4">
           {poem}
         </div>
-        <div className="text-moonly-gold text-sm">
+        <div className="text-[#c9a96e] text-sm">
           💡 {advice}
         </div>
       </div>
@@ -200,33 +200,33 @@ export default function DailyFortunePage() {
       {/* 五行信息 */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         <div className="moonly-card p-4 text-center">
-          <div className="text-xs text-moonly-text-muted mb-1">今日天干</div>
+          <div className="text-xs text-moonly-muted mb-1">今日天干</div>
           <div className="text-xl font-bold text-gold">{today.day.gan}</div>
-          <div className="text-xs text-moonly-text-secondary">{getWuXing(today.day.gan)}</div>
+          <div className="text-xs text-moonly-secondary">{getWuXing(today.day.gan)}</div>
         </div>
         <div className="moonly-card p-4 text-center">
-          <div className="text-xs text-moonly-text-muted mb-1">今日地支</div>
+          <div className="text-xs text-moonly-muted mb-1">今日地支</div>
           <div className="text-xl font-bold text-gold">{today.day.zhi}</div>
-          <div className="text-xs text-moonly-text-secondary">{getWuXing(today.day.zhi)}</div>
+          <div className="text-xs text-moonly-secondary">{getWuXing(today.day.zhi)}</div>
         </div>
       </div>
 
       {/* 三柱 */}
       <div className="moonly-card p-4 mb-6">
-        <div className="text-xs text-moonly-text-muted mb-3">今日三柱</div>
+        <div className="text-xs text-moonly-muted mb-3">今日三柱</div>
         <div className="flex justify-around">
           <div className="text-center">
-            <div className="text-[10px] text-moonly-text-muted">年柱</div>
+            <div className="text-[10px] text-moonly-muted">年柱</div>
             <div className="text-lg font-bold text-white">{today.year.gan}</div>
             <div className="text-lg font-bold text-gold">{today.year.zhi}</div>
           </div>
           <div className="text-center">
-            <div className="text-[10px] text-moonly-text-muted">月柱</div>
+            <div className="text-[10px] text-moonly-muted">月柱</div>
             <div className="text-lg font-bold text-white">{today.month.gan}</div>
             <div className="text-lg font-bold text-gold">{today.month.zhi}</div>
           </div>
           <div className="text-center">
-            <div className="text-[10px] text-moonly-text-muted">日柱</div>
+            <div className="text-[10px] text-moonly-muted">日柱</div>
             <div className="text-lg font-bold text-white">{today.day.gan}</div>
             <div className="text-lg font-bold text-gold">{today.day.zhi}</div>
           </div>
@@ -241,7 +241,7 @@ export default function DailyFortunePage() {
           const advices = WUXING_ADVICE[wx] || WUXING_ADVICE['木']
           setAdvice(advices[Math.floor(Math.random() * advices.length)])
         }}
-        className="w-full py-3 rounded-xl bg-moonly-gold/15 text-gold border border-moonly-gold/20 font-medium hover:bg-moonly-gold/20 transition"
+        className="w-full py-3 rounded-xl bg-[#c9a96e]/15 text-gold border border-[#c9a96e]/20 font-medium hover:bg-[#c9a96e]/20 transition"
       >
         🔄 再抽一签
       </button>

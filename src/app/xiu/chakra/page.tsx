@@ -99,7 +99,7 @@ export default function ChakraPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">脉轮清理</h1>
-          <p className="text-moonly-text-muted text-xs">七轮净化，能量平衡</p>
+          <p className="text-moonly-muted text-xs">七轮净化，能量平衡</p>
         </div>
       </div>
 
@@ -128,12 +128,12 @@ export default function ChakraPage() {
           <div className="text-center">
             <div className="text-4xl mb-3">💫</div>
             <div className="text-lg font-bold text-white mb-2">七脉轮净化冥想</div>
-            <p className="text-sm text-moonly-text-secondary mb-4">
+            <p className="text-sm text-moonly-secondary mb-4">
               从海底轮到顶轮，逐个净化和激活七个脉轮。每个脉轮约60秒。
             </p>
             <button
               onClick={start}
-              className="px-8 py-3 rounded-full bg-moonly-gold/15 text-gold border border-moonly-gold/20 font-medium hover:bg-moonly-gold/20 transition"
+              className="px-8 py-3 rounded-full bg-[#c9a96e]/15 text-gold border border-[#c9a96e]/20 font-medium hover:bg-[#c9a96e]/20 transition"
             >
               开始净化
             </button>
@@ -156,8 +156,8 @@ export default function ChakraPage() {
             </div>
 
             <div className="text-xl font-bold text-white mb-1">{currentChakra.name}</div>
-            <div className="text-sm text-moonly-text-secondary mb-1">{currentChakra.location}</div>
-            <p className="text-xs text-moonly-text-muted mb-4">{currentChakra.desc}</p>
+            <div className="text-sm text-moonly-secondary mb-1">{currentChakra.location}</div>
+            <p className="text-xs text-moonly-muted mb-4">{currentChakra.desc}</p>
 
             {/* 进度 */}
             <div className="w-full bg-white/10 rounded-full h-2 mb-2 overflow-hidden">
@@ -170,13 +170,13 @@ export default function ChakraPage() {
                 }}
               />
             </div>
-            <div className="text-xs text-moonly-text-muted">
+            <div className="text-xs text-moonly-muted">
               脉轮 {currentIdx + 1} / {CHAKRAS.length} · {Math.ceil(CHAKRA_DURATION - progress * CHAKRA_DURATION)}秒
             </div>
 
             <button
               onClick={stop}
-              className="mt-4 px-6 py-2 rounded-full bg-white/5 text-moonly-text-secondary border border-white/10 text-sm hover:bg-white/10 transition"
+              className="mt-4 px-6 py-2 rounded-full bg-white/5 text-moonly-secondary border border-white/10 text-sm hover:bg-white/10 transition"
             >
               暂停
             </button>
@@ -187,19 +187,19 @@ export default function ChakraPage() {
           <div className="text-center">
             <div className="text-4xl mb-3">✨</div>
             <div className="text-lg font-bold text-white mb-2">净化完成</div>
-            <p className="text-sm text-moonly-text-secondary mb-4">
+            <p className="text-sm text-moonly-secondary mb-4">
               七个脉轮已全部净化，能量场已恢复平衡。
             </p>
             <div className="flex gap-3 justify-center">
               <button
                 onClick={start}
-                className="px-6 py-2 rounded-full bg-moonly-gold/15 text-gold border border-moonly-gold/20 text-sm font-medium hover:bg-moonly-gold/20 transition"
+                className="px-6 py-2 rounded-full bg-[#c9a96e]/15 text-gold border border-[#c9a96e]/20 text-sm font-medium hover:bg-[#c9a96e]/20 transition"
               >
                 再来一次
               </button>
               <button
                 onClick={reset}
-                className="px-6 py-2 rounded-full bg-white/5 text-moonly-text-secondary border border-white/10 text-sm hover:bg-white/10 transition"
+                className="px-6 py-2 rounded-full bg-white/5 text-moonly-secondary border border-white/10 text-sm hover:bg-white/10 transition"
               >
                 返回
               </button>
@@ -220,7 +220,7 @@ export default function ChakraPage() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-white text-sm font-medium">{c.name}</div>
-              <div className="text-moonly-text-muted text-xs">{c.location} · {c.desc}</div>
+              <div className="text-moonly-muted text-xs">{c.location} · {c.desc}</div>
             </div>
           </div>
         ))}

@@ -281,15 +281,15 @@ const [playingId, setPlayingId] = useState<string | null>(null)
   return (
     <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in relative">
       <h1 className="text-gold-gradient text-xl font-bold mb-2">修</h1>
-      <p className="text-moonly-text-secondary text-sm mb-4">正念冥想，回归内心</p>
+      <p className="text-moonly-secondary text-sm mb-4">正念冥想，回归内心</p>
 
       {/* 每日一禅 */}
-      <div className="moonly-card p-4 mb-6 border border-moonly-gold/20">
-        <div className="text-[10px] text-moonly-gold mb-2 tracking-wider">每日一禅</div>
+      <div className="moonly-card p-4 mb-6 border border-[#c9a96e]/20">
+        <div className="text-[10px] text-[#c9a96e] mb-2 tracking-wider">每日一禅</div>
         <div className="text-white text-base leading-relaxed mb-2">
           「{dailyZen.text}」
         </div>
-        <div className="text-moonly-text-muted text-xs text-right">
+        <div className="text-moonly-muted text-xs text-right">
           — {dailyZen.source}
         </div>
       </div>
@@ -300,8 +300,8 @@ const [playingId, setPlayingId] = useState<string | null>(null)
           onClick={() => setActiveTab('meditation')}
           className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
             activeTab === 'meditation'
-              ? 'bg-moonly-gold text-moonly-bg font-semibold'
-              : 'text-moonly-text-secondary hover:text-white'
+              ? 'bg-[#c9a96e] text-moonly-bg font-semibold'
+              : 'text-moonly-secondary hover:text-white'
           }`}
         >
           冥想
@@ -310,8 +310,8 @@ const [playingId, setPlayingId] = useState<string | null>(null)
           onClick={() => setActiveTab('sound')}
           className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
             activeTab === 'sound'
-              ? 'bg-moonly-gold text-moonly-bg font-semibold'
-              : 'text-moonly-text-secondary hover:text-white'
+              ? 'bg-[#c9a96e] text-moonly-bg font-semibold'
+              : 'text-moonly-secondary hover:text-white'
           }`}
         >
           声音
@@ -328,7 +328,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
               </div>
               <div>
                 <div className="text-white text-sm font-medium">呼吸练习</div>
-                <div className="text-moonly-text-muted text-xs">调整呼吸节奏</div>
+                <div className="text-moonly-muted text-xs">调整呼吸节奏</div>
               </div>
             </Link>
             <Link href="/xiu/chakra" className="moonly-card p-4 flex items-center gap-3 hover:bg-white/5 transition">
@@ -337,7 +337,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
               </div>
               <div>
                 <div className="text-white text-sm font-medium">脉轮清理</div>
-                <div className="text-moonly-text-muted text-xs">七轮净化冥想</div>
+                <div className="text-moonly-muted text-xs">七轮净化冥想</div>
               </div>
             </Link>
           </div>
@@ -359,14 +359,14 @@ const [playingId, setPlayingId] = useState<string | null>(null)
                   }
                 }}
               />
-              <span className="text-moonly-text-muted text-sm">分钟</span>
+              <span className="text-moonly-muted text-sm">分钟</span>
               <button
                 onClick={() => {
                   const input = document.querySelector('input[type="number"]') as HTMLInputElement
                   const val = parseInt(input.value, 10)
                   if (val > 0) startMeditation('custom', val)
                 }}
-                className="px-4 py-2 bg-moonly-gold/10 text-moonly-gold rounded-lg text-sm hover:bg-moonly-gold/20 transition"
+                className="px-4 py-2 bg-[#c9a96e]/10 text-[#c9a96e] rounded-lg text-sm hover:bg-[#c9a96e]/20 transition"
               >
                 开始
               </button>
@@ -381,7 +381,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
                 onClick={() => setActiveCategory(cat.key)}
                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition ${
                   activeCategory === cat.key
-                    ? 'bg-moonly-gold text-moonly-bg font-semibold'
+                    ? 'bg-[#c9a96e] text-moonly-bg font-semibold'
                     : 'bg-white/5 text-white hover:bg-white/10'
                 }`}
               >
@@ -400,12 +400,12 @@ const [playingId, setPlayingId] = useState<string | null>(null)
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-white font-medium text-sm truncate">{item.title}</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-moonly-text-muted flex-shrink-0">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-moonly-muted flex-shrink-0">
                       {item.tag}
                     </span>
                   </div>
-                  <div className="text-moonly-text-muted text-xs mt-0.5">{item.desc}</div>
-                  <div className="text-moonly-text-muted text-xs mt-1">
+                  <div className="text-moonly-muted text-xs mt-0.5">{item.desc}</div>
+                  <div className="text-moonly-muted text-xs mt-1">
                     {item.duration} 分钟 · {item.plays.toLocaleString()} 次播放
                   </div>
                 </div>
@@ -414,8 +414,8 @@ const [playingId, setPlayingId] = useState<string | null>(null)
                     onClick={() => toggleFavorite(item.id)}
                     className={`w-8 h-8 rounded-full flex items-center justify-center transition ${
                       favorites.includes(item.id)
-                        ? 'bg-moonly-gold/20 text-moonly-gold'
-                        : 'bg-white/5 text-moonly-text-muted hover:bg-white/10'
+                        ? 'bg-[#c9a96e]/20 text-[#c9a96e]'
+                        : 'bg-white/5 text-moonly-muted hover:bg-white/10'
                     }`}
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill={favorites.includes(item.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
@@ -425,7 +425,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
                   {playingId === item.id ? (
                     <button
                       onClick={togglePause}
-                      className="w-10 h-10 rounded-full bg-moonly-gold/20 flex items-center justify-center hover:bg-moonly-gold/30 transition border border-moonly-gold/30"
+                      className="w-10 h-10 rounded-full bg-[#c9a96e]/20 flex items-center justify-center hover:bg-[#c9a96e]/30 transition border border-[#c9a96e]/30"
                     >
                       {isPaused ? (
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-gold">
@@ -440,7 +440,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
                   ) : (
                     <button
                       onClick={() => startMeditation(item.id, item.duration)}
-                      className="w-10 h-10 rounded-full bg-moonly-gold/10 flex items-center justify-center hover:bg-moonly-gold/20 transition border border-moonly-gold/20"
+                      className="w-10 h-10 rounded-full bg-[#c9a96e]/10 flex items-center justify-center hover:bg-[#c9a96e]/20 transition border border-[#c9a96e]/20"
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-gold">
                         <polygon points="5 3 19 12 5 21 5 3" />
@@ -463,10 +463,10 @@ const [playingId, setPlayingId] = useState<string | null>(null)
                 </div>
                 <div className="flex-1">
                   <div className="text-white font-medium text-sm">{item.title}</div>
-                  <div className="text-moonly-text-muted text-xs mt-0.5">{item.desc}</div>
-                  <div className="text-moonly-text-muted text-xs mt-1">{item.duration} 分钟</div>
+                  <div className="text-moonly-muted text-xs mt-0.5">{item.desc}</div>
+                  <div className="text-moonly-muted text-xs mt-1">{item.duration} 分钟</div>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-moonly-gold/10 flex items-center justify-center hover:bg-moonly-gold/20 transition border border-moonly-gold/20">
+                <div className="w-10 h-10 rounded-full bg-[#c9a96e]/10 flex items-center justify-center hover:bg-[#c9a96e]/20 transition border border-[#c9a96e]/20">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-gold">
                     <polygon points="5 3 19 12 5 21 5 3" />
                   </svg>
@@ -480,21 +480,21 @@ const [playingId, setPlayingId] = useState<string | null>(null)
       {/* 冥想播放浮层 */}
       {playingId && activeMeditation && (
         <div className="fixed inset-x-0 bottom-16 z-50 px-4">
-          <div className="moonly-card p-4 border border-moonly-gold/20">
+          <div className="moonly-card p-4 border border-[#c9a96e]/20">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c9a96e]/10 to-moonly-purple/10 flex items-center justify-center text-2xl">
                 {activeMeditation.icon}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-white font-medium text-sm">{activeMeditation.title}</div>
-                <div className="text-moonly-gold text-lg font-bold font-mono">
+                <div className="text-[#c9a96e] text-lg font-bold font-mono">
                   {formatTime(remainingSeconds)}
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={togglePause}
-                  className="w-10 h-10 rounded-full bg-moonly-gold/20 flex items-center justify-center hover:bg-moonly-gold/30 transition border border-moonly-gold/30"
+                  className="w-10 h-10 rounded-full bg-[#c9a96e]/20 flex items-center justify-center hover:bg-[#c9a96e]/30 transition border border-[#c9a96e]/30"
                 >
                   {isPaused ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-gold">

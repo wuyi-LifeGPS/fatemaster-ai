@@ -120,7 +120,7 @@ export default function TarotPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">塔罗占卜</h1>
-          <p className="text-moonly-text-muted text-xs">大阿卡纳指引，探寻内心答案</p>
+          <p className="text-moonly-muted text-xs">大阿卡纳指引，探寻内心答案</p>
         </div>
       </div>
 
@@ -130,7 +130,7 @@ export default function TarotPage() {
           value={question}
           onChange={e => setQuestion(e.target.value)}
           placeholder="心中默念你的问题..."
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-[#c9a96e]/30"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-moonly-muted focus:outline-none focus:border-[#c9a96e]/30"
         />
       </div>
 
@@ -141,15 +141,15 @@ export default function TarotPage() {
             <button
               key={spread.name}
               onClick={() => setSelectedSpread(spread)}
-              className={`w-full text-left moonly-card p-4 transition ${selectedSpread.name === spread.name ? 'border-moonly-gold/30' : ''}`}
+              className={`w-full text-left moonly-card p-4 transition ${selectedSpread.name === spread.name ? 'border-[#c9a96e]/30' : ''}`}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className={`text-sm font-medium ${selectedSpread.name === spread.name ? 'text-gold' : 'text-white'}`}>
                   {spread.name}
                 </span>
-                <span className="text-[10px] text-moonly-text-muted">{spread.count} 张</span>
+                <span className="text-[10px] text-moonly-muted">{spread.count} 张</span>
               </div>
-              <p className="text-xs text-moonly-text-secondary">{spread.desc}</p>
+              <p className="text-xs text-moonly-secondary">{spread.desc}</p>
             </button>
           ))}
         </div>
@@ -171,10 +171,10 @@ export default function TarotPage() {
           <div className="relative w-20 h-28">
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#c9a96e]/20 to-moonly-purple/20 border border-white/10 animate-pulse" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <Spinner className="text-moonly-gold" />
+              <Spinner className="text-[#c9a96e]" />
             </div>
           </div>
-          <p className="text-moonly-text-secondary text-sm">正在洗牌...</p>
+          <p className="text-moonly-secondary text-sm">正在洗牌...</p>
         </div>
       )}
 
@@ -185,12 +185,12 @@ export default function TarotPage() {
           <div className={`grid gap-3 ${cards.length === 1 ? 'grid-cols-1 max-w-[140px] mx-auto' : cards.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
             {cards.map((drawn, i) => (
               <div key={i} className="text-center">
-                <div className="text-xs text-moonly-text-muted mb-2">{selectedSpread.positions[i]}</div>
+                <div className="text-xs text-moonly-muted mb-2">{selectedSpread.positions[i]}</div>
                 <button
                   onClick={() => revealCard(i)}
                   className={`w-full aspect-[2/3] rounded-xl border transition-all duration-500 relative overflow-hidden ${
                     revealed.includes(i)
-                      ? 'bg-gradient-to-br from-[#c9a96e]/10 to-moonly-purple/10 border-moonly-gold/30 animate-fade-in-scale'
+                      ? 'bg-gradient-to-br from-[#c9a96e]/10 to-moonly-purple/10 border-[#c9a96e]/30 animate-fade-in-scale'
                       : 'bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border-white/10 hover:border-white/20'
                   }`}
                 >
@@ -199,21 +199,21 @@ export default function TarotPage() {
                       <div className={`text-center mb-2 ${drawn.reversed ? 'rotate-180' : ''}`}>
                         <div className="text-3xl mb-1">{drawn.card.emoji}</div>
                         <div className="text-xs font-bold text-white">{drawn.card.name}</div>
-                        <div className="text-[10px] text-moonly-gold">{drawn.card.number} · {drawn.card.element}</div>
+                        <div className="text-[10px] text-[#c9a96e]">{drawn.card.number} · {drawn.card.element}</div>
                       </div>
                       <div className="flex-1 overflow-y-auto">
-                        <div className="text-[10px] text-moonly-text-muted mb-1">
+                        <div className="text-[10px] text-moonly-muted mb-1">
                           {drawn.reversed ? '逆位' : '正位'}
                         </div>
-                        <div className="text-xs text-moonly-text-secondary leading-relaxed">
+                        <div className="text-xs text-moonly-secondary leading-relaxed">
                           {drawn.reversed ? drawn.card.reverse : drawn.card.meaning}
                         </div>
                       </div>
                     </div>
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-10 h-16 rounded border border-moonly-gold/20 flex items-center justify-center">
-                        <span className="text-moonly-gold text-lg">?</span>
+                      <div className="w-10 h-16 rounded border border-[#c9a96e]/20 flex items-center justify-center">
+                        <span className="text-[#c9a96e] text-lg">?</span>
                       </div>
                     </div>
                   )}
@@ -226,7 +226,7 @@ export default function TarotPage() {
           {allRevealed && (
             <div className="moonly-card p-5 animate-fade-in">
               <h3 className="text-gold text-sm font-semibold mb-3">综合解读</h3>
-              <p className="text-sm text-moonly-text-secondary leading-relaxed">
+              <p className="text-sm text-moonly-secondary leading-relaxed">
                 {question ? `关于「${question}」：\n` : ''}
                 {cards.map((d, i) => `${selectedSpread.positions[i]} — ${d.card.name}（${d.reversed ? '逆位' : '正位'}）`).join('，')}
                 。这组牌阵提示你当前{question ? '所问之事' : '面临的情况'}的关键在于
@@ -257,7 +257,7 @@ export default function TarotPage() {
                   <span className="text-lg">{card.emoji}</span>
                   <span className="text-sm text-white font-medium">{card.name}</span>
                 </div>
-                <p className="text-[10px] text-moonly-text-muted">{card.meaning}</p>
+                <p className="text-[10px] text-moonly-muted">{card.meaning}</p>
               </div>
             ))}
           </div>

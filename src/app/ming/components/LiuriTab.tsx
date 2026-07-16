@@ -109,8 +109,8 @@ export default function LiuriTab({ dayMaster }: { dayMaster?: string }) {
   if (!evaluation) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="w-10 h-10 rounded-full border-2 border-moonly-gold/30 border-t-moonly-gold animate-spin mb-4" />
-        <p className="text-moonly-text-secondary text-sm">加载中...</p>
+        <div className="w-10 h-10 rounded-full border-2 border-[#c9a96e]/30 border-t-[#c9a96e] animate-spin mb-4" />
+        <p className="text-moonly-secondary text-sm">加载中...</p>
       </div>
     )
   }
@@ -143,7 +143,7 @@ export default function LiuriTab({ dayMaster }: { dayMaster?: string }) {
           </div>
           <div className="text-center">
             <div className="text-xs text-white/40 mb-1">日柱</div>
-            <div className="w-14 h-14 rounded-xl bg-moonly-gold/10 border border-moonly-gold/30 flex flex-col items-center justify-center">
+            <div className="w-14 h-14 rounded-xl bg-[#c9a96e]/10 border border-[#c9a96e]/30 flex flex-col items-center justify-center">
               <span className="text-lg font-bold text-gold">{today.day.gan}</span>
               <span className="text-xs text-white/50">{today.day.zhi}</span>
             </div>
@@ -259,11 +259,11 @@ export default function LiuriTab({ dayMaster }: { dayMaster?: string }) {
             return SHI_CHEN_NAMES.map((name, i) => {
               const luck = luckArr[i] || '平'
               const isCurrent = i === currentIdx
-              const luckColor = luck === '吉' ? 'text-green-400 bg-green-500/10 border-green-500/20' : luck === '凶' ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-moonly-text-muted bg-white/5 border-white/10'
+              const luckColor = luck === '吉' ? 'text-green-400 bg-green-500/10 border-green-500/20' : luck === '凶' ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-moonly-muted bg-white/5 border-white/10'
               return (
                 <div
                   key={name}
-                  className={`p-2 rounded-lg border text-xs ${luckColor} ${isCurrent ? 'ring-1 ring-moonly-gold/50' : ''}`}
+                  className={`p-2 rounded-lg border text-xs ${luckColor} ${isCurrent ? 'ring-1 ring-[#c9a96e]/50' : ''}`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{name}</span>

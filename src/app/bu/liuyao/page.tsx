@@ -250,13 +250,13 @@ export default function LiuYaoPage() {
       {/* 头部返回 */}
       <div className="flex items-center gap-3 mb-6">
         <Link href="/bu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-text-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-secondary">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">六爻卜卦</h1>
-          <p className="text-moonly-text-muted text-xs">三枚铜钱，问事占断</p>
+          <p className="text-moonly-muted text-xs">三枚铜钱，问事占断</p>
         </div>
       </div>
 
@@ -265,13 +265,13 @@ export default function LiuYaoPage() {
           {/* 说明卡片 */}
           <div className="moonly-card p-5">
             <h3 className="text-white font-bold mb-3">如何起卦</h3>
-            <div className="space-y-2 text-sm text-moonly-text-secondary">
+            <div className="space-y-2 text-sm text-moonly-secondary">
               <p>1. 心中默念所问之事</p>
               <p>2. 摇动三枚铜钱六次</p>
               <p>3. 根据正反面组合确定爻象</p>
               <p>4. 从下到上排列成卦</p>
             </div>
-            <div className="mt-4 p-3 bg-white/5 rounded-lg text-xs text-moonly-text-muted">
+            <div className="mt-4 p-3 bg-white/5 rounded-lg text-xs text-moonly-muted">
               <p>正面（字）= 3，反面（花）= 2</p>
               <p>9 = 老阳（动），8 = 少阴，7 = 少阳，6 = 老阴（动）</p>
             </div>
@@ -284,7 +284,7 @@ export default function LiuYaoPage() {
               value={question}
               onChange={e => setQuestion(e.target.value)}
               placeholder="例如：这次合作能否成功？近期事业发展如何？"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-moonly-text-muted focus:outline-none focus:border-[#c9a96e]/30 resize-none"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-moonly-muted focus:outline-none focus:border-[#c9a96e]/30 resize-none"
               rows={3}
             />
             <button
@@ -302,13 +302,13 @@ export default function LiuYaoPage() {
         <div className="space-y-6">
           {/* 进度 */}
           <div className="flex items-center justify-between mb-2">
-            <span className="text-moonly-text-secondary text-sm">第 {currentToss + 1} / 6 次</span>
-            <span className="text-moonly-text-muted text-xs">
+            <span className="text-moonly-secondary text-sm">第 {currentToss + 1} / 6 次</span>
+            <span className="text-moonly-muted text-xs">
               {currentToss === 0 ? '初爻' : currentToss === 1 ? '二爻' : currentToss === 2 ? '三爻' : currentToss === 3 ? '四爻' : currentToss === 4 ? '五爻' : '上爻'}
             </span>
           </div>
           <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full bg-moonly-gold transition-all duration-300" style={{ width: `${(currentToss / 6) * 100}%` }} />
+            <div className="h-full bg-[#c9a96e] transition-all duration-300" style={{ width: `${(currentToss / 6) * 100}%` }} />
           </div>
 
           {/* 铜钱动画区 */}
@@ -332,12 +332,12 @@ export default function LiuYaoPage() {
                     </span>
                   </div>
                 ))}
-                <div className="ml-4 text-moonly-gold text-sm font-medium">
+                <div className="ml-4 text-[#c9a96e] text-sm font-medium">
                   {getYaoLabel(sumToYao(lastCoins.reduce((a, b) => a + b, 0)))}
                 </div>
               </div>
             ) : (
-              <div className="text-moonly-text-muted text-sm">点击按钮开始摇卦</div>
+              <div className="text-moonly-muted text-sm">点击按钮开始摇卦</div>
             )}
           </div>
 
@@ -348,11 +348,11 @@ export default function LiuYaoPage() {
               <div className="space-y-1">
                 {yaoList.map((yao, idx) => (
                   <div key={idx} className="flex items-center gap-3">
-                    <span className="text-moonly-text-muted text-xs w-8">{yao.position}爻</span>
-                    <span className={`text-lg font-mono ${yao.yaoType.includes('old') ? 'text-moonly-gold' : 'text-white'}`}>
+                    <span className="text-moonly-muted text-xs w-8">{yao.position}爻</span>
+                    <span className={`text-lg font-mono ${yao.yaoType.includes('old') ? 'text-[#c9a96e]' : 'text-white'}`}>
                       {getYaoSymbol(yao.yaoType)}
                     </span>
-                    <span className="text-xs text-moonly-text-muted">{getYaoLabel(yao.yaoType)}</span>
+                    <span className="text-xs text-moonly-muted">{getYaoLabel(yao.yaoType)}</span>
                   </div>
                 ))}
               </div>
@@ -376,16 +376,16 @@ export default function LiuYaoPage() {
         <div className="space-y-6">
           {/* 卦象结果 */}
           <div className="moonly-card p-5 text-center">
-            <div className="text-moonly-text-muted text-xs mb-2">本卦</div>
+            <div className="text-moonly-muted text-xs mb-2">本卦</div>
             <div className="text-gold-gradient text-2xl font-bold mb-1">{result.benGua}</div>
             {result.bianGua && (
               <div className="mt-2">
-                <div className="text-moonly-text-muted text-xs mb-1">变卦</div>
+                <div className="text-moonly-muted text-xs mb-1">变卦</div>
                 <div className="text-white text-lg font-medium">{result.bianGua}</div>
               </div>
             )}
             {result.dongYao.length > 0 && (
-              <div className="mt-3 text-moonly-gold text-sm">
+              <div className="mt-3 text-[#c9a96e] text-sm">
                 动爻：第 {result.dongYao.join('、')} 爻
               </div>
             )}
@@ -397,11 +397,11 @@ export default function LiuYaoPage() {
             <div className="space-y-2">
               {result.yaoList.map((yao, idx) => (
                 <div key={idx} className="flex items-center justify-center gap-3">
-                  <span className="text-moonly-text-muted text-xs w-8 text-right">{yao.position}爻</span>
-                  <span className={`text-2xl font-mono tracking-wider ${yao.yaoType.includes('old') ? 'text-moonly-gold' : 'text-white'}`}>
+                  <span className="text-moonly-muted text-xs w-8 text-right">{yao.position}爻</span>
+                  <span className={`text-2xl font-mono tracking-wider ${yao.yaoType.includes('old') ? 'text-[#c9a96e]' : 'text-white'}`}>
                     {getYaoSymbol(yao.yaoType)}
                   </span>
-                  <span className="text-xs text-moonly-text-muted w-16">{getYaoLabel(yao.yaoType)}</span>
+                  <span className="text-xs text-moonly-muted w-16">{getYaoLabel(yao.yaoType)}</span>
                 </div>
               ))}
             </div>
@@ -409,7 +409,7 @@ export default function LiuYaoPage() {
 
           {/* 问题 */}
           <div className="moonly-card p-5">
-            <div className="text-moonly-text-muted text-xs mb-1">所问之事</div>
+            <div className="text-moonly-muted text-xs mb-1">所问之事</div>
             <div className="text-white text-sm">{question}</div>
           </div>
 
@@ -419,22 +419,22 @@ export default function LiuYaoPage() {
             {(() => {
               const meaning = getHexagramMeaning(result.benGua)
               return (
-                <div className="text-moonly-text-secondary text-sm leading-relaxed space-y-3">
+                <div className="text-moonly-secondary text-sm leading-relaxed space-y-3">
                   <div>
-                    <span className="text-moonly-gold font-medium">本卦 {result.benGua}：</span>
+                    <span className="text-[#c9a96e] font-medium">本卦 {result.benGua}：</span>
                     <span>{meaning.general}</span>
                   </div>
                   <div>
-                    <span className="text-moonly-gold font-medium">建议：</span>
+                    <span className="text-[#c9a96e] font-medium">建议：</span>
                     <span>{meaning.advice}</span>
                   </div>
                   {result.bianGua && (
                     <div>
-                      <span className="text-moonly-gold font-medium">变卦 {result.bianGua} 启示：</span>
+                      <span className="text-[#c9a96e] font-medium">变卦 {result.bianGua} 启示：</span>
                       <span>此卦有{result.dongYao.length}个动爻，事情将有变化。变卦提示事情的发展趋势，需关注环境变化，灵活应对。</span>
                     </div>
                   )}
-                  <div className="p-3 moonly-card text-xs text-moonly-text-muted">
+                  <div className="p-3 moonly-card text-xs text-moonly-muted">
                     <p>💡 所问：{question}</p>
                     <p className="mt-1">{result.dongYao.length > 0
                       ? `动爻在第 ${result.dongYao.join('、')} 爻，主事情有变，需结合变卦综合判断。`

@@ -114,7 +114,7 @@ export default function MeiHuaPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">梅花易数</h1>
-          <p className="text-moonly-text-muted text-xs">象数起卦，随心而动</p>
+          <p className="text-moonly-muted text-xs">象数起卦，随心而动</p>
         </div>
       </div>
 
@@ -128,13 +128,13 @@ export default function MeiHuaPage() {
                 onClick={() => { setMethod(m.name); setInput('') }}
                 className={`moonly-card p-4 text-center transition ${
                   method === m.name
-                    ? 'border-moonly-gold/50 bg-moonly-gold/5'
+                    ? 'border-[#c9a96e]/50 bg-[#c9a96e]/5'
                     : 'hover:bg-white/5'
                 }`}
               >
                 <div className="text-3xl mb-2">{m.icon}</div>
                 <div className="text-white font-medium text-sm">{m.name}</div>
-                <div className="text-moonly-text-muted text-xs mt-1">{m.desc}</div>
+                <div className="text-moonly-muted text-xs mt-1">{m.desc}</div>
               </button>
             ))}
           </div>
@@ -149,7 +149,7 @@ export default function MeiHuaPage() {
                 placeholder="例如：36, 78"
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-[#c9a96e]/30 mb-3"
               />
-              <p className="text-moonly-text-muted text-xs">也可以输入三个数字，第三个为动爻</p>
+              <p className="text-moonly-muted text-xs">也可以输入三个数字，第三个为动爻</p>
             </div>
           )}
 
@@ -167,7 +167,7 @@ export default function MeiHuaPage() {
             <div className="moonly-card p-6 text-center">
               <div className="text-4xl mb-3">🌸</div>
               <div className="text-white font-medium mb-2">选择起卦方式</div>
-              <div className="text-moonly-text-muted text-sm">梅花易数强调"心诚则灵"，起卦前请先静心凝神</div>
+              <div className="text-moonly-muted text-sm">梅花易数强调"心诚则灵"，起卦前请先静心凝神</div>
             </div>
           )}
         </>
@@ -175,31 +175,31 @@ export default function MeiHuaPage() {
         <div className="space-y-4 animate-fade-in">
           {/* 卦象结果 */}
           <div className="moonly-card p-6 text-center">
-            <div className="text-moonly-text-muted text-xs mb-4">起卦方式：{method}</div>
+            <div className="text-moonly-muted text-xs mb-4">起卦方式：{method}</div>
             <div className="flex items-center justify-center gap-6 mb-4">
               <div className="text-center">
                 <div className="text-4xl mb-1">{GUA_IMAGES[result.shang]}</div>
-                <div className="text-moonly-gold font-bold">{result.shang}卦</div>
-                <div className="text-moonly-text-muted text-xs">上卦</div>
+                <div className="text-[#c9a96e] font-bold">{result.shang}卦</div>
+                <div className="text-moonly-muted text-xs">上卦</div>
               </div>
-              <div className="text-moonly-gold text-2xl">×</div>
+              <div className="text-[#c9a96e] text-2xl">×</div>
               <div className="text-center">
                 <div className="text-4xl mb-1">{GUA_IMAGES[result.xia]}</div>
-                <div className="text-moonly-gold font-bold">{result.xia}卦</div>
-                <div className="text-moonly-text-muted text-xs">下卦</div>
+                <div className="text-[#c9a96e] font-bold">{result.xia}卦</div>
+                <div className="text-moonly-muted text-xs">下卦</div>
               </div>
             </div>
             <div className="text-white text-lg font-bold mb-1">
               {result.shang}上{xiaData?.nature}下 → {result.xia}下{shangData?.nature}上
             </div>
-            <div className="text-moonly-gold text-sm">动爻：第 {result.dong} 爻</div>
+            <div className="text-[#c9a96e] text-sm">动爻：第 {result.dong} 爻</div>
           </div>
 
           {/* 上卦解读 */}
           {shangData && (
             <div className="moonly-card p-4">
               <h3 className="text-gold text-sm font-semibold mb-2">☰ 上卦 · {result.shang}（{shangData.nature}）</h3>
-              <p className="text-moonly-text-secondary text-sm">{shangData.desc}</p>
+              <p className="text-moonly-secondary text-sm">{shangData.desc}</p>
             </div>
           )}
 
@@ -207,14 +207,14 @@ export default function MeiHuaPage() {
           {xiaData && (
             <div className="moonly-card p-4">
               <h3 className="text-gold text-sm font-semibold mb-2">☷ 下卦 · {result.xia}（{xiaData.nature}）</h3>
-              <p className="text-moonly-text-secondary text-sm">{xiaData.desc}</p>
+              <p className="text-moonly-secondary text-sm">{xiaData.desc}</p>
             </div>
           )}
 
           {/* 综合建议 */}
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-2">💡 综合指引</h3>
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               上卦{result.shang}为体，{shangData?.desc}；下卦{result.xia}为用，{xiaData?.desc}。
               动爻在第{result.dong}位，提示事情正在发生变化。
               {shangData?.advice}

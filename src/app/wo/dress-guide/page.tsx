@@ -76,13 +76,13 @@ export default function DressGuidePage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">五行穿衣</h1>
-          <p className="text-moonly-text-muted text-xs">根据今日干支推荐穿搭</p>
+          <p className="text-moonly-muted text-xs">根据今日干支推荐穿搭</p>
         </div>
       </div>
 
       {/* 今日干支 */}
       <div className="moonly-card p-5 mb-6 text-center">
-        <div className="text-moonly-text-muted text-sm mb-1">{today.dateStr}</div>
+        <div className="text-moonly-muted text-sm mb-1">{today.dateStr}</div>
         <div className="text-2xl font-bold text-gold mb-2">
           {dayGan}{dayZhi}日
         </div>
@@ -94,7 +94,7 @@ export default function DressGuidePage() {
 
       {/* 推荐颜色 */}
       <div className="moonly-card p-5 mb-6">
-        <div className="text-xs text-moonly-gold mb-3 tracking-wider">今日幸运色</div>
+        <div className="text-xs text-[#c9a96e] mb-3 tracking-wider">今日幸运色</div>
         <div className="text-white text-lg font-bold mb-3">{guide.desc}</div>
         <div className="flex gap-3 mb-4">
           {guide.colors.map((color, i) => (
@@ -106,13 +106,13 @@ export default function DressGuidePage() {
             </div>
           ))}
         </div>
-        <p className="text-moonly-text-secondary text-sm leading-relaxed">{guide.advice}</p>
+        <p className="text-moonly-secondary text-sm leading-relaxed">{guide.advice}</p>
       </div>
 
       {/* 穿搭建议 */}
       <div className="moonly-card p-4 mb-6">
         <h3 className="text-gold text-sm font-semibold mb-3">💡 穿搭小贴士</h3>
-        <ul className="space-y-2 text-sm text-moonly-text-secondary">
+        <ul className="space-y-2 text-sm text-moonly-secondary">
           <li className="flex gap-2">
             <span className="text-gold">•</span>
             <span>上衣可选择{guide.desc}为主色调，提升整体气场</span>
@@ -137,7 +137,7 @@ export default function DressGuidePage() {
             return (
               <div 
                 key={i} 
-                className={`p-2 rounded-lg text-sm ${isCurrent ? 'bg-moonly-gold/10 border border-moonly-gold/20' : 'bg-white/5'}`}
+                className={`p-2 rounded-lg text-sm ${isCurrent ? 'bg-[#c9a96e]/10 border border-[#c9a96e]/20' : 'bg-white/5'}`}
               >
                 <div className={`${isCurrent ? 'text-gold font-medium' : 'text-white/60'}`}>
                   {isCurrent && <span className="mr-1">📍</span>}

@@ -116,7 +116,7 @@ export default function SettingsPage() {
           </div>
           <div>
             <h2 className="text-white font-bold text-base">外观</h2>
-            <p className="text-moonly-text-muted text-xs">自定义界面主题</p>
+            <p className="text-moonly-muted text-xs">自定义界面主题</p>
           </div>
         </div>
 
@@ -131,7 +131,7 @@ export default function SettingsPage() {
               onClick={() => update('theme', opt.key)}
               className={`p-3 rounded-xl text-center transition-all border ${
                 settings.theme === opt.key
-                  ? 'border-moonly-gold bg-moonly-gold/10 text-white'
+                  ? 'border-[#c9a96e] bg-[#c9a96e]/10 text-white'
                   : 'border-white/10 hover:border-white/20 text-white'
               }`}
             >
@@ -150,7 +150,7 @@ export default function SettingsPage() {
           </div>
           <div>
             <h2 className="text-white font-bold text-base">通知</h2>
-            <p className="text-moonly-text-muted text-xs">管理每日提醒和推送</p>
+            <p className="text-moonly-muted text-xs">管理每日提醒和推送</p>
           </div>
         </div>
 
@@ -160,13 +160,13 @@ export default function SettingsPage() {
               <span className="text-lg">📱</span>
               <div>
                 <div className="text-white text-sm font-medium">启用通知</div>
-                <div className="text-moonly-text-muted text-xs">接收每日运势推送</div>
+                <div className="text-moonly-muted text-xs">接收每日运势推送</div>
               </div>
             </div>
             <button
               onClick={() => update('enableNotifications', !settings.enableNotifications)}
               className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
-                settings.enableNotifications ? 'bg-moonly-gold' : 'bg-white/20'
+                settings.enableNotifications ? 'bg-[#c9a96e]' : 'bg-white/20'
               }`}
             >
               <span
@@ -182,13 +182,13 @@ export default function SettingsPage() {
               <span className="text-lg">🌅</span>
               <div>
                 <div className="text-white text-sm font-medium">每日运势提醒</div>
-                <div className="text-moonly-text-muted text-xs">每天早上推送今日运势</div>
+                <div className="text-moonly-muted text-xs">每天早上推送今日运势</div>
               </div>
             </div>
             <button
               onClick={() => update('dailyFortuneReminder', !settings.dailyFortuneReminder)}
               className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
-                settings.dailyFortuneReminder ? 'bg-moonly-gold' : 'bg-white/20'
+                settings.dailyFortuneReminder ? 'bg-[#c9a96e]' : 'bg-white/20'
               }`}
             >
               <span
@@ -221,7 +221,7 @@ export default function SettingsPage() {
           </div>
           <div>
             <h2 className="text-white font-bold text-base">分析偏好</h2>
-            <p className="text-moonly-text-muted text-xs">自定义命盘展示内容和分析风格</p>
+            <p className="text-moonly-muted text-xs">自定义命盘展示内容和分析风格</p>
           </div>
         </div>
 
@@ -239,12 +239,12 @@ export default function SettingsPage() {
                   onClick={() => update('analysisStyle', opt.key)}
                   className={`p-3 rounded-xl text-left transition-all border ${
                     settings.analysisStyle === opt.key
-                      ? 'border-moonly-gold bg-moonly-gold/10 text-white'
+                      ? 'border-[#c9a96e] bg-[#c9a96e]/10 text-white'
                       : 'border-white/10 hover:border-white/20 text-white'
                   }`}
                 >
                   <div className="font-medium text-sm">{opt.label}</div>
-                  <div className="text-xs text-moonly-text-muted mt-1">{opt.desc}</div>
+                  <div className="text-xs text-moonly-muted mt-1">{opt.desc}</div>
                 </button>
               ))}
             </div>
@@ -260,13 +260,13 @@ export default function SettingsPage() {
                   <span className="text-lg">{item.icon}</span>
                   <div>
                     <div className="text-white text-sm font-medium">{item.title}</div>
-                    <div className="text-moonly-text-muted text-xs">{item.desc}</div>
+                    <div className="text-moonly-muted text-xs">{item.desc}</div>
                   </div>
                 </div>
                 <button
                   onClick={() => update(item.key, !settings[item.key])}
                   className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${
-                    settings[item.key] ? 'bg-moonly-gold' : 'bg-white/20'
+                    settings[item.key] ? 'bg-[#c9a96e]' : 'bg-white/20'
                   }`}
                 >
                   <span
@@ -284,12 +284,12 @@ export default function SettingsPage() {
       {/* AI 服务 */}
       <section className="moonly-card p-5 mb-4">
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-moonly-purple/30 to-moonly-gold/20 flex items-center justify-center text-lg">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-moonly-purple/30 to-[#c9a96e]/20 flex items-center justify-center text-lg">
             🤖
           </div>
           <div>
             <h2 className="text-white font-bold text-base">AI 深度分析</h2>
-            <p className="text-moonly-text-muted text-xs">智能解读已内置，无需配置</p>
+            <p className="text-moonly-muted text-xs">智能解读已内置，无需配置</p>
           </div>
         </div>
 
@@ -298,7 +298,7 @@ export default function SettingsPage() {
             <span>✓</span>
             <span>AI 深度分析服务已就绪，所有功能均可直接使用</span>
           </div>
-          <p className="text-xs text-moonly-text-muted leading-relaxed">
+          <p className="text-xs text-moonly-muted leading-relaxed">
             系统已内置 Kimi AI 分析能力，八字分析、合婚分析、事业合作等模块均可自动调用 AI 进行深度解读。
           </p>
         </div>
@@ -312,7 +312,7 @@ export default function SettingsPage() {
           </div>
           <div>
             <h2 className="text-white font-bold text-base">数据管理</h2>
-            <p className="text-moonly-text-muted text-xs">管理本地存储的数据</p>
+            <p className="text-moonly-muted text-xs">管理本地存储的数据</p>
           </div>
         </div>
 
@@ -320,11 +320,11 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-white text-sm font-medium">导出数据</div>
-              <div className="text-moonly-text-muted text-xs">将所有数据导出为 JSON 文件备份</div>
+              <div className="text-moonly-muted text-xs">将所有数据导出为 JSON 文件备份</div>
             </div>
             <button
               onClick={handleExportData}
-              className="px-4 py-2 rounded-lg text-sm font-medium border border-moonly-gold/40 text-moonly-gold hover:bg-moonly-gold/10 transition-colors"
+              className="px-4 py-2 rounded-lg text-sm font-medium border border-[#c9a96e]/40 text-[#c9a96e] hover:bg-[#c9a96e]/10 transition-colors"
             >
               导出
             </button>
@@ -333,7 +333,7 @@ export default function SettingsPage() {
           <div className="border-t border-white/10 pt-4 flex items-center justify-between">
             <div>
               <div className="text-white text-sm font-medium">导入数据</div>
-              <div className="text-moonly-text-muted text-xs">从 JSON 备份文件恢复数据</div>
+              <div className="text-moonly-muted text-xs">从 JSON 备份文件恢复数据</div>
             </div>
             <label className="px-4 py-2 rounded-lg text-sm font-medium border border-white/20 text-white hover:bg-white/5 transition-colors cursor-pointer">
               导入
@@ -344,7 +344,7 @@ export default function SettingsPage() {
           <div className="border-t border-white/10 pt-4 flex items-center justify-between">
             <div>
               <div className="text-white text-sm font-medium">清除分析历史</div>
-              <div className="text-moonly-text-muted text-xs">删除保存在本地的所有命盘记录，不可恢复</div>
+              <div className="text-moonly-muted text-xs">删除保存在本地的所有命盘记录，不可恢复</div>
             </div>
             <button
               onClick={handleClearHistory}
@@ -361,7 +361,7 @@ export default function SettingsPage() {
           <div className="border-t border-white/10 pt-4 flex items-center justify-between">
             <div>
               <div className="text-white text-sm font-medium">清除所有数据</div>
-              <div className="text-moonly-text-muted text-xs">删除所有本地数据，包括档案、历史记录、设置等</div>
+              <div className="text-moonly-muted text-xs">删除所有本地数据，包括档案、历史记录、设置等</div>
             </div>
             <button
               onClick={() => {
@@ -382,24 +382,24 @@ export default function SettingsPage() {
       {/* 关于 */}
       <section className="moonly-card p-5">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c9a96e]/30 to-moonly-gold/10 flex items-center justify-center text-lg">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c9a96e]/30 to-[#c9a96e]/10 flex items-center justify-center text-lg">
             ℹ️
           </div>
           <div>
             <h2 className="text-white font-bold text-base">关于</h2>
           </div>
         </div>
-        <div className="text-sm text-moonly-text-secondary space-y-2">
+        <div className="text-sm text-moonly-secondary space-y-2">
           <div className="flex items-center gap-2">
             <span className="font-medium text-white">LifeGPS</span>
-            <span className="text-moonly-text-muted">·</span>
+            <span className="text-moonly-muted">·</span>
             <span>AI 命理分析系统 v0.2.0</span>
           </div>
-          <p className="text-xs text-moonly-text-muted leading-relaxed">
+          <p className="text-xs text-moonly-muted leading-relaxed">
             融合现代 AI 技术与传统命理智慧，以理性态度传承东方文化。
             八字分析仅供参考，人生方向由自己掌握。
           </p>
-          <div className="flex gap-4 text-xs text-moonly-gold pt-2">
+          <div className="flex gap-4 text-xs text-[#c9a96e] pt-2">
             <span>调候用神 · 扶抑辅助</span>
             <span>·</span>
             <span>专业排盘 · AI 解读</span>
@@ -409,7 +409,7 @@ export default function SettingsPage() {
 
       {/* 保存提示 */}
       {saved && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-moonly-gold text-moonly-bg px-6 py-3 rounded-lg shadow-lg text-sm font-medium">
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#c9a96e] text-moonly-bg px-6 py-3 rounded-lg shadow-lg text-sm font-medium">
           ✅ 设置已保存
         </div>
       )}

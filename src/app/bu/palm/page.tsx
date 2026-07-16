@@ -112,14 +112,14 @@ export default function PalmReadingPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">手相分析</h1>
-          <p className="text-moonly-text-muted text-xs">掌纹解析，命运在手</p>
+          <p className="text-moonly-muted text-xs">掌纹解析，命运在手</p>
         </div>
       </div>
 
       {step === 'hand' && (
         <>
           <div className="moonly-card p-4 mb-6">
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               手相学认为手掌形状与纹路反映人的性格与命运。首先选择你的手型，然后选择你掌纹的优势特征。
             </p>
           </div>
@@ -131,14 +131,14 @@ export default function PalmReadingPage() {
                 onClick={() => { setHandType(hand.type); setStep('lines') }}
                 className={`moonly-card p-4 text-left transition ${
                   handType === hand.type
-                    ? 'border-moonly-gold/50 bg-moonly-gold/5'
+                    ? 'border-[#c9a96e]/50 bg-[#c9a96e]/5'
                     : 'hover:bg-white/5'
                 }`}
               >
                 <div className="text-2xl mb-2">{hand.icon}</div>
                 <div className="text-white text-sm font-medium">{hand.type}</div>
-                <div className="text-moonly-text-muted text-xs mt-1">{hand.desc}</div>
-                <div className="text-moonly-gold text-xs mt-2">{hand.traits}</div>
+                <div className="text-moonly-muted text-xs mt-1">{hand.desc}</div>
+                <div className="text-[#c9a96e] text-xs mt-2">{hand.traits}</div>
               </button>
             ))}
           </div>
@@ -149,7 +149,7 @@ export default function PalmReadingPage() {
         <>
           <div className="moonly-card p-4 mb-4">
             <div className="text-white text-sm font-medium mb-1">已选手型：{handType}</div>
-            <button onClick={() => setStep('hand')} className="text-moonly-gold text-xs hover:underline">重新选择</button>
+            <button onClick={() => setStep('hand')} className="text-[#c9a96e] text-xs hover:underline">重新选择</button>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-6">
@@ -159,15 +159,15 @@ export default function PalmReadingPage() {
                 onClick={() => toggleLine(line.id)}
                 className={`moonly-card p-4 text-left transition ${
                   selectedLines.includes(line.id)
-                    ? 'border-moonly-gold/50 bg-moonly-gold/5'
+                    ? 'border-[#c9a96e]/50 bg-[#c9a96e]/5'
                     : 'hover:bg-white/5'
                 }`}
               >
                 <div className="text-2xl mb-2">{line.icon}</div>
                 <div className="text-white text-sm font-medium">{line.name}</div>
-                <div className="text-moonly-text-muted text-xs mt-1">{line.meaning}</div>
+                <div className="text-moonly-muted text-xs mt-1">{line.meaning}</div>
                 {selectedLines.includes(line.id) && (
-                  <div className="mt-2 text-moonly-gold text-xs">✓ 已选</div>
+                  <div className="mt-2 text-[#c9a96e] text-xs">✓ 已选</div>
                 )}
               </button>
             ))}
@@ -176,7 +176,7 @@ export default function PalmReadingPage() {
           <button
             onClick={analyze}
             disabled={selectedLines.length === 0}
-            className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
           >
             开始分析（已选 {selectedLines.length} 项）
           </button>
@@ -189,7 +189,7 @@ export default function PalmReadingPage() {
             <div className="text-4xl mb-3">🖐️</div>
             <div className="text-white text-sm mb-2">手型：{handType}</div>
             <div className={`text-2xl font-bold mb-2 ${getFortune().color}`}>{getFortune().level}</div>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">{getFortune().desc}</div>
+            <div className="text-moonly-secondary text-sm leading-relaxed">{getFortune().desc}</div>
           </div>
 
           <div className="space-y-3">
@@ -202,7 +202,7 @@ export default function PalmReadingPage() {
                     <span className="text-lg">{line.icon}</span>
                     <span className="text-white font-medium text-sm">{line.name}</span>
                   </div>
-                  <div className="text-moonly-text-muted text-xs mb-2">{line.meaning}</div>
+                  <div className="text-moonly-muted text-xs mb-2">{line.meaning}</div>
                   <div className="text-green-400 text-xs">{line.good}</div>
                 </div>
               )

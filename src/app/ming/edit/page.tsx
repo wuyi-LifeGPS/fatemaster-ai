@@ -21,9 +21,9 @@ function BottomSheet({ open, onClose, title, children, onConfirm }: WheelPickerP
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-[#1a1428] rounded-t-3xl border-t border-white/10 animate-fade-in">
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
-          <button onClick={onClose} className="text-moonly-text-muted text-sm">取消</button>
+          <button onClick={onClose} className="text-moonly-muted text-sm">取消</button>
           <span className="text-white font-medium text-sm">{title}</span>
-          <button onClick={onConfirm} className="text-moonly-gold text-sm font-medium">确定</button>
+          <button onClick={onConfirm} className="text-[#c9a96e] text-sm font-medium">确定</button>
         </div>
         <div className="px-4 py-4 max-h-[60vh] overflow-hidden">
           {children}
@@ -45,7 +45,7 @@ function WheelColumn({ options, value, onChange, label }: {
 
   return (
     <div className="flex flex-col items-center flex-1">
-      {label && <span className="text-moonly-text-muted text-xs mb-2">{label}</span>}
+      {label && <span className="text-moonly-muted text-xs mb-2">{label}</span>}
       <div className="relative h-[220px] w-full overflow-hidden">
         <div className="absolute top-[88px] left-0 right-0 h-[44px] bg-white/10 rounded-lg pointer-events-none z-10" />
         <div
@@ -224,7 +224,7 @@ function EditProfileContent() {
   if (!profile) {
     return (
       <div className="min-h-screen moonly-bg moonly-content flex items-center justify-center">
-        <div className="w-10 h-10 rounded-full border-2 border-moonly-gold/30 border-t-moonly-gold animate-spin" />
+        <div className="w-10 h-10 rounded-full border-2 border-[#c9a96e]/30 border-t-[#c9a96e] animate-spin" />
       </div>
     )
   }
@@ -244,18 +244,18 @@ function EditProfileContent() {
 
       <div className="px-4 py-6 pb-32 space-y-6 max-w-lg mx-auto">
         <div className="space-y-2">
-          <label className="text-sm text-moonly-text-secondary font-medium">姓名</label>
+          <label className="text-sm text-moonly-secondary font-medium">姓名</label>
           <input
             type="text"
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
             placeholder="请输入姓名"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-[#c9a96e]/30"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-moonly-muted focus:outline-none focus:border-[#c9a96e]/30"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm text-moonly-text-secondary font-medium">性别</label>
+          <label className="text-sm text-moonly-secondary font-medium">性别</label>
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => setFormData(prev => ({ ...prev, gender: 'male' }))}
@@ -308,14 +308,14 @@ function EditProfileContent() {
             onClick={openDatePicker}
             className="py-4 px-4 rounded-xl bg-black/15 border border-white/10 text-left hover:border-white/20 transition-all"
           >
-            <div className="text-xs text-moonly-text-muted mb-1">出生日期</div>
+            <div className="text-xs text-moonly-muted mb-1">出生日期</div>
             <div className="text-white font-medium text-sm">{dateStr}</div>
           </button>
           <button
             onClick={openTimePicker}
             className="py-4 px-4 rounded-xl bg-black/15 border border-white/10 text-left hover:border-white/20 transition-all"
           >
-            <div className="text-xs text-moonly-text-muted mb-1">出生时间</div>
+            <div className="text-xs text-moonly-muted mb-1">出生时间</div>
             <div className="text-white font-medium text-sm">{timeStr}</div>
           </button>
         </div>
@@ -360,7 +360,7 @@ export default function EditProfilePage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen moonly-bg moonly-content flex items-center justify-center">
-        <div className="w-10 h-10 rounded-full border-2 border-moonly-gold/30 border-t-moonly-gold animate-spin" />
+        <div className="w-10 h-10 rounded-full border-2 border-[#c9a96e]/30 border-t-[#c9a96e] animate-spin" />
       </div>
     }>
       <EditProfileContent />

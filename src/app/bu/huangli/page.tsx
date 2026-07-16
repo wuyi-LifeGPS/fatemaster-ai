@@ -110,27 +110,27 @@ export default function HuangliPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">今日黄历</h1>
-          <p className="text-moonly-text-muted text-xs">择日参考，趋吉避凶</p>
+          <p className="text-moonly-muted text-xs">择日参考，趋吉避凶</p>
         </div>
       </div>
 
       {/* 日期卡片 */}
-      <div className="moonly-card p-5 mb-6 text-center border border-moonly-gold/20">
-        <div className="text-moonly-text-muted text-sm mb-1">{today.dateStr}</div>
+      <div className="moonly-card p-5 mb-6 text-center border border-[#c9a96e]/20">
+        <div className="text-moonly-muted text-sm mb-1">{today.dateStr}</div>
         <div className="text-2xl font-bold text-gold mb-3">
           {today.day.gan}{today.day.zhi}日
         </div>
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <div className="text-[10px] text-moonly-text-muted">冲</div>
+            <div className="text-[10px] text-moonly-muted">冲</div>
             <div className="text-sm text-white">{chongSha.chong}</div>
           </div>
           <div>
-            <div className="text-[10px] text-moonly-text-muted">煞</div>
+            <div className="text-[10px] text-moonly-muted">煞</div>
             <div className="text-sm text-white">{chongSha.sha}</div>
           </div>
           <div>
-            <div className="text-[10px] text-moonly-text-muted">五行</div>
+            <div className="text-[10px] text-moonly-muted">五行</div>
             <div className="text-sm text-gold">{today.day.gan}天干</div>
           </div>
         </div>
@@ -173,11 +173,11 @@ export default function HuangliPage() {
           {SHI_CHEN_NAMES.map((name, i) => {
             const luck = shiChenLuck[i] || '平'
             const isCurrent = i === currentShiChenIdx
-            const luckColor = luck === '吉' ? 'text-green-400 bg-green-500/10 border-green-500/20' : luck === '凶' ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-moonly-text-muted bg-white/5 border-white/10'
+            const luckColor = luck === '吉' ? 'text-green-400 bg-green-500/10 border-green-500/20' : luck === '凶' ? 'text-red-400 bg-red-500/10 border-red-500/20' : 'text-moonly-muted bg-white/5 border-white/10'
             return (
               <div
                 key={name}
-                className={`p-2 rounded-lg border text-xs ${luckColor} ${isCurrent ? 'ring-1 ring-moonly-gold/50' : ''}`}
+                className={`p-2 rounded-lg border text-xs ${luckColor} ${isCurrent ? 'ring-1 ring-[#c9a96e]/50' : ''}`}
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{name}</span>

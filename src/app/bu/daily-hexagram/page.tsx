@@ -101,7 +101,7 @@ export default function DailyHexagramPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">每日一卦</h1>
-          <p className="text-moonly-text-muted text-xs">周易六十四卦，今日指引</p>
+          <p className="text-moonly-muted text-xs">周易六十四卦，今日指引</p>
         </div>
       </div>
 
@@ -110,29 +110,29 @@ export default function DailyHexagramPage() {
           <div className="moonly-card p-6 text-center">
             <div className="text-4xl mb-3">☯️</div>
             <div className="text-gold text-3xl font-bold mb-2">{hexagram.name}卦</div>
-            <div className="text-moonly-gold text-sm font-medium mb-3">{hexagram.meaning}</div>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-[#c9a96e] text-sm font-medium mb-3">{hexagram.meaning}</div>
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {hexagram.desc}
             </div>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">💡 今日指引</h3>
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               {hexagram.advice}
             </p>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">📅 今日信息</h3>
-            <div className="text-moonly-text-secondary text-sm space-y-1">
+            <div className="text-moonly-secondary text-sm space-y-1">
               <div>日期：{new Date().toLocaleDateString('zh-CN')}</div>
               <div>农历：{new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}</div>
               <div>星期：{new Date().toLocaleDateString('zh-CN', { weekday: 'long' })}</div>
             </div>
           </div>
 
-          <div className="text-center text-moonly-text-muted text-xs">
+          <div className="text-center text-moonly-muted text-xs">
             每日一卦，明日更新
           </div>
         </div>

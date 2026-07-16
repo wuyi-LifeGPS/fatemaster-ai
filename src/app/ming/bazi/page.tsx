@@ -54,7 +54,7 @@ export default function BaziRecordsPage() {
       {/* 列表 */}
       {profiles.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-16 h-16 rounded-full bg-moonly-gold/10 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-[#c9a96e]/10 flex items-center justify-center mb-4">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
@@ -63,21 +63,21 @@ export default function BaziRecordsPage() {
               <polyline points="10 9 9 9 8 9" />
             </svg>
           </div>
-          <p className="text-moonly-text-secondary text-sm">暂无八字记录</p>
-          <p className="text-moonly-text-muted text-xs mt-1">点击右上角添加第一个八字</p>
+          <p className="text-moonly-secondary text-sm">暂无八字记录</p>
+          <p className="text-moonly-muted text-xs mt-1">点击右上角添加第一个八字</p>
         </div>
       ) : (
         <div className="space-y-3">
           {profiles.map((profile, idx) => (
             <div key={profile.id} className="moonly-card p-4 relative">
               {idx === 0 && (
-                <div className="absolute top-2 right-2 text-[10px] text-gold bg-moonly-gold/10 px-1.5 py-0.5 rounded">
+                <div className="absolute top-2 right-2 text-[10px] text-gold bg-[#c9a96e]/10 px-1.5 py-0.5 rounded">
                   默认
                 </div>
               )}
               <div className="flex items-center gap-3">
                 {/* 生肖 */}
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#c9a96e]/20 to-moonly-gold/5 border border-moonly-gold/30 flex items-center justify-center text-lg font-bold text-gold">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#c9a96e]/20 to-[#c9a96e]/5 border border-[#c9a96e]/30 flex items-center justify-center text-lg font-bold text-gold">
                   {getZodiacIcon(profile.year)}
                 </div>
 
@@ -85,12 +85,12 @@ export default function BaziRecordsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-white text-sm">{profile.name}</span>
-                    <span className="text-moonly-gold text-xs">· {getAge(profile.year)}岁</span>
+                    <span className="text-[#c9a96e] text-xs">· {getAge(profile.year)}岁</span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded ${profile.gender === '男' ? 'bg-blue-500/20 text-blue-300' : 'bg-pink-500/20 text-pink-300'}`}>
                       {profile.gender}
                     </span>
                   </div>
-                  <p className="text-moonly-text-muted text-xs mt-0.5">{formatDate(profile)}</p>
+                  <p className="text-moonly-muted text-xs mt-0.5">{formatDate(profile)}</p>
                 </div>
 
                 {/* 操作 */}
@@ -122,7 +122,7 @@ export default function BaziRecordsPage() {
               {/* 删除确认 */}
               {showDeleteId === profile.id && (
                 <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-end gap-2">
-                  <span className="text-moonly-text-muted text-xs">确认删除？</span>
+                  <span className="text-moonly-muted text-xs">确认删除？</span>
                   <button
                     onClick={() => handleDelete(profile.id)}
                     className="px-3 py-1 rounded bg-red-500/20 text-red-300 text-xs hover:bg-red-500/30 transition"
@@ -131,7 +131,7 @@ export default function BaziRecordsPage() {
                   </button>
                   <button
                     onClick={() => setShowDeleteId(null)}
-                    className="px-3 py-1 rounded bg-white/5 text-moonly-text-secondary text-xs hover:bg-white/10 transition"
+                    className="px-3 py-1 rounded bg-white/5 text-moonly-secondary text-xs hover:bg-white/10 transition"
                   >
                     取消
                   </button>

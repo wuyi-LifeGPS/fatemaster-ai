@@ -58,7 +58,7 @@ export default function LuckyDirectionPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">每日吉方</h1>
-          <p className="text-moonly-text-muted text-xs">今日吉利方向指引</p>
+          <p className="text-moonly-muted text-xs">今日吉利方向指引</p>
         </div>
       </div>
 
@@ -67,8 +67,8 @@ export default function LuckyDirectionPage() {
           <div className="moonly-card p-6 text-center mb-6">
             <div className="text-4xl mb-3">{direction.icon}</div>
             <div className={`text-3xl font-bold mb-2 ${direction.color}`}>{direction.name}方</div>
-            <div className="text-moonly-gold text-sm font-medium">{direction.meaning}</div>
-            <div className="text-moonly-text-secondary text-sm mt-3">
+            <div className="text-[#c9a96e] text-sm font-medium">{direction.meaning}</div>
+            <div className="text-moonly-secondary text-sm mt-3">
               💡 {direction.lucky}
             </div>
           </div>
@@ -88,7 +88,7 @@ export default function LuckyDirectionPage() {
             ))}
           </div>
 
-          <div className="text-center text-moonly-text-muted text-xs mt-6">
+          <div className="text-center text-moonly-muted text-xs mt-6">
             每日吉方，明日更新
           </div>
         </>

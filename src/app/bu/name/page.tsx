@@ -100,7 +100,7 @@ export default function NameAnalysisPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">姓名分析</h1>
-          <p className="text-moonly-text-muted text-xs">笔画五行，解读姓名</p>
+          <p className="text-moonly-muted text-xs">笔画五行，解读姓名</p>
         </div>
       </div>
 
@@ -131,18 +131,18 @@ export default function NameAnalysisPage() {
             <div className={`text-2xl font-bold mb-2 ${result.strokeLevel.score >= 80 ? 'text-gold' : result.strokeLevel.score >= 60 ? 'text-yellow-400' : 'text-orange-400'}`}>
               {result.strokeLevel.level}
             </div>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.strokeLevel.desc}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="moonly-card p-4 text-center">
-              <div className="text-moonly-text-muted text-xs mb-1">总笔画</div>
+              <div className="text-moonly-muted text-xs mb-1">总笔画</div>
               <div className="text-gold text-2xl font-bold">{result.strokes}</div>
             </div>
             <div className="moonly-card p-4 text-center">
-              <div className="text-moonly-text-muted text-xs mb-1">五行属性</div>
+              <div className="text-moonly-muted text-xs mb-1">五行属性</div>
               <div className="text-gold text-2xl font-bold">{result.element}</div>
             </div>
           </div>
@@ -157,7 +157,7 @@ export default function NameAnalysisPage() {
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">适合职业</h3>
-            <div className="text-moonly-text-secondary text-sm">
+            <div className="text-moonly-secondary text-sm">
               {result.elementAnalysis.careers}
             </div>
           </div>

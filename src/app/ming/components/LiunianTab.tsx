@@ -44,10 +44,10 @@ export default function LiunianTab({ daYunList, dayMaster }: { daYunList: DaYunI
           </div>
           <div className="flex items-center gap-3 mb-2">
             <span className="text-white font-semibold text-lg">{currentLiuNian.ganZhi}年</span>
-            <span className="text-moonly-text-muted text-sm">· {currentLiuNian.age}岁</span>
-            <span className="text-moonly-text-muted text-sm">· 第{currentLiuNian.daYunIndex}步大运</span>
+            <span className="text-moonly-muted text-sm">· {currentLiuNian.age}岁</span>
+            <span className="text-moonly-muted text-sm">· 第{currentLiuNian.daYunIndex}步大运</span>
           </div>
-          <div className="text-moonly-text-secondary text-sm">
+          <div className="text-moonly-secondary text-sm">
             天干十神：<span style={{ color: WUXING_COLOR[currentLiuNian.wuXing] }}>{currentLiuNian.shiShen}</span>
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function LiunianTab({ daYunList, dayMaster }: { daYunList: DaYunI
                   onClick={() => setExpandedYear(isExpanded ? null : ln.year)}
                   className={`w-full flex items-center gap-3 p-3 rounded-xl transition ${
                     ln.isCurrent 
-                      ? 'bg-moonly-gold/10 border border-moonly-gold/30' 
+                      ? 'bg-[#c9a96e]/10 border border-[#c9a96e]/30' 
                       : 'bg-white/5 hover:bg-white/8'
                   }`}
                 >
@@ -77,7 +77,7 @@ export default function LiunianTab({ daYunList, dayMaster }: { daYunList: DaYunI
                   <div className="flex-1 text-left">
                     <div className="flex items-center gap-2">
                       <span className="text-white font-medium">{ln.year}年</span>
-                      {ln.isCurrent && <span className="text-[10px] bg-moonly-gold/20 text-gold px-1.5 py-0.5 rounded">今年</span>}
+                      {ln.isCurrent && <span className="text-[10px] bg-[#c9a96e]/20 text-gold px-1.5 py-0.5 rounded">今年</span>}
                     </div>
                     <div className="text-white/40 text-xs">{ln.age}岁 · {ln.shiShen} · {ln.daYunGanZhi}运</div>
                   </div>

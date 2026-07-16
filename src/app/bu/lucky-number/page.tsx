@@ -54,7 +54,7 @@ export default function LuckyNumberPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">幸运数字</h1>
-          <p className="text-moonly-text-muted text-xs">每日幸运数字，趋吉避凶</p>
+          <p className="text-moonly-muted text-xs">每日幸运数字，趋吉避凶</p>
         </div>
       </div>
 
@@ -72,7 +72,7 @@ export default function LuckyNumberPage() {
         <button
           onClick={analyze}
           disabled={!birthDate}
-          className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
         >
           生成幸运数字
         </button>
@@ -87,7 +87,7 @@ export default function LuckyNumberPage() {
             <div className={`text-5xl font-bold mb-2 ${LUCKY_NUMBERS[mainNumber - 1]?.color || 'text-gold'}`}>
               {mainNumber}
             </div>
-            <div className="text-moonly-text-secondary text-sm">
+            <div className="text-moonly-secondary text-sm">
               {LUCKY_NUMBERS[mainNumber - 1]?.meaning}
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function LuckyNumberPage() {
           <div className="grid grid-cols-3 gap-3">
             {luckyNumbers.map((num, i) => (
               <div key={i} className="moonly-card p-4 text-center">
-                <div className="text-moonly-text-muted text-xs mb-1">
+                <div className="text-moonly-muted text-xs mb-1">
                   {i === 0 ? '主数字' : i === 1 ? '辅数字' : '吉数字'}
                 </div>
                 <div className={`text-2xl font-bold ${LUCKY_NUMBERS[num - 1]?.color || 'text-gold'}`}>
@@ -107,7 +107,7 @@ export default function LuckyNumberPage() {
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">💡 数字能量</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               数字{mainNumber}代表{LUCKY_NUMBERS[mainNumber - 1]?.meaning}。今日适合选择与{mainNumber}相关的事物，如{mainNumber}点、{mainNumber}楼、{mainNumber}号等。
             </div>
           </div>

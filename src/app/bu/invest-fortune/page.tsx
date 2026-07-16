@@ -51,7 +51,7 @@ export default function InvestFortunePage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">投资运势</h1>
-          <p className="text-moonly-text-muted text-xs">财运亨通，投资有道</p>
+          <p className="text-moonly-muted text-xs">财运亨通，投资有道</p>
         </div>
       </div>
 
@@ -64,7 +64,7 @@ export default function InvestFortunePage() {
                 onClick={() => setInvestType(invest.type)}
                 className={`moonly-card p-4 text-center transition ${
                   investType === invest.type
-                    ? 'border-moonly-gold/50 bg-moonly-gold/5'
+                    ? 'border-[#c9a96e]/50 bg-[#c9a96e]/5'
                     : 'hover:bg-white/5'
                 }`}
               >
@@ -87,7 +87,7 @@ export default function InvestFortunePage() {
           <button
             onClick={analyze}
             disabled={!investType || !birthDate}
-            className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
           >
             查看投资运势
           </button>
@@ -99,7 +99,7 @@ export default function InvestFortunePage() {
             <div className="text-gold text-2xl font-bold mb-2">{result.type}运势</div>
             <div className={`text-2xl font-bold mt-4 ${result.color}`}>{result.level}</div>
             <div className="mt-4">
-              <div className="text-moonly-text-muted text-xs mb-1">财运指数</div>
+              <div className="text-moonly-muted text-xs mb-1">财运指数</div>
               <div className="w-full bg-white/5 rounded-full h-3">
                 <div
                   className={`h-3 rounded-full transition-all duration-1000 ${
@@ -116,7 +116,7 @@ export default function InvestFortunePage() {
             <h3 className="text-gold text-sm font-semibold mb-3">💡 投资建议</h3>
             <div className="space-y-2">
               {result.advice.map((tip: string, i: number) => (
-                <div key={i} className="flex items-center gap-2 text-moonly-text-secondary text-sm">
+                <div key={i} className="flex items-center gap-2 text-moonly-secondary text-sm">
                   <span className="text-gold">{i + 1}.</span>
                   {tip}
                 </div>
@@ -126,7 +126,7 @@ export default function InvestFortunePage() {
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">📊 市场趋势</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               今日{result.type}市场趋势：{result.trend}。
               {result.luck >= 80 ? '适合加仓或买入。' : result.luck >= 70 ? '建议观望，谨慎操作。' : '建议减仓或观望。'}
             </div>

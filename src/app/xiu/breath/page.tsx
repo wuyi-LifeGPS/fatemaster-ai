@@ -162,7 +162,7 @@ export default function BreathPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">呼吸练习</h1>
-          <p className="text-moonly-text-muted text-xs">调整呼吸，回归平静</p>
+          <p className="text-moonly-muted text-xs">调整呼吸，回归平静</p>
         </div>
       </div>
 
@@ -184,9 +184,9 @@ export default function BreathPage() {
 
         <div className="text-center">
           <div className="text-xl font-bold text-white mb-1">{phaseText[phase]}</div>
-          <div className="text-sm text-moonly-text-secondary">{phaseSubtext[phase]}</div>
+          <div className="text-sm text-moonly-secondary">{phaseSubtext[phase]}</div>
           {isRunning && (
-            <div className="mt-3 text-xs text-moonly-text-muted">
+            <div className="mt-3 text-xs text-moonly-muted">
               第 {cycle + 1} / {selected.cycles} 轮
             </div>
           )}
@@ -196,14 +196,14 @@ export default function BreathPage() {
           {!isRunning ? (
             <button
               onClick={start}
-              className="px-8 py-3 rounded-full bg-moonly-gold/15 text-gold border border-moonly-gold/20 font-medium hover:bg-moonly-gold/20 transition"
+              className="px-8 py-3 rounded-full bg-[#c9a96e]/15 text-gold border border-[#c9a96e]/20 font-medium hover:bg-[#c9a96e]/20 transition"
             >
               开始练习
             </button>
           ) : (
             <button
               onClick={stop}
-              className="px-8 py-3 rounded-full bg-white/5 text-moonly-text-secondary border border-white/10 font-medium hover:bg-white/10 transition"
+              className="px-8 py-3 rounded-full bg-white/5 text-moonly-secondary border border-white/10 font-medium hover:bg-white/10 transition"
             >
               停止
             </button>
@@ -220,17 +220,17 @@ export default function BreathPage() {
               stop()
               setSelected(tech)
             }}
-            className={`w-full text-left moonly-card p-4 transition ${selected.id === tech.id ? 'border-moonly-gold/30' : ''}`}
+            className={`w-full text-left moonly-card p-4 transition ${selected.id === tech.id ? 'border-[#c9a96e]/30' : ''}`}
           >
             <div className="flex items-center justify-between mb-1">
               <span className={`text-sm font-medium ${selected.id === tech.id ? 'text-gold' : 'text-white'}`}>
                 {tech.name}
               </span>
-              <span className="text-[10px] text-moonly-text-muted">
+              <span className="text-[10px] text-moonly-muted">
                 {tech.inhale}-{tech.hold || 0}-{tech.exhale} 秒
               </span>
             </div>
-            <p className="text-xs text-moonly-text-secondary">{tech.desc}</p>
+            <p className="text-xs text-moonly-secondary">{tech.desc}</p>
           </button>
         ))}
       </div>

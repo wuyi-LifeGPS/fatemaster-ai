@@ -89,7 +89,7 @@ export default function ZhouGongJieMengPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">周公解梦</h1>
-          <p className="text-moonly-text-muted text-xs">输入梦境关键词，探寻吉凶</p>
+          <p className="text-moonly-muted text-xs">输入梦境关键词，探寻吉凶</p>
         </div>
       </div>
 
@@ -101,7 +101,7 @@ export default function ZhouGongJieMengPage() {
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
             placeholder="输入梦境关键词，如：蛇、水、飞..."
-            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-[#c9a96e]/30"
+            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-moonly-muted focus:outline-none focus:border-[#c9a96e]/30"
           />
           <button
             onClick={handleSearch}
@@ -125,11 +125,11 @@ export default function ZhouGongJieMengPage() {
           <div className="space-y-4">
             <div>
               <h3 className="text-gold text-sm font-semibold mb-1">梦境解析</h3>
-              <p className="text-moonly-text-secondary text-sm leading-relaxed">{data.meaning}</p>
+              <p className="text-moonly-secondary text-sm leading-relaxed">{data.meaning}</p>
             </div>
             <div>
               <h3 className="text-gold text-sm font-semibold mb-1">建议</h3>
-              <p className="text-moonly-text-secondary text-sm leading-relaxed">{data.advice}</p>
+              <p className="text-moonly-secondary text-sm leading-relaxed">{data.advice}</p>
             </div>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function ZhouGongJieMengPage() {
       {result === null && query && !loading && (
         <div className="text-center py-10">
           <div className="text-4xl mb-3">🔍</div>
-          <p className="text-moonly-text-secondary text-sm">暂未收录此梦境，试试其他关键词</p>
+          <p className="text-moonly-secondary text-sm">暂未收录此梦境，试试其他关键词</p>
         </div>
       )}
 
@@ -150,7 +150,7 @@ export default function ZhouGongJieMengPage() {
             <button
               key={key}
               onClick={() => { setQuery(key); setResult(key); }}
-              className="px-3 py-1.5 rounded-full bg-white/5 text-moonly-text-secondary text-xs hover:bg-white/10 hover:text-white transition"
+              className="px-3 py-1.5 rounded-full bg-white/5 text-moonly-secondary text-xs hover:bg-white/10 hover:text-white transition"
             >
               {key}
             </button>
@@ -161,13 +161,13 @@ export default function ZhouGongJieMengPage() {
       {/* 历史 */}
       {history.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-moonly-text-muted text-xs mb-2">最近解梦</h3>
+          <h3 className="text-moonly-muted text-xs mb-2">最近解梦</h3>
           <div className="flex flex-wrap gap-2">
             {history.map((h, i) => (
               <button
                 key={i}
                 onClick={() => { setQuery(h); handleSearch(); }}
-                className="px-3 py-1.5 rounded-full bg-white/5 text-moonly-text-secondary text-xs hover:bg-white/10 transition"
+                className="px-3 py-1.5 rounded-full bg-white/5 text-moonly-secondary text-xs hover:bg-white/10 transition"
               >
                 {h}
               </button>

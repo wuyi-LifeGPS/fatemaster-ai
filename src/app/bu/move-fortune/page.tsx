@@ -59,7 +59,7 @@ export default function MoveFortunePage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">搬家运势</h1>
-          <p className="text-moonly-text-muted text-xs">乔迁新居，择日而行</p>
+          <p className="text-moonly-muted text-xs">乔迁新居，择日而行</p>
         </div>
       </div>
 
@@ -77,7 +77,7 @@ export default function MoveFortunePage() {
         <button
           onClick={analyze}
           disabled={!birthDate}
-          className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
         >
           查看搬家运势
         </button>
@@ -89,10 +89,10 @@ export default function MoveFortunePage() {
           <div className="moonly-card p-6 text-center">
             <div className="text-4xl mb-3">🏠</div>
             <div className="text-gold text-2xl font-bold mb-2">搬家运势</div>
-            <div className="text-moonly-text-secondary text-sm">{result.date}</div>
+            <div className="text-moonly-secondary text-sm">{result.date}</div>
             <div className={`text-2xl font-bold mt-4 ${result.color}`}>{result.level}</div>
             <div className="mt-4">
-              <div className="text-moonly-text-muted text-xs mb-1">乔迁指数</div>
+              <div className="text-moonly-muted text-xs mb-1">乔迁指数</div>
               <div className="w-full bg-white/5 rounded-full h-3">
                 <div
                   className={`h-3 rounded-full transition-all duration-1000 ${
@@ -107,19 +107,19 @@ export default function MoveFortunePage() {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="moonly-card p-4 text-center">
-              <div className="text-moonly-text-muted text-xs mb-1">吉利方向</div>
+              <div className="text-moonly-muted text-xs mb-1">吉利方向</div>
               <div className="text-2xl mb-1">{result.direction.icon}</div>
               <div className="text-gold text-lg font-bold">{result.direction.name}</div>
             </div>
             <div className="moonly-card p-4 text-center">
-              <div className="text-moonly-text-muted text-xs mb-1">推荐楼层</div>
+              <div className="text-moonly-muted text-xs mb-1">推荐楼层</div>
               <div className="text-gold text-lg font-bold">{result.floor.floor}</div>
             </div>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">💡 搬家建议</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed space-y-2">
+            <div className="text-moonly-secondary text-sm leading-relaxed space-y-2">
               <p>🧭 {result.direction.meaning}</p>
               <p>🏢 {result.floor.meaning}</p>
               <p>📅 今日{result.luck >= 85 ? '非常适合' : result.luck >= 70 ? '适合' : '谨慎'}搬家</p>

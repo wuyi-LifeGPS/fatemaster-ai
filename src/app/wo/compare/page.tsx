@@ -115,14 +115,14 @@ export default function BaziComparePage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">八字对比</h1>
-          <p className="text-moonly-text-muted text-xs">选择两个八字进行对比分析</p>
+          <p className="text-moonly-muted text-xs">选择两个八字进行对比分析</p>
         </div>
       </div>
 
       {/* 选择区域 */}
       <div className="space-y-4 mb-6">
         <div className="moonly-card p-4">
-          <label className="text-sm text-moonly-gold mb-2 block">第一个人</label>
+          <label className="text-sm text-[#c9a96e] mb-2 block">第一个人</label>
           <select
             value={selected1}
             onChange={(e) => { setSelected1(e.target.value); setResult(null) }}
@@ -138,7 +138,7 @@ export default function BaziComparePage() {
         </div>
 
         <div className="moonly-card p-4">
-          <label className="text-sm text-moonly-gold mb-2 block">第二个人</label>
+          <label className="text-sm text-[#c9a96e] mb-2 block">第二个人</label>
           <select
             value={selected2}
             onChange={(e) => { setSelected2(e.target.value); setResult(null) }}
@@ -173,12 +173,12 @@ export default function BaziComparePage() {
             }`}>
               {result.level}
             </div>
-            <p className="text-moonly-text-secondary text-sm mt-3">{COMPATIBILITY_DESC[result.level]}</p>
+            <p className="text-moonly-secondary text-sm mt-3">{COMPATIBILITY_DESC[result.level]}</p>
           </div>
 
           {/* 八字对比 */}
           <div className="moonly-card p-4">
-            <div className="text-xs text-moonly-gold mb-3">八字对比</div>
+            <div className="text-xs text-[#c9a96e] mb-3">八字对比</div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <div className="text-white font-medium mb-2">{p1.name}</div>
@@ -213,11 +213,11 @@ export default function BaziComparePage() {
 
           {/* 详细分析 */}
           <div className="moonly-card p-4">
-            <div className="text-xs text-moonly-gold mb-3">详细分析</div>
+            <div className="text-xs text-[#c9a96e] mb-3">详细分析</div>
             <div className="space-y-2">
               {result.details.map((detail, i) => (
-                <div key={i} className="flex items-start gap-2 text-sm text-moonly-text-secondary">
-                  <span className="text-moonly-gold mt-0.5">•</span>
+                <div key={i} className="flex items-start gap-2 text-sm text-moonly-secondary">
+                  <span className="text-[#c9a96e] mt-0.5">•</span>
                   <span>{detail}</span>
                 </div>
               ))}

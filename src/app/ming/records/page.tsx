@@ -181,8 +181,8 @@ export default function RecordsPage() {
             onClick={() => setActiveTab('profiles')}
             className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
               activeTab === 'profiles'
-                ? 'bg-moonly-gold text-moonly-bg font-semibold'
-                : 'text-moonly-text-secondary hover:text-white'
+                ? 'bg-[#c9a96e] text-moonly-bg font-semibold'
+                : 'text-moonly-secondary hover:text-white'
             }`}
           >
             八字档案 ({profiles.length})
@@ -191,8 +191,8 @@ export default function RecordsPage() {
             onClick={() => setActiveTab('history')}
             className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
               activeTab === 'history'
-                ? 'bg-moonly-gold text-moonly-bg font-semibold'
-                : 'text-moonly-text-secondary hover:text-white'
+                ? 'bg-[#c9a96e] text-moonly-bg font-semibold'
+                : 'text-moonly-secondary hover:text-white'
             }`}
           >
             查询记录 ({historyRecords.length})
@@ -201,8 +201,8 @@ export default function RecordsPage() {
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-10 h-10 rounded-full border-2 border-moonly-gold/30 border-t-moonly-gold animate-spin mb-4" />
-            <p className="text-moonly-text-secondary text-sm">加载中...</p>
+            <div className="w-10 h-10 rounded-full border-2 border-[#c9a96e]/30 border-t-[#c9a96e] animate-spin mb-4" />
+            <p className="text-moonly-secondary text-sm">加载中...</p>
           </div>
         ) : activeTab === 'profiles' ? (
           baziDisplays.length === 0 ? (
@@ -222,7 +222,7 @@ export default function RecordsPage() {
           historyRecords.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-4xl mb-3">📝</div>
-              <p className="text-moonly-text-secondary text-sm">暂无查询记录</p>
+              <p className="text-moonly-secondary text-sm">暂无查询记录</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -239,13 +239,13 @@ export default function RecordsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-white font-medium text-sm">{getHistoryTypeLabel(record.type)}</span>
-                        <span className="text-moonly-text-muted text-xs">{record.dateStr}</span>
+                        <span className="text-moonly-muted text-xs">{record.dateStr}</span>
                       </div>
-                      <div className="text-moonly-text-secondary text-sm mt-0.5 truncate">
+                      <div className="text-moonly-secondary text-sm mt-0.5 truncate">
                         {record.title || '未命名'}
                       </div>
                       {record.resultSummary && (
-                        <div className="text-moonly-text-muted text-xs mt-1 truncate">
+                        <div className="text-moonly-muted text-xs mt-1 truncate">
                           {record.resultSummary}
                         </div>
                       )}
@@ -288,8 +288,8 @@ function EmptyState() {
           <polyline points="10 9 9 9 8 9" />
         </svg>
       </div>
-      <p className="text-moonly-text-secondary text-sm mb-1">暂无八字记录</p>
-      <p className="text-moonly-text-muted text-xs">点击下方添加</p>
+      <p className="text-moonly-secondary text-sm mb-1">暂无八字记录</p>
+      <p className="text-moonly-muted text-xs">点击下方添加</p>
     </div>
   )
 }

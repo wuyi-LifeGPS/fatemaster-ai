@@ -163,7 +163,7 @@ export default function DailyPage() {
         {/* 今天日期 */}
         {todayGanZhi && (
           <div className="bg-white/5 border border-white/10 text-white rounded-xl p-6 mb-6 text-center">
-            <div className="text-sm text-moonly-text-muted mb-2">
+            <div className="text-sm text-moonly-muted mb-2">
               {todayGanZhi.dateStr} · 星期{todayGanZhi.weekday}
             </div>
             <div className="text-3xl font-bold font-serif mb-1">
@@ -200,7 +200,7 @@ export default function DailyPage() {
               <div className="mt-6">
                 <button
                   onClick={() => setShowHistory(!showHistory)}
-                  className="flex items-center gap-2 text-sm text-moonly-text-muted hover:text-moonly-gold mb-3"
+                  className="flex items-center gap-2 text-sm text-moonly-muted hover:text-[#c9a96e] mb-3"
                 >
                   <span>查询历史</span>
                   <span>查询历史（{history.length} 条）</span>
@@ -217,9 +217,9 @@ export default function DailyPage() {
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="font-medium text-sm text-white">{record.title}</div>
-                            <div className="text-xs text-moonly-text-muted mt-0.5">{record.resultSummary}</div>
+                            <div className="text-xs text-moonly-muted mt-0.5">{record.resultSummary}</div>
                           </div>
-                          <div className="text-xs text-moonly-text-muted whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
+                          <div className="text-xs text-moonly-muted whitespace-nowrap ml-2">{formatHistoryTime(record.timestamp)}</div>
                         </div>
                       </div>
                     ))}
@@ -244,7 +244,7 @@ export default function DailyPage() {
             {/* 综合评分 */}
             <div className="bg-white/5 border border-[#c9a96e]/20 rounded-xl p-6">
               <div className="text-center">
-                <div className="text-sm text-moonly-text-muted mb-2">综合运势</div>
+                <div className="text-sm text-moonly-muted mb-2">综合运势</div>
                 <div className="text-5xl font-bold text-gold mb-2">{result.scores.overall}</div>
                 {renderStars(result.scores.overall)}
                 <div className="text-lg font-medium text-white mt-3">{result.summary}</div>
@@ -262,7 +262,7 @@ export default function DailyPage() {
                 <div key={item.key} className="moonly-card p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <span>{item.icon}</span>
-                    <span className="text-sm text-moonly-text-muted">{item.label}</span>
+                    <span className="text-sm text-moonly-muted">{item.label}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xl font-bold text-white">
@@ -277,8 +277,8 @@ export default function DailyPage() {
             {/* 运势描述 */}
             <div className="moonly-card p-6">
               <h3 className="font-bold text-lg mb-3 font-serif">今日运势解读</h3>
-              <p className="text-moonly-text-secondary leading-relaxed">{result.description}</p>
-              <div className="mt-4 text-sm text-moonly-text-muted">
+              <p className="text-moonly-secondary leading-relaxed">{result.description}</p>
+              <div className="mt-4 text-sm text-moonly-muted">
                 今日日干十神：<span className="text-gold font-medium">{result.dayShiShen.gan}</span>
                 {' · '}
                 日支本气：<span className="text-gold font-medium">{result.dayShiShen.zhiBenQi}</span>
@@ -326,7 +326,7 @@ export default function DailyPage() {
                       <span key={i} className="text-xs border-green-500/20 bg-green-500/10 text-green-300 px-2 py-1 rounded">
                         {h}
                       </span>
-                    )) : <span className="text-xs text-moonly-text-muted">今日无特别吉时</span>}
+                    )) : <span className="text-xs text-moonly-muted">今日无特别吉时</span>}
                   </div>
                 </div>
                 <div>
@@ -336,7 +336,7 @@ export default function DailyPage() {
                       <span key={i} className="text-xs border-red-500/20 bg-red-500/10 text-red-300 px-2 py-1 rounded">
                         {h}
                       </span>
-                    )) : <span className="text-xs text-moonly-text-muted">今日无特别凶时</span>}
+                    )) : <span className="text-xs text-moonly-muted">今日无特别凶时</span>}
                   </div>
                 </div>
               </div>
@@ -351,7 +351,7 @@ export default function DailyPage() {
                     色
                   </div>
                   <div>
-                    <div className="text-sm text-moonly-text-muted">开运颜色</div>
+                    <div className="text-sm text-moonly-muted">开运颜色</div>
                     <div className="font-medium text-white">{result.luckyColor}</div>
                   </div>
                 </div>
@@ -360,7 +360,7 @@ export default function DailyPage() {
                     向
                   </div>
                   <div>
-                    <div className="text-sm text-moonly-text-muted">开运方位</div>
+                    <div className="text-sm text-moonly-muted">开运方位</div>
                     <div className="font-medium text-white">{result.luckyDirection}</div>
                   </div>
                 </div>

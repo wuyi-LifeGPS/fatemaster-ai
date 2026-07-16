@@ -50,7 +50,7 @@ export default function ExamFortunePage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">考试运势</h1>
-          <p className="text-moonly-text-muted text-xs">逢考必过，金榜题名</p>
+          <p className="text-moonly-muted text-xs">逢考必过，金榜题名</p>
         </div>
       </div>
 
@@ -63,7 +63,7 @@ export default function ExamFortunePage() {
                 onClick={() => setExamType(exam.type)}
                 className={`moonly-card p-4 text-center transition ${
                   examType === exam.type
-                    ? 'border-moonly-gold/50 bg-moonly-gold/5'
+                    ? 'border-[#c9a96e]/50 bg-[#c9a96e]/5'
                     : 'hover:bg-white/5'
                 }`}
               >
@@ -86,7 +86,7 @@ export default function ExamFortunePage() {
           <button
             onClick={analyze}
             disabled={!examType || !birthDate}
-            className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
           >
             查看考试运势
           </button>
@@ -98,7 +98,7 @@ export default function ExamFortunePage() {
             <div className="text-gold text-2xl font-bold mb-2">{result.type}运势</div>
             <div className={`text-2xl font-bold mt-4 ${result.color}`}>{result.level}</div>
             <div className="mt-4">
-              <div className="text-moonly-text-muted text-xs mb-1">考试指数</div>
+              <div className="text-moonly-muted text-xs mb-1">考试指数</div>
               <div className="w-full bg-white/5 rounded-full h-3">
                 <div
                   className={`h-3 rounded-full transition-all duration-1000 ${
@@ -115,7 +115,7 @@ export default function ExamFortunePage() {
             <h3 className="text-gold text-sm font-semibold mb-3">💡 考试建议</h3>
             <div className="space-y-2">
               {result.tips.map((tip: string, i: number) => (
-                <div key={i} className="flex items-center gap-2 text-moonly-text-secondary text-sm">
+                <div key={i} className="flex items-center gap-2 text-moonly-secondary text-sm">
                   <span className="text-gold">{i + 1}.</span>
                   {tip}
                 </div>

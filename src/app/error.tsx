@@ -17,11 +17,11 @@ export default function Error({
     <div className="min-h-screen moonly-bg moonly-content flex flex-col items-center justify-center px-4 text-center">
       <div className="text-6xl mb-4">💫</div>
       <h1 className="text-gold-gradient text-2xl font-bold mb-2">星象扰动</h1>
-      <p className="text-moonly-text-secondary text-sm mb-2 max-w-xs">
+      <p className="text-moonly-secondary text-sm mb-2 max-w-xs">
         似乎遇到了一些宇宙能量波动
       </p>
       {error.digest && (
-        <p className="text-moonly-text-muted text-xs mb-8 font-mono">{error.digest}</p>
+        <p className="text-moonly-muted text-xs mb-8 font-mono">{error.digest}</p>
       )}
       <button
         onClick={reset}

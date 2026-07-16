@@ -58,7 +58,7 @@ export default function BirthChartPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">生辰八字</h1>
-          <p className="text-moonly-text-muted text-xs">八字排盘，详细分析</p>
+          <p className="text-moonly-muted text-xs">八字排盘，详细分析</p>
         </div>
       </div>
 
@@ -80,7 +80,7 @@ export default function BirthChartPage() {
               onClick={() => setGender('男')}
               className={`flex-1 py-3 rounded-xl font-medium transition ${
                 gender === '男'
-                  ? 'bg-moonly-gold/10 text-moonly-gold border border-moonly-gold/30'
+                  ? 'bg-[#c9a96e]/10 text-[#c9a96e] border border-[#c9a96e]/30'
                   : 'bg-white/5 text-white border border-white/10'
               }`}
             >
@@ -90,7 +90,7 @@ export default function BirthChartPage() {
               onClick={() => setGender('女')}
               className={`flex-1 py-3 rounded-xl font-medium transition ${
                 gender === '女'
-                  ? 'bg-moonly-gold/10 text-moonly-gold border border-moonly-gold/30'
+                  ? 'bg-[#c9a96e]/10 text-[#c9a96e] border border-[#c9a96e]/30'
                   : 'bg-white/5 text-white border border-white/10'
               }`}
             >
@@ -101,7 +101,7 @@ export default function BirthChartPage() {
         <button
           onClick={analyze}
           disabled={!birthDate}
-          className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
         >
           排盘分析
         </button>
@@ -113,36 +113,36 @@ export default function BirthChartPage() {
           <div className="moonly-card p-6 text-center">
             <div className="text-4xl mb-3">☯️</div>
             <div className="text-gold text-2xl font-bold mb-2">八字排盘</div>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.year}年 {result.month}月 {result.day}日
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
             <div className="moonly-card p-4 text-center">
-              <div className="text-moonly-text-muted text-xs mb-1">年柱</div>
+              <div className="text-moonly-muted text-xs mb-1">年柱</div>
               <div className="text-gold text-xl font-bold">{result.year}</div>
             </div>
             <div className="moonly-card p-4 text-center">
-              <div className="text-moonly-text-muted text-xs mb-1">月柱</div>
+              <div className="text-moonly-muted text-xs mb-1">月柱</div>
               <div className="text-gold text-xl font-bold">{result.month}</div>
             </div>
             <div className="moonly-card p-4 text-center">
-              <div className="text-moonly-text-muted text-xs mb-1">日柱</div>
+              <div className="text-moonly-muted text-xs mb-1">日柱</div>
               <div className="text-gold text-xl font-bold">{result.day}</div>
             </div>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">五行分析</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               日主属{result.wuxing}，五行{result.wuxing}主{result.wuxing === '木' ? '仁' : result.wuxing === '火' ? '礼' : result.wuxing === '土' ? '信' : result.wuxing === '金' ? '义' : '智'}。
             </div>
           </div>
 
           <div className="moonly-card p-4">
             <h3 className="text-gold text-sm font-semibold mb-3">性格分析</h3>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.analysis}
             </div>
           </div>

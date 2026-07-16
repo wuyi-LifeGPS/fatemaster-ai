@@ -57,23 +57,23 @@ export default function WoPage() {
 
       {/* 用户信息卡片 */}
       <div className="moonly-card p-5 text-center mb-6">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#c9a96e]/30 to-moonly-purple/20 border-2 border-moonly-gold/30 mx-auto mb-3 flex items-center justify-center text-3xl">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#c9a96e]/30 to-moonly-purple/20 border-2 border-[#c9a96e]/30 mx-auto mb-3 flex items-center justify-center text-3xl">
           👤
         </div>
         <div className="text-white font-semibold">LifeGPS 用户</div>
-        <div className="text-moonly-text-muted text-xs mt-1">探索命理，认识自己</div>
+        <div className="text-moonly-muted text-xs mt-1">探索命理，认识自己</div>
       </div>
 
       {/* 今日运势快捷卡片 */}
       {firstProfile && (
         <Link href="/ming?tab=liuri" className="block mb-6">
-          <div className="moonly-card p-4 border border-moonly-gold/20 hover:bg-white/5 transition">
+          <div className="moonly-card p-4 border border-[#c9a96e]/20 hover:bg-white/5 transition">
             <div className="flex items-center justify-between mb-3">
               <span className="text-gold text-sm font-semibold">今日运势</span>
-              <span className="text-moonly-text-muted text-xs">{today.dateStr}</span>
+              <span className="text-moonly-muted text-xs">{today.dateStr}</span>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-moonly-gold/10 border border-moonly-gold/20 flex flex-col items-center justify-center">
+              <div className="w-14 h-14 rounded-xl bg-[#c9a96e]/10 border border-[#c9a96e]/20 flex flex-col items-center justify-center">
                 <span className="text-lg font-bold text-gold">{today.day.gan}</span>
                 <span className="text-xs text-white/50">{today.day.zhi}</span>
               </div>
@@ -83,7 +83,7 @@ export default function WoPage() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   {['事业', '财运', '人际'].map((label) => (
-                    <span key={label} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-moonly-text-muted">
+                    <span key={label} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-moonly-muted">
                       {label}
                     </span>
                   ))}
@@ -101,19 +101,19 @@ export default function WoPage() {
       <div className="grid grid-cols-2 gap-3 mb-6">
         <div className="moonly-card p-3 text-center">
           <div className="text-xl font-bold text-gold">{profileCount}</div>
-          <div className="text-moonly-text-muted text-xs">八字档案</div>
+          <div className="text-moonly-muted text-xs">八字档案</div>
         </div>
         <div className="moonly-card p-3 text-center">
           <div className="text-xl font-bold text-gold">{historyCount}</div>
-          <div className="text-moonly-text-muted text-xs">查询记录</div>
+          <div className="text-moonly-muted text-xs">查询记录</div>
         </div>
         <div className="moonly-card p-3 text-center">
           <div className="text-xl font-bold text-gold">{meditationMinutes}</div>
-          <div className="text-moonly-text-muted text-xs">冥想分钟</div>
+          <div className="text-moonly-muted text-xs">冥想分钟</div>
         </div>
         <div className="moonly-card p-3 text-center">
           <div className="text-xl font-bold text-gold">{booksRead}</div>
-          <div className="text-moonly-text-muted text-xs">已读书籍</div>
+          <div className="text-moonly-muted text-xs">已读书籍</div>
         </div>
       </div>
 
@@ -128,11 +128,11 @@ export default function WoPage() {
             <span className="text-lg">{item.icon}</span>
             <span className="flex-1 text-white text-sm">{item.label}</span>
             {item.badge ? (
-              <span className="text-xs bg-moonly-gold/20 text-moonly-gold px-2 py-0.5 rounded-full">
+              <span className="text-xs bg-[#c9a96e]/20 text-[#c9a96e] px-2 py-0.5 rounded-full">
                 {item.badge}
               </span>
             ) : null}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-text-muted">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-muted">
               <path d="M9 18l6-6-6-6" />
             </svg>
           </Link>
@@ -141,8 +141,8 @@ export default function WoPage() {
 
       {/* 关于 */}
       <div className="mt-8 text-center">
-        <div className="text-moonly-text-muted text-xs">LifeGPS · 人生导航</div>
-        <div className="text-moonly-text-muted text-[10px] mt-1">融合现代AI与传统命理智慧</div>
+        <div className="text-moonly-muted text-xs">LifeGPS · 人生导航</div>
+        <div className="text-moonly-muted text-[10px] mt-1">融合现代AI与传统命理智慧</div>
       </div>
     </div>
   )

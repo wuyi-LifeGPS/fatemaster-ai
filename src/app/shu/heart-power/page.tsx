@@ -69,33 +69,33 @@ export default function HeartPowerPage() {
       <div className="sticky top-0 z-30 bg-[#1a1428]/95 backdrop-blur-sm border-b border-white/5 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
           <Link href="/shu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-text-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-secondary">
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
           </Link>
           <div>
             <div className="text-white font-medium text-sm">心之力</div>
-            <div className="text-moonly-text-muted text-xs">毛泽东 · 第 {currentChapter + 1} / {totalChapters} 章</div>
+            <div className="text-moonly-muted text-xs">毛泽东 · 第 {currentChapter + 1} / {totalChapters} 章</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {/* 字体大小 */}
           <button
             onClick={() => setFontSize(s => Math.max(14, s - 2))}
-            className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-xs text-moonly-text-secondary hover:bg-white/10 transition"
+            className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-xs text-moonly-secondary hover:bg-white/10 transition"
           >
             A-
           </button>
           <button
             onClick={() => setFontSize(s => Math.min(24, s + 2))}
-            className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-sm text-moonly-text-secondary hover:bg-white/10 transition"
+            className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-sm text-moonly-secondary hover:bg-white/10 transition"
           >
             A+
           </button>
           {/* 目录 */}
           <button
             onClick={() => setShowToc(!showToc)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition ${showToc ? 'bg-moonly-gold/20 text-moonly-gold' : 'bg-white/5 text-moonly-text-secondary hover:bg-white/10'}`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition ${showToc ? 'bg-[#c9a96e]/20 text-[#c9a96e]' : 'bg-white/5 text-moonly-secondary hover:bg-white/10'}`}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M4 6h16M4 12h16M4 18h7" />
@@ -104,7 +104,7 @@ export default function HeartPowerPage() {
           {/* 收藏 */}
           <button
             onClick={saveBookmark}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition ${saved ? 'bg-moonly-gold/20 text-moonly-gold' : 'bg-white/5 text-moonly-text-secondary hover:bg-white/10'}`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition ${saved ? 'bg-[#c9a96e]/20 text-[#c9a96e]' : 'bg-white/5 text-moonly-secondary hover:bg-white/10'}`}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
@@ -125,10 +125,10 @@ export default function HeartPowerPage() {
                   key={i}
                   onClick={() => goToChapter(i)}
                   className={`block text-sm w-full text-left py-2 px-3 rounded-lg transition ${
-                    currentChapter === i ? 'text-moonly-gold bg-moonly-gold/10' : 'text-moonly-text-secondary hover:text-white hover:bg-white/5'
+                    currentChapter === i ? 'text-[#c9a96e] bg-[#c9a96e]/10' : 'text-moonly-secondary hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <span className="text-moonly-text-muted mr-2">{i + 1}.</span>
+                  <span className="text-moonly-muted mr-2">{i + 1}.</span>
                   {ch.title}
                 </button>
               ))}
@@ -139,7 +139,7 @@ export default function HeartPowerPage() {
 
       {/* 阅读进度条 */}
       <div className="w-full h-0.5 bg-white/10 flex-shrink-0">
-        <div className="h-full bg-moonly-gold transition-all duration-300" style={{ width: `${chapterProgress}%` }} />
+        <div className="h-full bg-[#c9a96e] transition-all duration-300" style={{ width: `${chapterProgress}%` }} />
       </div>
 
       {/* 正文区域 */}
@@ -149,9 +149,9 @@ export default function HeartPowerPage() {
       >
         {/* 章节标题 */}
         <div className="text-center mb-8">
-          <div className="text-moonly-gold text-xs mb-2 tracking-widest">第 {currentChapter + 1} 章</div>
+          <div className="text-[#c9a96e] text-xs mb-2 tracking-widest">第 {currentChapter + 1} 章</div>
           <h1 className="text-white font-bold text-lg">{CHAPTERS[currentChapter]?.title}</h1>
-          <div className="text-moonly-text-muted text-xs mt-1">心之力 · 毛泽东</div>
+          <div className="text-moonly-muted text-xs mt-1">心之力 · 毛泽东</div>
         </div>
 
         {/* 正文 */}
@@ -165,12 +165,12 @@ export default function HeartPowerPage() {
 
         {/* 章节底部提示 */}
         <div className="mt-10 text-center">
-          <div className="text-moonly-text-muted text-xs">
+          <div className="text-moonly-muted text-xs">
             — 第 {currentChapter + 1} / {totalChapters} 章 · {CHAPTERS[currentChapter]?.title} —
           </div>
         </div>
 
-        <div className="mt-8 text-center text-moonly-text-muted text-xs pb-8">
+        <div className="mt-8 text-center text-moonly-muted text-xs pb-8">
           已读 {Math.round(chapterProgress)}%
         </div>
       </div>
@@ -181,17 +181,17 @@ export default function HeartPowerPage() {
           <button
             onClick={() => goToChapter(currentChapter - 1)}
             disabled={currentChapter === 0}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-moonly-gold/20"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-[#c9a96e] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-[#c9a96e]/20"
           >
             ← 上一章
           </button>
-          <span className="text-sm text-moonly-text-muted">
+          <span className="text-sm text-moonly-muted">
             {CHAPTERS[currentChapter]?.title}
           </span>
           <button
             onClick={() => goToChapter(currentChapter + 1)}
             disabled={currentChapter === totalChapters - 1}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-moonly-gold/20"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-[#c9a96e] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-[#c9a96e]/20"
           >
             下一章 →
           </button>

@@ -140,15 +140,15 @@ export default function ShuPage() {
   return (
     <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       <h1 className="text-gold-gradient text-xl font-bold mb-2">书</h1>
-      <p className="text-moonly-text-secondary text-sm mb-6">经典智慧，修身养性</p>
+      <p className="text-moonly-secondary text-sm mb-6">经典智慧，修身养性</p>
 
       {/* 每日一句 */}
-      <div className="moonly-card p-4 mb-6 border border-moonly-gold/20">
-        <div className="text-[10px] text-moonly-gold mb-2 tracking-wider">每日一句</div>
+      <div className="moonly-card p-4 mb-6 border border-[#c9a96e]/20">
+        <div className="text-[10px] text-[#c9a96e] mb-2 tracking-wider">每日一句</div>
         <div className="text-white text-base leading-relaxed mb-2">
           「{dailyQuote.text}」
         </div>
-        <div className="text-moonly-text-muted text-xs text-right">
+        <div className="text-moonly-muted text-xs text-right">
           — {dailyQuote.source}
         </div>
       </div>
@@ -159,9 +159,9 @@ export default function ShuPage() {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="搜索书名或作者..."
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-[#c9a96e]/30"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-sm text-white placeholder:text-moonly-muted focus:outline-none focus:border-[#c9a96e]/30"
         />
-        <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-moonly-text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-moonly-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="11" cy="11" r="8" />
           <path d="M21 21l-4.35-4.35" />
         </svg>
@@ -175,7 +175,7 @@ export default function ShuPage() {
             onClick={() => setFilter(f)}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition ${
               filter === f
-                ? 'bg-moonly-gold text-moonly-bg font-semibold'
+                ? 'bg-[#c9a96e] text-moonly-bg font-semibold'
                 : 'bg-white/5 text-white hover:bg-white/10'
             }`}
           >
@@ -192,32 +192,32 @@ export default function ShuPage() {
             href={`/shu/detail?book=${encodeURIComponent(book.title)}`}
             className="moonly-card p-4 flex items-start gap-3 group hover:bg-white/5 transition block"
           >
-            <div className="w-12 h-14 rounded-lg bg-gradient-to-br from-[#c9a96e]/10 to-moonly-purple/5 border border-moonly-gold/10 flex items-center justify-center text-2xl flex-shrink-0">
+            <div className="w-12 h-14 rounded-lg bg-gradient-to-br from-[#c9a96e]/10 to-moonly-purple/5 border border-[#c9a96e]/10 flex items-center justify-center text-2xl flex-shrink-0">
               {book.icon}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-white font-medium text-sm">{book.title}</span>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded ${TAG_COLORS[book.tag] || 'bg-white/10 text-moonly-text-muted'}`}>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded ${TAG_COLORS[book.tag] || 'bg-white/10 text-moonly-muted'}`}>
                   {book.tag}
                 </span>
               </div>
-              <div className="text-moonly-text-muted text-xs mb-1">{book.author} · {book.chapters}章 · {book.readTime}</div>
-              <div className="text-moonly-text-secondary text-xs leading-relaxed">{book.desc}</div>
+              <div className="text-moonly-muted text-xs mb-1">{book.author} · {book.chapters}章 · {book.readTime}</div>
+              <div className="text-moonly-secondary text-xs leading-relaxed">{book.desc}</div>
               {readingProgress[book.title] !== undefined && (
                 <div className="mt-2">
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="text-moonly-gold">阅读进度</span>
-                    <span className="text-moonly-text-muted">{readingProgress[book.title]}%</span>
+                    <span className="text-[#c9a96e]">阅读进度</span>
+                    <span className="text-moonly-muted">{readingProgress[book.title]}%</span>
                   </div>
                   <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-moonly-gold rounded-full" style={{ width: `${readingProgress[book.title]}%` }} />
+                    <div className="h-full bg-[#c9a96e] rounded-full" style={{ width: `${readingProgress[book.title]}%` }} />
                   </div>
                 </div>
               )}
             </div>
-            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-moonly-gold/10 transition flex-shrink-0">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-text-muted group-hover:text-moonly-gold">
+            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#c9a96e]/10 transition flex-shrink-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-moonly-muted group-hover:text-[#c9a96e]">
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </div>
@@ -228,7 +228,7 @@ export default function ShuPage() {
       {filtered.length === 0 && (
         <div className="text-center py-20">
           <div className="text-4xl mb-3">📚</div>
-          <p className="text-moonly-text-secondary text-sm">未找到相关书籍</p>
+          <p className="text-moonly-secondary text-sm">未找到相关书籍</p>
         </div>
       )}
     </div>

@@ -327,7 +327,7 @@ export default function BuPage() {
   return (
     <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       <h1 className="text-gold-gradient text-xl font-bold mb-2">卜</h1>
-      <p className="text-moonly-text-secondary text-sm mb-6">选择占卜工具，探寻心中答案</p>
+      <p className="text-moonly-secondary text-sm mb-6">选择占卜工具，探寻心中答案</p>
 
       {/* 分类筛选 */}
       <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-6">
@@ -337,7 +337,7 @@ export default function BuPage() {
             onClick={() => setActiveCategory(cat)}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition ${
               activeCategory === cat
-                ? 'bg-moonly-gold text-moonly-bg font-semibold'
+                ? 'bg-[#c9a96e] text-[#1a1428] font-semibold'
                 : 'bg-white/5 text-white hover:bg-white/10'
             }`}
           >
@@ -359,7 +359,7 @@ export default function BuPage() {
             </div>
             <div>
               <div className="text-white font-medium text-sm">{tool.label}</div>
-              <div className="text-moonly-text-muted text-xs mt-0.5">{tool.desc}</div>
+              <div className="text-moonly-muted text-xs mt-0.5">{tool.desc}</div>
             </div>
           </Link>
         ))}
@@ -367,16 +367,16 @@ export default function BuPage() {
 
       {/* AI 命理师快捷入口 */}
       <div className="mt-8 moonly-card p-4 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full overflow-hidden border border-moonly-gold/20 flex-shrink-0">
+        <div className="w-10 h-10 rounded-full overflow-hidden border border-[#c9a96e]/20 flex-shrink-0">
           <img src="/images/ai-avatar-new.png" alt="AI" className="w-full h-full object-cover" />
         </div>
         <div className="flex-1">
           <div className="text-white font-medium text-sm">AI 命理师</div>
-          <div className="text-moonly-text-muted text-xs">有任何命理问题，可以直接问 AI</div>
+          <div className="text-moonly-muted text-xs">有任何命理问题，可以直接问 AI</div>
         </div>
         <Link
           href="/bu/chat"
-          className="px-3 py-1.5 rounded-full bg-moonly-gold/10 text-gold text-xs font-medium border border-moonly-gold/20 hover:bg-moonly-gold/20 transition"
+          className="px-3 py-1.5 rounded-full bg-[#c9a96e]/10 text-gold text-xs font-medium border border-[#c9a96e]/20 hover:bg-[#c9a96e]/20 transition"
         >
           咨询
         </Link>

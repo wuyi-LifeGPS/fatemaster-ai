@@ -139,7 +139,7 @@ export default function LiuyueTab({ dayMaster }: { dayMaster?: string }) {
           </button>
         </div>
         {selectedYear === currentYear && (
-          <p className="text-moonly-text-muted text-xs text-center mt-1">当前年份</p>
+          <p className="text-moonly-muted text-xs text-center mt-1">当前年份</p>
         )}
       </div>
 
@@ -154,13 +154,13 @@ export default function LiuyueTab({ dayMaster }: { dayMaster?: string }) {
                 key={m.name}
                 className={`p-3 rounded-xl transition ${
                   m.isCurrent 
-                    ? 'bg-moonly-gold/10 border border-moonly-gold/30' 
+                    ? 'bg-[#c9a96e]/10 border border-[#c9a96e]/30' 
                     : 'bg-white/5'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-white/60 text-xs">{m.name}</span>
-                  {m.isCurrent && <span className="text-[10px] bg-moonly-gold/20 text-gold px-1 py-0.5 rounded">本月</span>}
+                  {m.isCurrent && <span className="text-[10px] bg-[#c9a96e]/20 text-gold px-1 py-0.5 rounded">本月</span>}
                 </div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xl font-bold" style={{ color: WUXING_COLOR[getWuXing(m.gan)] || '#fff' }}>{m.gan}</span>

@@ -46,7 +46,7 @@ export default function HomePage() {
       {/* 顶部问候 */}
       <div className="mb-8">
         <h1 className="text-gold-gradient text-2xl font-bold mb-1">{greeting}，欢迎来到 LifeGPS</h1>
-        <p className="text-moonly-text-secondary text-base">探索命理智慧，指引人生方向</p>
+        <p className="text-moonly-secondary text-base">探索命理智慧，指引人生方向</p>
       </div>
 
       {/* 核心功能入口 */}
@@ -59,7 +59,7 @@ export default function HomePage() {
           >
             <div className="text-3xl mb-3">{feature.icon}</div>
             <div className="text-white font-semibold text-lg mb-1">{feature.title}</div>
-            <div className="text-moonly-text-muted text-sm">{feature.desc}</div>
+            <div className="text-moonly-muted text-sm">{feature.desc}</div>
           </Link>
         ))}
       </div>
@@ -83,16 +83,16 @@ export default function HomePage() {
 
       {/* 添加八字引导 */}
       {!hasProfile && (
-        <div className="moonly-card p-6 text-center border border-moonly-gold/20">
+        <div className="moonly-card p-6 text-center border border-[#c9a96e]/20">
           <div className="text-4xl mb-3">🌟</div>
           <h3 className="text-white font-semibold text-lg mb-2">开启您的命理之旅</h3>
-          <p className="text-moonly-text-secondary text-sm mb-4">
+          <p className="text-moonly-secondary text-sm mb-4">
             添加您的出生信息，解锁八字命盘、大运流年、流月流日等完整命理分析
           </p>
           <Link href="/bazi" className="btn-gold px-8 py-3 text-base font-semibold inline-block">
             添加我的八字
           </Link>
-          <p className="text-moonly-text-muted text-sm mt-3">支持保存多个档案：自己、家人、朋友</p>
+          <p className="text-moonly-muted text-sm mt-3">支持保存多个档案：自己、家人、朋友</p>
         </div>
       )}
 
@@ -101,7 +101,7 @@ export default function HomePage() {
         <div className="moonly-card p-6 text-center">
           <div className="text-4xl mb-3">✨</div>
           <h3 className="text-white font-semibold text-lg mb-2">继续探索</h3>
-          <p className="text-moonly-text-secondary text-sm mb-4">
+          <p className="text-moonly-secondary text-sm mb-4">
             您已添加八字档案，可以查看命盘、运势分析、合婚对比等功能
           </p>
           <Link href="/ming" className="btn-gold px-8 py-3 text-base font-semibold inline-block">

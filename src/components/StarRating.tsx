@@ -37,10 +37,10 @@ export function StarRating({ score, size = 'md', showLabel = true }: StarRatingP
     <div className="flex items-center gap-1">
       <div className={`flex items-center ${gap}`}>
         {Array.from({ length: fullStars }).map((_, i) => (
-          <span key={`full-${i}`} className={`${star} text-amber-500`}>★</span>
+          <span key={`full-${i}`} className={`${star} text-gold`}>★</span>
         ))}
         {Array.from({ length: emptyStars }).map((_, i) => (
-          <span key={`empty-${i}`} className={`${star} text-gray-300`}>★</span>
+          <span key={`empty-${i}`} className={`${star} text-white/15`}>★</span>
         ))}
       </div>
       {showLabel && (

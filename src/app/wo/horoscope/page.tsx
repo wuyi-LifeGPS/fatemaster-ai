@@ -81,7 +81,7 @@ export default function HoroscopePage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">星座运势</h1>
-          <p className="text-moonly-text-muted text-xs">每日星座运程</p>
+          <p className="text-moonly-muted text-xs">每日星座运程</p>
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export default function HoroscopePage() {
             >
               <div className="text-2xl mb-1">{sign.icon}</div>
               <div className="text-white text-sm font-medium">{sign.name}</div>
-              <div className="text-moonly-text-muted text-xs">{sign.date}</div>
+              <div className="text-moonly-muted text-xs">{sign.date}</div>
             </button>
           ))}
         </div>
@@ -108,7 +108,7 @@ export default function HoroscopePage() {
             <div className="text-white text-lg font-bold">{selectedSign}</div>
             <button
               onClick={() => setSelectedSign('')}
-              className="text-moonly-gold text-xs mt-2 hover:underline"
+              className="text-[#c9a96e] text-xs mt-2 hover:underline"
             >
               切换星座
             </button>
@@ -119,26 +119,26 @@ export default function HoroscopePage() {
               {/* 总运 */}
               <div className="moonly-card p-4">
                 <h3 className="text-gold text-sm font-semibold mb-2">✨ 整体运势</h3>
-                <p className="text-moonly-text-secondary text-sm leading-relaxed">{horoscope.overview}</p>
+                <p className="text-moonly-secondary text-sm leading-relaxed">{horoscope.overview}</p>
               </div>
 
               {/* 分项运势 */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="moonly-card p-4">
                   <h4 className="text-pink-400 text-sm font-semibold mb-2">💕 感情</h4>
-                  <p className="text-moonly-text-secondary text-xs leading-relaxed">{horoscope.love}</p>
+                  <p className="text-moonly-secondary text-xs leading-relaxed">{horoscope.love}</p>
                 </div>
                 <div className="moonly-card p-4">
                   <h4 className="text-blue-400 text-sm font-semibold mb-2">💼 事业</h4>
-                  <p className="text-moonly-text-secondary text-xs leading-relaxed">{horoscope.career}</p>
+                  <p className="text-moonly-secondary text-xs leading-relaxed">{horoscope.career}</p>
                 </div>
                 <div className="moonly-card p-4">
                   <h4 className="text-yellow-400 text-sm font-semibold mb-2">💰 财运</h4>
-                  <p className="text-moonly-text-secondary text-xs leading-relaxed">{horoscope.wealth}</p>
+                  <p className="text-moonly-secondary text-xs leading-relaxed">{horoscope.wealth}</p>
                 </div>
                 <div className="moonly-card p-4">
                   <h4 className="text-green-400 text-sm font-semibold mb-2">🏃 健康</h4>
-                  <p className="text-moonly-text-secondary text-xs leading-relaxed">{horoscope.health}</p>
+                  <p className="text-moonly-secondary text-xs leading-relaxed">{horoscope.health}</p>
                 </div>
               </div>
 
@@ -146,12 +146,12 @@ export default function HoroscopePage() {
               <div className="moonly-card p-4">
                 <div className="flex items-center justify-around">
                   <div className="text-center">
-                    <div className="text-moonly-text-muted text-xs mb-1">幸运数字</div>
+                    <div className="text-moonly-muted text-xs mb-1">幸运数字</div>
                     <div className="text-gold text-xl font-bold">{horoscope.luckyNumber}</div>
                   </div>
                   <div className="w-px h-8 bg-white/10" />
                   <div className="text-center">
-                    <div className="text-moonly-text-muted text-xs mb-1">幸运颜色</div>
+                    <div className="text-moonly-muted text-xs mb-1">幸运颜色</div>
                     <div className="text-gold text-xl font-bold">{horoscope.luckyColor}</div>
                   </div>
                 </div>

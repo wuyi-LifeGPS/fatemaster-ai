@@ -307,12 +307,12 @@ function BookDetailContent() {
           <Link href="/shu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition text-white">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
           </Link>
-          <h1 className="text-moonly-gold text-xl font-bold">书籍详情</h1>
+          <h1 className="text-[#c9a96e] text-xl font-bold">书籍详情</h1>
         </div>
         <div className="text-center py-20">
           <div className="text-4xl mb-3">📚</div>
-          <p className="text-moonly-text-secondary text-sm">未找到该书籍</p>
-          <Link href="/shu" className="mt-4 inline-block px-6 py-2 rounded-full bg-moonly-gold/10 text-moonly-gold text-sm hover:bg-moonly-gold/20 transition border border-moonly-gold/20">
+          <p className="text-moonly-secondary text-sm">未找到该书籍</p>
+          <Link href="/shu" className="mt-4 inline-block px-6 py-2 rounded-full bg-[#c9a96e]/10 text-[#c9a96e] text-sm hover:bg-[#c9a96e]/20 transition border border-[#c9a96e]/20">
             返回书库
           </Link>
         </div>
@@ -337,13 +337,13 @@ function BookDetailContent() {
             </Link>
             <div>
               <h1 className="text-white font-bold text-lg">{book.title}</h1>
-              <p className="text-moonly-text-muted text-xs">{book.author}</p>
+              <p className="text-moonly-muted text-xs">{book.author}</p>
             </div>
           </div>
           {/* 字体大小切换 */}
           <div className="flex items-center gap-1 bg-white/5 rounded-full p-0.5">
-            <button onClick={() => setFontSize(s => Math.max(14, s - 2))} className="w-8 h-8 rounded-full flex items-center justify-center text-xs text-moonly-text-muted hover:text-white hover:bg-white/10 transition">A-</button>
-            <button onClick={() => setFontSize(s => Math.min(26, s + 2))} className="w-8 h-8 rounded-full flex items-center justify-center text-sm text-moonly-text-muted hover:text-white hover:bg-white/10 transition">A+</button>
+            <button onClick={() => setFontSize(s => Math.max(14, s - 2))} className="w-8 h-8 rounded-full flex items-center justify-center text-xs text-moonly-muted hover:text-white hover:bg-white/10 transition">A-</button>
+            <button onClick={() => setFontSize(s => Math.min(26, s + 2))} className="w-8 h-8 rounded-full flex items-center justify-center text-sm text-moonly-muted hover:text-white hover:bg-white/10 transition">A+</button>
           </div>
         </div>
       </div>
@@ -355,17 +355,17 @@ function BookDetailContent() {
             <button
               onClick={() => setCurrentChapter(c => Math.max(0, c - 1))}
               disabled={currentChapter === 0}
-              className="px-3 py-1.5 rounded-lg text-sm text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition"
+              className="px-3 py-1.5 rounded-lg text-sm text-[#c9a96e] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition"
             >
               ← 上一章
             </button>
-            <span className="text-sm text-moonly-text-muted">
+            <span className="text-sm text-moonly-muted">
               {currentChapter + 1} / {totalChapters}
             </span>
             <button
               onClick={() => setCurrentChapter(c => Math.min(totalChapters - 1, c + 1))}
               disabled={currentChapter === totalChapters - 1}
-              className="px-3 py-1.5 rounded-lg text-sm text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition"
+              className="px-3 py-1.5 rounded-lg text-sm text-[#c9a96e] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition"
             >
               下一章 →
             </button>
@@ -377,9 +377,9 @@ function BookDetailContent() {
       <div className="px-4 py-2">
         <div className="max-w-md mx-auto">
           <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full bg-moonly-gold rounded-full transition-all" style={{ width: `${progress}%` }} />
+            <div className="h-full bg-[#c9a96e] rounded-full transition-all" style={{ width: `${progress}%` }} />
           </div>
-          <div className="text-right text-xs text-moonly-text-muted mt-1">
+          <div className="text-right text-xs text-moonly-muted mt-1">
             阅读进度 {Math.round(progress)}%
           </div>
         </div>
@@ -388,7 +388,7 @@ function BookDetailContent() {
       {/* 内容 */}
       <div className="px-4 py-6 pb-32">
         <div className="max-w-md mx-auto">
-          <h2 className="text-moonly-gold font-bold text-xl mb-6 text-center">{chapter.title}</h2>
+          <h2 className="text-[#c9a96e] font-bold text-xl mb-6 text-center">{chapter.title}</h2>
           <div className="space-y-4">
             {chapter.content.map((line, i) => (
               <p
@@ -409,17 +409,17 @@ function BookDetailContent() {
           <button
             onClick={() => setCurrentChapter(c => Math.max(0, c - 1))}
             disabled={currentChapter === 0}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-moonly-gold/20"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-[#c9a96e] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-[#c9a96e]/20"
           >
             ← 上一章
           </button>
-          <span className="text-sm text-moonly-text-muted">
+          <span className="text-sm text-moonly-muted">
             {chapter.title}
           </span>
           <button
             onClick={() => setCurrentChapter(c => Math.min(totalChapters - 1, c + 1))}
             disabled={currentChapter === totalChapters - 1}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-moonly-gold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-moonly-gold/20"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-[#c9a96e] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition border border-[#c9a96e]/20"
           >
             下一章 →
           </button>
@@ -435,7 +435,7 @@ export default function ShuDetailPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-10 h-10 rounded-full border-2 border-[#c9a96e]/[0.3] border-t-[#c9a96e] animate-spin mb-4 mx-auto" />
-          <p className="text-moonly-text-muted text-sm">加载中...</p>
+          <p className="text-moonly-muted text-sm">加载中...</p>
         </div>
       </div>
     }>

@@ -56,7 +56,7 @@ export default function ZodiacMatchPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">生肖配对</h1>
-          <p className="text-moonly-text-muted text-xs">十二生肖，缘分天定</p>
+          <p className="text-moonly-muted text-xs">十二生肖，缘分天定</p>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ export default function ZodiacMatchPage() {
         <button
           onClick={analyze}
           disabled={!animal1 || !animal2}
-          className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
         >
           开始配对
         </button>
@@ -115,11 +115,11 @@ export default function ZodiacMatchPage() {
             <div className={`text-2xl font-bold mb-2 ${result.color}`}>
               {result.level}
             </div>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">
+            <div className="text-moonly-secondary text-sm leading-relaxed">
               {result.desc}
             </div>
             <div className="mt-4">
-              <div className="text-moonly-text-muted text-xs mb-1">匹配指数</div>
+              <div className="text-moonly-muted text-xs mb-1">匹配指数</div>
               <div className="w-full bg-white/5 rounded-full h-3">
                 <div
                   className="bg-gradient-to-r from-[#c9a96e] to-yellow-400 h-3 rounded-full transition-all duration-1000"
@@ -139,7 +139,7 @@ export default function ZodiacMatchPage() {
                 <div key={i} className="moonly-card p-4">
                   <div className="text-2xl mb-2">{info.icon}</div>
                   <div className="text-white font-medium text-sm">{info.name}</div>
-                  <div className="text-moonly-text-muted text-xs mt-1">
+                  <div className="text-moonly-muted text-xs mt-1">
                     五行：{info.element} · {info.yinYang}
                   </div>
                   <div className="text-green-400 text-xs mt-2">

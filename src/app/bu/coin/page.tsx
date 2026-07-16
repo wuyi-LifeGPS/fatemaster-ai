@@ -122,7 +122,7 @@ export default function CoinDivinationPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">金钱卦</h1>
-          <p className="text-moonly-text-muted text-xs">三枚铜钱，六爻成卦</p>
+          <p className="text-moonly-muted text-xs">三枚铜钱，六爻成卦</p>
         </div>
       </div>
 
@@ -131,7 +131,7 @@ export default function CoinDivinationPage() {
           <div className="moonly-card p-5 text-center">
             <div className="text-4xl mb-3">🪙</div>
             <h3 className="text-white text-lg font-bold mb-2">金钱卦占卜</h3>
-            <p className="text-moonly-text-secondary text-sm leading-relaxed mb-4">
+            <p className="text-moonly-secondary text-sm leading-relaxed mb-4">
               传统六爻占卜法，通过三枚铜钱六次投掷，得到六爻卦象。
               心中默念所问之事，点击开始投掷。
             </p>
@@ -145,7 +145,7 @@ export default function CoinDivinationPage() {
 
           <div className="moonly-card p-4">
             <h4 className="text-gold text-sm font-semibold mb-2">📖 占卜方法</h4>
-            <ol className="text-sm text-moonly-text-secondary space-y-1.5 list-decimal list-inside">
+            <ol className="text-sm text-moonly-secondary space-y-1.5 list-decimal list-inside">
               <li>心中默念所问之事</li>
               <li>双手合握三枚铜钱</li>
               <li>摇晃后撒在桌面</li>
@@ -159,7 +159,7 @@ export default function CoinDivinationPage() {
       {step === 'tossing' && (
         <div className="space-y-6">
           <div className="text-center mb-4">
-            <div className="text-moonly-gold text-sm mb-1">第 {currentLine + 1} / 6 爻</div>
+            <div className="text-[#c9a96e] text-sm mb-1">第 {currentLine + 1} / 6 爻</div>
             <div className="text-white/40 text-xs">{currentLine < 3 ? '下卦' : '上卦'} · {currentLine % 3 === 0 ? '初爻' : currentLine % 3 === 1 ? '中爻' : '上爻'}</div>
           </div>
 
@@ -186,7 +186,7 @@ export default function CoinDivinationPage() {
           {/* 已得爻象 */}
           {lines.length > 0 && (
             <div className="moonly-card p-4">
-              <div className="text-xs text-moonly-gold mb-2">已得爻象（从下到上）</div>
+              <div className="text-xs text-[#c9a96e] mb-2">已得爻象（从下到上）</div>
               <div className="flex flex-col items-center gap-1">
                 {[...lines].reverse().map((yao, i) => (
                   <div key={i} className="text-2xl text-white">
@@ -220,7 +220,7 @@ export default function CoinDivinationPage() {
 
           {/* 本卦 */}
           <div className="moonly-card p-4">
-            <div className="text-xs text-moonly-gold mb-3">本卦</div>
+            <div className="text-xs text-[#c9a96e] mb-3">本卦</div>
             <div className="flex flex-col items-center gap-1">
               {[...lines].reverse().map((yao, i) => (
                 <div key={i} className="text-3xl text-white">
@@ -233,12 +233,12 @@ export default function CoinDivinationPage() {
           {/* 变卦（如果有） */}
           {hasChanging && (
             <div className="moonly-card p-4">
-              <div className="text-xs text-moonly-gold mb-3">变卦</div>
+              <div className="text-xs text-[#c9a96e] mb-3">变卦</div>
               <div className="flex flex-col items-center gap-1">
                 {[...lines].reverse().map((yao, i) => {
                   const changed = yao === 6 ? 7 : yao === 9 ? 8 : yao
                   return (
-                    <div key={i} className={`text-3xl ${yao === 6 || yao === 9 ? 'text-moonly-gold' : 'text-white'}`}>
+                    <div key={i} className={`text-3xl ${yao === 6 || yao === 9 ? 'text-[#c9a96e]' : 'text-white'}`}>
                       {getLineSymbol(changed)}
                     </div>
                   )
@@ -250,7 +250,7 @@ export default function CoinDivinationPage() {
           {/* 解读 */}
           <div className="moonly-card p-4">
             <h4 className="text-gold text-sm font-semibold mb-2">📝 简易解读</h4>
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               {hexagramName.includes('乾') && '乾卦象征天，代表刚健有力。问事业可积极进取，问感情需主动表达。'}
               {hexagramName.includes('坤') && '坤卦象征地，代表柔顺包容。宜守不宜攻，以静制动，顺势而为。'}
               {hexagramName.includes('坎') && '坎卦象征水，代表险陷。当前可能有困难，需谨慎行事，不可冒进。'}
@@ -262,7 +262,7 @@ export default function CoinDivinationPage() {
               {!hexagramName.includes('乾') && !hexagramName.includes('坤') && !hexagramName.includes('坎') && !hexagramName.includes('离') && !hexagramName.includes('震') && !hexagramName.includes('艮') && !hexagramName.includes('巽') && !hexagramName.includes('兑') && '此卦象复杂，建议结合具体所问之事，参考《周易》原文解读。'}
             </p>
             {hasChanging && (
-              <p className="text-moonly-gold text-sm mt-2">
+              <p className="text-[#c9a96e] text-sm mt-2">
                 注意：本卦有变爻，事情可能有转折，需关注变化趋势。
               </p>
             )}

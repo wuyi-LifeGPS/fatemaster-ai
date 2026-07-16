@@ -107,14 +107,14 @@ export default function FaceReadingPage() {
         </Link>
         <div>
           <h1 className="text-gold-gradient text-xl font-bold">面相分析</h1>
-          <p className="text-moonly-text-muted text-xs">传统相学，洞察运势</p>
+          <p className="text-moonly-muted text-xs">传统相学，洞察运势</p>
         </div>
       </div>
 
       {!result ? (
         <>
           <div className="moonly-card p-4 mb-6">
-            <p className="text-moonly-text-secondary text-sm leading-relaxed">
+            <p className="text-moonly-secondary text-sm leading-relaxed">
               面相学认为五官反映人的运势与性格。选择你认为自己具备的优势面相特征，AI将为你分析综合运势。
             </p>
           </div>
@@ -126,15 +126,15 @@ export default function FaceReadingPage() {
                 onClick={() => toggleFeature(feature.id)}
                 className={`moonly-card p-4 text-left transition ${
                   selectedFeatures.includes(feature.id)
-                    ? 'border-moonly-gold/50 bg-moonly-gold/5'
+                    ? 'border-[#c9a96e]/50 bg-[#c9a96e]/5'
                     : 'hover:bg-white/5'
                 }`}
               >
                 <div className="text-2xl mb-2">{feature.icon}</div>
                 <div className="text-white text-sm font-medium">{feature.name}</div>
-                <div className="text-moonly-text-muted text-xs mt-1">{feature.meaning.slice(0, 20)}...</div>
+                <div className="text-moonly-muted text-xs mt-1">{feature.meaning.slice(0, 20)}...</div>
                 {selectedFeatures.includes(feature.id) && (
-                  <div className="mt-2 text-moonly-gold text-xs">✓ 已选</div>
+                  <div className="mt-2 text-[#c9a96e] text-xs">✓ 已选</div>
                 )}
               </button>
             ))}
@@ -143,7 +143,7 @@ export default function FaceReadingPage() {
           <button
             onClick={analyze}
             disabled={selectedFeatures.length === 0}
-            className="w-full py-3 bg-moonly-gold/10 text-moonly-gold rounded-xl font-medium hover:bg-moonly-gold/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-[#c9a96e]/10 text-[#c9a96e] rounded-xl font-medium hover:bg-[#c9a96e]/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
           >
             开始分析（已选 {selectedFeatures.length} 项）
           </button>
@@ -153,7 +153,7 @@ export default function FaceReadingPage() {
           <div className="moonly-card p-6 text-center">
             <div className="text-4xl mb-3">🔮</div>
             <div className={`text-2xl font-bold mb-2 ${result.color}`}>{result.level}</div>
-            <div className="text-moonly-text-secondary text-sm leading-relaxed">{result.desc}</div>
+            <div className="text-moonly-secondary text-sm leading-relaxed">{result.desc}</div>
           </div>
 
           <div className="space-y-3">
@@ -166,7 +166,7 @@ export default function FaceReadingPage() {
                     <span className="text-lg">{feature.icon}</span>
                     <span className="text-white font-medium text-sm">{feature.name}</span>
                   </div>
-                  <div className="text-moonly-text-muted text-xs mb-2">{feature.meaning}</div>
+                  <div className="text-moonly-muted text-xs mb-2">{feature.meaning}</div>
                   <div className="text-green-400 text-xs">{feature.good}</div>
                 </div>
               )

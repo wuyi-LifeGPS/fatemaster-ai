@@ -64,20 +64,20 @@ export default function BuChatPage() {
       <div className="px-4 py-3 bg-moonly-bg/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-3">
           <Link href="/bu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-moonly-text-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-moonly-secondary">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </Link>
           <div>
             <div className="text-white font-medium text-sm">AI 命理师</div>
-            <div className="text-moonly-text-muted text-[11px]">内容由AI生成</div>
+            <div className="text-moonly-muted text-[11px]">内容由AI生成</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-moonly-text-muted text-xs">{messages.filter(m => m.role === 'user').length} 次</span>
+          <span className="text-moonly-muted text-xs">{messages.filter(m => m.role === 'user').length} 次</span>
           <button
             onClick={() => setMessages([{ role: 'ai', text: '关于你的本命星图，还有什么是你想知道的？\n我会为你尽心解答。' }])}
-            className="w-6 h-6 rounded-full bg-moonly-gold/20 flex items-center justify-center text-gold text-xs font-bold hover:bg-moonly-gold/30 transition"
+            className="w-6 h-6 rounded-full bg-[#c9a96e]/20 flex items-center justify-center text-gold text-xs font-bold hover:bg-[#c9a96e]/30 transition"
           >
             +
           </button>
@@ -110,7 +110,7 @@ export default function BuChatPage() {
               <Image src="/images/ai-avatar-new.png" alt="AI" width={36} height={36} className="object-cover" />
             </div>
             <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-2.5">
-              <Spinner className="text-moonly-gold" />
+              <Spinner className="text-[#c9a96e]" />
             </div>
           </div>
         )}
@@ -123,7 +123,7 @@ export default function BuChatPage() {
             <button
               key={s}
               onClick={() => { setInput(s); }}
-              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-moonly-text-secondary hover:bg-white/10 hover:text-white transition"
+              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-moonly-secondary hover:bg-white/10 hover:text-white transition"
             >
               {s}
             </button>
@@ -143,12 +143,12 @@ export default function BuChatPage() {
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSend()}
               placeholder="请输入您的问题..."
-              className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2.5 text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-[#c9a96e]/30"
+              className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2.5 text-sm text-white placeholder:text-moonly-muted focus:outline-none focus:border-[#c9a96e]/30"
             />
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-moonly-gold to-[#a08050] flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-[#c9a96e] to-[#a08050] flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />

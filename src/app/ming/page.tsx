@@ -22,6 +22,7 @@ import LuckyNumbers from '@/components/LuckyNumbers'
 import FengShuiTip from '@/components/FengShuiTip'
 import HealthTip from '@/components/HealthTip'
 import WeeklyFortune from '@/components/WeeklyFortune'
+import HoroscopeWidget from '@/components/HoroscopeWidget'
 
 import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
@@ -840,6 +841,7 @@ export default function MingPage() {
         <FengShuiTip />
         <HealthTip />
         <WeeklyFortune />
+        <HoroscopeWidget />
 
         <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (

@@ -216,7 +216,7 @@ export default function SettingsPage() {
       {/* 分析偏好 */}
       <section className="moonly-card p-5 mb-4">
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c9a96e]/30 to-moonly-purple/20 flex items-center justify-center text-lg">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c9a96e]/30 to-[#6b5b95]/20 flex items-center justify-center text-lg">
             ⚙️
           </div>
           <div>
@@ -284,7 +284,7 @@ export default function SettingsPage() {
       {/* AI 服务 */}
       <section className="moonly-card p-5 mb-4">
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-moonly-purple/30 to-[#c9a96e]/20 flex items-center justify-center text-lg">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6b5b95]/30 to-[#c9a96e]/20 flex items-center justify-center text-lg">
             🤖
           </div>
           <div>

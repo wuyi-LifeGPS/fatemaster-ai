@@ -40,36 +40,36 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
   return (
     <div className="space-y-3">
       <div>
-        <label className="block text-sm font-medium mb-1 text-gray-900">姓名（选填）</label>
+        <label className="block text-sm font-medium mb-1.5 text-moonly-text-secondary">姓名（选填）</label>
         <input
           type="text"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           placeholder="姓名"
-          className="w-full px-3 py-2 border border-fate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-fate-400 text-gray-900"
+          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-moonly-text-muted focus:outline-none focus:border-moonly-gold/30 transition"
         />
       </div>
       {showGender && (
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-900">性别 *</label>
+          <label className="block text-sm font-medium mb-1.5 text-moonly-text-secondary">性别 *</label>
           <div className="flex gap-4">
-            <label className="flex items-center cursor-pointer text-gray-800">
+            <label className="flex items-center cursor-pointer text-moonly-text-secondary hover:text-white transition">
               <input
                 type="radio"
                 value="male"
                 checked={form.gender === 'male'}
                 onChange={() => setForm({ ...form, gender: 'male' })}
-                className="mr-2"
+                className="mr-2 accent-moonly-gold"
               />
               男
             </label>
-            <label className="flex items-center cursor-pointer text-gray-800">
+            <label className="flex items-center cursor-pointer text-moonly-text-secondary hover:text-white transition">
               <input
                 type="radio"
                 value="female"
                 checked={form.gender === 'female'}
                 onChange={() => setForm({ ...form, gender: 'female' })}
-                className="mr-2"
+                className="mr-2 accent-moonly-gold"
               />
               女
             </label>
@@ -77,15 +77,15 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
         </div>
       )}
       <div>
-        <label className="block text-sm font-medium mb-1 text-gray-900">出生日期 *</label>
-        <div className="flex gap-1 mb-1.5 bg-fate-100 rounded-lg p-1 w-fit">
+        <label className="block text-sm font-medium mb-1.5 text-moonly-text-secondary">出生日期 *</label>
+        <div className="flex gap-1 mb-2 bg-white/5 rounded-lg p-1 w-fit border border-white/10">
           <button
             type="button"
             onClick={() => setForm({ ...form, calendarType: 'solar', lunarIsLeap: false })}
-            className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
+            className={`px-3 py-1 rounded-md text-xs transition-all ${
               form.calendarType === 'solar'
-                ? 'bg-white text-gray-800 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-moonly-gold/20 text-moonly-gold font-medium'
+                : 'text-moonly-text-muted hover:text-moonly-text-secondary'
             }`}
           >
             公历
@@ -93,10 +93,10 @@ export default function PersonFormSelector({ form, setForm, showGender = false }
           <button
             type="button"
             onClick={() => setForm({ ...form, calendarType: 'lunar' })}
-            className={`px-2.5 py-0.5 rounded-md text-xs transition-colors ${
+            className={`px-3 py-1 rounded-md text-xs transition-all ${
               form.calendarType === 'lunar'
-                ? 'bg-white text-gray-800 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-moonly-gold/20 text-moonly-gold font-medium'
+                : 'text-moonly-text-muted hover:text-moonly-text-secondary'
             }`}
           >
             农历

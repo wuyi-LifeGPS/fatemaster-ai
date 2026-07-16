@@ -394,7 +394,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
           <div className="space-y-3">
             {filtered.map(item => (
               <div key={item.id} className="moonly-card p-3 flex items-center gap-3 group">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#c9a96e]/10 to-moonly-purple/10 flex items-center justify-center text-2xl flex-shrink-0">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#c9a96e]/10 to-[#6b5b95]/10 flex items-center justify-center text-2xl flex-shrink-0">
                   {item.icon}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -482,7 +482,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
         <div className="fixed inset-x-0 bottom-16 z-50 px-4">
           <div className="moonly-card p-4 border border-[#c9a96e]/20">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c9a96e]/10 to-moonly-purple/10 flex items-center justify-center text-2xl">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c9a96e]/10 to-[#6b5b95]/10 flex items-center justify-center text-2xl">
                 {activeMeditation.icon}
               </div>
               <div className="flex-1 min-w-0">
@@ -519,7 +519,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
             {/* 进度条 */}
             <div className="mt-3 w-full h-1 bg-white/10 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-[#c9a96e] to-moonly-purple rounded-full transition-all"
+                className="h-full bg-gradient-to-r from-[#c9a96e] to-[#6b5b95] rounded-full transition-all"
                 style={{ width: `${((activeMeditation.duration * 60 - remainingSeconds) / (activeMeditation.duration * 60)) * 100}%` }}
               />
             </div>

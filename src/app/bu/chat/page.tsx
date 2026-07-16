@@ -92,12 +92,12 @@ export default function BuChatPage() {
               {msg.role === 'ai' ? (
                 <Image src="/images/ai-avatar-new.png" alt="AI" width={36} height={36} className="object-cover" />
               ) : (
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-moonly-purple to-moonly-bg flex items-center justify-center text-white text-xs font-bold">我</div>
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-[#6b5b95] to-moonly-bg flex items-center justify-center text-white text-xs font-bold">我</div>
               )}
             </div>
             <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
               msg.role === 'user'
-                ? 'bg-gradient-to-br from-moonly-purple/40 to-moonly-purple/20 text-white border border-white/10'
+                ? 'bg-gradient-to-br from-[#6b5b95]/40 to-[#6b5b95]/20 text-white border border-white/10'
                 : 'bg-white/5 text-white/90 border border-white/10'
             }`}>
               {msg.text}
@@ -134,7 +134,7 @@ export default function BuChatPage() {
       {/* 底部输入区 */}
       <div className="px-4 py-3 bg-moonly-bg/80 backdrop-blur-xl border-t border-white/5 shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-moonly-purple to-moonly-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0 border border-white/10">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#6b5b95] to-moonly-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0 border border-white/10">
             我
           </div>
           <div className="flex-1 flex items-center gap-2">

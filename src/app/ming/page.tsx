@@ -808,7 +808,7 @@ export default function MingPage() {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] px-6 text-center animate-fade-in relative">
-      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-moonly-purple to-moonly-bg-dark flex items-center justify-center mb-6 border border-moonly-card-border">
+      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#6b5b95] to-[#1e1c35] flex items-center justify-center mb-6 border border-white/10">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" /></svg>
       </div>
       <h2 className="text-xl font-bold text-white mb-2">探索您的命盘</h2>

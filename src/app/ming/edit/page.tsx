@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { showToast } from '@/components/Toast'
 import useBeforeUnload from '@/hooks/useBeforeUnload'
+import { useAutosave } from '@/hooks/useAutosave'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getProfileById, updateProfile, BaziProfile } from '@/lib/bazi-profiles'
@@ -101,6 +102,9 @@ function EditProfileContent() {
     lunarIsLeap: false,
   })
 
+  const autosaveKey = profileId ? `ming-edit-${profileId}` : ''
+  const { hasDraft, loadDraft, clearDraft } = useAutosave(autosaveKey, formData, 3000)
+
   useBeforeUnload(formData.name !== '' || formData.birthYear !== 1990)
 
   const [showDatePicker, setShowDatePicker] = useState(false)
@@ -121,17 +125,30 @@ function EditProfileContent() {
       return
     }
     setProfile(p)
-    setFormData({
+    const initialData = {
       name: p.name,
-      gender: p.gender === '男' ? 'male' : 'female',
+      gender: (p.gender === '男' ? 'male' : 'female') as 'male' | 'female',
       birthYear: p.year,
       birthMonth: p.month,
       birthDay: p.day,
       birthHour: p.hour,
       birthMinute: p.minute,
-      calendarType: p.isLunar ? 'lunar' : 'solar',
+      calendarType: (p.isLunar ? 'lunar' : 'solar') as 'solar' | 'lunar',
       lunarIsLeap: false,
-    })
+    }
+    setFormData(initialData)
+    // 检查是否有自动保存的草稿
+    setTimeout(() => {
+      const draft = loadDraft()
+      if (draft) {
+        if (window.confirm('检测到未保存的修改，是否恢复？')) {
+          setFormData(prev => ({ ...prev, ...draft }))
+          showToast('已恢复上次编辑', 'success')
+        } else {
+          clearDraft()
+        }
+      }
+    }, 100)
   }, [profileId])
 
   const yearOptions = Array.from({ length: 131 }, (_, i) => ({ value: 1900 + i, label: `${1900 + i}年` }))
@@ -209,6 +226,7 @@ function EditProfileContent() {
         birthTimeLabel,
       })
 
+      clearDraft()
       router.push('/ming')
     } catch (error) {
       console.error('Error:', error)

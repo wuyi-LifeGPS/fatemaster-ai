@@ -7,6 +7,7 @@ import { getProfiles, BaziProfile } from '@/lib/bazi-profiles'
 import { calculateBazi, calculateDaYun, getWuXing, getShiShen, getCangGan, getYinYang, SHI_SHEN_MAP, DaYunInfo } from '@/lib/bazi'
 import useKeyboard from '@/hooks/useKeyboard'
 
+import DailyTip from '@/components/DailyTip'
 import RecentVisits from '@/components/RecentVisits'
 import QuickShortcuts from '@/components/QuickShortcuts'
 import LiunianTab from './components/LiunianTab'
@@ -784,6 +785,7 @@ export default function MingPage() {
 
       <QuickShortcuts />
       <RecentVisits />
+      <DailyTip />
 
       <div className="flex items-center justify-center gap-5 px-4 py-3 border-b border-white/5">
         {TABS.map(tab => (

@@ -385,6 +385,30 @@ export default function SettingsPage() {
 
           <div className="border-t border-white/10 pt-4 flex items-center justify-between">
             <div>
+              <div className="text-white text-sm font-medium">清除缓存</div>
+              <div className="text-moonly-muted text-xs">清除应用缓存数据，保留用户档案和设置</div>
+            </div>
+            <button
+              onClick={() => {
+                const keysToKeep = ['lifegps_profiles', 'lifegps_settings', 'lifegps-history']
+                const keysToRemove: string[] = []
+                for (let i = 0; i < localStorage.length; i++) {
+                  const key = localStorage.key(i)
+                  if (key && !keysToKeep.includes(key) && !key.startsWith('lifegps_autosave_')) {
+                    keysToRemove.push(key)
+                  }
+                }
+                keysToRemove.forEach(key => localStorage.removeItem(key))
+                showToast('缓存已清除', 'success')
+              }}
+              className="px-4 py-2 rounded-lg text-sm font-medium border border-white/20 text-white hover:bg-white/5 transition-colors"
+            >
+              清除缓存
+            </button>
+          </div>
+
+          <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+            <div>
               <div className="text-white text-sm font-medium">清除所有数据</div>
               <div className="text-moonly-muted text-xs">删除所有本地数据，包括档案、历史记录、设置等</div>
             </div>

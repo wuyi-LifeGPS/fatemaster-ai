@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { getProfiles, BaziProfile } from '@/lib/bazi-profiles'
 import { calculateBazi, getWuXing } from '@/lib/bazi'
 import { lunarToSolar } from '@/lib/lunar'
+import { SkeletonList, SkeletonCard } from '@/components/Skeleton'
 
 // ===== 工具函数 =====
 
@@ -200,9 +201,10 @@ export default function RecordsPage() {
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-10 h-10 rounded-full border-2 border-[#c9a96e]/30 border-t-[#c9a96e] animate-spin mb-4" />
-            <p className="text-moonly-secondary text-sm">加载中...</p>
+          <div className="px-4 py-6 space-y-3">
+            <SkeletonCard lines={3} />
+            <SkeletonCard lines={3} />
+            <SkeletonCard lines={3} />
           </div>
         ) : activeTab === 'profiles' ? (
           baziDisplays.length === 0 ? (

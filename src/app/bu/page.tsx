@@ -325,7 +325,7 @@ export default function BuPage() {
     : DIVINATION_TOOLS.filter(tool => tool.category === activeCategory)
 
   return (
-    <div className="px-4 pt-4 pb-24 animate-fade-in">
+    <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       <h1 className="text-gold-gradient text-xl font-bold mb-2">卜</h1>
       <p className="text-moonly-text-secondary text-sm mb-6">选择占卜工具，探寻心中答案</p>
 

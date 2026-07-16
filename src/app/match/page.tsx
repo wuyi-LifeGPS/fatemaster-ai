@@ -201,7 +201,7 @@ export default function MatchPage() {
   }
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen moonly-bg moonly-content animate-fade-in">
       <header className="bg-[#1a1630]/80 backdrop-blur-sm border-b border-white/10 text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-xl font-bold font-serif text-white">← AI 命理大师</Link>

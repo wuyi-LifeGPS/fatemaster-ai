@@ -38,7 +38,7 @@ export default function BaziRecordsPage() {
   }
 
   return (
-    <div className="px-4 pt-4 pb-24 animate-fade-in">
+    <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       {/* 标题 */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-gold-gradient text-xl font-bold">八字记录</h1>

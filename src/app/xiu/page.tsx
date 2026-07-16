@@ -279,7 +279,7 @@ const [playingId, setPlayingId] = useState<string | null>(null)
     : MEDITATIONS.filter(m => m.tag === MEDITATION_CATEGORIES.find(c => c.key === activeCategory)?.label)
 
   return (
-    <div className="px-4 pt-4 pb-24 animate-fade-in relative">
+    <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in relative">
       <h1 className="text-gold-gradient text-xl font-bold mb-2">修</h1>
       <p className="text-moonly-text-secondary text-sm mb-4">正念冥想，回归内心</p>
 

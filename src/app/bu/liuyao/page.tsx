@@ -246,7 +246,7 @@ export default function LiuYaoPage() {
   }
 
   return (
-    <div className="px-4 pt-4 pb-24 animate-fade-in">
+    <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       {/* 头部返回 */}
       <div className="flex items-center gap-3 mb-6">
         <Link href="/bu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">

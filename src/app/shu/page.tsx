@@ -138,7 +138,7 @@ export default function ShuPage() {
   })
 
   return (
-    <div className="px-4 pt-4 pb-24 animate-fade-in">
+    <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       <h1 className="text-gold-gradient text-xl font-bold mb-2">书</h1>
       <p className="text-moonly-text-secondary text-sm mb-6">经典智慧，修身养性</p>
 

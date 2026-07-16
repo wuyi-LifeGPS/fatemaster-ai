@@ -146,7 +146,7 @@ export default function DailyPage() {
   }
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen moonly-bg moonly-content animate-fade-in">
       {/* Header */}
       <header className="bg-transparent border-b border-white/10 text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">

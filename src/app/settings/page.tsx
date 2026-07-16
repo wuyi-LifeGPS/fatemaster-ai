@@ -97,7 +97,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="px-4 pt-4 pb-24 animate-fade-in">
+    <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <Link href="/wo" className="text-moonly-text-secondary hover:text-white transition text-sm flex items-center gap-1">

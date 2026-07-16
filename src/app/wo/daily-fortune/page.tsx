@@ -141,7 +141,7 @@ export default function DailyFortunePage() {
 
   if (!profile || !today) {
     return (
-      <div className="px-4 pt-4 pb-24 animate-fade-in">
+      <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
         <div className="flex items-center gap-3 mb-6">
           <Link href="/wo" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -162,7 +162,7 @@ export default function DailyFortunePage() {
   const wx = getWuXing(dayMaster)
 
   return (
-    <div className="px-4 pt-4 pb-24 animate-fade-in">
+    <div className="min-h-screen moonly-bg moonly-content px-4 pt-4 pb-24 animate-fade-in">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link href="/wo" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">

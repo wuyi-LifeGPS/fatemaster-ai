@@ -768,7 +768,7 @@ export default function MingPage() {
   if (!currentProfile) return null
 
   return (
-    <div className="animate-fade-in relative">
+    <div className="min-h-screen moonly-bg moonly-content animate-fade-in relative">
       <ProfileHeader 
         profile={currentProfile} 
         baziData={baziData} 

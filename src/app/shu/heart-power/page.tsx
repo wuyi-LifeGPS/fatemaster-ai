@@ -44,7 +44,7 @@ export default function HeartPowerPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col animate-fade-in">
+    <div className="min-h-screen moonly-bg moonly-content h-[calc(100vh-80px)] flex flex-col animate-fade-in">
       {/* 顶部导航 */}
       <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">

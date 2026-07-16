@@ -42,7 +42,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="px-4 pt-6 pb-24 animate-fade-in">
+    <div className="min-h-screen moonly-bg moonly-content px-4 pt-6 pb-24 animate-fade-in">
       {/* 顶部问候 */}
       <div className="mb-8">
         <h1 className="text-gold-gradient text-2xl font-bold mb-1">{greeting}，欢迎来到 LifeGPS</h1>

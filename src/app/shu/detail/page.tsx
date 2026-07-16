@@ -302,7 +302,7 @@ function BookDetailContent() {
 
   if (!book) {
     return (
-      <div className="min-h-screen text-white px-4 pt-4 pb-24">
+      <div className="min-h-screen moonly-bg moonly-content text-white px-4 pt-4 pb-24 animate-fade-in">
         <div className="flex items-center gap-3 mb-6">
           <Link href="/shu" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition text-white">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>

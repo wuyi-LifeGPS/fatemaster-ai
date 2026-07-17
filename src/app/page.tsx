@@ -72,10 +72,10 @@ export default function HomePage() {
             <Link
               key={tool.title}
               href={tool.href}
-              className="moonly-card p-3 text-center hover:bg-white/5 transition"
+              className="moonly-card p-3 text-center hover:bg-white/10 transition bg-white/[0.08]"
             >
               <div className="text-2xl mb-2">{tool.icon}</div>
-              <div className="text-white text-sm">{tool.title}</div>
+              <div className="text-white text-sm font-medium">{tool.title}</div>
             </Link>
           ))}
         </div>

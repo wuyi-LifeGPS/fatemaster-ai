@@ -479,19 +479,24 @@ const [playingId, setPlayingId] = useState<string | null>(null)
 
       {/* 冥想播放浮层 */}
       {playingId && activeMeditation && (
-        <div className="fixed inset-x-0 bottom-16 z-[60] px-4">
-          <div className="moonly-card p-4 border border-[#c9a96e]/20">
+        <div className="fixed inset-x-0 bottom-20 z-[70] px-4">
+          <div className="p-4 rounded-2xl border border-[#c9a96e]/30 bg-[#1a1428]/95 backdrop-blur-md shadow-2xl shadow-black/40">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c9a96e]/10 to-[#6b5b95]/10 flex items-center justify-center text-2xl">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c9a96e]/20 to-[#6b5b95]/20 flex items-center justify-center text-2xl flex-shrink-0">
                 {activeMeditation.icon}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-white font-medium text-sm">{activeMeditation.title}</div>
-                <div className="text-[#c9a96e] text-lg font-bold font-mono">
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="flex items-center gap-2">
+                  <span className="text-white font-medium text-sm truncate">{activeMeditation.title}</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#c9a96e]/15 text-[#c9a96e] flex-shrink-0">
+                    {activeMeditation.tag}
+                  </span>
+                </div>
+                <div className="text-[#c9a96e] text-base font-bold tabular-nums tracking-wider mt-0.5">
                   {formatTime(remainingSeconds)}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   onClick={togglePause}
                   className="w-10 h-10 rounded-full bg-[#c9a96e]/20 flex items-center justify-center hover:bg-[#c9a96e]/30 transition border border-[#c9a96e]/30"
